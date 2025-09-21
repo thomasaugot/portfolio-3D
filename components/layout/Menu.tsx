@@ -1,8 +1,16 @@
 'use client'
 
-import { menuItems } from '@/data/menu'
+import { useTranslation } from '@/hooks/useTranslation'
+import { useGSAPAnimations } from '@/hooks/useGSAPAnimations'
+import { getLocalizedMenuItems } from '@/data/menu'
+import { initMenuAnimations } from '@/utils/animations/menu-animations'
 
 export default function Menu() {
+  const { t, language } = useTranslation()
+  const localizedMenuItems = getLocalizedMenuItems(language)
+
+  useGSAPAnimations([initMenuAnimations])
+
   return (
     <>
       {/* Menu Trigger */}
@@ -29,21 +37,21 @@ export default function Menu() {
         <div className="h-full flex items-center justify-center">
           <nav className="text-center">
             <ul className="space-y-8">
-              {menuItems.map((item) => (
+              {localizedMenuItems.map((item) => (
                 <li
-                  key={item.label}
+                  key={item.labelKey}
                   data-animate="menu-item"
                   className="opacity-0"
                 >
                   <a
-                    href={item.href}
+                    href={item.localizedHref}
                     className="block group cursor-pointer"
                   >
                     <div className="text-6xl md:text-8xl font-bold text-text mb-2 font-inter">
-                      {item.label}
+                      {t(item.labelKey)}
                     </div>
                     <div className="text-sm text-text-muted font-mono tracking-wider opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      {item.description}
+                      {t(item.descriptionKey)}
                     </div>
                     <div className="w-0 h-px bg-electric-blue group-hover:w-full transition-all duration-500 mx-auto mt-4" />
                   </a>

@@ -1,0 +1,58 @@
+{
+  "nav": {
+    "home": "Inicio",
+    "home_description": "Volver al inicio",
+    "about": "Acerca de",
+    "about_description": "Experiencia y conocimientos",
+    "portfolio": "Portfolio",
+    "portfolio_description": "Proyectos seleccionados y casos de estudio",
+    "blog": "Blog",
+    "blog_description": "Reflexiones sobre desarrollo y diseño",
+    "contact": "Contacto",
+    "contact_description": "Construyamos algo juntos"
+  },
+  "homepage": {
+    "hero_title": "Desarrollador Frontend",
+    "hero_subtitle": "Creando experiencias web hermosas y responsivas",
+    "hero_cta": "Ver Mi Trabajo",
+    "about_preview": "Desarrollador apasionado especializado en React, Next.js y tecnologías web modernas",
+    "skills_title": "Tecnologías Que Uso"
+  },
+  "about_page": {
+    "title": "Acerca de Mí",
+    "subtitle": "Experiencia y conocimientos",
+    "intro": "Soy un desarrollador frontend apasionado con experiencia en tecnologías web modernas",
+    "experience_title": "Experiencia",
+    "skills_title": "Habilidades y Tecnologías",
+    "education_title": "Educación"
+  },
+  "portfolio_page": {
+    "title": "Mi Portfolio",
+    "subtitle": "Proyectos seleccionados y casos de estudio",
+    "view_project": "Ver Proyecto",
+    "view_code": "Ver Código",
+    "technologies_used": "Tecnologías Utilizadas"
+  },
+  "blog_page": {
+    "title": "Blog",
+    "subtitle": "Reflexiones sobre desarrollo y diseño",
+    "read_more": "Leer Más",
+    "published_on": "Publicado el",
+    "no_posts": "No hay artículos disponibles aún"
+  },
+  "contact_page": {
+    "title": "Ponte en Contacto",
+    "subtitle": "Construyamos algo juntos",
+    "form_name": "Nombre",
+    "form_email": "Email",
+    "form_message": "Mensaje",
+    "form_send": "Enviar Mensaje",
+    "email_me": "Envíame un email directamente",
+    "download_cv": "Descargar CV"
+  },
+  "common": {
+    "loading": "Cargando...",
+    "error": "Algo salió mal",
+    "try_again": "Intentar de Nuevo"
+  }
+}

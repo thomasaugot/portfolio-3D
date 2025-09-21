@@ -1,26 +1,14 @@
-import type { Metadata } from 'next'
-import './globals.css'
-import Menu from '@/components/layout/Menu'
-import { ThemeProvider } from '@/components/theme/ThemeProvider'
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: 'Portfolio',
-  description: 'Professional portfolio website',
-}
+  title: "Frontend Developer Portfolio",
+  description: "Creating beautiful, responsive web experiences",
+};
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
-  return (
-    <html lang="en">
-      <body>
-        <ThemeProvider>
-          <Menu />
-          {children}
-        </ThemeProvider>
-      </body>
-    </html>
-  )
+  return children;
 }
