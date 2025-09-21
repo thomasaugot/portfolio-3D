@@ -1,25 +1,16 @@
 'use client'
 
 import { useEffect } from 'react'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { initializeGSAP, ScrollTrigger } from '@/utils/animations/gsap-init'
 import { initMenuAnimations } from '@/utils/animations/menu-animations'
 
 type AnimationFunction = () => void
 
 export function useGSAPAnimations(animations: AnimationFunction[] = []) {
   useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger)
+    // Initialize GSAP first
+    initializeGSAP()
     
-    gsap.config({
-      force3D: true,
-      nullTargetWarn: false,
-    })
-
-    ScrollTrigger.config({
-      autoRefreshEvents: "visibilitychange,DOMContentLoaded,load"
-    })
-
     // Initialize animations with timeout
     const timer = setTimeout(() => {
       // Always initialize menu animations since menu is global

@@ -1,0 +1,58 @@
+{
+  "nav": {
+    "home": "Home",
+    "home_description": "Back to homepage",
+    "about": "About",
+    "about_description": "Background & expertise",
+    "portfolio": "Portfolio",
+    "portfolio_description": "Selected projects & case studies",
+    "blog": "Blog",
+    "blog_description": "Thoughts on development & design",
+    "contact": "Contact",
+    "contact_description": "Let's build something together"
+  },
+  "homepage": {
+    "hero_title": "Frontend Developer",
+    "hero_subtitle": "Creating beautiful, responsive web experiences",
+    "hero_cta": "View My Work",
+    "about_preview": "Passionate developer specializing in React, Next.js, and modern web technologies",
+    "skills_title": "Technologies I Work With"
+  },
+  "about_page": {
+    "title": "About Me",
+    "subtitle": "Background & expertise",
+    "intro": "I'm a passionate frontend developer with expertise in modern web technologies",
+    "experience_title": "Experience",
+    "skills_title": "Skills & Technologies",
+    "education_title": "Education"
+  },
+  "portfolio_page": {
+    "title": "My Portfolio",
+    "subtitle": "Selected projects & case studies",
+    "view_project": "View Project",
+    "view_code": "View Code",
+    "technologies_used": "Technologies Used"
+  },
+  "blog_page": {
+    "title": "Blog",
+    "subtitle": "Thoughts on development & design",
+    "read_more": "Read More",
+    "published_on": "Published on",
+    "no_posts": "No posts available yet"
+  },
+  "contact_page": {
+    "title": "Get In Touch",
+    "subtitle": "Let's build something together",
+    "form_name": "Name",
+    "form_email": "Email",
+    "form_message": "Message",
+    "form_send": "Send Message",
+    "email_me": "Email me directly",
+    "download_cv": "Download CV"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "try_again": "Try Again"
+  }
+}

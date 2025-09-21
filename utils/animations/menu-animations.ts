@@ -1,4 +1,4 @@
-import gsap from 'gsap'
+import { gsap } from '@/utils/animations/gsap-init'
 
 export function initMenuAnimations() {
   // Menu trigger click handler
