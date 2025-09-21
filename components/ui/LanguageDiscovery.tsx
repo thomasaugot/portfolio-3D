@@ -1,74 +1,73 @@
-"use client";
+'use client'
 
-import { useState, useEffect } from "react";
-import { useTranslation } from "@/hooks/useTranslation";
-import { useGSAPAnimations } from "@/hooks/useGSAPAnimations";
-import { languageNames, type Language } from "@/utils/route-translations";
-import {
-  initCarousel3D,
-  rotateCarousel3D,
-} from "@/utils/animations/carousel-3d-animations";
+import { useState, useEffect } from 'react'
+import { useTranslation } from '@/hooks/useTranslation'
+import { useGSAPAnimations } from '@/hooks/useGSAPAnimations'
+import { languageNames, type Language } from '@/utils/route-translations'
+import { initCarousel3D, rotateCarousel3D } from '@/utils/animations/carousel-3d-animations'
 
 const welcomeTexts = {
-  en: { welcome: "Welcome", choose: "Choose your language" },
-  fr: { welcome: "Bienvenue", choose: "Choisissez votre langue" },
-  es: { welcome: "Bienvenido", choose: "Elige tu idioma" },
-};
+  en: { welcome: 'Welcome', choose: 'Choose your language' },
+  fr: { welcome: 'Bienvenue', choose: 'Choisissez votre langue' },
+  es: { welcome: 'Bienvenido', choose: 'Elige tu idioma' }
+}
 
 export function LanguageDiscovery() {
-  const { language, changeLanguage } = useTranslation();
-  const [isVisible, setIsVisible] = useState(false);
-  const [selectedLang, setSelectedLang] = useState<Language>(language);
-  const [hoverLang, setHoverLang] = useState<Language>(language);
+  const { language, changeLanguage } = useTranslation()
+  const [isVisible, setIsVisible] = useState(false)
+  const [selectedLang, setSelectedLang] = useState<Language>('en') // Always start with English
+  const [hoverLang, setHoverLang] = useState<Language>('en')
+  const [isCarouselReady, setIsCarouselReady] = useState(false)
+  
+  const languages: Language[] = ['en', 'fr', 'es']
+  const detectedLanguage = typeof window !== 'undefined' 
+    ? (['en', 'fr', 'es'].includes(navigator.language.slice(0, 2)) 
+       ? navigator.language.slice(0, 2) as Language 
+       : 'en')
+    : 'en'
 
-  const languages: Language[] = ["en", "fr", "es"];
-  const detectedLanguage =
-    typeof window !== "undefined"
-      ? ["en", "fr", "es"].includes(navigator.language.slice(0, 2))
-        ? (navigator.language.slice(0, 2) as Language)
-        : "en"
-      : "en";
-
-  useGSAPAnimations([initCarousel3D]);
+  useGSAPAnimations([initCarousel3D])
 
   // Check visibility after component mounts to avoid hydration mismatch
   useEffect(() => {
-    const hasSeenDiscovery = localStorage.getItem("language-discovery-seen");
-    const browserLang = navigator.language.slice(0, 2) as Language;
-    const supportedLang = ["en", "fr", "es"].includes(browserLang)
-      ? browserLang
-      : "en";
-    setIsVisible(!hasSeenDiscovery && supportedLang !== language);
-  }, [language]);
+    const hasSeenDiscovery = localStorage.getItem('language-discovery-seen')
+    // For testing: always show if not seen before
+    setIsVisible(!hasSeenDiscovery)
+  }, [])
 
   useEffect(() => {
     if (isVisible) {
       const timer = setTimeout(() => {
-        initCarousel3D();
-        const selectedIndex = languages.indexOf(selectedLang);
-        rotateCarousel3D(selectedIndex);
-      }, 500);
-      return () => clearTimeout(timer);
+        try {
+          initCarousel3D()
+          rotateCarousel3D(0) // Always start with English (index 0)
+          console.log('Carousel initialized') // Debug log
+        } catch (error) {
+          console.error('Carousel init failed:', error)
+        }
+        setIsCarouselReady(true) // Always set ready after timeout
+      }, 300)
+      return () => clearTimeout(timer)
     }
-  }, [isVisible]);
+  }, [isVisible])
 
   const handleLanguageClick = (lang: Language) => {
-    setSelectedLang(lang);
-    setHoverLang(lang);
-    const selectedIndex = languages.indexOf(lang);
-    rotateCarousel3D(selectedIndex);
-  };
+    setSelectedLang(lang)
+    setHoverLang(lang)
+    const selectedIndex = languages.indexOf(lang)
+    rotateCarousel3D(selectedIndex)
+  }
 
   const handleContinue = () => {
-    changeLanguage(selectedLang);
-    setIsVisible(false);
-    localStorage.setItem("language-discovery-seen", "true");
-  };
+    changeLanguage(selectedLang)
+    setIsVisible(false)
+    localStorage.setItem('language-discovery-seen', 'true')
+  }
 
-  if (!isVisible) return null;
+  if (!isVisible) return null
 
   return (
-    <div className="fixed inset-0 bg-bg/90 backdrop-blur-md z-[999] flex items-center justify-center p-8">
+    <div className="fixed inset-0 bg-bg/90 backdrop-blur-md z-50 flex items-center justify-center p-8">
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="relative w-96 h-96 translate-y-8">
           <div className="absolute w-80 h-64 border border-electric-blue/15 rounded-full animate-[orbit_25s_linear_infinite] top-8 left-8">
@@ -93,18 +92,34 @@ export function LanguageDiscovery() {
           </p>
         </div>
 
-        <div
-          className="relative h-80 flex items-center justify-center"
-          style={{ perspective: "1000px" }}
+        <div 
+          className="relative h-80 flex items-center justify-center" 
+          style={{ perspective: '1000px' }}
         >
-          <div
+          {!isCarouselReady && (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="flex gap-2">
+                {[...Array(3)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="w-2 h-2 bg-electric-blue rounded-full animate-pulse"
+                    style={{ animationDelay: `${i * 0.2}s` }}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+          
+          <div 
             data-animate="carousel-3d"
-            className="relative w-1 h-1"
-            style={{ transformStyle: "preserve-3d" }}
+            className={`relative w-1 h-1 transition-opacity duration-300 ${
+              isCarouselReady ? 'opacity-100' : 'opacity-0'
+            }`}
+            style={{ transformStyle: 'preserve-3d' }}
           >
             {languages.map((lang, index) => {
-              const isSelected = lang === selectedLang;
-
+              const isSelected = lang === selectedLang
+              
               return (
                 <div
                   key={lang}
@@ -113,78 +128,56 @@ export function LanguageDiscovery() {
                   onClick={() => handleLanguageClick(lang)}
                   onMouseEnter={() => setHoverLang(lang)}
                   onMouseLeave={() => setHoverLang(selectedLang)}
-                  style={{
-                    transformStyle: "preserve-3d",
-                    left: "-80px", // Half of card width (40px * 2)
-                    top: "-96px", // Half of card height (48px * 2)
+                  style={{ 
+                    transformStyle: 'preserve-3d',
+                    left: '-80px', // Half of card width (40px * 2)
+                    top: '-96px'   // Half of card height (48px * 2)
                   }}
                 >
                   <div
                     className={`
                       relative overflow-hidden rounded-2xl border-2 w-40 h-48
                       transition-colors duration-300
-                      ${
-                        isSelected
-                          ? "border-electric-blue bg-electric-blue/15 shadow-xl shadow-electric-blue/30"
-                          : "border-border/30 bg-surface/20 hover:border-electric-blue/50"
+                      ${index === 0 // Front card (English by default) gets active styling
+                        ? 'border-electric-blue bg-electric-blue/15 shadow-xl shadow-electric-blue/30' 
+                        : 'border-border/30 bg-surface/20 hover:border-electric-blue/50'
                       }
-                      ${
-                        lang === detectedLanguage && !isSelected
-                          ? "border-violet/50 bg-violet/5"
-                          : ""
-                      }
+                      ${lang === detectedLanguage && index !== 0 ? 'border-violet/50 bg-violet/5' : ''}
                     `}
                   >
-                    <div
+                    <div 
                       className={`absolute inset-0 transition-opacity duration-500 ${
-                        isSelected ? "opacity-100" : "opacity-0"
+                        index === 0 ? 'opacity-100' : 'opacity-0' // Front card gets gradient
                       }`}
                       style={{
                         background: `linear-gradient(45deg, 
-                          ${
-                            lang === "en"
-                              ? "#00d4ff"
-                              : lang === "fr"
-                              ? "#8b5cf6"
-                              : "#ec4899"
-                          }25, 
+                          ${lang === 'en' ? '#00d4ff' : lang === 'fr' ? '#8b5cf6' : '#ec4899'}25, 
                           transparent, 
-                          ${
-                            lang === "en"
-                              ? "#00d4ff"
-                              : lang === "fr"
-                              ? "#8b5cf6"
-                              : "#ec4899"
-                          }15)`,
+                          ${lang === 'en' ? '#00d4ff' : lang === 'fr' ? '#8b5cf6' : '#ec4899'}15)`
                       }}
                     />
-
+                    
                     <div className="relative z-10 h-full flex flex-col items-center justify-center p-6">
-                      <div
+                      <div 
                         className="text-5xl font-bold mb-4"
-                        style={{
-                          color:
-                            lang === "en"
-                              ? "#00d4ff"
-                              : lang === "fr"
-                              ? "#8b5cf6"
-                              : "#ec4899",
+                        style={{ 
+                          color: lang === 'en' ? '#00d4ff' : lang === 'fr' ? '#8b5cf6' : '#ec4899'
                         }}
                       >
                         {lang.toUpperCase()}
                       </div>
-
+                      
                       <div className="text-base font-medium text-text mb-2">
                         {languageNames[lang]}
                       </div>
-
-                      {lang === detectedLanguage && !isSelected && (
+                      
+                      {lang === detectedLanguage && index !== 0 && (
                         <div className="text-sm text-violet animate-pulse">
                           Detected
                         </div>
                       )}
-
-                      {isSelected && (
+                      
+                      {index === 0 && ( // Front card shows "Selected"
                         <div className="text-sm text-electric-blue animate-pulse">
                           Selected
                         </div>
@@ -192,7 +185,7 @@ export function LanguageDiscovery() {
                     </div>
                   </div>
                 </div>
-              );
+              )
             })}
           </div>
         </div>
@@ -201,21 +194,16 @@ export function LanguageDiscovery() {
           onClick={handleContinue}
           className="mt-8 w-14 h-14 rounded-full bg-electric-blue/10 border border-electric-blue/30 flex items-center justify-center hover:bg-electric-blue/20 hover:scale-110 transition-all duration-300 group mx-auto"
         >
-          <svg
-            className="w-6 h-6 text-electric-blue group-hover:translate-x-1 transition-transform duration-300"
-            fill="none"
-            stroke="currentColor"
+          <svg 
+            className="w-6 h-6 text-electric-blue group-hover:translate-x-1 transition-transform duration-300" 
+            fill="none" 
+            stroke="currentColor" 
             viewBox="0 0 24 24"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M13 7l5 5m0 0l-5 5m5-5H6"
-            />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
           </svg>
         </button>
       </div>
     </div>
-  );
+  )
 }
