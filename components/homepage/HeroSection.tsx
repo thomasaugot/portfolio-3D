@@ -1,3 +1,5 @@
+import { Button } from '@/components/ui/Button';
+
 export default function HeroSection() {
   return (
     <section className="min-h-screen flex items-center justify-center relative overflow-hidden">
@@ -7,8 +9,8 @@ export default function HeroSection() {
           className="w-full h-full"
           style={{
             backgroundImage: `
-              linear-gradient(rgba(0,212,255,0.1) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(0,212,255,0.1) 1px, transparent 1px)
+              linear-gradient(rgba(204,255,2,0.1) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(2,188,204,0.1) 1px, transparent 1px)
             `,
             backgroundSize: '80px 80px'
           }}
@@ -28,7 +30,7 @@ export default function HeroSection() {
         >
           Building Digital
           <br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-electric-blue via-violet to-pink">
+          <span className="text-transparent bg-clip-text gradient-primary">
             Solutions
           </span>
         </h1>
@@ -42,14 +44,20 @@ export default function HeroSection() {
         </p>
         
         <div data-animate="slide-up" className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-          <button className="group relative px-8 py-4 bg-electric-blue text-white font-medium rounded-lg overflow-hidden transition-all duration-300 hover:scale-105">
-            <span className="relative z-10">View My Work</span>
-            <div className="absolute inset-0 bg-gradient-to-r from-violet to-pink opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-          </button>
+          <Button 
+            variant="filled" 
+            size="lg"
+            className="transform hover:scale-105 transition-transform duration-300"
+          >
+            View My Work
+          </Button>
           
-          <button className="px-8 py-4 border border-border text-text font-medium rounded-lg hover:bg-surface transition-all duration-300">
+          <Button 
+            variant="outlined" 
+            size="lg"
+          >
             Get In Touch
-          </button>
+          </Button>
         </div>
       </div>
     </section>

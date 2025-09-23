@@ -1,23 +1,26 @@
 'use client'
 
-import { useTranslation } from '@/hooks/useTranslation'
+import { useGSAPAnimations } from '@/hooks/useGSAPAnimations'
+import { initFadeAnimations } from '@/utils/animations/fade-animations'
+import { ThemeToggle } from '@/components/theme/ThemeToggle'
+import HeroSection from '@/components/homepage/HeroSection'
+import SkillsSection from '@/components/homepage/SkillsSection'
+import ExperienceSection from '@/components/homepage/ExperienceSection'
+import CTASection from '@/components/homepage/CTASection'
 
-export default function HomePage() {
-  const { t } = useTranslation()
+export default function Home() {
+  useGSAPAnimations([initFadeAnimations])
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-bg text-text">
-      <div className="text-center">
-        <h1 className="text-6xl font-bold mb-4">
-          {t('homepage.hero_title')}
-        </h1>
-        <p className="text-xl text-text-muted mb-8">
-          {t('homepage.hero_subtitle')}
-        </p>
-        <button className="bg-electric-blue text-white px-8 py-4 rounded-full hover:scale-105 transition-transform">
-          {t('homepage.hero_cta')}
-        </button>
+    <main className="min-h-screen bg-bg text-text">
+      <div className="fixed top-8 left-8 z-40">
+        <ThemeToggle />
       </div>
-    </div>
+
+      <HeroSection />
+      <SkillsSection />
+      <ExperienceSection />
+      <CTASection />
+    </main>
   )
 }
