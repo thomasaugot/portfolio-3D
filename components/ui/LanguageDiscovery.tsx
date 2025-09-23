@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from '@/hooks/useTranslation'
 import { useGSAPAnimations } from '@/hooks/useGSAPAnimations'
 import { languageNames, type Language } from '@/utils/route-translations'
@@ -15,9 +15,11 @@ const welcomeTexts = {
 export function LanguageDiscovery() {
   const { language, changeLanguage } = useTranslation()
   const [isVisible, setIsVisible] = useState(false)
-  const [selectedLang, setSelectedLang] = useState<Language>('en') // Always start with English
+  const [selectedLang, setSelectedLang] = useState<Language>('en')
   const [hoverLang, setHoverLang] = useState<Language>('en')
   const [isCarouselReady, setIsCarouselReady] = useState(false)
+  const [currentFrontIndex, setCurrentFrontIndex] = useState(0)
+  const cardStylesRef = useRef<{ [key: number]: 'front' | 'back' }>({})
   
   const languages: Language[] = ['en', 'fr', 'es']
   const detectedLanguage = typeof window !== 'undefined' 
@@ -28,10 +30,17 @@ export function LanguageDiscovery() {
 
   useGSAPAnimations([initCarousel3D])
 
-  // Check visibility after component mounts to avoid hydration mismatch
+  // Initialize card styles
+  useEffect(() => {
+    cardStylesRef.current = {
+      0: 'front',
+      1: 'back', 
+      2: 'back'
+    }
+  }, [])
+
   useEffect(() => {
     const hasSeenDiscovery = localStorage.getItem('language-discovery-seen')
-    // For testing: always show if not seen before
     setIsVisible(!hasSeenDiscovery)
   }, [])
 
@@ -40,12 +49,13 @@ export function LanguageDiscovery() {
       const timer = setTimeout(() => {
         try {
           initCarousel3D()
-          rotateCarousel3D(0) // Always start with English (index 0)
-          console.log('Carousel initialized') // Debug log
+          rotateCarousel3D(0)
+          console.log('Carousel initialized')
+          updateCardStyles(0)
         } catch (error) {
           console.error('Carousel init failed:', error)
         }
-        setIsCarouselReady(true) // Always set ready after timeout
+        setIsCarouselReady(true)
       }, 300)
       return () => clearTimeout(timer)
     }
@@ -55,7 +65,71 @@ export function LanguageDiscovery() {
     setSelectedLang(lang)
     setHoverLang(lang)
     const selectedIndex = languages.indexOf(lang)
+    setCurrentFrontIndex(selectedIndex)
     rotateCarousel3D(selectedIndex)
+    
+    // Update styles with multiple attempts to ensure it works
+    const updateStyles = () => {
+      updateCardStyles(selectedIndex)
+    }
+    
+    setTimeout(updateStyles, 200)
+    setTimeout(updateStyles, 500)
+    setTimeout(updateStyles, 800)
+  }
+
+  const updateCardStyles = (frontIndex: number) => {
+    // Update our tracking object
+    cardStylesRef.current = {}
+    languages.forEach((_, index) => {
+      cardStylesRef.current[index] = index === frontIndex ? 'front' : 'back'
+    })
+
+    // Force re-render
+    setCurrentFrontIndex(frontIndex)
+    
+    // Also manually update DOM elements as backup
+    const cards = document.querySelectorAll('[data-animate="card-3d"]') as NodeListOf<HTMLElement>
+    if (cards.length === 0) return
+
+    cards.forEach((cardElement, index) => {
+      const isFront = index === frontIndex
+      const lang = languages[index]
+      
+      // Update main container
+      const cardContent = cardElement.querySelector('.card-container') as HTMLElement
+      const gradientBorder = cardElement.querySelector('.gradient-border') as HTMLElement
+      const langCode = cardElement.querySelector('.lang-code') as HTMLElement
+      const langName = cardElement.querySelector('.lang-name') as HTMLElement
+      const statusText = cardElement.querySelector('.status-text') as HTMLElement
+      
+      if (!cardContent || !langCode || !langName || !statusText) return
+
+      if (isFront) {
+        // Front card styling
+        cardContent.className = 'card-container relative overflow-hidden rounded-3xl w-40 h-48 transition-all duration-300 transform group-hover:scale-105 gradient-primary shadow-xl shadow-[var(--primary-color)]/40'
+        if (gradientBorder) gradientBorder.style.display = 'none'
+        langCode.className = 'lang-code text-5xl font-bold mb-4 text-black'
+        langName.className = 'lang-name text-lg font-medium mb-2 text-black'
+        statusText.className = 'status-text text-sm font-medium animate-pulse text-black'
+        statusText.textContent = 'Selected'
+        statusText.style.display = 'block'
+      } else {
+        // Back card styling
+        cardContent.className = 'card-container relative overflow-hidden rounded-3xl w-40 h-48 transition-all duration-300 transform group-hover:scale-105 bg-[var(--color-surface)] shadow-lg'
+        if (gradientBorder) gradientBorder.style.display = 'block'
+        langCode.className = 'lang-code text-5xl font-bold mb-4 text-[var(--primary-color)]'
+        langName.className = 'lang-name text-lg font-medium mb-2 text-[var(--color-text)]'
+        
+        if (lang === detectedLanguage) {
+          statusText.className = 'status-text text-sm font-medium animate-pulse text-[var(--secondary-color)]'
+          statusText.textContent = 'Detected'
+          statusText.style.display = 'block'
+        } else {
+          statusText.style.display = 'none'
+        }
+      }
+    })
   }
 
   const handleContinue = () => {
@@ -67,27 +141,27 @@ export function LanguageDiscovery() {
   if (!isVisible) return null
 
   return (
-    <div className="fixed inset-0 bg-bg/90 backdrop-blur-md z-50 flex items-center justify-center p-8">
+    <div className="fixed inset-0 bg-[var(--color-bg)]/90 backdrop-blur-md z-[999] flex items-center justify-center p-8">
       <div className="absolute inset-0 flex items-center justify-center">
-        <div className="relative w-96 h-96 translate-y-8">
-          <div className="absolute w-80 h-64 border border-electric-blue/15 rounded-full animate-[orbit_25s_linear_infinite] top-8 left-8">
-            <div className="absolute top-0 left-1/2 w-1.5 h-1.5 bg-electric-blue/50 rounded-full -translate-x-1/2 -translate-y-1/2" />
-            <div className="absolute bottom-1/4 right-1/4 w-1 h-1 bg-violet/50 rounded-full" />
-            <div className="absolute left-1/4 top-1/3 w-1 h-1 bg-pink/50 rounded-full" />
+        <div className="relative w-[480px] h-[480px] translate-y-8">
+          <div className="absolute w-[400px] h-[320px] border border-[var(--primary-color)]/20 rounded-full animate-[orbit_25s_linear_infinite] top-[80px] left-[40px]">
+            <div className="absolute top-0 left-1/2 w-2 h-2 bg-[var(--primary-color)] rounded-full -translate-x-1/2 -translate-y-1/2 shadow-lg shadow-[var(--primary-color)]/50" />
+            <div className="absolute bottom-1/4 right-1/4 w-1.5 h-1.5 bg-[var(--secondary-color)] rounded-full shadow-lg shadow-[var(--secondary-color)]/50" />
+            <div className="absolute left-1/4 top-1/3 w-1.5 h-1.5 bg-[var(--primary-color)] rounded-full shadow-lg shadow-[var(--primary-color)]/50" />
           </div>
-          <div className="absolute w-72 h-56 border border-violet/10 rounded-full animate-[orbit_35s_linear_infinite_reverse] top-12 left-12">
-            <div className="absolute top-1/4 right-0 w-0.5 h-0.5 bg-teal/40 rounded-full" />
-            <div className="absolute left-0 bottom-1/3 w-0.5 h-0.5 bg-amber/40 rounded-full" />
+          <div className="absolute w-[360px] h-[280px] border border-[var(--secondary-color)]/15 rounded-full animate-[orbit_35s_linear_infinite_reverse] top-[100px] left-[60px]">
+            <div className="absolute top-1/4 right-0 w-1 h-1 bg-[var(--secondary-color)] rounded-full" />
+            <div className="absolute left-0 bottom-1/3 w-1 h-1 bg-[var(--primary-color)] rounded-full" />
           </div>
         </div>
       </div>
 
       <div className="relative z-10 text-center w-full">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-text mb-3 transition-all duration-500">
+        <div className="mb-12">
+          <h1 className="text-5xl font-bold text-[var(--color-text)] mb-4 transition-all duration-500">
             {welcomeTexts[hoverLang].welcome}
           </h1>
-          <p className="text-text-muted text-lg transition-all duration-500">
+          <p className="text-[var(--color-text-muted)] text-xl transition-all duration-500">
             {welcomeTexts[hoverLang].choose}
           </p>
         </div>
@@ -98,12 +172,12 @@ export function LanguageDiscovery() {
         >
           {!isCarouselReady && (
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="flex gap-2">
+              <div className="flex gap-3">
                 {[...Array(3)].map((_, i) => (
                   <div
                     key={i}
-                    className="w-2 h-2 bg-electric-blue rounded-full animate-pulse"
-                    style={{ animationDelay: `${i * 0.2}s` }}
+                    className="w-3 h-3 gradient-primary rounded-full animate-pulse"
+                    style={{ animationDelay: `${i * 0.3}s` }}
                   />
                 ))}
               </div>
@@ -112,76 +186,61 @@ export function LanguageDiscovery() {
           
           <div 
             data-animate="carousel-3d"
-            className={`relative w-1 h-1 transition-opacity duration-300 ${
+            className={`relative w-1 h-1 transition-opacity duration-500 ${
               isCarouselReady ? 'opacity-100' : 'opacity-0'
             }`}
             style={{ transformStyle: 'preserve-3d' }}
           >
             {languages.map((lang, index) => {
-              const isSelected = lang === selectedLang
+              const cardPosition = cardStylesRef.current[index] || (index === currentFrontIndex ? 'front' : 'back')
+              const isFront = cardPosition === 'front'
               
               return (
                 <div
                   key={lang}
                   data-animate="card-3d"
-                  className="absolute cursor-pointer"
+                  className="absolute cursor-pointer group"
                   onClick={() => handleLanguageClick(lang)}
                   onMouseEnter={() => setHoverLang(lang)}
                   onMouseLeave={() => setHoverLang(selectedLang)}
                   style={{ 
                     transformStyle: 'preserve-3d',
-                    left: '-80px', // Half of card width (40px * 2)
-                    top: '-96px'   // Half of card height (48px * 2)
+                    left: '-80px',
+                    top: '-96px'
                   }}
                 >
-                  <div
-                    className={`
-                      relative overflow-hidden rounded-2xl border-2 w-40 h-48
-                      transition-colors duration-300
-                      ${index === 0 // Front card (English by default) gets active styling
-                        ? 'border-electric-blue bg-electric-blue/15 shadow-xl shadow-electric-blue/30' 
-                        : 'border-border/30 bg-surface/20 hover:border-electric-blue/50'
-                      }
-                      ${lang === detectedLanguage && index !== 0 ? 'border-violet/50 bg-violet/5' : ''}
-                    `}
-                  >
-                    <div 
-                      className={`absolute inset-0 transition-opacity duration-500 ${
-                        index === 0 ? 'opacity-100' : 'opacity-0' // Front card gets gradient
-                      }`}
-                      style={{
-                        background: `linear-gradient(45deg, 
-                          ${lang === 'en' ? '#00d4ff' : lang === 'fr' ? '#8b5cf6' : '#ec4899'}25, 
-                          transparent, 
-                          ${lang === 'en' ? '#00d4ff' : lang === 'fr' ? '#8b5cf6' : '#ec4899'}15)`
-                      }}
-                    />
-                    
+                  <div className={`card-container relative overflow-hidden rounded-3xl w-40 h-48 transition-all duration-300 transform group-hover:scale-105 ${
+                    isFront 
+                      ? 'gradient-primary shadow-xl shadow-[var(--primary-color)]/40' 
+                      : 'bg-[var(--color-surface)] shadow-lg'
+                  }`}>
+                    <div className={`gradient-border absolute inset-0 rounded-3xl gradient-primary p-[2px] ${
+                      isFront ? 'hidden' : 'block'
+                    }`}>
+                      <div className="w-full h-full bg-[var(--color-surface)] rounded-3xl" />
+                    </div>
                     <div className="relative z-10 h-full flex flex-col items-center justify-center p-6">
-                      <div 
-                        className="text-5xl font-bold mb-4"
-                        style={{ 
-                          color: lang === 'en' ? '#00d4ff' : lang === 'fr' ? '#8b5cf6' : '#ec4899'
-                        }}
-                      >
+                      <div className={`lang-code text-5xl font-bold mb-4 ${
+                        isFront ? 'text-black' : 'text-[var(--primary-color)]'
+                      }`}>
                         {lang.toUpperCase()}
                       </div>
                       
-                      <div className="text-base font-medium text-text mb-2">
+                      <div className={`lang-name text-lg font-medium mb-2 ${
+                        isFront ? 'text-black' : 'text-[var(--color-text)]'
+                      }`}>
                         {languageNames[lang]}
                       </div>
                       
-                      {lang === detectedLanguage && index !== 0 && (
-                        <div className="text-sm text-violet animate-pulse">
-                          Detected
-                        </div>
-                      )}
-                      
-                      {index === 0 && ( // Front card shows "Selected"
-                        <div className="text-sm text-electric-blue animate-pulse">
-                          Selected
-                        </div>
-                      )}
+                      <div className={`status-text text-sm font-medium animate-pulse ${
+                        isFront 
+                          ? 'text-black block' 
+                          : lang === detectedLanguage 
+                            ? 'text-[var(--secondary-color)] block' 
+                            : 'hidden'
+                      }`}>
+                        {isFront ? 'Selected' : lang === detectedLanguage ? 'Detected' : ''}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -192,10 +251,14 @@ export function LanguageDiscovery() {
 
         <button
           onClick={handleContinue}
-          className="mt-8 w-14 h-14 rounded-full bg-electric-blue/10 border border-electric-blue/30 flex items-center justify-center hover:bg-electric-blue/20 hover:scale-110 transition-all duration-300 group mx-auto"
+          className="mt-12 px-8 py-4 rounded-full gradient-primary text-black font-semibold text-lg 
+                     hover:gradient-primary-hover hover:scale-110 transition-all duration-300 
+                     shadow-xl hover:shadow-2xl border border-[var(--primary-color)]/30
+                     flex items-center gap-3 mx-auto group"
         >
+          Continue
           <svg 
-            className="w-6 h-6 text-electric-blue group-hover:translate-x-1 transition-transform duration-300" 
+            className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" 
             fill="none" 
             stroke="currentColor" 
             viewBox="0 0 24 24"
