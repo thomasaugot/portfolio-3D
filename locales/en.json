@@ -9,14 +9,20 @@
     "blog": "Blog",
     "blog_description": "Thoughts on development & design",
     "contact": "Contact",
-    "contact_description": "Let's build something together"
+    "contact_description": "Let's build something together",
+    "languages": "languages"
   },
   "homepage": {
-    "hero_title": "Frontend Developer",
-    "hero_subtitle": "Creating beautiful, responsive web experiences",
+    "hero_title": "Full-Stack Developer",
+    "hero_main_title_1": "Building",
+    "hero_main_title_2": "Digital",
+    "hero_main_title_3": "Solutions",
+    "hero_subtitle": "Frontend specialist with full-stack capabilities, delivering software, websites, and solutions across all industries.",
     "hero_cta": "View My Work",
-    "about_preview": "Passionate developer specializing in React, Next.js, and modern web technologies",
-    "skills_title": "Technologies I Work With"
+    "stats_years": "Years",
+    "stats_projects": "Projects",
+    "stats_possibilities": "Possibilities",
+    "scroll": "Scroll"
   },
   "about_page": {
     "title": "About Me",
