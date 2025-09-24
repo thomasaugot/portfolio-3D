@@ -1,17 +1,18 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&family=Audiowide&display=swap");
 @import "tailwindcss";
 
 @theme {
   --font-inter: "Inter", sans-serif;
   --font-mono: "JetBrains Mono", monospace;
-
+  --font-display: "Audiowide", sans-serif;
+  
   /* New Primary Color Palette */
   --primary-color: #ccff02;
   --primary-color-1: #ccff02;
   --secondary-color: #02bccc;
   --secondary-color-1: #02bccc;
   --color-black: #070707;
-
+  
   --color-dark-bg: #0d1117;
   --color-dark-surface: #161b22;
   --color-dark-border: #30363d;
@@ -100,32 +101,4 @@ button {
     transform: translateY(-10px) scale(1.2);
     opacity: 0.8;
   }
-}
-
-/* Animated Waves */
-@keyframes waveFloat {
-  0%, 100% {
-    transform: translate3d(0, 0, 0);
-  }
-  50% {
-    transform: translate3d(-10px, -5px, 0);
-  }
-}
-
-@keyframes waveFloat2 {
-  0%, 100% {
-    transform: translate3d(0, 0, 0);
-  }
-  50% {
-    transform: translate3d(10px, -8px, 0);
-  }
-}
-
-.wave-animation-1 {
-  animation: waveFloat 6s ease-in-out infinite;
-}
-
-.wave-animation-2 {
-  animation: waveFloat2 8s ease-in-out infinite;
-  animation-delay: -2s;
 }

@@ -1,59 +1,80 @@
 import { gsap } from './gsap-init'
 
-export const createThemeToggleAnimation = (
+export const initThemeToggleIdle = (
   cubeRef: HTMLDivElement,
   containerRef: HTMLDivElement,
-  isDark: boolean,
-  onComplete: () => void
+  theme: 'light' | 'dark'
 ) => {
-  const reduced = 
-    typeof window !== 'undefined' &&
-    window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches
+  const TILT_X = -22
+  const Y_ANGLE = 15
+  const baseX = (theme === 'dark' ? 0 : -90) + TILT_X
 
-  const targetRotation = isDark ? 0 : -90
+  const ctx = gsap.context(() => {
+    gsap.set(cubeRef, {
+      rotationY: Y_ANGLE,
+      rotationX: baseX,
+      transformStyle: 'preserve-3d',
+    })
 
-  const tl = gsap.timeline({ 
-    defaults: { ease: 'power2.inOut' },
-    onComplete
-  })
-
-  // Enhanced cube rotation with improved easing
-  tl.to(cubeRef, {
-    rotateX: targetRotation,
-    duration: reduced ? 0 : 0.9,
-    ease: 'back.inOut(1.4)',
-  }, 0)
-
-  // Container animation with more dynamic movement
-  if (!reduced) {
-    tl.fromTo(containerRef, {
-      rotateY: 0,
-      scale: 1,
-    }, {
-      rotateY: 15,
-      scale: 1.05,
-      duration: 0.45,
+    gsap.to(containerRef, {
+      y: -5,
+      duration: 2,
       yoyo: true,
-      repeat: 1,
-      ease: 'power2.inOut',
-    }, 0)
+      repeat: -1,
+      ease: 'sine.inOut',
+    })
 
-    // Add subtle floating effect
-    tl.to(containerRef, {
-      y: -2,
-      duration: 0.2,
+    gsap.to(cubeRef, {
+      rotationZ: 2,
+      duration: 3,
       yoyo: true,
-      repeat: 1,
-      ease: 'power2.inOut',
-    }, 0.1)
-  }
+      repeat: -1,
+      ease: 'sine.inOut',
+    })
+  }, containerRef)
 
-  return tl
+  return ctx
 }
 
-export const initThemeTogglePosition = (cubeRef: HTMLDivElement, isDark: boolean) => {
+export const snapThemeTogglePosition = (
+  cubeRef: HTMLDivElement,
+  theme: 'light' | 'dark'
+) => {
+  const TILT_X = -22
+  const Y_ANGLE = 15
+  const targetX = (theme === 'dark' ? 0 : -90) + TILT_X
+  
   gsap.set(cubeRef, { 
-    rotateX: isDark ? 0 : -90,
-    transformOrigin: 'center center'
+    rotationX: targetX, 
+    rotationY: Y_ANGLE 
+  })
+}
+
+export const animateThemeToggleFlip = (
+  cubeRef: HTMLDivElement,
+  currentTheme: 'light' | 'dark',
+  onComplete: () => void
+) => {
+  const TILT_X = -22
+  const Y_ANGLE = 15
+  const nextTheme = currentTheme === 'light' ? 'dark' : 'light'
+  const baseTargetX = nextTheme === 'dark' ? 0 : -90
+
+  const goLongWay = Math.random() > 0.6
+  let finalTarget = baseTargetX
+  if (goLongWay) finalTarget = nextTheme === 'dark' ? 360 : -450
+
+  gsap.to(cubeRef, {
+    rotationX: finalTarget + TILT_X,
+    rotationY: Y_ANGLE,
+    duration: goLongWay ? 0.9 : 0.6,
+    ease: 'back.inOut(1.2)',
+    onComplete: () => {
+      gsap.set(cubeRef, {
+        rotationX: baseTargetX + TILT_X,
+        rotationY: Y_ANGLE,
+      })
+      onComplete()
+    },
   })
 }

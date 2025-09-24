@@ -9,14 +9,20 @@
     "blog": "Blog",
     "blog_description": "Réflexions sur le développement et le design",
     "contact": "Contact",
-    "contact_description": "Construisons quelque chose ensemble"
+    "contact_description": "Construisons quelque chose ensemble",
+    "languages": "Langues"
   },
   "homepage": {
-    "hero_title": "Développeur Frontend",
-    "hero_subtitle": "Création d'expériences web belles et responsives",
+    "hero_title": "Développeur Full-Stack",
+    "hero_main_title_1": "Solutions",
+    "hero_main_title_2": "Digitales",
+    "hero_main_title_3": "Sur Mesure",
+    "hero_subtitle": "Spécialiste frontend avec compétences full-stack, je développe logiciels, sites web et solutions pour tous les secteurs.",
     "hero_cta": "Voir Mon Travail",
-    "about_preview": "Développeur passionné spécialisé en React, Next.js et technologies web modernes",
-    "skills_title": "Technologies Que J'Utilise"
+    "stats_years": "Années",
+    "stats_projects": "Projets",
+    "stats_possibilities": "Possibilités",
+    "scroll": "Scroll"
   },
   "about_page": {
     "title": "À Propos de Moi",
