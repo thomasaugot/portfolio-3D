@@ -24,7 +24,7 @@ export default function HeroSection() {
   }, [])
 
   return (
-    <section className="min-h-screen flex items-center justify-center relative overflow-hidden">
+    <section className="min-h-screen flex items-center justify-center relative overflow-visible z-0">
       <div 
         data-3d-container="hero"
         className="absolute inset-0 w-full h-full pointer-events-none z-0"
@@ -33,18 +33,18 @@ export default function HeroSection() {
       <div className="relative z-10 max-w-7xl mx-auto px-8 w-full">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div data-animate="slide-up" className="space-y-8">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--primary-color)]/30 backdrop-blur-sm">
-              <div className="w-2 h-2 rounded-full bg-[var(--primary-color)] animate-pulse" />
-              <span className="text-sm font-mono text-[var(--primary-color)] tracking-wider uppercase">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white backdrop-blur-sm">
+              <div className="w-2 h-2 rounded-full bg-white animate-pulse" />
+              <span className="text-sm font-mono text-white tracking-wider uppercase">
                 {t('homepage.hero_title')}
               </span>
             </div>
             
-            <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold leading-tight">
-              <span className="block text-[var(--color-text)] font-inter">
+            <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold leading-tight overflow-visible w-fit">
+              <span className="block text-[var(--color-text)]">
                 {t('homepage.hero_main_title_1')}
               </span>
-              <span className="block text-transparent bg-clip-text gradient-primary" style={{ fontFamily: 'var(--font-display)' }}>
+              <span className="block text-transparent bg-clip-text gradient-primary font-fun tracking-wide">
                 {t('homepage.hero_main_title_2')}
               </span>
               <span className="block text-[var(--color-text)]">
@@ -73,7 +73,7 @@ export default function HeroSection() {
               </Button>
             </div>
 
-            <div className="flex gap-8 pt-8">
+            {/* <div className="flex gap-8 pt-8">
               <div>
                 <div className="text-3xl font-bold text-[var(--primary-color)] font-mono">3+</div>
                 <div className="text-sm text-[var(--color-text-muted)] uppercase tracking-wider">
@@ -92,7 +92,7 @@ export default function HeroSection() {
                   {t('homepage.stats_possibilities')}
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
 
           <div className="hidden lg:block" />

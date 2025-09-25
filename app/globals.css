@@ -4,15 +4,10 @@
 @theme {
   --font-inter: "Inter", sans-serif;
   --font-mono: "JetBrains Mono", monospace;
-  --font-display: "Audiowide", sans-serif;
-  
-  /* New Primary Color Palette */
+  --font-fun: "Audiowide", sans-serif;
   --primary-color: #ccff02;
-  --primary-color-1: #ccff02;
   --secondary-color: #02bccc;
-  --secondary-color-1: #02bccc;
   --color-black: #070707;
-  
   --color-dark-bg: #0d1117;
   --color-dark-surface: #161b22;
   --color-dark-border: #30363d;
@@ -50,18 +45,18 @@
 /* Reusable Gradient Classes */
 .gradient-primary {
   background-image: linear-gradient(
-    222deg, 
-    var(--primary-color-1) 67.22%, 
-    var(--secondary-color-1) 93.57%
+    222deg,
+    var(--primary-color) 67.22%,
+    var(--secondary-color) 93.57%
   );
   background-size: 200% auto;
 }
 
 .gradient-primary-hover {
   background-image: linear-gradient(
-    222deg, 
-    var(--primary-color-1) 77.22%, 
-    var(--secondary-color-1) 93.57%
+    222deg,
+    var(--primary-color) 77.22%,
+    var(--secondary-color) 93.57%
   );
   background-size: 200% auto;
   background-position: 100% 0;
@@ -69,9 +64,9 @@
 
 .gradient-primary-reverse {
   background-image: linear-gradient(
-    42deg, 
-    var(--secondary-color-1) 6.43%, 
-    var(--primary-color-1) 22.78%
+    42deg,
+    var(--secondary-color) 6.43%,
+    var(--primary-color) 22.78%
   );
   background-size: 200% auto;
 }
@@ -101,4 +96,26 @@ button {
     transform: translateY(-10px) scale(1.2);
     opacity: 0.8;
   }
+}
+
+/* Subtle shimmer sweep for filled */
+button.filled::before {
+  pointer-events: none;
+}
+
+/* Outlined glowing pulse */
+@keyframes pulseGlow {
+  0% {
+    box-shadow: 0 0 0px var(--primary-color);
+  }
+  50% {
+    box-shadow: 0 0 20px var(--primary-color);
+  }
+  100% {
+    box-shadow: 0 0 0px var(--primary-color);
+  }
+}
+
+button.outlined:hover {
+  animation: pulseGlow 1.5s infinite;
 }
