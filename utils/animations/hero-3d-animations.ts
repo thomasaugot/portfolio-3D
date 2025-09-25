@@ -1,110 +1,118 @@
-export async function initHero3DScene() {
-  const container = document.querySelector('[data-3d-container="hero"]') as HTMLElement
-  if (!container) return
+import * as THREE from "three";
 
-  const THREE = await import('three')
-  
-  const scene = new THREE.Scene()
-  
+export async function initHero3DScene() {
+  const container = document.querySelector(
+    '[data-3d-container="hero"]'
+  ) as HTMLElement;
+  if (!container) return;
+
+  const THREE = await import("three");
+
+  const scene = new THREE.Scene();
+
   const camera = new THREE.PerspectiveCamera(
     60,
     container.clientWidth / container.clientHeight,
     0.1,
     2000
-  )
-  camera.position.set(0, 0, 600)
-  camera.lookAt(0, 0, 0)
+  );
+  camera.position.set(0, 200, 600);
+  camera.lookAt(0, 0, 0);
 
-  const renderer = new THREE.WebGLRenderer({ 
-    alpha: true, 
-    antialias: true 
-  })
-  renderer.setSize(container.clientWidth, container.clientHeight)
-  renderer.setClearColor(0x000000, 0)
-  container.appendChild(renderer.domElement)
+  const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+  renderer.setSize(container.clientWidth, container.clientHeight);
+  renderer.setClearColor(0x000000, 0);
+  container.appendChild(renderer.domElement);
 
-  const meshes: any[] = []
-  const cubes = [
-    { size: 80, color: 0xccff02 },
-    { size: 60, color: 0x02bccc },
-    { size: 100, color: 0xccff02 },
-    { size: 70, color: 0x02bccc },
-    { size: 90, color: 0xccff02 }
-  ]
+  // Subtle white grid
+  const gridHelper = new THREE.GridHelper(2000, 50, 0xffffff, 0xffffff);
+  gridHelper.position.y = -200;
+  (gridHelper.material as THREE.Material).transparent = true;
+  (gridHelper.material as THREE.Material).opacity = 0.15;
+  scene.add(gridHelper);
 
-  for (let i = 0; i < 5; i++) {
-    const geometry = new THREE.BoxGeometry(cubes[i].size, cubes[i].size, cubes[i].size)
-    const edges = new THREE.EdgesGeometry(geometry)
-    const material = new THREE.LineBasicMaterial({ 
-      color: cubes[i].color,
-      transparent: true,
-      opacity: 0.7
-    })
-    
-    const cube = new THREE.LineSegments(edges, material)
-    
-    const angle = (i / 5) * Math.PI * 2
-    const radius = 400
-    cube.position.x = Math.cos(angle) * radius
-    cube.position.y = Math.sin(angle) * radius * 0.5
-    cube.position.z = (Math.random() - 0.5) * 400
-    
-    cube.rotation.x = Math.random() * Math.PI
-    cube.rotation.y = Math.random() * Math.PI
-    
-    scene.add(cube)
-    meshes.push({
-      mesh: cube,
-      baseX: cube.position.x,
-      baseY: cube.position.y,
-      baseZ: cube.position.z,
-      speed: Math.random() * 0.5 + 0.3
-    })
-  }
+  // Lights
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
+  scene.add(ambientLight);
+  const dirLight = new THREE.DirectionalLight(0xffffff, 0.6);
+  dirLight.position.set(200, 500, 300);
+  scene.add(dirLight);
 
-  const gridHelper = new THREE.GridHelper(2000, 50, 0xccff02, 0x02bccc)
-  gridHelper.position.y = -200
-  gridHelper.material.transparent = true
-  gridHelper.material.opacity = 0.2
-  scene.add(gridHelper)
+  // Load single code model
+  const loader = new (
+    await import("three/examples/jsm/loaders/GLTFLoader.js")
+  ).GLTFLoader();
+  let codeModel: THREE.Group | null = null;
+
+  await new Promise<void>((resolve) => {
+    loader.load("/assets/models/code-3D.glb", (gltf) => {
+      codeModel = gltf.scene;
+      codeModel.traverse((child: any) => {
+        if (child.isMesh) {
+          child.material = new THREE.MeshPhysicalMaterial({
+            color: 0xffffff, // white base
+            roughness: 0.95, // almost smooth
+            metalness: 0.95, // slight metallic reflection
+            transmission: 0.9, // glass-like transparency (requires WebGL2)
+            opacity: 0.9, // fully opaque, but combined with transmission
+            ior: 2.5, // index of refraction
+            thickness: 5.0, // "depth" of glass
+            clearcoat: 5.0, // adds an extra glossy layer
+            clearcoatRoughness: 0.05,
+          });
+        }
+      });
+
+      // After loading the model
+      codeModel.scale.set(100, 100, 100);
+
+      // Responsive positioning
+      const setModelPosition = () => {
+        const isDesktop = window.innerWidth >= 1024;
+
+        codeModel!.position.set(
+          isDesktop ? 300 : 0, // X: right on desktop, center on mobile
+          -100, // Y: a bit down
+          -200 // Z: slightly behind
+        );
+      };
+
+      // Initial set
+      setModelPosition();
+
+      // Update on resize
+      window.addEventListener("resize", setModelPosition);
+
+      scene.add(codeModel);
+      resolve();
+    });
+  });
 
   const handleResize = () => {
-    if (!container) return
-    camera.aspect = container.clientWidth / container.clientHeight
-    camera.updateProjectionMatrix()
-    renderer.setSize(container.clientWidth, container.clientHeight)
-  }
-  window.addEventListener('resize', handleResize)
+    camera.aspect = container.clientWidth / container.clientHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(container.clientWidth, container.clientHeight);
+  };
+  window.addEventListener("resize", handleResize);
 
-  let time = 0
-  let animationId: number
+  let animationId: number;
 
   const animate = () => {
-    time += 0.01
+    if (codeModel) {
+      codeModel.rotation.y += 0.003; // rotate in place
+    }
 
-    meshes.forEach((item, i) => {
-      item.mesh.rotation.x += 0.01 * item.speed
-      item.mesh.rotation.y += 0.015 * item.speed
-      
-      item.mesh.position.y = item.baseY + Math.sin(time * item.speed + i) * 50
-      item.mesh.position.z = item.baseZ + Math.cos(time * item.speed * 0.5 + i) * 100
-    })
+    renderer.render(scene, camera);
+    animationId = requestAnimationFrame(animate);
+  };
 
-    camera.lookAt(0, 0, 0)
-    renderer.render(scene, camera)
-    animationId = requestAnimationFrame(animate)
-  }
-
-  animate()
+  animate();
 
   return () => {
-    window.removeEventListener('resize', handleResize)
-    if (animationId) {
-      cancelAnimationFrame(animationId)
-    }
-    if (renderer.domElement.parentNode) {
-      container.removeChild(renderer.domElement)
-    }
-    renderer.dispose()
-  }
+    window.removeEventListener("resize", handleResize);
+    if (animationId) cancelAnimationFrame(animationId);
+    if (renderer.domElement.parentNode)
+      container.removeChild(renderer.domElement);
+    renderer.dispose();
+  };
 }

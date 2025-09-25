@@ -21,12 +21,6 @@ export default async function LocaleLayout({
         <ThemeProvider>
           <TranslationProvider>
             <LanguageDiscovery />
-            
-            <div className="fixed top-8 left-8 z-40">
-              <ThemeToggle />
-            </div>
-          
-            <Menu />
             <main>{children}</main>
           </TranslationProvider>
         </ThemeProvider>
