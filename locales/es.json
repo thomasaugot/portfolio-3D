@@ -8,8 +8,16 @@
     "portfolio_description": "Proyectos seleccionados y casos de estudio",
     "blog": "Blog",
     "blog_description": "Reflexiones sobre desarrollo y diseño",
-    "contact": "Contacto",
-    "contact_description": "Construyamos algo juntos", "languages": "Idiomas"
+    "contact_description": "Construyamos algo juntos",
+    "languages": "Idiomas",
+    "contact": {
+      "menu-item": "Contacto",
+      "title": "Contacto Directo",
+      "email": "Email",
+      "schedule": "Programar",
+      "whatsapp": "WhatsApp",
+      "bookCall": "Reservar llamada"
+    }
   },
   "homepage": {
     "hero_title": "Desarrollador Full-Stack",

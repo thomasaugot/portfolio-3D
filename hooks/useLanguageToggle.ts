@@ -1,7 +1,7 @@
 "use client";
 
-import { useTranslation } from './useTranslation';
-import { animateLanguageChange } from '@/utils/animations/language-toggle-animations';
+import { useTranslation } from "./useTranslation";
+import { animateLanguageChange } from "@/utils/animations/language-toggle-animations";
 
 export function useLanguageToggle() {
   const { language, changeLanguage, nextLanguage } = useTranslation();

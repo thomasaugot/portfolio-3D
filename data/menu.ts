@@ -42,7 +42,7 @@ export const menuItems: MenuItem[] = [
     label: 'Contact', 
     href: '/contact', 
     description: 'Let\'s build something together',
-    labelKey: 'nav.contact',
+    labelKey: 'nav.contact.menu-item',
     descriptionKey: 'nav.contact_description'
   }
 ];
