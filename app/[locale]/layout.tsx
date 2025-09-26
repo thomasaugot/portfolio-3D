@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { LanguageDiscovery } from "@/components/ui/LanguageDiscovery";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import Menu from "@/components/layout/Menu";
+import LoadingWrapper from "@/components/ui/LoadingWrapper";
 
 export default async function LocaleLayout({
   children,
@@ -20,8 +21,10 @@ export default async function LocaleLayout({
       <body className="antialiased">
         <ThemeProvider>
           <TranslationProvider>
-            <LanguageDiscovery />
-            <main>{children}</main>
+            <LoadingWrapper>
+              <LanguageDiscovery />
+              <main>{children}</main>
+            </LoadingWrapper>
           </TranslationProvider>
         </ThemeProvider>
       </body>

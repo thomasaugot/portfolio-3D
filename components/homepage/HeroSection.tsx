@@ -66,7 +66,7 @@ export default function HeroSection() {
               </Button>
 
               <Button variant="outlined" size="lg">
-                {t("nav.contact")}
+                {t("nav.contact.menu-item")}
               </Button>
             </div>
           </div>
