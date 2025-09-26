@@ -38,52 +38,94 @@ export async function initHero3DScene() {
   dirLight.position.set(200, 500, 300);
   scene.add(dirLight);
 
-  // Load single code model
   const loader = new (
     await import("three/examples/jsm/loaders/GLTFLoader.js")
   ).GLTFLoader();
-  let codeModel: THREE.Group | null = null;
 
+  let codeModel: THREE.Group | null = null;
+  let laptopModel: THREE.Group | null = null;
+
+  // Load code model
   await new Promise<void>((resolve) => {
     loader.load("/assets/models/code-3D.glb", (gltf) => {
       codeModel = gltf.scene;
       codeModel.traverse((child: any) => {
         if (child.isMesh) {
           child.material = new THREE.MeshPhysicalMaterial({
-            color: 0xffffff, // white base
-            roughness: 0.95, // almost smooth
-            metalness: 0.95, // slight metallic reflection
-            transmission: 0.9, // glass-like transparency (requires WebGL2)
-            opacity: 0.9, // fully opaque, but combined with transmission
-            ior: 2.5, // index of refraction
-            thickness: 5.0, // "depth" of glass
-            clearcoat: 5.0, // adds an extra glossy layer
+            color: 0xffffff,
+            roughness: 0.95,
+            metalness: 0.95,
+            transmission: 0.9,
+            opacity: 0.9,
+            ior: 2.5,
+            thickness: 5.0,
+            clearcoat: 5.0,
             clearcoatRoughness: 0.05,
           });
         }
       });
 
-      // After loading the model
-      codeModel.scale.set(100, 100, 100);
+      codeModel.scale.set(80, 80, 80);
 
-      // Responsive positioning
-      const setModelPosition = () => {
+      const setCodeModelPosition = () => {
         const isDesktop = window.innerWidth >= 1024;
-
         codeModel!.position.set(
-          isDesktop ? 300 : 0, // X: right on desktop, center on mobile
-          -100, // Y: a bit down
-          -200 // Z: slightly behind
+          isDesktop ? 350 : 0, // Even more to the right
+          20, // Just slightly above the laptop
+          -100
         );
       };
 
-      // Initial set
-      setModelPosition();
-
-      // Update on resize
-      window.addEventListener("resize", setModelPosition);
+      setCodeModelPosition();
+      window.addEventListener("resize", setCodeModelPosition);
 
       scene.add(codeModel);
+      resolve();
+    });
+  });
+
+  // Load laptop model
+  await new Promise<void>((resolve) => {
+    loader.load("/assets/models/laptop-3D.glb", (gltf) => {
+      laptopModel = gltf.scene;
+      // Keep original materials with textures from the GLTF file
+      laptopModel.traverse((child: any) => {
+        if (child.isMesh && child.material) {
+          // Make screen and keyboard parts much darker
+          if (
+            child.name === "Screen_Screen_0" ||
+            child.name === "Keyboard_Keyboard_0"
+          ) {
+            child.material.color = new THREE.Color(0x111111); // Very dark
+            child.material.emissive = new THREE.Color(0x000000); // No glow for dark parts
+            child.material.emissiveIntensity = 0;
+          } else {
+            // Other parts get normal visibility
+            child.material.emissive = new THREE.Color(0x333333);
+            child.material.emissiveIntensity = 0.6;
+          }
+
+          child.material.transparent = false;
+          child.material.opacity = 1.0;
+          child.material.needsUpdate = true;
+        }
+      });
+
+      laptopModel.scale.set(1000, 1000, 1000);
+
+      const setLaptopModelPosition = () => {
+        const isDesktop = window.innerWidth >= 1024;
+        laptopModel!.position.set(
+          isDesktop ? 250 : 0, // Move laptop to the right too
+          -50,
+          -100
+        );
+      };
+
+      setLaptopModelPosition();
+      window.addEventListener("resize", setLaptopModelPosition);
+
+      scene.add(laptopModel);
       resolve();
     });
   });
@@ -99,7 +141,11 @@ export async function initHero3DScene() {
 
   const animate = () => {
     if (codeModel) {
-      codeModel.rotation.y += 0.003; // rotate in place
+      codeModel.rotation.y += 0.005; // faster rotation for code model
+    }
+
+    if (laptopModel) {
+      laptopModel.rotation.y += 0.002; // slower rotation for laptop model
     }
 
     renderer.render(scene, camera);
