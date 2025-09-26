@@ -16,7 +16,7 @@ export async function initHero3DScene() {
     0.1,
     2000
   );
-  camera.position.set(0, 200, 600);
+  camera.position.set(0, 200, 800);
   camera.lookAt(0, 0, 0);
 
   const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
@@ -38,12 +38,21 @@ export async function initHero3DScene() {
   dirLight.position.set(200, 500, 300);
   scene.add(dirLight);
 
+  // Mouse interaction variables
+  const raycaster = new THREE.Raycaster();
+  const mouse = new THREE.Vector2();
+  let isDragging = false;
+  let selectedObject: THREE.Group | null = null;
+  let dragOffset = new THREE.Vector3();
+
   const loader = new (
     await import("three/examples/jsm/loaders/GLTFLoader.js")
   ).GLTFLoader();
 
   let codeModel: THREE.Group | null = null;
   let laptopModel: THREE.Group | null = null;
+  let codeWrapper: THREE.Group;
+  let laptopWrapper: THREE.Group;
 
   // Load code model
   await new Promise<void>((resolve) => {
@@ -65,21 +74,26 @@ export async function initHero3DScene() {
         }
       });
 
-      codeModel.scale.set(80, 80, 80);
+      codeModel.scale.set(60, 60, 60);
+      codeModel.position.set(0, 0, 0);
+
+      // Create wrapper group for positioning
+      codeWrapper = new THREE.Group();
+      codeWrapper.add(codeModel);
 
       const setCodeModelPosition = () => {
         const isDesktop = window.innerWidth >= 1024;
-        codeModel!.position.set(
-          isDesktop ? 350 : 0, // Even more to the right
-          20, // Just slightly above the laptop
-          -100
+        codeWrapper.position.set(
+          isDesktop ? 300 : 0,
+          80,
+          200 // Brought much closer (was -50)
         );
       };
 
       setCodeModelPosition();
       window.addEventListener("resize", setCodeModelPosition);
 
-      scene.add(codeModel);
+      scene.add(codeWrapper);
       resolve();
     });
   });
@@ -96,11 +110,10 @@ export async function initHero3DScene() {
             child.name === "Screen_Screen_0" ||
             child.name === "Keyboard_Keyboard_0"
           ) {
-            child.material.color = new THREE.Color(0x111111); // Very dark
-            child.material.emissive = new THREE.Color(0x000000); // No glow for dark parts
+            child.material.color = new THREE.Color(0x111111);
+            child.material.emissive = new THREE.Color(0x000000);
             child.material.emissiveIntensity = 0;
           } else {
-            // Other parts get normal visibility
             child.material.emissive = new THREE.Color(0x333333);
             child.material.emissiveIntensity = 0.6;
           }
@@ -111,21 +124,26 @@ export async function initHero3DScene() {
         }
       });
 
-      laptopModel.scale.set(1000, 1000, 1000);
+      laptopModel.scale.set(800, 800, 800);
+      laptopModel.position.set(0, 0, 0);
+
+      // Create wrapper group for positioning
+      laptopWrapper = new THREE.Group();
+      laptopWrapper.add(laptopModel);
 
       const setLaptopModelPosition = () => {
         const isDesktop = window.innerWidth >= 1024;
-        laptopModel!.position.set(
-          isDesktop ? 250 : 0, // Move laptop to the right too
+        laptopWrapper.position.set(
+          isDesktop ? 200 : 0,
           -50,
-          -100
+          150 // Brought much closer (was -100)
         );
       };
 
       setLaptopModelPosition();
       window.addEventListener("resize", setLaptopModelPosition);
 
-      scene.add(laptopModel);
+      scene.add(laptopWrapper);
       resolve();
     });
   });
@@ -137,15 +155,83 @@ export async function initHero3DScene() {
   };
   window.addEventListener("resize", handleResize);
 
+  // Mouse interaction handlers
+  const onMouseDown = (event: MouseEvent) => {
+    const rect = container.getBoundingClientRect();
+    mouse.x = ((event.clientX - rect.left) / container.clientWidth) * 2 - 1;
+    mouse.y = -((event.clientY - rect.top) / container.clientHeight) * 2 + 1;
+
+    raycaster.setFromCamera(mouse, camera);
+
+    if (!codeWrapper || !laptopWrapper) return;
+
+    const intersects = raycaster.intersectObjects(
+      [codeWrapper, laptopWrapper],
+      true
+    );
+
+    if (intersects.length > 0) {
+      isDragging = true;
+
+      // Find which wrapper was clicked
+      let clickedObject = intersects[0].object;
+      while (clickedObject.parent && clickedObject.parent.type !== "Scene") {
+        clickedObject = clickedObject.parent;
+      }
+
+      selectedObject = clickedObject as THREE.Group;
+
+      // Calculate drag offset
+      const intersectPoint = intersects[0].point;
+      dragOffset.copy(intersectPoint).sub(selectedObject.position);
+
+      container.style.cursor = "grabbing";
+    }
+  };
+
+  const onMouseMove = (event: MouseEvent) => {
+    if (!isDragging || !selectedObject) return;
+
+    const rect = container.getBoundingClientRect();
+    mouse.x = ((event.clientX - rect.left) / container.clientWidth) * 2 - 1;
+    mouse.y = -((event.clientY - rect.top) / container.clientHeight) * 2 + 1;
+
+    raycaster.setFromCamera(mouse, camera);
+
+    // Project mouse position onto a plane at the object's Z position
+    const targetZ = selectedObject.position.z;
+    const planePoint = new THREE.Vector3(0, 0, targetZ);
+    const planeNormal = new THREE.Vector3(0, 0, 1);
+    const plane = new THREE.Plane(planeNormal, -targetZ);
+
+    const intersectPoint = new THREE.Vector3();
+    if (raycaster.ray.intersectPlane(plane, intersectPoint)) {
+      selectedObject.position.x = intersectPoint.x - dragOffset.x;
+      selectedObject.position.y = intersectPoint.y - dragOffset.y;
+    }
+  };
+
+  const onMouseUp = () => {
+    isDragging = false;
+    selectedObject = null;
+    container.style.cursor = "default";
+  };
+
+  // Add event listeners
+  container.addEventListener("mousedown", onMouseDown);
+  container.addEventListener("mousemove", onMouseMove);
+  container.addEventListener("mouseup", onMouseUp);
+  container.addEventListener("mouseleave", onMouseUp);
+
   let animationId: number;
 
   const animate = () => {
     if (codeModel) {
-      codeModel.rotation.y += 0.005; // faster rotation for code model
+      codeModel.rotation.y += 0.005;
     }
 
     if (laptopModel) {
-      laptopModel.rotation.y += 0.002; // slower rotation for laptop model
+      laptopModel.rotation.y += 0.002;
     }
 
     renderer.render(scene, camera);
@@ -156,6 +242,10 @@ export async function initHero3DScene() {
 
   return () => {
     window.removeEventListener("resize", handleResize);
+    container.removeEventListener("mousedown", onMouseDown);
+    container.removeEventListener("mousemove", onMouseMove);
+    container.removeEventListener("mouseup", onMouseUp);
+    container.removeEventListener("mouseleave", onMouseUp);
     if (animationId) cancelAnimationFrame(animationId);
     if (renderer.domElement.parentNode)
       container.removeChild(renderer.domElement);
