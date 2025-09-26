@@ -8,6 +8,7 @@ export function initMenuAnimations() {
   if (!menuTrigger || !menuOverlay || !menuBlob) return;
 
   let isOpen = false;
+  let overlayBlob: HTMLElement | null = null;
 
   menuTrigger.addEventListener("click", () => {
     if (isOpen) {
@@ -18,12 +19,55 @@ export function initMenuAnimations() {
     isOpen = !isOpen;
   });
 
+  function createOverlayBlob() {
+    // Remove existing overlay blob if any
+    const existingBlob = document.querySelector('[data-animate="overlay-blob"]');
+    if (existingBlob) existingBlob.remove();
+
+    // Deep clone the original blob with all its styling
+    if (!menuBlob) return null;
+    overlayBlob = menuBlob.cloneNode(true) as HTMLElement;
+    overlayBlob.setAttribute('data-animate', 'overlay-blob');
+    
+    // Get the original blob's position
+    const rect = menuBlob.getBoundingClientRect();
+    
+    // Reset all inline styles that might interfere
+    overlayBlob.removeAttribute('style');
+    
+    // Apply the original classes first
+    overlayBlob.className = menuBlob.className;
+    
+    // Then override with positioning
+    overlayBlob.style.position = 'fixed';
+    overlayBlob.style.top = rect.top + 'px';
+    overlayBlob.style.left = rect.left + 'px';
+    overlayBlob.style.width = rect.width + 'px';
+    overlayBlob.style.height = rect.height + 'px';
+    overlayBlob.style.zIndex = '1';
+    overlayBlob.style.transform = 'rotateX(8deg) rotateY(-8deg) scale(1)';
+    overlayBlob.style.transformStyle = 'preserve-3d';
+    
+    // Force recompute styles
+    overlayBlob.offsetHeight; // trigger reflow
+    
+    // Add to overlay
+    if (menuOverlay) {
+      menuOverlay.appendChild(overlayBlob);
+    }
+    
+    return overlayBlob;
+  }
+
   function openMenu() {
     const menuItems = document.querySelectorAll('[data-animate="menu-item"]');
     const menuLines = document.querySelectorAll('[data-animate="menu-line"]');
     const line1 = document.querySelector('[data-animate="burger-line-1"]');
     const line2 = document.querySelector('[data-animate="burger-line-2"]');
     const line3 = document.querySelector('[data-animate="burger-line-3"]');
+
+    // Create the overlay blob
+    const newOverlayBlob = createOverlayBlob();
 
     const tl = gsap.timeline();
 
@@ -54,23 +98,26 @@ export function initMenuAnimations() {
       )
       .to(line2, { opacity: 0, duration: 0.2, ease: "power2.inOut" }, 0)
 
-      // Expand blob behind
+      // Show overlay
       .to(
-        menuBlob,
+        menuOverlay,
+        { opacity: 1, pointerEvents: "auto", duration: 0.3 },
+        0.1
+      )
+
+      // Scale the OVERLAY blob (not the original)
+      .to(
+        newOverlayBlob,
         {
           scale: 38,
-          opacity: 1,
           duration: 0.8,
-          zIndex: -10,
           ease: "power3.inOut",
         },
         0.3
       )
-      .to(
-        menuOverlay,
-        { opacity: 1, pointerEvents: "auto", duration: 0.3 },
-        "-=0.5"
-      )
+
+      // Hide original blob
+      .to(menuBlob, { opacity: 0, duration: 0.2 }, 0.3)
 
       // Animate menu items
       .fromTo(
@@ -121,17 +168,22 @@ export function initMenuAnimations() {
         { y: -40, opacity: 0, duration: 0.4, stagger: 0.05, ease: "power2.in" },
         "-=0.2"
       )
+
+      // Scale overlay blob back down
+      .to(
+        overlayBlob,
+        { scale: 1, duration: 0.6, ease: "back.out(1.7)" },
+        "-=0.3"
+      )
+
+      // Show original blob
+      .to(menuBlob, { opacity: 1, duration: 0.2 }, "-=0.4")
+
+      // Hide overlay
       .to(
         menuOverlay,
         { opacity: 0, pointerEvents: "none", duration: 0.3 },
         "-=0.2"
-      )
-
-      // Reset blob
-      .to(
-        menuBlob,
-        { scale: 1, opacity: 1, duration: 0.6, ease: "back.out(1.7)" },
-        "-=0.3"
       )
 
       // Cross → Burger
@@ -140,7 +192,15 @@ export function initMenuAnimations() {
         { rotation: 0, y: 0, duration: 0.3, ease: "power2.inOut" },
         "-=0.4"
       )
-      .to(line2, { opacity: 1, duration: 0.2, ease: "power2.inOut" }, "-=0.2");
+      .to(line2, { opacity: 1, duration: 0.2, ease: "power2.inOut" }, "-=0.2")
+
+      // Clean up overlay blob
+      .call(() => {
+        if (overlayBlob) {
+          overlayBlob.remove();
+          overlayBlob = null;
+        }
+      });
   }
 
   // Hover animations for each item

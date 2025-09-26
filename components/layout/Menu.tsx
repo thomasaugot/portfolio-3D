@@ -54,7 +54,10 @@ export default function Menu() {
           }}
         />
 
-        <div className="h-full flex items-center justify-center relative px-8">
+        <div 
+          data-animate="menu-content"
+          className="h-full flex items-center justify-center relative px-8"
+        >
           <nav className="text-center w-full max-w-3xl relative !z-50">
             <ul className="space-y-10 !z-[999]">
               {localizedMenuItems.map((item) => (
