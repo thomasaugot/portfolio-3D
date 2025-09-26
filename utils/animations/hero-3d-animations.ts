@@ -21,14 +21,14 @@ export async function initHero3DScene() {
 
   const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
   renderer.setSize(container.clientWidth, container.clientHeight);
-  renderer.setClearColor(0x000000, 0);
+  renderer.setClearColor(0x000000, 0); // transparent background
   container.appendChild(renderer.domElement);
 
-  // Subtle white grid
-  const gridHelper = new THREE.GridHelper(2000, 50, 0xffffff, 0xffffff);
+  // Solid white grid (not transparent anymore)
+  const gridHelper = new THREE.GridHelper(1500, 30, 0xffffff, 0xffffff);
   gridHelper.position.y = -200;
-  (gridHelper.material as THREE.Material).transparent = true;
-  (gridHelper.material as THREE.Material).opacity = 0.15;
+  gridHelper.material.opacity = 0.2;
+  gridHelper.material.transparent = true;
   scene.add(gridHelper);
 
   // Lights
@@ -38,7 +38,7 @@ export async function initHero3DScene() {
   dirLight.position.set(200, 500, 300);
   scene.add(dirLight);
 
-  // Load single code model
+  // Load model
   const loader = new (
     await import("three/examples/jsm/loaders/GLTFLoader.js")
   ).GLTFLoader();
@@ -50,37 +50,31 @@ export async function initHero3DScene() {
       codeModel.traverse((child: any) => {
         if (child.isMesh) {
           child.material = new THREE.MeshPhysicalMaterial({
-            color: 0xffffff, // white base
-            roughness: 0.95, // almost smooth
-            metalness: 0.95, // slight metallic reflection
-            transmission: 0.9, // glass-like transparency (requires WebGL2)
-            opacity: 0.9, // fully opaque, but combined with transmission
-            ior: 2.5, // index of refraction
-            thickness: 5.0, // "depth" of glass
-            clearcoat: 5.0, // adds an extra glossy layer
+            color: 0xffffff,
+            roughness: 0.95,
+            metalness: 0.95,
+            transmission: 0.9,
+            opacity: 0.9,
+            ior: 2.5,
+            thickness: 5.0,
+            clearcoat: 5.0,
             clearcoatRoughness: 0.05,
           });
         }
       });
 
-      // After loading the model
       codeModel.scale.set(100, 100, 100);
 
-      // Responsive positioning
       const setModelPosition = () => {
         const isDesktop = window.innerWidth >= 1024;
-
         codeModel!.position.set(
-          isDesktop ? 300 : 0, // X: right on desktop, center on mobile
-          -100, // Y: a bit down
-          -200 // Z: slightly behind
+          isDesktop ? 300 : 0,
+          -100,
+          -200
         );
       };
 
-      // Initial set
       setModelPosition();
-
-      // Update on resize
       window.addEventListener("resize", setModelPosition);
 
       scene.add(codeModel);
@@ -99,9 +93,8 @@ export async function initHero3DScene() {
 
   const animate = () => {
     if (codeModel) {
-      codeModel.rotation.y += 0.003; // rotate in place
+      codeModel.rotation.y += 0.003;
     }
-
     renderer.render(scene, camera);
     animationId = requestAnimationFrame(animate);
   };

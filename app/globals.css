@@ -119,3 +119,17 @@ button.filled::before {
 button.outlined:hover {
   animation: pulseGlow 1.5s infinite;
 }
+
+[data-animate="menu-overlay"] nav {
+  isolation: isolate;
+  z-index: 999;
+}
+
+[data-animate="menu-item"] {
+  isolation: isolate;
+  z-index: 1000;
+}
+
+[data-animate="menu-blob"] {
+  z-index: -1;
+}
