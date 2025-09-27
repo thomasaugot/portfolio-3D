@@ -1,34 +1,20 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { gsap } from "@/utils/animations/gsap-init";
+import { initLoaderAnimations } from "@/utils/animations/loader-animations";
 
 export default function AppLoader() {
-  const loaderRef = useRef<HTMLDivElement>(null);
+  const loaderRef: any = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        "[data-animate='logo']",
-        { opacity: 0, scale: 0.8 },
-        { opacity: 1, scale: 1, duration: 1, ease: "power3.out" }
-      );
-      gsap.to("[data-animate='bar']", {
-        scaleX: 1,
-        duration: 2,
-        ease: "power2.inOut",
-        repeat: -1,
-        yoyo: true,
-      });
-    }, loaderRef);
-
-    return () => ctx.revert();
+    const cleanup = initLoaderAnimations(loaderRef);
+    return cleanup;
   }, []);
 
   return (
     <div
       ref={loaderRef}
-      className="fixed inset-0 z-[99999] h-scren w-screen flex flex-col items-center justify-center bg-black text-white"
+      className="fixed inset-0 z-[99999] h-screen w-screen flex flex-col items-center justify-center bg-black text-white"
     >
       <div data-animate="logo" className="text-4xl font-bold mb-8">
         loading ...
