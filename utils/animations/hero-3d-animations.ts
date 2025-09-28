@@ -18,7 +18,7 @@ export async function initHero3DScene() {
     0.1,
     2000
   );
-  camera.position.set(0, 200, 800);
+  camera.position.set(0, 30, 800);
   camera.lookAt(0, 0, 0);
 
   const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
@@ -26,15 +26,71 @@ export async function initHero3DScene() {
   renderer.setClearColor(0x000000, 0);
   container.appendChild(renderer.domElement);
 
-  // Theme-aware grid
-  const gridHelper = new THREE.GridHelper(2000, 50, 
-    isLight ? 0x666666 : 0xffffff, 
-    isLight ? 0x666666 : 0xffffff
-  );
-  gridHelper.position.y = -200;
-  (gridHelper.material as THREE.Material).transparent = true;
-  (gridHelper.material as THREE.Material).opacity = isLight ? 0.08 : 0.15;
-  scene.add(gridHelper);
+  // Hexagon outline floor with gradient borders - WORKING VERSION
+  const createHexFloor = () => {
+    const group = new THREE.Group();
+    
+    // Create hexagon outlines in more rectangular pattern
+    for (let q = -8; q <= 8; q++) {
+      for (let r = -10; r <= 8; r++) { // Extended much further back
+        if (Math.abs(q) > 8 || r < -20 || r > 8) continue;
+        
+        const hexSize = 80;
+        
+        // Create hexagon outline
+        const points = [];
+        for (let i = 0; i <= 6; i++) {
+          const angle = (i / 6) * Math.PI * 2;
+          points.push(new THREE.Vector3(
+            Math.cos(angle) * hexSize,
+            0,
+            Math.sin(angle) * hexSize
+          ));
+        }
+        
+        const geometry = new THREE.BufferGeometry().setFromPoints(points);
+        
+        // Distance-based effects for better perspective
+        const distance = Math.sqrt(q * q + r * r);
+        const opacity = Math.max(0.1, 1 - distance / 20);
+        
+        // Gradient effect - alternate between your colors based on position
+        const gradientFactor = (Math.sin(q * 0.5) + Math.cos(r * 0.5)) * 0.5 + 0.5;
+        const color = new THREE.Color().lerpColors(
+          new THREE.Color(0x02bccc),  // secondary color
+          new THREE.Color(0xccff02),  // primary color
+          gradientFactor
+        );
+        
+        const material = new THREE.LineBasicMaterial({
+          color: color,
+          transparent: true,
+          opacity: opacity * (isLight ? 0.6 : 0.4),
+          linewidth: 2
+        });
+        
+        const hex = new THREE.Line(geometry, material);
+        
+        // Convert hex grid to cartesian
+        const x = hexSize * 1.5 * q;
+        const z = hexSize * Math.sqrt(3) * (r + q / 2);
+        
+        hex.position.set(x, -200, z);
+        
+        // Store animation data
+        (hex as any).baseOpacity = opacity * (isLight ? 0.6 : 0.4);
+        (hex as any).pulseOffset = distance * 0.2;
+        (hex as any).gradientFactor = gradientFactor;
+        
+        group.add(hex);
+      }
+    }
+    
+    return group;
+  };
+
+  const hexFloor = createHexFloor();
+  scene.add(hexFloor);
 
   // Theme-aware lighting
   const ambientLight = new THREE.AmbientLight(
@@ -50,7 +106,6 @@ export async function initHero3DScene() {
   dirLight.position.set(200, 500, 300);
   scene.add(dirLight);
 
-  // Additional lighting for light mode
   if (isLight) {
     const fillLight = new THREE.DirectionalLight(0xffffff, 0.3);
     fillLight.position.set(-200, 300, -300);
@@ -89,7 +144,6 @@ export async function initHero3DScene() {
     console.warn('⚠️ Could not load VS Code texture, using fallback');
   }
 
-  // Load logo texture
   try {
     logoTexture = await new Promise<THREE.Texture>((resolve, reject) => {
       textureLoader.load(
@@ -132,7 +186,6 @@ export async function initHero3DScene() {
   let codeWrapper: THREE.Group;
   let laptopWrapper: THREE.Group;
 
-  // Load code model with theme-aware materials
   await new Promise<void>((resolve) => {
     loader.load("/assets/models/code-3D.glb", (gltf) => {
       codeModel = gltf.scene;
@@ -175,24 +228,13 @@ export async function initHero3DScene() {
     });
   });
 
-  // Load laptop model with VS Code texture
   await new Promise<void>((resolve) => {
     loader.load("/assets/models/laptop-logo.glb", (gltf) => {
       laptopModel = gltf.scene;
       
-      console.log("🔍 LAPTOP MODEL DEBUG - All meshes found:");
-      
       laptopModel.traverse((child: any) => {
         if (child.isMesh) {
-          console.log(`📱 Mesh found:`, {
-            name: child.name,
-            type: child.type,
-            material: child.material ? child.material.constructor.name : 'No material'
-          });
-          
-          // Apply VS Code texture to screen mesh
           if (child.name === "Screen_Screen_0" && vscodeTexture) {
-            console.log('🖥️ Applying VS Code texture to screen mesh');
             child.material = new THREE.MeshBasicMaterial({
               map: vscodeTexture,
               transparent: false,
@@ -200,19 +242,13 @@ export async function initHero3DScene() {
               toneMapped: false
             });
             child.material.needsUpdate = true;
-            
-            // Make sure the screen doesn't get affected by scene lighting
             child.receiveShadow = false;
             child.castShadow = false;
-          }
-          // Handle keyboard mesh
-          else if (child.name === "Keyboard_Keyboard_0") {
+          } else if (child.name === "Keyboard_Keyboard_0") {
             child.material.color = new THREE.Color(isLight ? 0x222222 : 0x111111);
             child.material.emissive = new THREE.Color(0x000000);
             child.material.emissiveIntensity = 0;
-          }
-          // Handle other laptop parts
-          else if (child.material) {
+          } else if (child.material) {
             child.material.emissive = new THREE.Color(isLight ? 0x555555 : 0x333333);
             child.material.emissiveIntensity = isLight ? 0.3 : 0.6;
             child.material.transparent = false;
@@ -252,7 +288,6 @@ export async function initHero3DScene() {
   };
   window.addEventListener("resize", handleResize);
 
-  // Mouse interaction handlers
   const onMouseDown = (event: MouseEvent) => {
     const rect = container.getBoundingClientRect();
     mouse.x = ((event.clientX - rect.left) / container.clientWidth) * 2 - 1;
@@ -311,15 +346,33 @@ export async function initHero3DScene() {
     container.style.cursor = "default";
   };
 
-  // Add event listeners
   container.addEventListener("mousedown", onMouseDown);
   container.addEventListener("mousemove", onMouseMove);
   container.addEventListener("mouseup", onMouseUp);
   container.addEventListener("mouseleave", onMouseUp);
 
   let animationId: number;
+  let time = 0;
 
   const animate = () => {
+    time += 0.01;
+    
+    // Animate hexagon gradients and opacity
+    hexFloor.children.forEach((hex) => {
+      const material = (hex as THREE.Line).material as THREE.LineBasicMaterial;
+      const pulse = Math.sin(time * 2 + (hex as any).pulseOffset);
+      
+      // Animate opacity
+      material.opacity = (hex as any).baseOpacity + pulse * 0.2;
+      
+      // Animate gradient colors
+      const gradientShift = Math.sin(time + (hex as any).gradientFactor * Math.PI) * 0.5 + 0.5;
+      material.color.lerpColors(
+        new THREE.Color(0x02bccc),
+        new THREE.Color(0xccff02),
+        gradientShift
+      );
+    });
     if (codeModel) {
       codeModel.rotation.y += isLight ? 0.003 : 0.005;
     }
