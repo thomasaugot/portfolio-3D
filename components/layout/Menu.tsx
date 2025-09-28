@@ -26,11 +26,7 @@ export default function Menu() {
       {/* === Overlay === */}
       <div
         data-animate="menu-overlay"
-        className={`fixed inset-0 z-30 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-300 ${
-          isLight 
-            ? 'bg-white/90' 
-            : 'bg-black/90'
-        }`}
+        className={`fixed inset-0 z-30 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-300 bg-bg`}
       />
 
       {/* === Blob === */}

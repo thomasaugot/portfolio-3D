@@ -104,7 +104,7 @@ export default function ContactBlock() {
               alt="Logo" 
               width={220}
               height={110}
-              className="relative z-10 hover:scale-105 transition-transform duration-300"
+              className="relative z-10 hover:scale-105 transition-transform duration-300 pt-4"
             />
           </div>
         </div>
