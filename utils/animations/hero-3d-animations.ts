@@ -177,7 +177,7 @@ export async function initHero3DScene() {
 
   // Load laptop model with VS Code texture
   await new Promise<void>((resolve) => {
-    loader.load("/assets/models/laptop-3D.glb", (gltf) => {
+    loader.load("/assets/models/laptop-logo.glb", (gltf) => {
       laptopModel = gltf.scene;
       
       console.log("🔍 LAPTOP MODEL DEBUG - All meshes found:");
@@ -222,35 +222,11 @@ export async function initHero3DScene() {
         }
       });
 
-      laptopModel.scale.set(800, 800, 800);
+      laptopModel.scale.set(60, 60, 60);
       laptopModel.position.set(0, 0, 0);
 
       laptopWrapper = new THREE.Group();
       laptopWrapper.add(laptopModel);
-
-      // Add logo to the back of the laptop screen
-      if (logoTexture) {
-        console.log('🎨 Adding logo to laptop back');
-        
-        const logoGeometry = new THREE.PlaneGeometry(12, 12);
-        const logoMaterial = new THREE.MeshBasicMaterial({
-          map: logoTexture,
-          transparent: true,
-          opacity: 1.0,
-          toneMapped: false
-        });
-        
-        const logoMesh = new THREE.Mesh(logoGeometry, logoMaterial);
-        
-        // Position it directly on the back of the screen
-        logoMesh.position.set(0, 5, -10);
-        logoMesh.rotation.y = Math.PI;
-        
-        // Add to laptop wrapper
-        laptopWrapper.add(logoMesh);
-        
-        console.log('✅ Logo stuck to laptop back');
-      }
 
       const setLaptopModelPosition = () => {
         const isDesktop = window.innerWidth >= 1024;
