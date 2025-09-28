@@ -7,19 +7,22 @@ type Theme = 'light' | 'dark'
 interface ThemeContextType {
   theme: Theme
   setTheme: (theme: Theme) => void
-  actualTheme: 'light' | 'dark'
+  isDark: boolean
+  isLight: boolean
+  toggleTheme: () => void
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setTheme] = useState<Theme>('dark')
-  const [actualTheme, setActualTheme] = useState<'light' | 'dark'>('dark')
+  const [theme, setTheme] = useState<Theme>('light')
 
   useEffect(() => {
     const stored = localStorage.getItem('theme') as Theme
     if (stored && (stored === 'light' || stored === 'dark')) {
       setTheme(stored)
+    } else {
+      setTheme('light')
     }
   }, [])
 
@@ -27,12 +30,34 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     const root = window.document.documentElement
     root.classList.remove('light', 'dark')
     root.classList.add(theme)
-    setActualTheme(theme)
     localStorage.setItem('theme', theme)
   }, [theme])
 
+  const handleThemeChange = (newTheme: Theme) => {
+    if (newTheme !== theme) {
+      localStorage.setItem('theme', newTheme)
+      localStorage.setItem('theme-changing', 'true')
+      // Reload the page to reinitialize Three.js scene
+      window.location.reload()
+    }
+  }
+
+  const toggleTheme = () => {
+    const newTheme = theme === 'light' ? 'dark' : 'light'
+    handleThemeChange(newTheme)
+  }
+
+  const isDark = theme === 'dark'
+  const isLight = theme === 'light'
+
   return (
-    <ThemeContext.Provider value={{ theme, setTheme, actualTheme }}>
+    <ThemeContext.Provider value={{ 
+      theme, 
+      setTheme: handleThemeChange, 
+      isDark, 
+      isLight, 
+      toggleTheme 
+    }}>
       {children}
     </ThemeContext.Provider>
   )
