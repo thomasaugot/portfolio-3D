@@ -1,5 +1,7 @@
 import { gsap } from "@/utils/animations/gsap-init";
 
+let previousProgress = 0;
+
 export function initLoaderAnimations(
   containerRef: React.RefObject<HTMLElement>,
   progress?: number
@@ -7,14 +9,17 @@ export function initLoaderAnimations(
   if (!containerRef.current) return;
 
   const ctx = gsap.context(() => {
-    // Only animate text on first load
     const textElement = containerRef.current?.querySelector(
       "[data-animate='loading-text']"
     );
     const percentageElement = containerRef.current?.querySelector(
       "[data-animate='percentage']"
     );
+    const progressBarElement = containerRef.current?.querySelector(
+      "[data-animate='progress-bar']"
+    ) as HTMLElement;
 
+    // Only animate text on first load
     if (textElement && gsap.getProperty(textElement, "opacity") === 0) {
       gsap.fromTo(
         textElement,
@@ -46,6 +51,33 @@ export function initLoaderAnimations(
           delay: 0.3,
         }
       );
+    }
+
+    // Animate progress bar progressively from previous to current
+    if (progressBarElement && typeof progress === 'number' && progress > previousProgress) {
+      gsap.fromTo(progressBarElement, 
+        { width: `${previousProgress}%` },
+        {
+          width: `${progress}%`,
+          duration: 0.5,
+          ease: "power2.out",
+        }
+      );
+
+      // Animate percentage text from previous to current
+      if (percentageElement) {
+        const currentProgress = { value: previousProgress };
+        gsap.to(currentProgress, {
+          value: progress,
+          duration: 0.5,
+          ease: "power2.out",
+          onUpdate: () => {
+            percentageElement.textContent = `${Math.round(currentProgress.value)}%`;
+          }
+        });
+      }
+      
+      previousProgress = progress;
     }
   }, containerRef.current);
 
