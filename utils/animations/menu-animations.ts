@@ -18,7 +18,7 @@ export function initMenuAnimations() {
 
   const handleClick = () => {
     if (isAnimating) return;
-    
+
     if (isOpen) {
       closeMenu();
     } else {
@@ -31,7 +31,7 @@ export function initMenuAnimations() {
 
   function getThemeState() {
     const root = document.documentElement;
-    const isLight = !root.classList.contains('dark');
+    const isLight = !root.classList.contains("dark");
     return { isLight, isDark: !isLight };
   }
 
@@ -60,7 +60,7 @@ export function initMenuAnimations() {
 
   function openMenu() {
     if (isAnimating) return;
-    
+
     isAnimating = true;
     killCurrentAnimation();
 
@@ -78,12 +78,12 @@ export function initMenuAnimations() {
     const isTablet = screenWidth >= 768 && screenWidth < 1024;
 
     let blobScale, lineOffset;
-    
+
     if (isMobile) {
       blobScale = 15;
       lineOffset = 6;
     } else if (isTablet) {
-      blobScale = 20;
+      blobScale = 14;
       lineOffset = 6;
     } else {
       blobScale = 26;
@@ -99,15 +99,20 @@ export function initMenuAnimations() {
             initMenuItemHovers();
           }, isLight ? 900 : 800);
         }
+        // Ensure language toggle is clickable after animation
+        const languageToggle = document.querySelector('[data-animate="language-toggle"]');
+        if (languageToggle) {
+          gsap.set(languageToggle, { pointerEvents: 'all' });
+        }
       },
       onInterrupt: () => {
         isAnimating = false;
         currentTimeline = null;
-      }
+      },
     });
 
     let yOffset;
-    
+
     if (screenWidth < 640) {
       yOffset = 6;
     } else if (screenWidth < 1024) {
@@ -116,18 +121,27 @@ export function initMenuAnimations() {
       yOffset = 8;
     }
 
-    currentTimeline.to(line1, { 
-        y: yOffset, 
-        rotation: 45, 
-        duration: 0.3, 
-        ease: "power2.inOut" 
-      }, 0.2)
-      .to(line3, { 
-        y: -yOffset, 
-        rotation: -45, 
-        duration: 0.3, 
-        ease: "power2.inOut" 
-      }, 0.2)
+    currentTimeline
+      .to(
+        line1,
+        {
+          y: yOffset,
+          rotation: 45,
+          duration: 0.3,
+          ease: "power2.inOut",
+        },
+        0.2
+      )
+      .to(
+        line3,
+        {
+          y: -yOffset,
+          rotation: -45,
+          duration: 0.3,
+          ease: "power2.inOut",
+        },
+        0.2
+      )
       .to(line2, { opacity: 0, duration: 0.2 }, 0)
       .to(
         menuBlob,
@@ -140,38 +154,42 @@ export function initMenuAnimations() {
         },
         0.2
       )
-      .to(menuOverlay, { 
-        opacity: 1, 
-        pointerEvents: "auto", 
-        duration: isLight ? 0.4 : 0.3,
-        ease: "power2.out"
-      }, "-=0.4")
+      .to(
+        menuOverlay,
+        {
+          opacity: 1,
+          pointerEvents: "auto",
+          duration: isLight ? 0.4 : 0.3,
+          ease: "power2.out",
+        },
+        "-=0.4"
+      )
       .fromTo(
         menuItems,
-        { 
-          y: isLight ? 50 : 40, 
+        {
+          y: isLight ? 50 : 40,
           opacity: 0,
-          scale: isLight ? 0.9 : 1
+          scale: isLight ? 0.9 : 1,
         },
-        { 
-          y: 0, 
-          opacity: 1, 
+        {
+          y: 0,
+          opacity: 1,
           scale: 1,
-          duration: isLight ? 0.6 : 0.5, 
-          stagger: isLight ? 0.1 : 0.08, 
-          ease: isLight ? "back.out(1.2)" : "power2.out" 
+          duration: isLight ? 0.6 : 0.5,
+          stagger: isLight ? 0.1 : 0.08,
+          ease: isLight ? "back.out(1.2)" : "power2.out",
         },
         "-=0.2"
       )
       .fromTo(
         menuLines,
         { scaleX: 0, opacity: 0 },
-        { 
-          scaleX: 1, 
+        {
+          scaleX: 1,
           opacity: 1,
-          duration: isLight ? 0.5 : 0.4, 
-          stagger: isLight ? 0.1 : 0.08, 
-          ease: isLight ? "power3.out" : "power2.out" 
+          duration: isLight ? 0.5 : 0.4,
+          stagger: isLight ? 0.1 : 0.08,
+          ease: isLight ? "power3.out" : "power2.out",
         },
         "-=0.1"
       );
@@ -179,7 +197,7 @@ export function initMenuAnimations() {
 
   function closeMenu() {
     if (isAnimating) return;
-    
+
     isAnimating = true;
     killCurrentAnimation();
 
@@ -201,42 +219,59 @@ export function initMenuAnimations() {
         isAnimating = false;
         currentTimeline = null;
         resetMenuToClosedState();
-      }
+      },
     });
 
-    currentTimeline.to(menuLines, { 
-        scaleX: 0, 
+    currentTimeline
+      .to(menuLines, {
+        scaleX: 0,
         opacity: 0,
-        duration: isLight ? 0.4 : 0.3, 
-        stagger: 0.04,
-        ease: "power2.in"
-      })
-      .to(menuItems, { 
-        y: isLight ? -40 : -30, 
-        opacity: 0, 
-        scale: isLight ? 0.9 : 1,
-        duration: isLight ? 0.5 : 0.4, 
-        stagger: 0.04,
-        ease: "power2.in"
-      }, "-=0.2")
-      .to(menuOverlay, { 
-        opacity: 0, 
-        pointerEvents: "none", 
         duration: isLight ? 0.4 : 0.3,
-        ease: "power2.in"
-      }, "-=0.2")
-      .to(menuBlob, { 
-        scale: 1, 
-        duration: isLight ? 0.6 : 0.5, 
-        rotate: 0, 
-        ease: isLight ? "back.out(1.7)" : "back.out(1.4)" 
-      }, "-=0.3")
-      .to([line1, line3], { 
-        rotation: 0, 
-        y: 0, 
-        duration: 0.3, 
-        ease: "power2.inOut" 
-      }, "-=0.3")
+        stagger: 0.04,
+        ease: "power2.in",
+      })
+      .to(
+        menuItems,
+        {
+          y: isLight ? -40 : -30,
+          opacity: 0,
+          scale: isLight ? 0.9 : 1,
+          duration: isLight ? 0.5 : 0.4,
+          stagger: 0.04,
+          ease: "power2.in",
+        },
+        "-=0.2"
+      )
+      .to(
+        menuOverlay,
+        {
+          opacity: 0,
+          pointerEvents: "none",
+          duration: isLight ? 0.4 : 0.3,
+          ease: "power2.in",
+        },
+        "-=0.2"
+      )
+      .to(
+        menuBlob,
+        {
+          scale: 1,
+          duration: isLight ? 0.6 : 0.5,
+          rotate: 0,
+          ease: isLight ? "back.out(1.7)" : "back.out(1.4)",
+        },
+        "-=0.3"
+      )
+      .to(
+        [line1, line3],
+        {
+          rotation: 0,
+          y: 0,
+          duration: 0.3,
+          ease: "power2.inOut",
+        },
+        "-=0.3"
+      )
       .to(line2, { opacity: 1, duration: 0.2 }, "-=0.2");
 
     return currentTimeline;
@@ -254,48 +289,116 @@ export function initMenuAnimations() {
 function initMenuItemHovers() {
   const { isLight } = getThemeState();
   const menuTexts = document.querySelectorAll('[data-animate="menu-text"]');
+  const menuDescs = document.querySelectorAll('[data-animate="menu-desc"]');
+  const menuLines = document.querySelectorAll('[data-animate="menu-line"]');
 
   function getThemeState() {
     const root = document.documentElement;
-    const isLight = !root.classList.contains('dark');
+    const isLight = !root.classList.contains("dark");
     return { isLight, isDark: !isLight };
   }
 
-  menuTexts.forEach((text) => {
-    const link = text.closest('a');
+  menuTexts.forEach((text, index) => {
+    const link = text.closest("a");
+    const desc = menuDescs[index];
+    const line = menuLines[index];
+    
     if (!link) return;
 
-    link.addEventListener('mouseenter', () => {
+    link.addEventListener("mouseenter", () => {
       const { isLight } = getThemeState();
-      
+
+      // Smooth text animation
       gsap.to(text, {
         scale: isLight ? 1.05 : 1.02,
         x: isLight ? -8 : -6,
-        duration: isLight ? 0.4 : 0.3,
-        ease: isLight ? "power3.out" : "power2.out"
+        duration: 0.6,
+        ease: "power3.out",
       });
 
+      // Smooth description fade in
+      if (desc) {
+        gsap.to(desc, {
+          opacity: 1,
+          y: 0,
+          duration: 0.4,
+          ease: "power2.out",
+          delay: 0.1
+        });
+      }
+
+      // Smooth line scale
+      if (line) {
+        gsap.to(line, {
+          scaleX: 1,
+          duration: 0.5,
+          ease: "power3.out",
+          delay: 0.15
+        });
+      }
+
+      // Text shadow for light theme
       if (isLight) {
         gsap.to(text, {
           textShadow: "0 0 20px rgba(204, 255, 2, 0.3)",
+          duration: 0.4,
+          ease: "power2.out",
+        });
+      }
+    });
+
+    link.addEventListener("mouseleave", () => {
+      const { isLight } = getThemeState();
+
+      // Smooth text reset
+      gsap.to(text, {
+        scale: 1,
+        x: 0,
+        textShadow: isLight ? "none" : undefined,
+        duration: 0.5,
+        ease: "power3.out",
+      });
+
+      // Smooth description fade out
+      if (desc) {
+        gsap.to(desc, {
+          opacity: 0,
+          y: 4,
+          duration: 0.3,
+          ease: "power2.out"
+        });
+      }
+
+      // Smooth line scale out
+      if (line) {
+        gsap.to(line, {
+          scaleX: 0,
           duration: 0.4,
           ease: "power2.out"
         });
       }
     });
+  });
 
-    link.addEventListener('mouseleave', () => {
-      const { isLight } = getThemeState();
-      
-      gsap.to(text, {
-        scale: 1,
-        x: 0,
-        textShadow: isLight ? "none" : undefined,
-        duration: isLight ? 0.4 : 0.3,
-        ease: isLight ? "power3.out" : "power2.out"
+  // Language toggle hover animations
+  const languageToggle = document.querySelector('[data-animate="language-toggle"]');
+  if (languageToggle) {
+    languageToggle.addEventListener("mouseenter", () => {
+      gsap.to(languageToggle, {
+        scale: 1.05,
+        duration: 0.3,
+        ease: "power2.out"
       });
     });
-  });
+
+    languageToggle.addEventListener("mouseleave", () => {
+      gsap.to(languageToggle, {
+        scale: 1,
+        duration: 0.3,
+        ease: "power2.out"
+      });
+    });
+  }
 }
 
 export function closeMenuWithAnimation() {

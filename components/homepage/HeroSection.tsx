@@ -34,21 +34,6 @@ export default function HeroSection() {
 
   return (
     <section className="min-h-screen flex items-center justify-center relative overflow-visible z-0 py-16 sm:py-20 lg:py-0 bg-bg">
-      {/* Floating elements for light mode */}
-      {isLight && (
-        <>
-          <div className="absolute top-20 left-10 w-96 h-96 rounded-full bg-primary/5 blur-3xl animate-pulse" />
-          <div
-            className="absolute bottom-32 right-16 w-80 h-80 rounded-full bg-secondary/5 blur-3xl animate-pulse"
-            style={{ animationDelay: "1s" }}
-          />
-          <div
-            className="absolute top-1/3 right-1/4 w-2 h-2 rounded-full bg-primary/30 animate-pulse"
-            style={{ animationDelay: "0.5s" }}
-          />
-        </>
-      )}
-
       <div
         ref={containerRef}
         data-3d-container="hero"
@@ -88,7 +73,7 @@ export default function HeroSection() {
               {t("homepage.hero_subtitle")}
             </p>
 
-            <div className="flex gap-4">
+            <div className="flex gap-4 lg:w-3/4">
               <Button variant="filled" size="lg">
                 {t("homepage.hero_cta")}
               </Button>

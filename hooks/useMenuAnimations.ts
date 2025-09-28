@@ -1,19 +1,26 @@
 import { useEffect, RefObject } from 'react'
 import { initMenuAnimations } from '@/utils/animations/menu-animations'
+import { initContactBlockAnimations } from '@/utils/animations/contact-block-animations'
+import { initMobileContactBlockAnimations } from '@/utils/animations/mobile-contact-animations'
 
 export function useMenuAnimations(menuTriggerRef: RefObject<HTMLDivElement | null>) {
   useEffect(() => {
-    console.log('🎯 useMenuAnimations effect triggered')
-    
     if (!menuTriggerRef.current) {
-      console.error('❌ Menu trigger ref not available!')
       return
     }
-    
+
     const timeoutId = setTimeout(() => {
-      console.log('⏱️ About to initialize menu animations')
       if (menuTriggerRef.current) {
         initMenuAnimations()
+        
+        // Initialize appropriate contact animations based on screen size
+        const isMobile = window.innerWidth < 1024 // lg breakpoint
+        
+        if (isMobile) {
+          initMobileContactBlockAnimations()
+        } else {
+          initContactBlockAnimations()
+        }
       }
     }, 100)
 
