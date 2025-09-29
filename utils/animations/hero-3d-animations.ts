@@ -195,18 +195,18 @@ export async function initHero3DScene() {
             color: isLight ? 0xf0f0f0 : 0xffffff,
             roughness: isLight ? 0.3 : 0.95,
             metalness: isLight ? 0.1 : 0.95,
-            transmission: isLight ? 0.2 : 0.9,
-            opacity: isLight ? 0.7 : 0.9,
+            transmission: isLight ? 0.2 : 0.7,
+            opacity: isLight ? 0.7 : 1,
             ior: isLight ? 1.5 : 2.5,
             thickness: isLight ? 2.0 : 5.0,
             clearcoat: isLight ? 1.0 : 5.0,
-            clearcoatRoughness: isLight ? 0.1 : 0.05,
+            clearcoatRoughness: isLight ? 0.1 : 0.55,
           });
         }
       });
 
-      codeModel.scale.set(60, 60, 60);
-      codeModel.position.set(0, 0, 0);
+      codeModel.scale.set(50, 50, 50);
+      codeModel.position.set(-100, -100, 0);
 
       codeWrapper = new THREE.Group();
       codeWrapper.add(codeModel);
@@ -232,31 +232,31 @@ export async function initHero3DScene() {
     loader.load("/assets/models/laptop-logo.glb", (gltf) => {
       laptopModel = gltf.scene;
       
-      laptopModel.traverse((child: any) => {
-        if (child.isMesh) {
-          if (child.name === "Screen_Screen_0" && vscodeTexture) {
-            child.material = new THREE.MeshBasicMaterial({
-              map: vscodeTexture,
-              transparent: false,
-              opacity: 1.0,
-              toneMapped: false
-            });
-            child.material.needsUpdate = true;
-            child.receiveShadow = false;
-            child.castShadow = false;
-          } else if (child.name === "Keyboard_Keyboard_0") {
-            child.material.color = new THREE.Color(isLight ? 0x222222 : 0x111111);
-            child.material.emissive = new THREE.Color(0x000000);
-            child.material.emissiveIntensity = 0;
-          } else if (child.material) {
-            child.material.emissive = new THREE.Color(isLight ? 0x555555 : 0x333333);
-            child.material.emissiveIntensity = isLight ? 0.3 : 0.6;
-            child.material.transparent = false;
-            child.material.opacity = 1.0;
-            child.material.needsUpdate = true;
-          }
-        }
+laptopModel.traverse((child: any) => {
+  if (child.isMesh) {
+    if (child.name === "Screen_Screen_0" && vscodeTexture) {
+      child.material = new THREE.MeshBasicMaterial({
+        map: vscodeTexture,
+        transparent: false,
+        opacity: 1.0,
+        toneMapped: false
       });
+      child.material.needsUpdate = true;
+      child.receiveShadow = false;
+      child.castShadow = false;
+    } else if (child.name === "Keyboard_Keyboard_0") {
+      child.material.color = new THREE.Color(isLight ? 0x282828 : 0x181818);
+      child.material.emissive = new THREE.Color(0x000000);
+      child.material.emissiveIntensity = 0;
+    } else if (child.material) {
+      child.material.emissive = new THREE.Color(isLight ? 0x4e4e4e : 0x2a2a2a);
+      child.material.emissiveIntensity = isLight ? 0.3 : 0.6;
+      child.material.transparent = false;
+      child.material.opacity = 1.0;
+      child.material.needsUpdate = true;
+    }
+  }
+});
 
       laptopModel.scale.set(60, 60, 60);
       laptopModel.position.set(0, 0, 0);

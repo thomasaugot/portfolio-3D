@@ -1,31 +1,12 @@
-import { useEffect, RefObject } from 'react'
-import { initMenuAnimations } from '@/utils/animations/menu-animations'
-import { initContactBlockAnimations } from '@/utils/animations/contact-block-animations'
-import { initMobileContactBlockAnimations } from '@/utils/animations/mobile-contact-animations'
+import { useEffect } from 'react';
+import { initMenuAnimations } from '@/utils/animations/menu-animations';
 
-export function useMenuAnimations(menuTriggerRef: RefObject<HTMLDivElement | null>) {
+export function useMenuAnimations(menuTriggerRef: React.RefObject<HTMLDivElement>) {
   useEffect(() => {
-    if (!menuTriggerRef.current) {
-      return
-    }
-
-    const timeoutId = setTimeout(() => {
-      if (menuTriggerRef.current) {
-        initMenuAnimations()
-        
-        // Initialize appropriate contact animations based on screen size
-        const isMobile = window.innerWidth < 1024 // lg breakpoint
-        
-        if (isMobile) {
-          initMobileContactBlockAnimations()
-        } else {
-          initContactBlockAnimations()
-        }
-      }
-    }, 100)
+    const cleanupMenu = initMenuAnimations();
 
     return () => {
-      clearTimeout(timeoutId)
-    }
-  }, [menuTriggerRef])
+      if (cleanupMenu) cleanupMenu();
+    };
+  }, [menuTriggerRef]);
 }

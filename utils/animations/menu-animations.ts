@@ -1,8 +1,9 @@
 "use client";
 
 import { gsap } from "./gsap-init";
+import { initContactBlockAnimations, resetContactBlockToClosedState } from "./contact-block-animations";
 
-let closeMenuFn: (() => gsap.core.Timeline | void) | null = null;
+let closeMenuFn: (() => void) | null = null;
 let isAnimating = false;
 let currentTimeline: gsap.core.Timeline | null = null;
 
@@ -32,7 +33,7 @@ export function initMenuAnimations() {
   function getThemeState() {
     const root = document.documentElement;
     const isLight = !root.classList.contains("dark");
-    return { isLight, isDark: !isLight };
+    return { isLight };
   }
 
   function killCurrentAnimation() {
@@ -53,14 +54,12 @@ export function initMenuAnimations() {
     gsap.set(menuOverlay, { opacity: 0, pointerEvents: "none" });
     gsap.set(menuBlob, { scale: 1, rotate: 0 });
     gsap.set(menuItems, { opacity: 0, y: 0, scale: 1 });
-    gsap.set(menuLines, { scaleX: 0, opacity: 0 });
+    gsap.set(menuLines, { scaleX: 0 });
     gsap.set([line1, line3], { rotation: 0, y: 0 });
     gsap.set(line2, { opacity: 1 });
   }
 
   function openMenu() {
-    if (isAnimating) return;
-
     isAnimating = true;
     killCurrentAnimation();
 
@@ -71,135 +70,83 @@ export function initMenuAnimations() {
     const line2 = document.querySelector('[data-animate="burger-line-2"]');
     const line3 = document.querySelector('[data-animate="burger-line-3"]');
 
-    menuContainer?.setAttribute("style", "pointer-events:auto");
+    gsap.set(menuContainer, { pointerEvents: "auto" });
 
     const screenWidth = window.innerWidth;
     const isMobile = screenWidth < 768;
     const isTablet = screenWidth >= 768 && screenWidth < 1024;
+    const isDesktop = screenWidth >= 1024;
 
-    let blobScale, lineOffset;
+    let blobScale, yOffset;
 
     if (isMobile) {
       blobScale = 15;
-      lineOffset = 6;
+      yOffset = 6;
     } else if (isTablet) {
       blobScale = 14;
-      lineOffset = 6;
+      yOffset = 8;
     } else {
       blobScale = 26;
-      lineOffset = 8;
+      yOffset = 8;
+    }
+
+    if (isDesktop) {
+      initContactBlockAnimations();
     }
 
     currentTimeline = gsap.timeline({
       onComplete: () => {
         isAnimating = false;
         currentTimeline = null;
-        if (!isMobile) {
-          setTimeout(() => {
-            initMenuItemHovers();
-          }, isLight ? 900 : 800);
-        }
-        // Ensure language toggle is clickable after animation
-        const languageToggle = document.querySelector('[data-animate="language-toggle"]');
-        if (languageToggle) {
-          gsap.set(languageToggle, { pointerEvents: 'all' });
-        }
-      },
-      onInterrupt: () => {
-        isAnimating = false;
-        currentTimeline = null;
       },
     });
 
-    let yOffset;
-
-    if (screenWidth < 640) {
-      yOffset = 6;
-    } else if (screenWidth < 1024) {
-      yOffset = 8;
-    } else {
-      yOffset = 8;
-    }
-
     currentTimeline
-      .to(
-        line1,
-        {
-          y: yOffset,
-          rotation: 45,
-          duration: 0.3,
-          ease: "power2.inOut",
-        },
-        0.2
-      )
-      .to(
-        line3,
-        {
-          y: -yOffset,
-          rotation: -45,
-          duration: 0.3,
-          ease: "power2.inOut",
-        },
-        0.2
-      )
-      .to(line2, { opacity: 0, duration: 0.2 }, 0)
-      .to(
-        menuBlob,
-        {
-          scale: blobScale,
-          duration: isLight ? 0.7 : 0.6,
-          rotate: isLight ? 12 : 6,
-          ease: isLight ? "power3.out" : "power3.inOut",
-          transformOrigin: "center center",
-        },
-        0.2
-      )
-      .to(
-        menuOverlay,
-        {
-          opacity: 1,
-          pointerEvents: "auto",
-          duration: isLight ? 0.4 : 0.3,
-          ease: "power2.out",
-        },
-        "-=0.4"
-      )
-      .fromTo(
-        menuItems,
-        {
-          y: isLight ? 50 : 40,
-          opacity: 0,
-          scale: isLight ? 0.9 : 1,
-        },
-        {
-          y: 0,
-          opacity: 1,
-          scale: 1,
-          duration: isLight ? 0.6 : 0.5,
-          stagger: isLight ? 0.1 : 0.08,
-          ease: isLight ? "back.out(1.2)" : "power2.out",
-        },
-        "-=0.2"
-      )
-      .fromTo(
-        menuLines,
-        { scaleX: 0, opacity: 0 },
-        {
-          scaleX: 1,
-          opacity: 1,
-          duration: isLight ? 0.5 : 0.4,
-          stagger: isLight ? 0.1 : 0.08,
-          ease: isLight ? "power3.out" : "power2.out",
-        },
-        "-=0.1"
-      );
+      .to([line1, line3], { y: yOffset, duration: 0.15, ease: "power2.out" }, 0)
+      .to(line1, { rotation: 45, duration: 0.15, ease: "power2.out" }, 0.15)
+      .to(line3, { rotation: -45, y: -yOffset, duration: 0.15, ease: "power2.out" }, 0.15)
+      .to(line2, { opacity: 0, duration: 0.1 }, 0)
+      .to(menuBlob, {
+        scale: blobScale,
+        duration: 0.5,
+        rotate: isLight ? 12 : 6,
+        ease: "power3.out",
+        transformOrigin: "center center",
+      }, 0.1)
+      .to(menuOverlay, {
+        opacity: 1,
+        pointerEvents: "auto",
+        duration: 0.3,
+        ease: "power2.out",
+      }, "-=0.3")
+      .fromTo(menuItems, {
+        y: isLight ? 50 : 40,
+        opacity: 0,
+        scale: isLight ? 0.9 : 1,
+      }, {
+        y: 0,
+        opacity: 1,
+        scale: 1,
+        duration: isLight ? 0.5 : 0.4,
+        stagger: 0.08,
+        ease: isLight ? "back.out(1.2)" : "power2.out",
+      }, "-=0.15")
+      .fromTo(menuLines, {
+        scaleX: 0,
+        opacity: 0
+      }, {
+        scaleX: 1,
+        opacity: 1,
+        duration: 0.4,
+        stagger: 0.08,
+        ease: "power3.out",
+      }, "-=0.35");
   }
 
   function closeMenu() {
-    if (isAnimating) return;
-
     isAnimating = true;
     killCurrentAnimation();
+    resetContactBlockToClosedState();
 
     const { isLight } = getThemeState();
     const menuItems = document.querySelectorAll('[data-animate="menu-item"]');
@@ -210,12 +157,6 @@ export function initMenuAnimations() {
 
     currentTimeline = gsap.timeline({
       onComplete: () => {
-        menuContainer?.setAttribute("style", "pointer-events:none");
-        isAnimating = false;
-        currentTimeline = null;
-        resetMenuToClosedState();
-      },
-      onInterrupt: () => {
         isAnimating = false;
         currentTimeline = null;
         resetMenuToClosedState();
@@ -223,58 +164,19 @@ export function initMenuAnimations() {
     });
 
     currentTimeline
-      .to(menuLines, {
-        scaleX: 0,
+      .to(menuLines, { scaleX: 0, opacity: 0, duration: 0.2, stagger: 0.03, ease: "power2.in" }, 0)
+      .to(menuItems, {
+        y: isLight ? -40 : -30,
         opacity: 0,
-        duration: isLight ? 0.4 : 0.3,
+        scale: isLight ? 0.9 : 1,
+        duration: 0.3,
         stagger: 0.04,
         ease: "power2.in",
-      })
-      .to(
-        menuItems,
-        {
-          y: isLight ? -40 : -30,
-          opacity: 0,
-          scale: isLight ? 0.9 : 1,
-          duration: isLight ? 0.5 : 0.4,
-          stagger: 0.04,
-          ease: "power2.in",
-        },
-        "-=0.2"
-      )
-      .to(
-        menuOverlay,
-        {
-          opacity: 0,
-          pointerEvents: "none",
-          duration: isLight ? 0.4 : 0.3,
-          ease: "power2.in",
-        },
-        "-=0.2"
-      )
-      .to(
-        menuBlob,
-        {
-          scale: 1,
-          duration: isLight ? 0.6 : 0.5,
-          rotate: 0,
-          ease: isLight ? "back.out(1.7)" : "back.out(1.4)",
-        },
-        "-=0.3"
-      )
-      .to(
-        [line1, line3],
-        {
-          rotation: 0,
-          y: 0,
-          duration: 0.3,
-          ease: "power2.inOut",
-        },
-        "-=0.3"
-      )
-      .to(line2, { opacity: 1, duration: 0.2 }, "-=0.2");
-
-    return currentTimeline;
+      }, 0.05)
+      .to(menuOverlay, { opacity: 0, pointerEvents: "none", duration: 0.25, ease: "power2.in" }, "-=0.15")
+      .to(menuBlob, { scale: 1, duration: 0.4, rotate: 0, ease: "back.out(1.4)" }, "-=0.2")
+      .to([line1, line3], { rotation: 0, y: 0, duration: 0.2, ease: "power2.inOut" }, "-=0.2")
+      .to(line2, { opacity: 1, duration: 0.15 }, "-=0.15");
   }
 
   closeMenuFn = closeMenu;
@@ -283,126 +185,12 @@ export function initMenuAnimations() {
     menuTrigger.removeEventListener("click", handleClick);
     killCurrentAnimation();
     resetMenuToClosedState();
+    resetContactBlockToClosedState();
   };
 }
 
-function initMenuItemHovers() {
-  const { isLight } = getThemeState();
-  const menuTexts = document.querySelectorAll('[data-animate="menu-text"]');
-  const menuDescs = document.querySelectorAll('[data-animate="menu-desc"]');
-  const menuLines = document.querySelectorAll('[data-animate="menu-line"]');
-
-  function getThemeState() {
-    const root = document.documentElement;
-    const isLight = !root.classList.contains("dark");
-    return { isLight, isDark: !isLight };
-  }
-
-  menuTexts.forEach((text, index) => {
-    const link = text.closest("a");
-    const desc = menuDescs[index];
-    const line = menuLines[index];
-    
-    if (!link) return;
-
-    link.addEventListener("mouseenter", () => {
-      const { isLight } = getThemeState();
-
-      // Smooth text animation
-      gsap.to(text, {
-        scale: isLight ? 1.05 : 1.02,
-        x: isLight ? -8 : -6,
-        duration: 0.6,
-        ease: "power3.out",
-      });
-
-      // Smooth description fade in
-      if (desc) {
-        gsap.to(desc, {
-          opacity: 1,
-          y: 0,
-          duration: 0.4,
-          ease: "power2.out",
-          delay: 0.1
-        });
-      }
-
-      // Smooth line scale
-      if (line) {
-        gsap.to(line, {
-          scaleX: 1,
-          duration: 0.5,
-          ease: "power3.out",
-          delay: 0.15
-        });
-      }
-
-      // Text shadow for light theme
-      if (isLight) {
-        gsap.to(text, {
-          textShadow: "0 0 20px rgba(204, 255, 2, 0.3)",
-          duration: 0.4,
-          ease: "power2.out",
-        });
-      }
-    });
-
-    link.addEventListener("mouseleave", () => {
-      const { isLight } = getThemeState();
-
-      // Smooth text reset
-      gsap.to(text, {
-        scale: 1,
-        x: 0,
-        textShadow: isLight ? "none" : undefined,
-        duration: 0.5,
-        ease: "power3.out",
-      });
-
-      // Smooth description fade out
-      if (desc) {
-        gsap.to(desc, {
-          opacity: 0,
-          y: 4,
-          duration: 0.3,
-          ease: "power2.out"
-        });
-      }
-
-      // Smooth line scale out
-      if (line) {
-        gsap.to(line, {
-          scaleX: 0,
-          duration: 0.4,
-          ease: "power2.out"
-        });
-      }
-    });
-  });
-
-  // Language toggle hover animations
-  const languageToggle = document.querySelector('[data-animate="language-toggle"]');
-  if (languageToggle) {
-    languageToggle.addEventListener("mouseenter", () => {
-      gsap.to(languageToggle, {
-        scale: 1.05,
-        duration: 0.3,
-        ease: "power2.out"
-      });
-    });
-
-    languageToggle.addEventListener("mouseleave", () => {
-      gsap.to(languageToggle, {
-        scale: 1,
-        duration: 0.3,
-        ease: "power2.out"
-      });
-    });
-  }
-}
-
 export function closeMenuWithAnimation() {
-  if (closeMenuFn && !isAnimating) {
-    return closeMenuFn();
+  if (closeMenuFn) {
+    closeMenuFn();
   }
 }
