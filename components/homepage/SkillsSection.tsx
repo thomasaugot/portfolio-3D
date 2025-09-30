@@ -1,45 +1,105 @@
+// components/homepage/SkillsSection.tsx
+"use client";
+
 export default function SkillsSection() {
+  const services = [
+    {
+      title: "Web Development",
+      description: "Fast, modern websites and web applications built for performance and user experience",
+      skills: "React, Next.js, TypeScript, Node.js"
+    },
+    {
+      title: "UI/UX Design",
+      description: "Beautiful, intuitive interfaces that users love and converts visitors into customers",
+      skills: "Tailwind CSS, SCSS, Responsive Design"
+    },
+    {
+      title: "Interactive Experiences",
+      description: "Smooth animations and engaging interactions that bring your brand to life",
+      skills: "GSAP, Framer Motion, Three.js"
+    },
+    {
+      title: "Mobile Apps",
+      description: "Native mobile applications for iOS and Android from a single codebase",
+      skills: "React Native"
+    }
+  ];
+
   return (
-    <section className="py-32 bg-surface/50">
-      <div className="max-w-6xl mx-auto px-8">
-        <div data-animate="slide-up" className="text-center mb-20">
-          <h2 className="text-4xl md:text-5xl font-bold font-inter mb-6">
-            Technical Expertise
+    <section 
+      data-skills-section
+      className="min-h-screen flex items-center justify-center relative z-20 -mt-[100vh] opacity-0 py-32"
+    >
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-bg/50 to-bg pointer-events-none" />
+      
+      <div className="relative z-10 max-w-6xl mx-auto px-8 w-full">
+        <div className="text-center mb-24">
+          <h2 className="text-6xl md:text-8xl font-bold mb-6">
+            Services &
+            <br />
+            <span className="gradient-primary bg-clip-text text-transparent font-light">
+              Expertise
+            </span>
           </h2>
-          <p className="text-xl text-text-muted">
-            Specialized in modern technologies and frameworks
+          <p className="text-xl text-text-muted max-w-2xl mx-auto">
+            Full-stack solutions from concept to deployment
           </p>
         </div>
-        
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <div data-animate="slide-up" className="group p-8 bg-bg border border-border rounded-xl hover:border-electric-blue/50 transition-all duration-300">
-            <div className="w-12 h-12 bg-electric-blue/10 rounded-lg flex items-center justify-center mb-6 group-hover:bg-electric-blue/20 transition-colors">
-              <div className="w-6 h-6 bg-electric-blue rounded" />
+
+        <div className="grid md:grid-cols-2 gap-6 mb-20">
+          {services.map((service, i) => (
+            <div 
+              key={service.title}
+              className="group relative"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              
+              <div className="relative glass border border-border rounded-3xl p-8 hover:border-primary/30 transition-all duration-300 h-full">
+                <h3 className="text-3xl font-bold mb-4">{service.title}</h3>
+                <p className="text-lg text-text-muted mb-6 leading-relaxed">
+                  {service.description}
+                </p>
+                <div className="text-sm font-mono text-primary/60">
+                  {service.skills}
+                </div>
+              </div>
             </div>
-            <h3 className="text-xl font-semibold mb-4">Frontend Development</h3>
-            <p className="text-text-muted mb-4">React, Next.js, TypeScript, Tailwind CSS, GSAP</p>
-            <div className="text-sm text-electric-blue font-mono">Primary Focus</div>
+          ))}
+        </div>
+
+        <div className="flex flex-col md:flex-row items-center justify-center gap-12">
+          <div className="text-center">
+            <div className="text-5xl font-bold gradient-primary bg-clip-text text-transparent mb-2">
+              3+
+            </div>
+            <div className="text-sm text-muted uppercase tracking-wider">
+              Years Experience
+            </div>
           </div>
           
-          <div data-animate="slide-up" className="group p-8 bg-bg border border-border rounded-xl hover:border-violet/50 transition-all duration-300">
-            <div className="w-12 h-12 bg-violet/10 rounded-lg flex items-center justify-center mb-6 group-hover:bg-violet/20 transition-colors">
-              <div className="w-6 h-6 bg-violet rounded" />
+          <div className="hidden md:block w-px h-16 bg-border" />
+          
+          <div className="text-center">
+            <div className="text-5xl font-bold gradient-primary bg-clip-text text-transparent mb-2">
+              🇫🇷 🇬🇧 🇪🇸
             </div>
-            <h3 className="text-xl font-semibold mb-4">Backend Development</h3>
-            <p className="text-text-muted mb-4">Node.js, Python, APIs, Databases, Cloud Services</p>
-            <div className="text-sm text-violet font-mono">Full-Stack Ready</div>
+            <div className="text-sm text-muted uppercase tracking-wider">
+              Trilingual Communication
+            </div>
           </div>
           
-          <div data-animate="slide-up" className="group p-8 bg-bg border border-border rounded-xl hover:border-pink/50 transition-all duration-300">
-            <div className="w-12 h-12 bg-pink/10 rounded-lg flex items-center justify-center mb-6 group-hover:bg-pink/20 transition-colors">
-              <div className="w-6 h-6 bg-pink rounded" />
+          <div className="hidden md:block w-px h-16 bg-border" />
+          
+          <div className="text-center">
+            <div className="text-5xl font-bold gradient-primary bg-clip-text text-transparent mb-2">
+              20+
             </div>
-            <h3 className="text-xl font-semibold mb-4">Solution Architecture</h3>
-            <p className="text-text-muted mb-4">System Design, Performance, Scalability, Best Practices</p>
-            <div className="text-sm text-pink font-mono">End-to-End</div>
+            <div className="text-sm text-muted uppercase tracking-wider">
+              Projects Delivered
+            </div>
           </div>
         </div>
       </div>
     </section>
-  )
+  );
 }

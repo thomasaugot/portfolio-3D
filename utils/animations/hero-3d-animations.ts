@@ -1,3 +1,4 @@
+// utils/animations/hero-3d-animations.ts
 import * as THREE from "three";
 import { getThemeState } from "@/utils/theme-helpers";
 
@@ -16,7 +17,7 @@ export async function initHero3DScene() {
     60,
     container.clientWidth / container.clientHeight,
     0.1,
-    2000
+    5000
   );
   camera.position.set(0, 30, 800);
   camera.lookAt(0, 0, 0);
@@ -26,18 +27,15 @@ export async function initHero3DScene() {
   renderer.setClearColor(0x000000, 0);
   container.appendChild(renderer.domElement);
 
-  // Hexagon outline floor with gradient borders - WORKING VERSION
   const createHexFloor = () => {
     const group = new THREE.Group();
     
-    // Create hexagon outlines in more rectangular pattern
-    for (let q = -8; q <= 8; q++) {
-      for (let r = -10; r <= 8; r++) { // Extended much further back
-        if (Math.abs(q) > 8 || r < -20 || r > 8) continue;
+    for (let q = -10; q <= 10; q++) {
+      for (let r = -15; r <= 8; r++) {
+        if (Math.abs(q) > 10 || r < -15 || r > 8) continue;
         
         const hexSize = 80;
         
-        // Create hexagon outline
         const points = [];
         for (let i = 0; i <= 6; i++) {
           const angle = (i / 6) * Math.PI * 2;
@@ -50,15 +48,13 @@ export async function initHero3DScene() {
         
         const geometry = new THREE.BufferGeometry().setFromPoints(points);
         
-        // Distance-based effects for better perspective
         const distance = Math.sqrt(q * q + r * r);
         const opacity = Math.max(0.1, 1 - distance / 20);
         
-        // Gradient effect - alternate between your colors based on position
         const gradientFactor = (Math.sin(q * 0.5) + Math.cos(r * 0.5)) * 0.5 + 0.5;
         const color = new THREE.Color().lerpColors(
-          new THREE.Color(0x02bccc),  // secondary color
-          new THREE.Color(0xccff02),  // primary color
+          new THREE.Color(0x02bccc),
+          new THREE.Color(0xccff02),
           gradientFactor
         );
         
@@ -71,13 +67,11 @@ export async function initHero3DScene() {
         
         const hex = new THREE.Line(geometry, material);
         
-        // Convert hex grid to cartesian
         const x = hexSize * 1.5 * q;
         const z = hexSize * Math.sqrt(3) * (r + q / 2);
         
         hex.position.set(x, -200, z);
         
-        // Store animation data
         (hex as any).baseOpacity = opacity * (isLight ? 0.6 : 0.4);
         (hex as any).pulseOffset = distance * 0.2;
         (hex as any).gradientFactor = gradientFactor;
@@ -92,7 +86,6 @@ export async function initHero3DScene() {
   const hexFloor = createHexFloor();
   scene.add(hexFloor);
 
-  // Theme-aware lighting
   const ambientLight = new THREE.AmbientLight(
     isLight ? 0xffffff : 0xffffff, 
     isLight ? 1.2 : 0.9
@@ -112,10 +105,8 @@ export async function initHero3DScene() {
     scene.add(fillLight);
   }
 
-  // Load VS Code texture
   const textureLoader = new THREE.TextureLoader();
   let vscodeTexture: THREE.Texture | null = null;
-  let logoTexture: THREE.Texture | null = null;
   
   try {
     vscodeTexture = await new Promise<THREE.Texture>((resolve, reject) => {
@@ -130,47 +121,16 @@ export async function initHero3DScene() {
           texture.generateMipmaps = false;
           texture.colorSpace = THREE.SRGBColorSpace;
           texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
-          console.log('✅ VS Code texture loaded successfully', texture.image.width + 'x' + texture.image.height);
           resolve(texture);
         },
         undefined,
-        (error) => {
-          console.error('❌ Failed to load VS Code texture:', error);
-          reject(error);
-        }
+        reject
       );
     });
   } catch (error) {
-    console.warn('⚠️ Could not load VS Code texture, using fallback');
+    console.warn('⚠️ Could not load VS Code texture');
   }
 
-  try {
-    logoTexture = await new Promise<THREE.Texture>((resolve, reject) => {
-      textureLoader.load(
-        '/assets/images/logo/logo-mobile-gradient.png',
-        (texture) => {
-          texture.flipY = false;
-          texture.wrapS = THREE.ClampToEdgeWrapping;
-          texture.wrapT = THREE.ClampToEdgeWrapping;
-          texture.minFilter = THREE.LinearFilter;
-          texture.magFilter = THREE.LinearFilter;
-          texture.generateMipmaps = false;
-          texture.colorSpace = THREE.SRGBColorSpace;
-          console.log('✅ Logo texture loaded successfully');
-          resolve(texture);
-        },
-        undefined,
-        (error) => {
-          console.error('❌ Failed to load logo texture:', error);
-          reject(error);
-        }
-      );
-    });
-  } catch (error) {
-    console.warn('⚠️ Could not load logo texture, using fallback');
-  }
-
-  // Mouse interaction variables
   const raycaster = new THREE.Raycaster();
   const mouse = new THREE.Vector2();
   let isDragging = false;
@@ -183,8 +143,8 @@ export async function initHero3DScene() {
 
   let codeModel: THREE.Group | null = null;
   let laptopModel: THREE.Group | null = null;
-  let codeWrapper: THREE.Group;
-  let laptopWrapper: THREE.Group;
+  let codeWrapper: THREE.Group | null = null;
+  let laptopWrapper: THREE.Group | null = null;
 
   await new Promise<void>((resolve) => {
     loader.load("/assets/models/code-3D.glb", (gltf) => {
@@ -213,11 +173,13 @@ export async function initHero3DScene() {
 
       const setCodeModelPosition = () => {
         const isDesktop = window.innerWidth >= 1024;
-        codeWrapper.position.set(
-          isDesktop ? 300 : 0,
-          80,
-          200
-        );
+        if (codeWrapper) {
+          codeWrapper.position.set(
+            isDesktop ? 300 : 0,
+            80,
+            200
+          );
+        }
       };
 
       setCodeModelPosition();
@@ -232,31 +194,31 @@ export async function initHero3DScene() {
     loader.load("/assets/models/laptop-logo.glb", (gltf) => {
       laptopModel = gltf.scene;
       
-laptopModel.traverse((child: any) => {
-  if (child.isMesh) {
-    if (child.name === "Screen_Screen_0" && vscodeTexture) {
-      child.material = new THREE.MeshBasicMaterial({
-        map: vscodeTexture,
-        transparent: false,
-        opacity: 1.0,
-        toneMapped: false
+      laptopModel.traverse((child: any) => {
+        if (child.isMesh) {
+          if (child.name === "Screen_Screen_0" && vscodeTexture) {
+            child.material = new THREE.MeshBasicMaterial({
+              map: vscodeTexture,
+              transparent: false,
+              opacity: 1.0,
+              toneMapped: false
+            });
+            child.material.needsUpdate = true;
+            child.receiveShadow = false;
+            child.castShadow = false;
+          } else if (child.name === "Keyboard_Keyboard_0") {
+            child.material.color = new THREE.Color(isLight ? 0x282828 : 0x181818);
+            child.material.emissive = new THREE.Color(0x000000);
+            child.material.emissiveIntensity = 0;
+          } else if (child.material) {
+            child.material.emissive = new THREE.Color(isLight ? 0x4e4e4e : 0x2a2a2a);
+            child.material.emissiveIntensity = isLight ? 0.3 : 0.6;
+            child.material.transparent = false;
+            child.material.opacity = 1.0;
+            child.material.needsUpdate = true;
+          }
+        }
       });
-      child.material.needsUpdate = true;
-      child.receiveShadow = false;
-      child.castShadow = false;
-    } else if (child.name === "Keyboard_Keyboard_0") {
-      child.material.color = new THREE.Color(isLight ? 0x282828 : 0x181818);
-      child.material.emissive = new THREE.Color(0x000000);
-      child.material.emissiveIntensity = 0;
-    } else if (child.material) {
-      child.material.emissive = new THREE.Color(isLight ? 0x4e4e4e : 0x2a2a2a);
-      child.material.emissiveIntensity = isLight ? 0.3 : 0.6;
-      child.material.transparent = false;
-      child.material.opacity = 1.0;
-      child.material.needsUpdate = true;
-    }
-  }
-});
 
       laptopModel.scale.set(60, 60, 60);
       laptopModel.position.set(0, 0, 0);
@@ -266,11 +228,13 @@ laptopModel.traverse((child: any) => {
 
       const setLaptopModelPosition = () => {
         const isDesktop = window.innerWidth >= 1024;
-        laptopWrapper.position.set(
-          isDesktop ? 200 : 0,
-          -50,
-          150
-        );
+        if (laptopWrapper) {
+          laptopWrapper.position.set(
+            isDesktop ? 200 : 0,
+            -50,
+            150
+          );
+        }
       };
 
       setLaptopModelPosition();
@@ -357,15 +321,12 @@ laptopModel.traverse((child: any) => {
   const animate = () => {
     time += 0.01;
     
-    // Animate hexagon gradients and opacity
     hexFloor.children.forEach((hex) => {
       const material = (hex as THREE.Line).material as THREE.LineBasicMaterial;
       const pulse = Math.sin(time * 2 + (hex as any).pulseOffset);
       
-      // Animate opacity
       material.opacity = (hex as any).baseOpacity + pulse * 0.2;
       
-      // Animate gradient colors
       const gradientShift = Math.sin(time + (hex as any).gradientFactor * Math.PI) * 0.5 + 0.5;
       material.color.lerpColors(
         new THREE.Color(0x02bccc),
@@ -373,6 +334,7 @@ laptopModel.traverse((child: any) => {
         gradientShift
       );
     });
+
     if (codeModel) {
       codeModel.rotation.y += isLight ? 0.003 : 0.005;
     }
@@ -387,6 +349,17 @@ laptopModel.traverse((child: any) => {
 
   animate();
 
+  (window as any).__heroScene = {
+    scene,
+    camera,
+    renderer,
+    hexFloor,
+    codeWrapper,
+    laptopWrapper,
+    codeModel,
+    laptopModel
+  };
+
   return () => {
     window.removeEventListener("resize", handleResize);
     container.removeEventListener("mousedown", onMouseDown);
@@ -397,5 +370,6 @@ laptopModel.traverse((child: any) => {
     if (renderer.domElement.parentNode)
       container.removeChild(renderer.domElement);
     renderer.dispose();
+    delete (window as any).__heroScene;
   };
 }

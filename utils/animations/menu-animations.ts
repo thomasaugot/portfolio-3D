@@ -1,7 +1,6 @@
 "use client";
 
 import { gsap } from "./gsap-init";
-import { initContactBlockAnimations, resetContactBlockToClosedState } from "./contact-block-animations";
 
 let closeMenuFn: (() => void) | null = null;
 let isAnimating = false;
@@ -52,14 +51,14 @@ export function initMenuAnimations() {
 
     gsap.set(menuContainer, { pointerEvents: "none" });
     gsap.set(menuOverlay, { opacity: 0, pointerEvents: "none" });
-    gsap.set(menuBlob, { scale: 1, rotate: 0 });
+    gsap.set(menuBlob, { scale: 1, rotate: 0, opacity: 1 });
     gsap.set(menuItems, { opacity: 0, y: 0, scale: 1 });
     gsap.set(menuLines, { scaleX: 0 });
     gsap.set([line1, line3], { rotation: 0, y: 0 });
     gsap.set(line2, { opacity: 1 });
   }
 
-  function openMenu() {
+  async function openMenu() {
     isAnimating = true;
     killCurrentAnimation();
 
@@ -75,7 +74,6 @@ export function initMenuAnimations() {
     const screenWidth = window.innerWidth;
     const isMobile = screenWidth < 768;
     const isTablet = screenWidth >= 768 && screenWidth < 1024;
-    const isDesktop = screenWidth >= 1024;
 
     let blobScale, yOffset;
 
@@ -88,10 +86,6 @@ export function initMenuAnimations() {
     } else {
       blobScale = 26;
       yOffset = 8;
-    }
-
-    if (isDesktop) {
-      initContactBlockAnimations();
     }
 
     currentTimeline = gsap.timeline({
@@ -112,6 +106,11 @@ export function initMenuAnimations() {
         rotate: isLight ? 12 : 6,
         ease: "power3.out",
         transformOrigin: "center center",
+        opacity: 1,
+        backgroundColor: isLight ? "#ccff02" : "#02bccc",
+        onStart: () => {
+          (menuBlob as HTMLElement).style.backgroundSize = "100% 100%";
+        }
       }, 0.1)
       .to(menuOverlay, {
         opacity: 1,
@@ -146,7 +145,6 @@ export function initMenuAnimations() {
   function closeMenu() {
     isAnimating = true;
     killCurrentAnimation();
-    resetContactBlockToClosedState();
 
     const { isLight } = getThemeState();
     const menuItems = document.querySelectorAll('[data-animate="menu-item"]');
@@ -185,7 +183,6 @@ export function initMenuAnimations() {
     menuTrigger.removeEventListener("click", handleClick);
     killCurrentAnimation();
     resetMenuToClosedState();
-    resetContactBlockToClosedState();
   };
 }
 
