@@ -7,11 +7,7 @@ import { useMenuAnimations } from "@/hooks/useMenuAnimations";
 import { getLocalizedMenuItems } from "@/data/menu";
 import LanguageToggle from "@/components/ui/LanguageToggle";
 import Link from "next/link";
-import Image from "next/image";
 import { closeMenuWithAnimation } from "@/utils/animations/menu-animations";
-import ContactBlock from "../ui/ContactBlock";
-import MobileContactBlock from "../ui/MobileContactBlock";
-import { ThemeToggle } from "../theme/ThemeToggle";
 
 export default function Menu() {
   const { t, language } = useTranslation();
@@ -25,12 +21,12 @@ export default function Menu() {
     <>
       <div
         data-animate="menu-overlay"
-        className={`fixed inset-0 z-30 backdrop-blur-sm opacity-0 pointer-events-none bg-bg`}
+        className={`fixed inset-0 z-30 opacity-0 pointer-events-none bg-black/80 backdrop-blur-sm`}
       />
 
       <div
         data-animate="menu-blob"
-        className={`fixed top-6 right-6 md:top-8 md:right-8 w-10 h-10 md:w-16 md:h-16 z-40 rounded-xl gradient-primary pointer-events-none ${
+        className={`fixed top-6 right-6 md:top-8 md:right-8 w-10 h-10 !opacity-100 md:w-16 md:h-16 z-50 rounded-xl gradient-primary pointer-events-none ${
           isLight ? "shadow-theme-medium" : "shadow-lg shadow-primary/30"
         }`}
         style={{ perspective: "1000px", transformStyle: "preserve-3d" }}
@@ -76,10 +72,6 @@ export default function Menu() {
         data-animate="menu-container"
         className="fixed inset-0 z-[9999] pointer-events-none"
       >
-        <div
-          data-animate="menu-hex-background"
-          className="absolute inset-0 -z-10"
-        />
         <div className="hidden lg:flex h-full w-full">
           <div className="flex-1 flex flex-col justify-between p-12">
             <div
@@ -87,10 +79,6 @@ export default function Menu() {
               className="opacity-0 absolute top-12 left-12 z-[99999]"
             >
               <LanguageToggle />
-            </div>
-
-            <div data-animate="menu-item" className="opacity-0">
-              <ContactBlock />
             </div>
           </div>
 
@@ -118,7 +106,7 @@ export default function Menu() {
                         data-animate="menu-text"
                         className={`text-4xl md:text-6xl font-bold mb-1 relative overflow-hidden transition-all duration-500 ease-out ${
                           isLight
-                            ? "text-text drop-shadow-sm group-hover:scale-[1.02] group-hover:-translate-x-2 group-hover:drop-shadow-[0_0_20px_rgba(204,255,2,0.3)]"
+                            ? "text-text drop-shadow-sm group-hover:scale-[1.02] group-hover:-translate-x-2"
                             : "text-text drop-shadow-lg group-hover:scale-[1.01] group-hover:-translate-x-1.5"
                         }`}
                         style={{ fontFamily: "var(--font-display)" }}
@@ -202,10 +190,6 @@ export default function Menu() {
                 ))}
               </ul>
             </nav>
-          </div>
-
-          <div data-animate="menu-item" className="opacity-0 mt-6">
-            <MobileContactBlock />
           </div>
         </div>
       </div>
