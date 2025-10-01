@@ -1,47 +1,73 @@
 import { gsap, ScrollTrigger } from "@/utils/animations/gsap-init";
+import { isAppReady } from "@/hooks/useAppReady";
 
 let animationsInitialized = false;
+const fadeScrollTriggers: ScrollTrigger[] = [];
 
 export function initFadeAnimations() {
-  // Prevent double initialization
   if (animationsInitialized) return;
-  animationsInitialized = true;
 
-  // Clear any existing ScrollTriggers first
-  ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+  const checkAndAnimate = () => {
+    if (!isAppReady()) {
+      requestAnimationFrame(checkAndAnimate);
+      return;
+    }
 
-  // Slide up from bottom with stagger for title lines
-  gsap.utils.toArray('[data-animate="slide-up"]').forEach((element) => {
-    const titleLines = (element as Element).querySelectorAll('span');
-    
-    if (titleLines.length > 0) {
-      // Stagger each line of the title
-      gsap.fromTo(
-        titleLines,
-        {
-          opacity: 0,
-          y: 40,
-        },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          ease: "power2.out",
-          stagger: 0.2,
-          scrollTrigger: {
-            trigger: element as Element,
-            start: "top 85%",
-            toggleActions: "play none none none", // Don't reverse to prevent flickering
+    animationsInitialized = true;
+
+    gsap.utils.toArray('[data-animate="slide-up"]').forEach((element) => {
+      const titleLines = (element as Element).querySelectorAll('span');
+      
+      if (titleLines.length > 0) {
+        const tween = gsap.fromTo(
+          titleLines,
+          {
+            opacity: 0,
+            y: 40,
           },
-        }
-      );
-    } else {
-      // Regular slide up for non-title elements
-      gsap.fromTo(
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            ease: "power2.out",
+            stagger: 0.2,
+            scrollTrigger: {
+              trigger: element as Element,
+              start: "top 85%",
+              toggleActions: "play none none none",
+            },
+          }
+        );
+        if (tween.scrollTrigger) fadeScrollTriggers.push(tween.scrollTrigger);
+      } else {
+        const tween = gsap.fromTo(
+          element as Element,
+          {
+            opacity: 0,
+            y: 60,
+          },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: element as Element,
+              start: "top 85%",
+              toggleActions: "play none none none",
+            },
+          }
+        );
+        if (tween.scrollTrigger) fadeScrollTriggers.push(tween.scrollTrigger);
+      }
+    });
+
+    gsap.utils.toArray('[data-animate="slide-down"]').forEach((element) => {
+      const tween = gsap.fromTo(
         element as Element,
         {
           opacity: 0,
-          y: 60,
+          y: -60,
         },
         {
           opacity: 1,
@@ -55,122 +81,103 @@ export function initFadeAnimations() {
           },
         }
       );
-    }
-  });
+      if (tween.scrollTrigger) fadeScrollTriggers.push(tween.scrollTrigger);
+    });
 
-  // Slide down from top
-  gsap.utils.toArray('[data-animate="slide-down"]').forEach((element) => {
-    gsap.fromTo(
-      element as Element,
-      {
-        opacity: 0,
-        y: -60,
-      },
-      {
-        opacity: 1,
-        y: 0,
-        duration: 0.8,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: element as Element,
-          start: "top 85%",
-          toggleActions: "play none none none",
+    gsap.utils.toArray('[data-animate="slide-left"]').forEach((element) => {
+      const tween = gsap.fromTo(
+        element as Element,
+        {
+          opacity: 0,
+          x: 60,
         },
-      }
-    );
-  });
+        {
+          opacity: 1,
+          x: 0,
+          duration: 0.8,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: element as Element,
+            start: "top 85%",
+            toggleActions: "play none none none",
+          },
+        }
+      );
+      if (tween.scrollTrigger) fadeScrollTriggers.push(tween.scrollTrigger);
+    });
 
-  // Slide in from right
-  gsap.utils.toArray('[data-animate="slide-left"]').forEach((element) => {
-    gsap.fromTo(
-      element as Element,
-      {
-        opacity: 0,
-        x: 60,
-      },
-      {
-        opacity: 1,
-        x: 0,
-        duration: 0.8,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: element as Element,
-          start: "top 85%",
-          toggleActions: "play none none none",
+    gsap.utils.toArray('[data-animate="slide-right"]').forEach((element) => {
+      const tween = gsap.fromTo(
+        element as Element,
+        {
+          opacity: 0,
+          x: -60,
         },
-      }
-    );
-  });
+        {
+          opacity: 1,
+          x: 0,
+          duration: 0.8,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: element as Element,
+            start: "top 85%",
+            toggleActions: "play none none none",
+          },
+        }
+      );
+      if (tween.scrollTrigger) fadeScrollTriggers.push(tween.scrollTrigger);
+    });
 
-  // Slide in from left
-  gsap.utils.toArray('[data-animate="slide-right"]').forEach((element) => {
-    gsap.fromTo(
-      element as Element,
-      {
-        opacity: 0,
-        x: -60,
-      },
-      {
-        opacity: 1,
-        x: 0,
-        duration: 0.8,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: element as Element,
-          start: "top 85%",
-          toggleActions: "play none none none",
+    gsap.utils.toArray('[data-animate="fade"]').forEach((element) => {
+      const tween = gsap.fromTo(
+        element as Element,
+        {
+          opacity: 0,
         },
-      }
-    );
-  });
+        {
+          opacity: 1,
+          duration: 1,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: element as Element,
+            start: "top 85%",
+            toggleActions: "play none none none",
+          },
+        }
+      );
+      if (tween.scrollTrigger) fadeScrollTriggers.push(tween.scrollTrigger);
+    });
 
-  // Simple fade in
-  gsap.utils.toArray('[data-animate="fade"]').forEach((element) => {
-    gsap.fromTo(
-      element as Element,
-      {
-        opacity: 0,
-      },
-      {
-        opacity: 1,
-        duration: 1,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: element as Element,
-          start: "top 85%",
-          toggleActions: "play none none none",
+    gsap.utils.toArray('[data-animate="stagger"]').forEach((container) => {
+      const items = (container as Element).children;
+      const tween = gsap.fromTo(
+        items,
+        {
+          opacity: 0,
+          y: 30,
         },
-      }
-    );
-  });
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          ease: "power2.out",
+          stagger: 0.1,
+          scrollTrigger: {
+            trigger: container as Element,
+            start: "top 85%",
+            toggleActions: "play none none none",
+          },
+        }
+      );
+      if (tween.scrollTrigger) fadeScrollTriggers.push(tween.scrollTrigger);
+    });
+  };
 
-  // Stagger children
-  gsap.utils.toArray('[data-animate="stagger"]').forEach((container) => {
-    const items = (container as Element).children;
-    gsap.fromTo(
-      items,
-      {
-        opacity: 0,
-        y: 30,
-      },
-      {
-        opacity: 1,
-        y: 0,
-        duration: 0.6,
-        ease: "power2.out",
-        stagger: 0.1,
-        scrollTrigger: {
-          trigger: container as Element,
-          start: "top 85%",
-          toggleActions: "play none none none",
-        },
-      }
-    );
-  });
+  checkAndAnimate();
 }
 
-// Reset function for theme changes
 export function resetFadeAnimations() {
   animationsInitialized = false;
-  ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+  fadeScrollTriggers.forEach(trigger => trigger.kill());
+  fadeScrollTriggers.length = 0;
 }

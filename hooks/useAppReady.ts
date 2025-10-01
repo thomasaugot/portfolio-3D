@@ -1,82 +1,92 @@
 "use client";
-
 import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import { ResourceLoader } from "@/services/resource-loader";
+import { loadGSAP } from "@/services/loaders/gsap-loader";
+import { loadThreeJS } from "@/services/loaders/three-loader";
+import { waitForDOMPaint } from "@/services/loaders/dom-loader";
+import { waitForHeroReady } from "@/services/loaders/hero-loader";
+import { createTranslationLoader } from "@/services/loaders/translation-loader";
+import { waitForFonts } from "@/services/loaders/fonts-loader";
 
-export function useAppReady(tasks: (() => Promise<void>)[]) {
+let globalIsReady = false;
+
+export function isAppReady() {
+  return globalIsReady;
+}
+
+export function useAppReady() {
   const [isReady, setIsReady] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const params = useParams();
+  const locale = (params?.locale as string) || "en";
 
   useEffect(() => {
     let mounted = true;
+    const MINIMUM_LOAD_TIME = 2000;
 
     async function loadAll() {
       try {
-        console.log('🚀 Starting app initialization...');
-        
-        // Always start timing from now
+        console.log("🚀 Starting app initialization...");
         const startTime = Date.now();
-        const minimumLoadTime = 2000; // 2 seconds minimum
-        
-        // Check if we're in a theme change state
-        const isThemeChanging = localStorage.getItem('theme-changing') === 'true';
-        
-        console.log('⏱️ Running initialization tasks...');
-        
-        // Run all tasks in parallel
-        await Promise.all(tasks.map(async (task, index) => {
-          try {
-            await task();
-            console.log(`✅ Task ${index + 1} completed`);
-          } catch (error) {
-            console.error(`❌ Task ${index + 1} failed:`, error);
+
+        const loader = new ResourceLoader();
+
+        loader.onProgress((prog) => {
+          if (mounted) {
+            setProgress(prog);
           }
-        }));
-        
-        console.log('📋 All tasks completed');
-        
-        // Calculate how much time has passed
+        });
+
+        loader.addTask("GSAP", loadGSAP, 1);
+        loader.addTask("Three.js", loadThreeJS, 2);
+        loader.addTask("Fonts", waitForFonts, 1);
+        loader.addTask(
+          "Translations",
+          createTranslationLoader(locale, ["common", "hero", "skills"]),
+          1
+        );
+        loader.addTask("DOM Paint", waitForDOMPaint, 1);
+        loader.addTask("Hero Container", waitForHeroReady, 2);
+
+        await loader.loadAll();
+
+        console.log("📋 All resources loaded");
+
         const elapsed = Date.now() - startTime;
-        const remainingTime = Math.max(0, minimumLoadTime - elapsed);
-        
-        console.log(`⏰ Elapsed: ${elapsed}ms, Remaining: ${remainingTime}ms`);
-        
-        // Always wait for the minimum time, even if tasks completed quickly
-        if (remainingTime > 0) {
-          console.log(`⏳ Waiting additional ${remainingTime}ms to meet minimum load time`);
-          await new Promise(resolve => setTimeout(resolve, remainingTime));
+        const remaining = Math.max(0, MINIMUM_LOAD_TIME - elapsed);
+
+        if (remaining > 0) {
+          console.log(
+            `⏳ Waiting additional ${remaining}ms to meet minimum load time`
+          );
+          await new Promise((resolve) => setTimeout(resolve, remaining));
         }
-        
-        // Clear theme changing flag if it was set
-        if (isThemeChanging) {
-          localStorage.removeItem('theme-changing');
-          console.log('🎨 Theme changing flag cleared');
-        }
-        
-        console.log('✨ App ready!');
-        
+
+        await new Promise((resolve) => setTimeout(resolve, 200));
+
+        console.log("✨ App ready!");
+
         if (mounted) {
+          globalIsReady = true;
           setIsReady(true);
         }
       } catch (error) {
         console.error("❌ App initialization failed:", error);
-        
-        // Even on failure, wait minimum time before showing app
-        const elapsed = Date.now() - (Date.now() - 2000);
-        if (elapsed < 2000) {
-          await new Promise(resolve => setTimeout(resolve, 2000 - elapsed));
-        }
-        
+
         if (mounted) {
-          setIsReady(true); // fail gracefully
+          globalIsReady = true;
+          setIsReady(true);
         }
       }
     }
 
     loadAll();
-    
+
     return () => {
       mounted = false;
     };
-  }, [tasks]);
+  }, [locale]);
 
-  return isReady;
+  return { isReady, progress };
 }
