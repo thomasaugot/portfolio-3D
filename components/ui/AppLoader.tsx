@@ -1,14 +1,15 @@
 "use client";
+
 import { useEffect, useRef } from "react";
 import { useTheme } from "@/components/theme/ThemeProvider";
 import { useTranslation } from "@/hooks/useTranslation";
 import { initLoaderAnimations } from "@/utils/animations/loader-animations";
 
 interface AppLoaderProps {
-  progress?: number;
+  progress: number;
 }
 
-export default function AppLoader({ progress = 0 }: AppLoaderProps) {
+export default function AppLoader({ progress }: AppLoaderProps) {
   const { isLight } = useTheme();
   const { t } = useTranslation();
   const loaderRef: any = useRef<HTMLDivElement>(null);

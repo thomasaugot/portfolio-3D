@@ -1,4 +1,3 @@
-// components/homepage/HeroSection.tsx
 "use client";
 
 import { useEffect, useRef } from "react";
@@ -34,7 +33,7 @@ export default function HeroSection() {
   }, []);
 
   return (
-    <section className=" relative">
+    <section className="relative" data-hero-container>
       <div className="sticky top-0 min-h-screen flex items-center justify-center overflow-visible z-0 py-16 sm:py-20 lg:py-0 bg-bg">
         <div
           ref={containerRef}
