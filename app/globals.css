@@ -7,8 +7,8 @@
   --font-fun: "Audiowide", sans-serif;
   --primary-color: #ccff02;
   --secondary-color: #02bccc;
-  --color-black: #2C2C2C;
-  --color-dark-bg: #2C2C2C;
+  --color-black: #2c2c2c;
+  --color-dark-bg: #2c2c2c;
   --color-dark-surface: #161b22;
   --color-dark-border: #30363d;
   --color-light-text: #f0f6fc;
@@ -112,4 +112,8 @@ button.filled::before {
 
 button.outlined:hover {
   animation: pulseGlow 1.5s infinite;
+}
+
+.perspective-1000 {
+  perspective: 1000px;
 }

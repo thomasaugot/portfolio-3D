@@ -1,0 +1,311 @@
+You are a professional creative web designer and developer specialized in Next.js 15, TypeScript, TailwindCSS (with my custom theme), GSAP, and Three.js.
+I want you to design and build a cinematic portfolio landing page that works for both:
+
+Hiring managers / companies (who want to evaluate me as a fullstack developer for a job)
+
+Potential freelance clients (who want to hire me for projects).
+
+⚡ The page must feel professional, artistic, and futuristic, with high-impact animations and a clear flow.
+⚡ The design should balance credibility for companies with wow factor for clients.
+⚡ The animations should feel like a continuous timeline, not random triggers.
+
+🔑 General Rules
+
+Use Next.js 15 App Router + TypeScript.
+
+Use TailwindCSS with my provided theme variables and fonts:
+
+--font-inter: "Inter", sans-serif;
+--font-mono: "JetBrains Mono", monospace;
+--font-fun: "Audiowide", sans-serif;
+
+--primary-color: #ccff02;
+--secondary-color: #02bccc;
+
+--color-bg: var(--color-bg);
+--color-text: var(--color-text);
+--color-text-muted: var(--color-text-muted);
+--color-surface: var(--color-surface);
+--color-border: var(--color-border);
+
+
+Gradients must use my predefined classes: .gradient-primary, .gradient-primary-hover, .gradient-primary-reverse.
+
+Animations can use my custom keyframes: orbit, particleFloat, pulseGlow.
+
+Typography:
+
+Headings → font-fun
+
+Body → font-inter
+
+Code/Labels → font-mono
+
+Animations must use GSAP + ScrollTrigger.
+
+Interactive 3D must use Three.js with React cleanup.
+
+Everything must be mobile-first responsive.
+
+🎬 Section-by-Section Flow
+1. Hero Section (Already Built)
+
+✅ Keep my 3D hex grid, models, scroll transition.
+Do NOT replace it. Work with it as the cinematic intro.
+
+2. Skills Section
+
+🎯 Show skills clearly, but dynamic.
+
+Glassmorphic cards: Tailwind backdrop-blur-lg bg-surface/70 border border-border rounded-2xl.
+
+Floating Three.js icons (React, GSAP, Docker, Node) orbit subtly in background using orbit keyframes.
+
+Hover: card lifts (translate-y-[-6px] scale-105) + glowing border (shadow-[0_0_20px_var(--primary-color)]).
+
+3. Projects Section
+
+🎯 Cinematic showcase.
+
+Each project = full-screen scroll panel.
+
+ScrollTrigger animation:
+
+Project image/video (placeholder = https://placehold.co/800x500) slides from left.
+
+Text fades/slides from right.
+
+Background hue shifts (use .gradient-primary-reverse overlays).
+
+Optional: use Three.js device mockup with screenshot texture (laptop, phone).
+
+Scroll = mockup slowly rotates (gsap.to(rotation.y, …)).
+
+4. Highlights Section
+
+🎯 Quick proof of experience.
+
+Animated counters (0 → 20+ projects, 0 → 5+ years).
+
+SVG path line animation → connects highlight cards like a timeline.
+
+Cards: Tailwind glass style (bg-surface/60 border border-border shadow-xl).
+
+Animate sequential entry with GSAP stagger.
+
+5. Process Section
+
+🎯 Show workflow clarity.
+
+Horizontal pinned scroll (3 steps: Discover → Build → Launch).
+
+Each step fills screen as user scrolls horizontally.
+
+Add small 3D icons (lightbulb, gears, rocket) floating in background.
+
+Rocket leaves a particle trail using particleFloat keyframe.
+
+6. About Me Section
+
+🎯 Human side.
+
+Background: Three.js globe with glowing connection arcs.
+
+Text: glitch typewriter effect (font-mono uppercase text-muted).
+
+Photos: Polaroid-style images stagger in with GSAP rotation.
+
+Small flags bounce with hover micro-interaction (scale-110 animate-bounce).
+
+7. Contact / CTA Section
+
+🎯 Final punch.
+
+Floating glass contact card (bg-surface/50 backdrop-blur-xl border border-border).
+
+Background: Three.js particle field.
+
+CTA Button:
+
+Magnetic hover effect (scale-105 rotate-1).
+
+pulseGlow animation on hover border.
+
+Ripple effect on click (gsap radialGradient expand).
+
+🔄 Section Transitions (Cinematic Flow)
+
+Hero → Skills: hex grid collapses into divider → Skills fade in.
+
+Skills → Projects: diagonal gradient wipe + blur out skills.
+
+Projects → Highlights: background brightens, counters slide up.
+
+Highlights → Process: timeline line extends seamlessly into Process scroll.
+
+Process → About: rocket launch triggers globe spin.
+
+About → Contact: photo grid collapses → floating contact card emerges.
+
+🛠️ Technical Deliverables
+
+Full page.tsx with sections in order.
+
+Individual React components with Tailwind classes applied.
+
+GSAP timelines in custom hooks (useGSAPAnimations).
+
+Three.js integrated with proper cleanup in React.
+
+Placeholders for images/videos (https://placehold.co/ or https://picsum.photos/).
+
+Animations must follow my color palette and theme variables exactly.
+
+Task: Build a professional, cinematic developer portfolio for Thomas Augot using Next.js 15 + Tailwind CSS + GSAP.
+The Hero and Skills sections remain exactly as implemented (your Three.js hero + GSAP scroll transition and your Skills grid).
+This prompt defines everything after Skills.
+
+🏗️ Section Order (After Skills)
+3. Projects (Portfolio Showcase)
+
+Layout: full-viewport sections (scroll-snapped). Each project takes 100vh.
+
+Projects:
+
+Dos × Dos Internal App — CRM redesign, added usability & features.
+
+Energía Solar Canarias — real-time dashboards, multiple API integrations.
+
+Galaga Agency Website — animated, SEO-optimized agency site.
+
+Osly Solutions App — React Native building access app, App Store + Play Store.
+
+Visuals:
+
+Each project = image mockup or short demo video background.
+
+Title + tagline overlay.
+
+Animations (GSAP):
+
+Parallax: background image moves slower than overlay text.
+
+Split text reveal for titles (letters slide upward).
+
+Mockup hover = subtle 3D CSS tilt.
+
+Transition: last project dissolves → morphs into stats.
+
+4. Highlights (Stats / Quick Credibility)
+
+Content:
+
+20+ Projects Delivered
+
+3+ Years Experience
+
+Worked in 4 Countries
+
+Trilingual: FR | EN | ES
+
+Layout: 2×2 grid of stat cards.
+
+Animations:
+
+GSAP number tween (0 → final).
+
+Cards fade + scale in stagger.
+
+On complete, brief glow pulse.
+
+Transition: counters shrink and fold into a horizontal line → becomes Process diagram.
+
+5. Process (Your Workflow)
+
+Steps: Discover → Build → Launch.
+
+Layout: horizontal 3-step timeline.
+
+Icons: lightbulb, gears, rocket.
+
+Animations:
+
+GSAP line-drawing effect traces the timeline.
+
+Icons pop in sequentially.
+
+Rocket wiggles at the end.
+
+Transition: rocket launches upward → screen fade reveals About.
+
+6. About Me (Personal Story)
+
+Layout: split-screen.
+
+Left: photo of you (or placeholder, later replaceable).
+
+Right: text blocks.
+
+Text (shortened + web-ready):
+
+“Career-changer from hospitality → tech. Now coding by the ocean in Gran Canaria.”
+
+“Frontend specialist with React, Next.js, GSAP. Curious, adventurous, creative.”
+
+“Certified: React Native Developer, CSS, HTML, Version Control.”
+
+Extras: certifications displayed as badge icons under text.
+
+Animations:
+
+Typewriter effect for the intro line.
+
+Photo slow zoom.
+
+Badges fade in staggered.
+
+Transition: fade out into Contact.
+
+7. Contact (Final CTA)
+
+Layout: centered glassmorphic card with backdrop blur.
+
+Content:
+
+Email: thomas.augot@hotmail.fr
+
+LinkedIn: linkedin.com/in/thomas-augot
+
+Location: Las Palmas, Spain
+
+CTA Button: “Let’s Build Together”
+
+Animations:
+
+Card fade + rise from bottom.
+
+CTA button has pulseGlow loop animation.
+
+Background has a subtle animated gradient shift.
+
+⚡ Technical Rules
+
+Hero + Skills → keep as-is (your existing Three.js + GSAP + Tailwind implementation).
+
+Everything after = new sections defined above.
+
+Animations: GSAP only (no more Three.js after Hero).
+
+Layout: responsive, mobile-first with Tailwind.
+
+Code: modular (/components, /sections, /hooks/animations).
+
+Content: use real portfolio details (no filler text).
+
+👉 That’s now the precise prompt:
+
+Hero + Skills untouched.
+
+Projects → Highlights → Process → About → Contact fully defined with exact animations + content.
+
+Professional, cinematic, not gimmicky.
