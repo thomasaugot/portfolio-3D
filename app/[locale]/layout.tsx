@@ -1,4 +1,3 @@
-// app/[locale]/layout.tsx
 import type { Metadata } from "next";
 import "../globals.css";
 import { TranslationProvider } from "@/hooks/useTranslation";
