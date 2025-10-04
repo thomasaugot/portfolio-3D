@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useTranslation } from "@/hooks/useTranslation";
+import { useTranslation } from "@/lib/TranslationProvider";
 import { useTheme } from "@/components/theme/ThemeProvider";
 import { Button } from "@/components/ui/Button";
 import { initHero3DScene } from "@/utils/animations/hero-3d-animations";

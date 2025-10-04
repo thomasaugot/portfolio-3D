@@ -1,0 +1,109 @@
+{
+  "common": {
+    "cta": {
+      "view_full_case": "Ver Caso Completo"
+    }
+  },
+  "categories": {
+    "corporate_web": "Sitio Corporativo",
+    "internal_platform": "Plataforma Interna",
+    "crm_platform": "Plataforma CRM",
+    "business_website": "Sitio Profesional"
+  },
+  "dosxdos_web": {
+    "title": "Sitio Corporativo 2.0 + Panel Admin",
+    "preview": {
+      "tagline": "Transformación digital para un estudio de diseño de lujo",
+      "description": "Rediseño completo del sitio corporativo con sistema de gestión de contenidos integrado. Entrega de una plataforma moderna y optimizada SEO que refleja la excelencia creativa de la marca.",
+      "key_points": {
+        "modern_experience": "Experiencia animada e interactiva construida con Next.js 15 y GSAP",
+        "admin_panel": "Panel de administración personalizado con editor Lexical para gestión autónoma de contenido",
+        "seo_optimization": "Implementación SEO avanzada con JSON-LD y metadatos dinámicos"
+      }
+    },
+    "details": {
+      "challenge": "Dos por Dos necesitaba una presencia digital alineada con su trabajo de diseño comercial de alta gama. Su sitio anterior era estático, carecía de estructura de portfolio, no tenía estrategia SEO y no ofrecía forma de gestionar contenido de manera independiente.",
+      "solution": "Construí una plataforma web completa con dos componentes: un sitio público animado mostrando servicios, portfolio y blog; y un panel de administración privado permitiendo al equipo publicar y gestionar contenido sin dependencia de desarrolladores.",
+      "technical_approach": "Desarrollado con Next.js 15 (App Router) para SEO y rendimiento óptimos. Animaciones GSAP implementadas en todo el sitio, Zustand para gestión de estado, Lexical como editor de texto enriquecido, NextAuth para autenticación y procesamiento Markdown para contenido. Todo estilizado con SCSS modular siguiendo enfoque mobile-first. Formulario de contacto integrado con Zoho CRM.",
+      "results": "La plataforma posiciona exitosamente a Dos por Dos en el nivel digital que merece su trabajo. El sitio comunica excelencia visual a través de animaciones modernas y diseño limpio mientras proporciona autonomía completa de contenido al equipo interno.",
+      "impact": {
+        "user_experience": "Experiencia de navegación atractiva y coherente con la marca",
+        "organic_visibility": "Aumento inmediato en visibilidad orgánica mediante base técnica SEO y contenido de blog",
+        "content_autonomy": "Gestión eficiente de contenido sin dependencia de desarrolladores",
+        "performance": "Rendimiento optimizado en móvil y escritorio con mejora en Core Web Vitals",
+        "scalability": "Arquitectura escalable lista para crecimiento futuro sin reestructuración"
+      }
+    }
+  },
+  "dosxdos_app": {
+    "title": "Plataforma de Gestión Interna - Rediseño Móvil",
+    "preview": {
+      "tagline": "Reconstrucción de herramientas operativas para equipos de campo",
+      "description": "Rediseño completo de plataforma interna CRM/gestión de proyectos. Transformación de herramienta web obsoleta en aplicación optimizada para móvil desplegada como apps nativas iOS y Android.",
+      "key_points": {
+        "mobile_optimization": "Rediseño mobile-first para instaladores y responsables de rutas trabajando en campo",
+        "route_management": "Integración de mapa interactivo, reporte de incidencias y notificaciones en tiempo real",
+        "native_deployment": "Despliegue WebView como apps descargables iOS y Android"
+      }
+    },
+    "details": {
+      "challenge": "Dos × Dos contaba con un sistema CRM/REP funcional en Zoho, pero su herramienta web complementaria para coordinación de rutas y visualización de puntos de venta estaba obsoleta. La estructura rígida carecía de diseño responsive, dificultaba navegación móvil y no se adaptaba a necesidades operativas actuales de equipos en campo.",
+      "solution": "Rediseñé y escalé la plataforma interna manteniendo integración con Zoho. La nueva aplicación ofrece visualización clara de rutas mediante mapas interactivos, registro de incidencias, notificaciones en tiempo real, todo optimizado para dispositivos móviles y desplegado como apps instalables via WebView.",
+      "technical_approach": "Rediseño completo de interfaz para claridad y estética moderna, especialmente en móvil. Refactorización de componentes y flujos de navegación para simplificar acciones de usuario críticas. Corrección de bugs acumulados mejorando estabilidad y fiabilidad. Optimización responsive y comportamiento adaptativo en todos los tamaños de pantalla. Despliegue como app híbrida instalable en iOS y Android mediante integración WebView.",
+      "results": "El rediseño mejoró significativamente la calidad y usabilidad de la plataforma interna de Dos × Dos sin alterar funcionalidades principales ni integraciones previas con Zoho.",
+      "impact": {
+        "usability": "Interfaz más profesional y adaptada a móvil con jerarquía visual clara",
+        "navigation": "Navegación simplificada con rutas de usuario eficientes y fricción reducida en tareas repetitivas",
+        "stability": "Mayor estabilidad y confianza técnica mediante corrección de errores que afectaban operaciones diarias",
+        "multiplatform": "Disponibilidad cross-plataforma real como apps descargables iOS y Android"
+      }
+    }
+  },
+  "energia_solar": {
+    "title": "Plataforma de Monitorización de Plantas Solares - CRM",
+    "preview": {
+      "tagline": "Centralizando datos de energía solar para clientes y operaciones",
+      "description": "Plataforma full-stack unificando múltiples proveedores solares en una interfaz única. Sistema de doble rol: dashboard de monitorización para clientes y CRM interno para gestión de plantas.",
+      "key_points": {
+        "data_unification": "Punto de acceso único consolidando datos de Victron, SolarEdge y GoodWe",
+        "dual_interface": "Dashboard de cliente para monitorización + CRM admin para gestión de usuarios y plantas",
+        "native_experience": "Despliegue WebView proporcionando experiencia de app nativa en iOS y Android"
+      }
+    },
+    "details": {
+      "challenge": "Los clientes de Energía Solar Canarias accedían a diferentes plataformas externas (Victron, SolarEdge, GoodWe) cada una con interfaces y credenciales separadas. La empresa carecía de herramienta propia para centralizar datos, gestionar usuarios y plantas, controlar precios o calcular ingresos. El acceso móvil estaba fragmentado mediante versiones web no optimizadas o apps de terceros.",
+      "solution": "Desarrollé una aplicación web modular con acceso basado en roles. Los clientes obtienen acceso unificado a todas sus plantas con visualización clara de producción, consumo, carga de batería, ahorros y alertas. Los administradores obtienen un CRM completo para gestionar usuarios, asignar plantas, revisar instalaciones y modificar contratos. Todos los datos de diferentes proveedores se muestran en formato visualmente consistente y unificado.",
+      "technical_approach": "Construido con Next.js (App Router) y Tailwind CSS para escalabilidad y consistencia. Redux Toolkit gestiona estado global con slices específicos por dominio y persistencia selectiva. Sistema de cálculo económico personalizado basado en rangos de precio definidos por admin. React Hook Form maneja formularios complejos. Framer Motion proporciona animaciones fluidas. Contenedores WebView entregan experiencia de app nativa iOS y Android.",
+      "results": "La plataforma centraliza exitosamente todos los datos solares, gestión de usuarios, alertas y cálculos personalizados en un sistema unificado. Redujo drásticamente el trabajo manual del equipo admin mientras mejora radicalmente la experiencia del cliente.",
+      "impact": {
+        "centralization": "Plataforma única consolidando datos, usuarios, alertas y cálculos personalizados",
+        "operational_efficiency": "Reducción de trabajo manual para equipo de administración",
+        "user_experience": "Mejora radical en experiencia del cliente: más intuitiva, visual, accesible y completa",
+        "control": "Mayor control operativo y eficiencia para Energía Solar Canarias"
+      }
+    }
+  },
+  "charpente_durand": {
+    "title": "Sitio Profesional para Empresa de Carpintería",
+    "preview": {
+      "tagline": "Construcción de presencia online para experiencia local en carpintería",
+      "description": "Sitio web profesional desarrollado para establecer presencia online y competir efectivamente en el mercado local. Enfoque en optimización SEO y generación de leads.",
+      "key_points": {
+        "seo_boost": "Estructura optimizada SEO para superar competencia local",
+        "online_presence": "Sitio web moderno y profesional reflejando calidad artesanal",
+        "lead_generation": "Integración de formulario de contacto para adquisición directa de clientes"
+      }
+    },
+    "details": {
+      "challenge": "Charpente Menuiserie Durand necesitaba presencia online más fuerte para competir efectivamente en su mercado local. Como empresa de carpintería en Francia, requerían mejor posicionamiento SEO y escaparate digital profesional para atraer nuevos clientes y apoyar crecimiento del negocio.",
+      "solution": "Desarrollé un sitio web profesional optimizado para motores de búsqueda y visibilidad local. El sitio presenta sus servicios de carpintería claramente, muestra su trabajo y facilita contacto con clientes mediante sistema de formulario integrado.",
+      "technical_approach": "Construido con Next.js para excelentes capacidades SEO y rendimiento. Estilizado completamente con Tailwind CSS para estética limpia y profesional. Implementación de EmailJS para funcionalidad de formulario de contacto. Desplegado en Vercel con configuración optimizada para carga rápida y fiabilidad.",
+      "results": "El sitio web proporciona a Charpente Durand una presencia digital profesional que representa efectivamente la calidad de su artesanía y les permite competir más efectivamente en su mercado local.",
+      "impact": {
+        "visibility": "Visibilidad mejorada en motores de búsqueda para servicios de carpintería locales",
+        "professional_image": "Escaparate digital profesional reflejando calidad del trabajo",
+        "client_acquisition": "Generación directa de leads mediante sistema de contacto integrado"
+      }
+    }
+  }
+}

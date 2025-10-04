@@ -31,8 +31,21 @@ export function TranslationProvider({ children }: { children: React.ReactNode })
 
   const loadTranslations = async (lang: Language) => {
     try {
-      const response = await import(`@/locales/${lang}.json`);
-      setTranslations(response.default);
+      const [nav, homepage, portfolio, common] = await Promise.all([
+        import(`@/locales/${lang}/nav.json`),
+        import(`@/locales/${lang}/homepage.json`),
+        import(`@/locales/${lang}/portfolio.json`),
+        import(`@/locales/${lang}/common.json`)
+      ]);
+
+      const merged = {
+        nav: nav.default,
+        homepage: homepage.default,
+        portfolio: portfolio.default,
+        common: common.default
+      };
+
+      setTranslations(merged);
     } catch (error) {
       console.error(`Failed to load translations for ${lang}:`, error);
     }

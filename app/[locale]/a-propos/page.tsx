@@ -1,6 +1,7 @@
 'use client'
 
-import { useTranslation } from '@/hooks/useTranslation'
+import { useTranslation } from "@/lib/TranslationProvider"
+
 
 export default function AboutPage() {
   const { t } = useTranslation()

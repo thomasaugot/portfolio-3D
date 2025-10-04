@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { useTranslation } from "@/hooks/useTranslation";
+import { useTranslation } from "@/lib/TranslationProvider";
 import { useTheme } from "@/components/theme/ThemeProvider";
 import { useMenuAnimations } from "@/hooks/useMenuAnimations";
 import { getLocalizedMenuItems } from "@/data/menu";

@@ -1,4 +1,3 @@
-// hooks/useGSAPAnimations.ts
 'use client'
 
 import { useEffect } from 'react'

@@ -1,0 +1,20 @@
+{
+  "home": "Accueil",
+  "home_description": "Retour à l'accueil",
+  "about": "À propos",
+  "about_description": "Parcours & expertise",
+  "portfolio": "Portfolio",
+  "portfolio_description": "Projets sélectionnés & études de cas",
+  "blog": "Blog",
+  "blog_description": "Réflexions sur le développement & le design",
+  "contact_description": "Construisons quelque chose ensemble",
+  "languages": "langues",
+  "contact": {
+    "menu-item": "Contact",
+    "title": "Contact Direct",
+    "email": "Email",
+    "schedule": "Calendrier",
+    "whatsapp": "WhatsApp",
+    "bookCall": "Réserver un appel"
+  }
+}
