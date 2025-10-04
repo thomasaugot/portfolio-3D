@@ -1,0 +1,41 @@
+{
+  "cta": {
+    "view_project": "View Project",
+    "view_case_study": "View Case Study",
+    "learn_more": "Learn More",
+    "get_in_touch": "Get in Touch",
+    "contact_me": "Contact Me",
+    "download_cv": "Download CV",
+    "back_to_home": "Back to Home",
+    "see_all_projects": "See All Projects"
+  },
+  "labels": {
+    "year": "Year",
+    "client": "Client",
+    "role": "Role",
+    "technologies": "Technologies",
+    "category": "Category",
+    "duration": "Duration",
+    "status": "Status"
+  },
+  "status": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "success": "Success",
+    "not_found": "Not Found"
+  },
+  "messages": {
+    "try_again": "Try Again",
+    "no_results": "No results found",
+    "coming_soon": "Coming Soon"
+  },
+  "project": {
+    "challenge": "Challenge",
+    "solution": "Solution",
+    "technical_approach": "Technical Approach",
+    "results": "Results",
+    "impact": "Impact",
+    "overview": "Overview",
+    "description": "Description"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "cta": {
+    "view_project": "Ver Proyecto",
+    "view_case_study": "Ver Caso de Estudio",
+    "learn_more": "Saber Más",
+    "get_in_touch": "Ponerse en Contacto",
+    "contact_me": "Contáctame",
+    "download_cv": "Descargar CV",
+    "back_to_home": "Volver al Inicio",
+    "see_all_projects": "Ver Todos los Proyectos"
+  },
+  "labels": {
+    "year": "Año",
+    "client": "Cliente",
+    "role": "Rol",
+    "technologies": "Tecnologías",
+    "category": "Categoría",
+    "duration": "Duración",
+    "status": "Estado"
+  },
+  "status": {
+    "loading": "Cargando...",
+    "error": "Algo salió mal",
+    "success": "Éxito",
+    "not_found": "No Encontrado"
+  },
+  "messages": {
+    "try_again": "Intentar de Nuevo",
+    "no_results": "No se encontraron resultados",
+    "coming_soon": "Próximamente"
+  },
+  "project": {
+    "challenge": "Desafío",
+    "solution": "Solución",
+    "technical_approach": "Enfoque Técnico",
+    "results": "Resultados",
+    "impact": "Impacto",
+    "overview": "Resumen",
+    "description": "Descripción"
+  }
+}

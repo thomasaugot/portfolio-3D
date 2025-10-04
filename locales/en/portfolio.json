@@ -1,0 +1,109 @@
+{
+  "common": {
+    "cta": {
+      "view_full_case": "View Full Case Study"
+    }
+  },
+  "categories": {
+    "corporate_web": "Corporate Website",
+    "internal_platform": "Internal Platform",
+    "crm_platform": "CRM Platform",
+    "business_website": "Business Website"
+  },
+  "dosxdos_web": {
+    "title": "Corporate Website 2.0 + Admin Panel",
+    "preview": {
+      "tagline": "Transforming digital presence for a luxury design studio",
+      "description": "Complete redesign of the corporate website with integrated content management system. Delivered a modern, SEO-optimized platform that reflects the brand's creative excellence.",
+      "key_points": {
+        "modern_experience": "Animated, interactive experience built with Next.js 15 and GSAP",
+        "admin_panel": "Custom admin panel with Lexical editor for autonomous content management",
+        "seo_optimization": "Advanced SEO implementation with JSON-LD and dynamic metadata"
+      }
+    },
+    "details": {
+      "challenge": "Dos por Dos needed a digital presence aligned with their high-end commercial design work. Their previous site was static, lacked portfolio structure, had no SEO strategy, and provided no way to manage content independently.",
+      "solution": "I built a complete web platform with two components: a public-facing animated website showcasing services, portfolio, and blog; and a private admin panel enabling the team to publish and manage content without developer dependency.",
+      "technical_approach": "Built with Next.js 15 (App Router) for optimal SEO and performance. Implemented GSAP animations throughout, Zustand for state management, Lexical as rich text editor, NextAuth for authentication, and Markdown processing for content. All styled with modular SCSS following mobile-first approach. Contact form integrated with Zoho CRM.",
+      "results": "The platform successfully positions Dos por Dos at the digital level their work deserves. The site communicates visual excellence through modern animations and clean design while providing full content autonomy to the internal team.",
+      "impact": {
+        "user_experience": "Engaging, brand-coherent navigation experience",
+        "organic_visibility": "Immediate increase in organic visibility through technical SEO foundation and blog content",
+        "content_autonomy": "Efficient content management without developer dependency",
+        "performance": "Optimized performance on mobile and desktop with improved Core Web Vitals",
+        "scalability": "Scalable architecture ready for future growth without restructuring"
+      }
+    }
+  },
+  "dosxdos_app": {
+    "title": "Internal Management Platform - Mobile Redesign",
+    "preview": {
+      "tagline": "Rebuilding operational tools for field teams",
+      "description": "Complete redesign of internal CRM/project management platform. Transformed an outdated web tool into a mobile-optimized application deployed as native iOS and Android apps.",
+      "key_points": {
+        "mobile_optimization": "Mobile-first redesign for installers and route managers working in the field",
+        "route_management": "Interactive map integration, incident reporting, and real-time notifications",
+        "native_deployment": "WebView deployment as downloadable iOS and Android apps"
+      }
+    },
+    "details": {
+      "challenge": "Dos × Dos had a functional CRM/REP system on Zoho, but their complementary web tool for route coordination and point-of-sale visualization was outdated. The rigid structure lacked responsive design, hindered mobile navigation, and didn't meet current operational needs of field teams.",
+      "solution": "I redesigned and scaled the internal platform while maintaining Zoho integration. The new application provides clear route visualization via interactive maps, incident registration, real-time notifications, all optimized for mobile devices and deployed as installable apps via WebView.",
+      "technical_approach": "Complete interface redesign for clarity and modern aesthetics, especially on mobile. Refactored components and navigation flows to simplify critical user actions. Fixed accumulated bugs improving stability and reliability. Ensured responsive optimization and adaptive behavior across all screen sizes. Deployed as hybrid installable app on iOS and Android through WebView integration.",
+      "results": "The redesign significantly improved the quality and usability of Dos × Dos internal platform without altering core functionality or previous Zoho integrations.",
+      "impact": {
+        "usability": "More professional, mobile-adapted interface with clear visual hierarchy",
+        "navigation": "Simplified navigation with efficient user routes and reduced friction in repetitive tasks",
+        "stability": "Increased stability and technical confidence through bug fixes affecting daily operations",
+        "multiplatform": "Real cross-platform availability as downloadable iOS and Android apps"
+      }
+    }
+  },
+  "energia_solar": {
+    "title": "Solar Plant Monitoring Platform - CRM",
+    "preview": {
+      "tagline": "Centralizing solar energy data for clients and operations",
+      "description": "Full-stack platform unifying multiple solar providers into a single interface. Built dual role system: client monitoring dashboard and internal CRM for plant management.",
+      "key_points": {
+        "data_unification": "Single access point consolidating Victron, SolarEdge, and GoodWe data",
+        "dual_interface": "Client dashboard for monitoring + admin CRM for user and plant management",
+        "native_experience": "WebView deployment providing native app experience on iOS and Android"
+      }
+    },
+    "details": {
+      "challenge": "Energía Solar Canarias clients accessed different external platforms (Victron, SolarEdge, GoodWe) each with separate interfaces and credentials. The company lacked a proprietary tool to centralize data, manage users and plants, control pricing, or calculate revenue. Mobile access was fragmented through non-optimized web versions or third-party apps.",
+      "solution": "I developed a modular web application with role-based access. Clients get unified access to all their plants with clear visualization of production, consumption, battery charge, savings, and alerts. Administrators get a complete CRM to manage users, assign plants, review installations, and modify contracts. All data from different providers displays in a visually consistent, unified format.",
+      "technical_approach": "Built with Next.js (App Router) and Tailwind CSS for scalability and consistency. Redux Toolkit manages global state with domain-specific slices and selective persistence. Implemented custom economic calculation system based on admin-defined price ranges. React Hook Form handles complex forms. Framer Motion provides smooth animations. WebView containers deliver native-like iOS and Android app experience.",
+      "results": "The platform successfully centralizes all solar data, user management, alerts, and custom calculations into one unified system. It drastically reduced manual work for the admin team while radically improving client experience.",
+      "impact": {
+        "centralization": "Single platform consolidating data, users, alerts, and custom calculations",
+        "operational_efficiency": "Reduced manual work for administration team",
+        "user_experience": "Radical improvement in client experience: more intuitive, visual, accessible, and complete",
+        "control": "Greater operational control and efficiency for Energía Solar Canarias"
+      }
+    }
+  },
+  "charpente_durand": {
+    "title": "Business Website for Carpentry Company",
+    "preview": {
+      "tagline": "Building online presence for local carpentry expertise",
+      "description": "Professional website built to establish online presence and compete effectively in the local market. Focused on SEO optimization and lead generation.",
+      "key_points": {
+        "seo_boost": "SEO-optimized structure to outrank local competition",
+        "online_presence": "Modern, professional website reflecting quality craftsmanship",
+        "lead_generation": "Contact form integration for direct client acquisition"
+      }
+    },
+    "details": {
+      "challenge": "Charpente Menuiserie Durand needed stronger online presence to compete effectively in their local market. As a carpentry company in France, they required better SEO positioning and a professional digital showcase to attract new clients and support business growth.",
+      "solution": "I developed a professional business website optimized for search engines and local visibility. The site presents their carpentry services clearly, showcases their work, and facilitates client contact through an integrated form system.",
+      "technical_approach": "Built with Next.js for excellent SEO capabilities and performance. Styled entirely with Tailwind CSS for clean, professional aesthetics. Implemented EmailJS for contact form functionality. Deployed on Vercel with optimized configuration for fast loading and reliability.",
+      "results": "The website provides Charpente Durand with a professional digital presence that effectively represents their craftsmanship quality and enables them to compete more effectively in their local market.",
+      "impact": {
+        "visibility": "Improved search engine visibility for local carpentry services",
+        "professional_image": "Professional digital showcase reflecting quality work",
+        "client_acquisition": "Direct lead generation through integrated contact system"
+      }
+    }
+  }
+}

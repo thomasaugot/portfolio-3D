@@ -1,0 +1,20 @@
+{
+  "home": "Inicio",
+  "home_description": "Volver al inicio",
+  "about": "Acerca de",
+  "about_description": "Trayectoria y experiencia",
+  "portfolio": "Portfolio",
+  "portfolio_description": "Proyectos seleccionados y casos de estudio",
+  "blog": "Blog",
+  "blog_description": "Reflexiones sobre desarrollo y diseño",
+  "contact_description": "Construyamos algo juntos",
+  "languages": "idiomas",
+  "contact": {
+    "menu-item": "Contacto",
+    "title": "Contacto Directo",
+    "email": "Email",
+    "schedule": "Agenda",
+    "whatsapp": "WhatsApp",
+    "bookCall": "Reservar una llamada"
+  }
+}

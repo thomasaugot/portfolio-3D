@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { useTheme } from "@/components/theme/ThemeProvider";
-import { useTranslation } from "@/hooks/useTranslation";
+import { useTranslation } from "@/lib/TranslationProvider"
 import { initLoaderAnimations } from "@/utils/animations/loader-animations";
 
 interface AppLoaderProps {
@@ -29,7 +29,7 @@ export default function AppLoader({ progress }: AppLoaderProps) {
         className="text-4xl md:text-5xl font-bold mb-8 text-text"
         style={{ fontFamily: "var(--font-display)" }}
       >
-        {t("common.loading")}
+        {t("common.status.loading")}
       </div>
 
       <div className="w-60 md:w-80 h-1 overflow-hidden rounded-full bg-border">

@@ -1,30 +1,30 @@
 "use client";
 
+import { useTranslation } from "@/lib/TranslationProvider";
+
 export default function SkillsSection() {
+  const { t } = useTranslation();
+
   const services = [
     {
-      title: "Web Development",
-      description:
-        "Fast, modern websites and web applications built for performance and user experience",
-      skills: "React, Next.js, TypeScript, Node.js",
+      title: t("homepage.services.web_development.title"),
+      description: t("homepage.services.web_development.description"),
+      skills: t("homepage.services.web_development.skills"),
     },
     {
-      title: "UI/UX Design",
-      description:
-        "Beautiful, intuitive interfaces that users love and converts visitors into customers",
-      skills: "Tailwind CSS, SCSS, Responsive Design",
+      title: t("homepage.services.ui_ux.title"),
+      description: t("homepage.services.ui_ux.description"),
+      skills: t("homepage.services.ui_ux.skills"),
     },
     {
-      title: "Interactive Experiences",
-      description:
-        "Smooth animations and engaging interactions that bring your brand to life",
-      skills: "GSAP, Framer Motion, Three.js",
+      title: t("homepage.services.interactive.title"),
+      description: t("homepage.services.interactive.description"),
+      skills: t("homepage.services.interactive.skills"),
     },
     {
-      title: "Mobile Apps",
-      description:
-        "Native mobile applications for iOS and Android from a single codebase",
-      skills: "React Native",
+      title: t("homepage.services.mobile.title"),
+      description: t("homepage.services.mobile.description"),
+      skills: t("homepage.services.mobile.skills"),
     },
   ];
 
@@ -38,14 +38,14 @@ export default function SkillsSection() {
       <div className="relative z-10 max-w-6xl mx-auto px-8 w-full">
         <div className="text-center mb-24">
           <h2 className="text-6xl md:text-8xl font-bold mb-6">
-            Services &
+            {t("homepage.services.section_title_1")}
             <br />
             <span className="gradient-primary bg-clip-text text-transparent font-light">
-              Expertise
+              {t("homepage.services.section_title_2")}
             </span>
           </h2>
           <p className="text-xl text-text-muted max-w-2xl mx-auto">
-            Full-stack solutions from concept to deployment
+            {t("homepage.services.section_subtitle")}
           </p>
         </div>
 
@@ -77,10 +77,10 @@ export default function SkillsSection() {
         <div className="flex flex-col md:flex-row items-center justify-center gap-12">
           <div data-stat className="text-center">
             <div className="text-5xl font-bold gradient-primary bg-clip-text text-transparent mb-2">
-              3+
+              {t("homepage.stats.years")}
             </div>
             <div className="text-sm text-muted uppercase tracking-wider">
-              Years Experience
+              {t("homepage.stats.years_label")}
             </div>
           </div>
 
@@ -89,11 +89,11 @@ export default function SkillsSection() {
           <div data-stat className="text-center">
             <div className="text-5xl font-bold mb-2">
               <div className="gradient-primary bg-clip-text text-transparent leading-tight">
-                FR / EN / ES
+                {t("homepage.stats.languages")}
               </div>
             </div>
             <div className="text-sm text-muted uppercase tracking-wider">
-              Trilingual Communication
+              {t("homepage.stats.languages_label")}
             </div>
           </div>
 
@@ -101,10 +101,10 @@ export default function SkillsSection() {
 
           <div data-stat className="text-center">
             <div className="text-5xl font-bold gradient-primary bg-clip-text text-transparent mb-2">
-              20+
+              {t("homepage.stats.projects")}
             </div>
             <div className="text-sm text-muted uppercase tracking-wider">
-              Projects Delivered
+              {t("homepage.stats.projects_label")}
             </div>
           </div>
         </div>

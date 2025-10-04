@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "../globals.css";
-import { TranslationProvider } from "@/hooks/useTranslation";
+import { TranslationProvider } from "@/lib/TranslationProvider";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { LanguageDiscovery } from "@/components/ui/LanguageDiscovery";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";

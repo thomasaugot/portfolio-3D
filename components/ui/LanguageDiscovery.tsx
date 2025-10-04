@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { useTranslation } from '@/hooks/useTranslation'
+import { useTranslation } from "@/lib/TranslationProvider"
 import { useTheme } from '@/components/theme/ThemeProvider'
 import { useGSAPAnimations } from '@/hooks/useGSAPAnimations'
 import { languageNames, type Language } from '@/utils/route-translations'

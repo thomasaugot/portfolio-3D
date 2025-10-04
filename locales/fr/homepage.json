@@ -1,0 +1,49 @@
+{
+  "hero_title": "Développeur Full-Stack",
+  "hero_main_title_1": "Créer des",
+  "hero_main_title_2": "Solutions",
+  "hero_main_title_3": "Digitales",
+  "hero_subtitle": "Spécialiste frontend avec capacités full-stack, livrant logiciels, sites web et solutions pour tous les secteurs.",
+  "hero_cta": "Voir Mon Travail",
+  "stats_years": "Années",
+  "stats_projects": "Projets",
+  "stats_possibilities": "Possibilités",
+  "scroll": "Défiler",
+  "services": {
+    "section_title_1": "Services &",
+    "section_title_2": "Expertise",
+    "section_subtitle": "Solutions full-stack du concept au déploiement",
+    "web_development": {
+      "title": "Développement Web",
+      "description": "Sites web et applications modernes et rapides, conçus pour la performance et l'expérience utilisateur",
+      "skills": "React, Next.js, TypeScript, Node.js"
+    },
+    "ui_ux": {
+      "title": "Design UI/UX",
+      "description": "Interfaces belles et intuitives que les utilisateurs adorent et qui convertissent les visiteurs en clients",
+      "skills": "Tailwind CSS, SCSS, Design Responsive"
+    },
+    "interactive": {
+      "title": "Expériences Interactives",
+      "description": "Animations fluides et interactions engageantes qui donnent vie à votre marque",
+      "skills": "GSAP, Framer Motion, Three.js"
+    },
+    "mobile": {
+      "title": "Applications Mobiles",
+      "description": "Applications mobiles natives pour iOS et Android à partir d'une seule base de code",
+      "skills": "React Native"
+    }
+  },
+  "stats": {
+    "years": "3+",
+    "years_label": "Années d'Expérience",
+    "languages": "FR / EN / ES",
+    "languages_label": "Communication Trilingue",
+    "projects": "20+",
+    "projects_label": "Projets Livrés"
+  },
+  "projects_section": {
+    "title": "Travaux Sélectionnés",
+    "subtitle": "Vrais projets, vrai impact"
+  }
+}
