@@ -1,6 +1,6 @@
 "use client";
 
-import { gsap } from "./gsap-init";
+import { gsap } from "@/lib/animations";
 
 let closeMenuFn: (() => void) | null = null;
 let isAnimating = false;

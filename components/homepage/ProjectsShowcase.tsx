@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { getFeaturedProjects } from "@/data/projects";
-import { useTranslation } from "@/lib/TranslationProvider";
+import { useTranslation } from "@/lib/providers/TranslationProvider";
 
 export default function ProjectsShowcase() {
   const { t, language } = useTranslation();

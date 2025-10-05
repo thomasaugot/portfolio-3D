@@ -1,9 +1,7 @@
 "use client";
 
-import { useRef } from "react";
-import { useTranslation } from "@/lib/TranslationProvider";
-import { useTheme } from "@/components/theme/ThemeProvider";
-import { useMenuAnimations } from "@/hooks/useMenuAnimations";
+import { useTranslation } from "@/lib/providers/TranslationProvider";
+import { useTheme } from "@/lib/providers/ThemeProvider";
 import { getLocalizedMenuItems } from "@/data/menu";
 import LanguageToggle from "@/components/ui/LanguageToggle";
 import Link from "next/link";
@@ -13,9 +11,6 @@ export default function Menu() {
   const { t, language } = useTranslation();
   const { isDark, isLight } = useTheme();
   const localizedMenuItems = getLocalizedMenuItems(language);
-  const menuTriggerRef = useRef<HTMLDivElement>(null);
-
-  useMenuAnimations(menuTriggerRef as any);
 
   return (
     <>
@@ -33,7 +28,6 @@ export default function Menu() {
       />
 
       <div
-        ref={menuTriggerRef}
         data-animate="menu-trigger"
         className="fixed top-6 right-6 md:top-8 md:right-8 z-[99999] cursor-pointer group p-4 -m-4"
         style={{ pointerEvents: "auto" }}

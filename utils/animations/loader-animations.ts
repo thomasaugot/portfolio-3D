@@ -1,4 +1,4 @@
-import { gsap } from "@/utils/animations/gsap-init";
+import { gsap } from "@/lib/animations";
 
 let previousProgress = 0;
 
@@ -19,7 +19,6 @@ export function initLoaderAnimations(
       "[data-animate='progress-bar']"
     ) as HTMLElement;
 
-    // Only animate text on first load
     if (textElement && gsap.getProperty(textElement, "opacity") === 0) {
       gsap.fromTo(
         textElement,
@@ -53,7 +52,6 @@ export function initLoaderAnimations(
       );
     }
 
-    // Animate progress bar progressively from previous to current
     if (progressBarElement && typeof progress === 'number' && progress > previousProgress) {
       gsap.fromTo(progressBarElement, 
         { width: `${previousProgress}%` },
@@ -64,7 +62,6 @@ export function initLoaderAnimations(
         }
       );
 
-      // Animate percentage text from previous to current
       if (percentageElement) {
         const currentProgress = { value: previousProgress };
         gsap.to(currentProgress, {

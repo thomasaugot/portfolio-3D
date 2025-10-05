@@ -1,58 +1,62 @@
-import { gsap } from '@/utils/animations/gsap-init'
+import { gsap } from "@/lib/animations";
 
 export function initCarousel3D() {
-  const carousel = document.querySelector('[data-animate="carousel-3d"]') as HTMLElement
-  const cards = document.querySelectorAll('[data-animate="card-3d"]') as NodeListOf<HTMLElement>
-  
-  if (!carousel || !cards.length) return
+  const carousel = document.querySelector(
+    '[data-animate="carousel-3d"]'
+  ) as HTMLElement;
+  const cards = document.querySelectorAll(
+    '[data-animate="card-3d"]'
+  ) as NodeListOf<HTMLElement>;
 
-  const radius = 200 // Reduced from 300
-  const total = cards.length
-  const angle = 360 / total
+  if (!carousel || !cards.length) return;
 
-  // Setup 3D space
+  const radius = 250;
+  const angle = 360 / cards.length;
+
   gsap.set(carousel, {
-    transformStyle: 'preserve-3d'
-  })
+    transformStyle: "preserve-3d",
+    rotationX: -10, // Tilt down slightly
+  });
 
-  // Position cards in 3D circle
   cards.forEach((card, i) => {
-    const rotY = i * angle
-    const x = Math.sin(rotY * Math.PI / 180) * radius
-    const z = Math.cos(rotY * Math.PI / 180) * radius
+    const rotY = i * angle;
+    const x = Math.sin((rotY * Math.PI) / 180) * radius;
+    const z = Math.cos((rotY * Math.PI) / 180) * radius - 200; // Push forward
 
     gsap.set(card, {
       rotationY: rotY,
       x: x,
       z: z,
-      transformOrigin: 'center center',
-      transformStyle: 'preserve-3d'
-    })
-  })
+      transformOrigin: "center center",
+      transformStyle: "preserve-3d",
+    });
+  });
 }
 
 export function rotateCarousel3D(targetIndex: number) {
-  const carousel = document.querySelector('[data-animate="carousel-3d"]') as HTMLElement
-  const cards = document.querySelectorAll('[data-animate="card-3d"]') as NodeListOf<HTMLElement>
-  
-  if (!carousel || !cards.length) return
+  const carousel = document.querySelector(
+    '[data-animate="carousel-3d"]'
+  ) as HTMLElement;
+  const cards = document.querySelectorAll(
+    '[data-animate="card-3d"]'
+  ) as NodeListOf<HTMLElement>;
 
-  const angle = 360 / cards.length
-  const rotation = -targetIndex * angle
+  if (!carousel || !cards.length) return;
 
-  // Rotate carousel
+  const angle = 360 / cards.length;
+  const rotation = -targetIndex * angle;
+
   gsap.to(carousel, {
     rotationY: rotation,
     duration: 1,
-    ease: 'power2.inOut'
-  })
+    ease: "power2.inOut",
+  });
 
-  // Scale active card
   cards.forEach((card, i) => {
     gsap.to(card, {
-      scale: i === targetIndex ? 1.05 : 0.85, // Reduced scaling
+      scale: i === targetIndex ? 1.05 : 0.85,
       duration: 0.6,
-      ease: 'power2.out'
-    })
-  })
+      ease: "power2.out",
+    });
+  });
 }

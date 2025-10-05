@@ -1,36 +1,13 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { useTranslation } from "@/lib/TranslationProvider";
-import { useTheme } from "@/components/theme/ThemeProvider";
+import { useTranslation } from "@/lib/providers/TranslationProvider";
 import { Button } from "@/components/ui/Button";
+import { useThreeScene } from "@/hooks/useThreeScene";
 import { initHero3DScene } from "@/utils/animations/hero-3d-animations";
-
-let sceneInitialized = false;
 
 export default function HeroSection() {
   const { t } = useTranslation();
-  const { isLight } = useTheme();
-  const cleanupRef = useRef<(() => void) | null | undefined>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (sceneInitialized || !containerRef.current) return;
-
-    const init = async () => {
-      sceneInitialized = true;
-      cleanupRef.current = await initHero3DScene();
-    };
-
-    init();
-
-    return () => {
-      if (cleanupRef.current) {
-        cleanupRef.current();
-        sceneInitialized = false;
-      }
-    };
-  }, []);
+  const containerRef = useThreeScene(initHero3DScene);
 
   return (
     <section className="relative" data-hero-container>

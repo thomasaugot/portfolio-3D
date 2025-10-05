@@ -1,7 +1,7 @@
 "use client";
 
 import { useLanguageToggle } from "@/hooks/useLanguageToggle";
-import { useTheme } from "@/components/theme/ThemeProvider";
+import { useTheme } from "@/lib/providers/ThemeProvider";
 
 const languageLabels: Record<string, string> = {
   en: "EN",

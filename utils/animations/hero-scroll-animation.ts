@@ -1,22 +1,13 @@
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { isAppReady } from "@/hooks/useAppReady";
-
-gsap.registerPlugin(ScrollTrigger);
+import { gsap, ScrollTrigger } from "@/lib/animations";
 
 let heroScrollTrigger: ScrollTrigger | null = null;
 let projectsScrollTrigger: ScrollTrigger | null = null;
 
 export function initHeroScrollAnimation() {
-  const checkAndAnimate = () => {
-    if (!isAppReady()) {
-      requestAnimationFrame(checkAndAnimate);
-      return;
-    }
-
+  const waitForScene = () => {
     const heroScene = (window as any).__heroScene;
     if (!heroScene) {
-      requestAnimationFrame(checkAndAnimate);
+      requestAnimationFrame(waitForScene);
       return;
     }
 
@@ -26,14 +17,13 @@ export function initHeroScrollAnimation() {
     const heroSection = heroContainer?.parentElement?.parentElement;
     const heroContent = heroSection?.querySelector('[data-animate="slide-up"]');
     const scrollIndicator = heroSection?.querySelector(".absolute.bottom-12");
-    const projectsSection = document.querySelector("[data-projects-section]");
 
     if (!heroContainer || !heroSection) {
+      requestAnimationFrame(waitForScene);
       return;
     }
 
-    const { camera, hexFloor, codeWrapper, laptopWrapper, renderer } =
-      heroScene;
+    const { camera, hexFloor, codeWrapper, laptopWrapper, renderer } = heroScene;
 
     const tl = gsap.timeline({
       scrollTrigger: {
@@ -67,7 +57,7 @@ export function initHeroScrollAnimation() {
 
     tl.to(
       hexFloor.rotation,
-      { x: Math.PI/2, duration: 0.8, ease: "power2.inOut" },
+      { x: Math.PI / 2, duration: 0.8, ease: "power2.inOut" },
       0.2
     );
     tl.to(
@@ -117,7 +107,7 @@ export function initHeroScrollAnimation() {
     );
   };
 
-  checkAndAnimate();
+  waitForScene();
 
   return () => {
     if (heroScrollTrigger) heroScrollTrigger.kill();

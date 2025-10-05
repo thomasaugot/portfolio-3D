@@ -1,92 +1,73 @@
 "use client";
+
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
-import { ResourceLoader } from "@/services/resource-loader";
-import { loadGSAP } from "@/services/loaders/gsap-loader";
-import { loadThreeJS } from "@/services/loaders/three-loader";
-import { waitForDOMPaint } from "@/services/loaders/dom-loader";
-import { waitForHeroReady } from "@/services/loaders/hero-loader";
-import { createTranslationLoader } from "@/services/loaders/translation-loader";
-import { waitForFonts } from "@/services/loaders/fonts-loader";
 
-let globalIsReady = false;
-
-export function isAppReady() {
-  return globalIsReady;
+interface UseAppReadyOptions {
+  criticalSelectors?: string[];
 }
 
-export function useAppReady() {
+export function useAppReady(options: UseAppReadyOptions = {}) {
+  const { criticalSelectors = [] } = options;
   const [isReady, setIsReady] = useState(false);
   const [progress, setProgress] = useState(0);
-  const params = useParams();
-  const locale = (params?.locale as string) || "en";
 
   useEffect(() => {
     let mounted = true;
-    const MINIMUM_LOAD_TIME = 2000;
 
-    async function loadAll() {
+    async function init() {
       try {
-        console.log("🚀 Starting app initialization...");
-        const startTime = Date.now();
+        setProgress(20);
 
-        const loader = new ResourceLoader();
+        await document.fonts.ready;
+        if (!mounted) return;
+        setProgress(50);
 
-        loader.onProgress((prog) => {
-          if (mounted) {
-            setProgress(prog);
-          }
-        });
+        if (criticalSelectors.length > 0) {
+          await new Promise<void>((resolve) => {
+            const timeout = setTimeout(() => {
+              console.warn("Critical elements timeout");
+              resolve();
+            }, 10000);
 
-        loader.addTask("GSAP", loadGSAP, 1);
-        loader.addTask("Three.js", loadThreeJS, 2);
-        loader.addTask("Fonts", waitForFonts, 1);
-        loader.addTask(
-          "Translations",
-          createTranslationLoader(locale, ["common", "hero", "skills"]),
-          1
-        );
-        loader.addTask("DOM Paint", waitForDOMPaint, 1);
-        loader.addTask("Hero Container", waitForHeroReady, 2);
+            const check = () => {
+              const allReady = criticalSelectors.every((selector) => 
+                document.querySelector(selector)
+              );
 
-        await loader.loadAll();
+              if (allReady) {
+                clearTimeout(timeout);
+                resolve();
+              } else {
+                requestAnimationFrame(check);
+              }
+            };
 
-        console.log("📋 All resources loaded");
-
-        const elapsed = Date.now() - startTime;
-        const remaining = Math.max(0, MINIMUM_LOAD_TIME - elapsed);
-
-        if (remaining > 0) {
-          console.log(
-            `⏳ Waiting additional ${remaining}ms to meet minimum load time`
-          );
-          await new Promise((resolve) => setTimeout(resolve, remaining));
+            check();
+          });
         }
 
-        await new Promise((resolve) => setTimeout(resolve, 200));
+        if (!mounted) return;
+        setProgress(90);
 
-        console.log("✨ App ready!");
+        await new Promise((resolve) => setTimeout(resolve, 300));
+        if (!mounted) return;
 
-        if (mounted) {
-          globalIsReady = true;
-          setIsReady(true);
-        }
+        setProgress(100);
+        setTimeout(() => {
+          if (mounted) setIsReady(true);
+        }, 200);
       } catch (error) {
-        console.error("❌ App initialization failed:", error);
-
-        if (mounted) {
-          globalIsReady = true;
-          setIsReady(true);
-        }
+        console.error("Init failed:", error);
+        if (mounted) setIsReady(true);
       }
     }
 
-    loadAll();
+    init();
 
     return () => {
       mounted = false;
     };
-  }, [locale]);
+  }, []);
 
   return { isReady, progress };
 }
