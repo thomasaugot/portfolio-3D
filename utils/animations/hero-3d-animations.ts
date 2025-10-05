@@ -1,5 +1,4 @@
-// utils/animations/hero-3d-animations.ts
-import * as THREE from "three";
+import { THREE } from "@/lib/animations";
 import { getThemeState } from "@/utils/theme-helpers";
 
 export async function initHero3DScene() {
@@ -8,7 +7,6 @@ export async function initHero3DScene() {
   ) as HTMLElement;
   if (!container) return;
 
-  const THREE = await import("three");
   const { isLight } = getThemeState();
 
   const scene = new THREE.Scene();
@@ -137,9 +135,8 @@ export async function initHero3DScene() {
   let selectedObject: THREE.Group | null = null;
   let dragOffset = new THREE.Vector3();
 
-  const loader = new (
-    await import("three/examples/jsm/loaders/GLTFLoader.js")
-  ).GLTFLoader();
+  const { GLTFLoader } = await import("three/examples/jsm/loaders/GLTFLoader.js");
+  const loader = new GLTFLoader();
 
   let codeModel: THREE.Group | null = null;
   let laptopModel: THREE.Group | null = null;

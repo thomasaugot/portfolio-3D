@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { useTranslation } from './useTranslation';
 import { type Language } from '@/utils/route-translations';
+import { useTranslation } from '@/lib/providers/TranslationProvider';
 
 export function useLanguageDiscovery() {
   const { language, changeLanguage } = useTranslation();

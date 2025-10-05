@@ -1,18 +1,32 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { useTheme } from "@/components/theme/ThemeProvider";
-import { useTranslation } from "@/lib/TranslationProvider"
+import { useEffect, useRef, useState } from "react";
 import { initLoaderAnimations } from "@/utils/animations/loader-animations";
+import { useTheme } from "@/lib/providers/ThemeProvider";
 
 interface AppLoaderProps {
   progress: number;
 }
 
+const loadingTexts: Record<string, string> = {
+  en: "Loading",
+  fr: "Chargement",
+  es: "Cargando",
+};
+
 export default function AppLoader({ progress }: AppLoaderProps) {
   const { isLight } = useTheme();
-  const { t } = useTranslation();
-  const loaderRef: any = useRef<HTMLDivElement>(null);
+  const loaderRef = useRef<HTMLDivElement>(null!);
+  const [loadingText, setLoadingText] = useState("Loading");
+
+  useEffect(() => {
+    const detectedLang =
+      typeof window !== "undefined"
+        ? navigator.language.slice(0, 2)
+        : "en";
+    
+    setLoadingText(loadingTexts[detectedLang] || loadingTexts.en);
+  }, []);
 
   useEffect(() => {
     const cleanup = initLoaderAnimations(loaderRef, progress);
@@ -29,7 +43,7 @@ export default function AppLoader({ progress }: AppLoaderProps) {
         className="text-4xl md:text-5xl font-bold mb-8 text-text"
         style={{ fontFamily: "var(--font-display)" }}
       >
-        {t("common.status.loading")}
+        {loadingText}
       </div>
 
       <div className="w-60 md:w-80 h-1 overflow-hidden rounded-full bg-border">

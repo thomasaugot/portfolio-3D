@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslation } from "@/lib/TranslationProvider";
+import { useTranslation } from "@/lib/providers/TranslationProvider";
 import { animateLanguageChange } from "@/utils/animations/language-toggle-animations";
 
 export function useLanguageToggle() {

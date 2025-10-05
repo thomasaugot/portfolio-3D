@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
 import "../globals.css";
-import { TranslationProvider } from "@/lib/TranslationProvider";
-import { ThemeProvider } from "@/components/theme/ThemeProvider";
+import { TranslationProvider } from "@/lib/providers/TranslationProvider";
+import { ThemeProvider } from "@/lib/providers/ThemeProvider";
 import { LanguageDiscovery } from "@/components/ui/LanguageDiscovery";
-import { ThemeToggle } from "@/components/theme/ThemeToggle";
-import Menu from "@/components/layout/Menu";
-import LoadingWrapper from "@/components/ui/LoadingWrapper";
 
 export default async function LocaleLayout({
   children,
@@ -21,10 +18,8 @@ export default async function LocaleLayout({
       <body className="antialiased">
         <ThemeProvider>
           <TranslationProvider>
-            <LoadingWrapper>
               <LanguageDiscovery />
               <main>{children}</main>
-            </LoadingWrapper>
           </TranslationProvider>
         </ThemeProvider>
       </body>

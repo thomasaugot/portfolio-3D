@@ -1,4 +1,4 @@
-import { gsap, ScrollTrigger } from '@/utils/animations/gsap-init';
+import { gsap, ScrollTrigger } from "@/lib/animations";
 
 let projectsScrollTrigger: ScrollTrigger | null = null;
 
@@ -50,11 +50,11 @@ export function initProjectsScrollAnimation() {
       });
     }
   });
-}
 
-export function resetProjectsScrollAnimation() {
-  if (projectsScrollTrigger) {
-    projectsScrollTrigger.kill();
-    projectsScrollTrigger = null;
-  }
+  return () => {
+    if (projectsScrollTrigger) {
+      projectsScrollTrigger.kill();
+      projectsScrollTrigger = null;
+    }
+  };
 }
