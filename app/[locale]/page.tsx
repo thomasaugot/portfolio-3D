@@ -1,6 +1,5 @@
 "use client";
 
-import { useGSAP } from "@/lib/animations";
 import { initMenuAnimations } from "@/utils/animations/menu-animations";
 import { initFadeAnimations } from "@/utils/animations/fade-animations";
 import { initProjectsScrollAnimation } from "@/utils/animations/projects-scroll-animation";
@@ -13,12 +12,12 @@ import HeroSection from "@/components/homepage/HeroSection";
 import SkillsSection from "@/components/homepage/SkillsSection";
 import ProjectsShowcase from "@/components/homepage/ProjectsShowcase";
 import CTASection from "@/components/homepage/CTASection";
-import LoadingProvider from "@/lib/providers/LoadingProvider";
 import Footer from "@/components/layout/Footer";
 import TechnologyMarquee from "@/components/ui/TechnologyMarquee";
+import { useGSAPAnimations } from "@/hooks/useGSAPAnimations";
 
 export default function Home() {
-  useGSAP(() => {
+  useGSAPAnimations(() => {
     initMenuAnimations();
     initHeroScrollAnimation();
     initFadeAnimations();
@@ -29,16 +28,14 @@ export default function Home() {
   });
 
   return (
-    <LoadingProvider criticalSelectors={['[data-3d-container="hero"]']}>
-      <main className="min-h-screen bg-bg text-text overflow-visible">
-        <Menu />
-        <HeroSection />
-        <SkillsSection />
-        <TechnologyMarquee />
-        <ProjectsShowcase />
-        <CTASection />
-        <Footer />
-      </main>
-    </LoadingProvider>
+    <>
+      <Menu />
+      <HeroSection />
+      <SkillsSection />
+      <TechnologyMarquee />
+      <ProjectsShowcase />
+      <CTASection />
+      <Footer />
+    </>
   );
 }

@@ -45,6 +45,7 @@ body {
   font-family: var(--font-primary);
   background-color: var(--color-black);
   overflow-x: hidden;
+  color: var(--color-text);
 }
 
 h1 {

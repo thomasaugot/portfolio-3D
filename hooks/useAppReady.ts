@@ -1,13 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { waitForScenes } from "./useThreeScene";
 
 interface UseAppReadyOptions {
-  criticalSelectors?: string[];
+  criticalScenes?: string[];
 }
 
 export function useAppReady(options: UseAppReadyOptions = {}) {
-  const { criticalSelectors = [] } = options;
+  const { criticalScenes = [] } = options;
   const [isReady, setIsReady] = useState(false);
   const [progress, setProgress] = useState(0);
 
@@ -22,34 +23,14 @@ export function useAppReady(options: UseAppReadyOptions = {}) {
         if (!mounted) return;
         setProgress(50);
 
-        if (criticalSelectors.length > 0) {
-          await new Promise<void>((resolve) => {
-            const timeout = setTimeout(() => {
-              console.warn("Critical elements timeout");
-              resolve();
-            }, 10000);
-
-            const check = () => {
-              const allReady = criticalSelectors.every((selector) => 
-                document.querySelector(selector)
-              );
-
-              if (allReady) {
-                clearTimeout(timeout);
-                resolve();
-              } else {
-                requestAnimationFrame(check);
-              }
-            };
-
-            check();
-          });
+        if (criticalScenes.length > 0) {
+          await waitForScenes(criticalScenes);
+          if (!mounted) return;
         }
 
-        if (!mounted) return;
         setProgress(90);
 
-        await new Promise((resolve) => setTimeout(resolve, 300));
+        await new Promise(resolve => setTimeout(resolve, 300));
         if (!mounted) return;
 
         setProgress(100);
@@ -67,7 +48,7 @@ export function useAppReady(options: UseAppReadyOptions = {}) {
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [criticalScenes]);
 
   return { isReady, progress };
 }

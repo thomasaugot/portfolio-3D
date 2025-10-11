@@ -1,24 +1,32 @@
 "use client";
 
-import { ReactNode } from "react";
+import { ReactNode, createContext, useContext } from "react";
 import AppLoader from "@/components/ui/AppLoader";
 import { useAppReady } from "@/hooks/useAppReady";
 
+interface LoadingContextType {
+  isReady: boolean;
+}
+
+const LoadingContext = createContext<LoadingContextType>({ isReady: false });
+
+export const useIsAppReady = () => useContext(LoadingContext);
+
 interface LoadingProviderProps {
   children: ReactNode;
-  criticalSelectors?: string[];
+  criticalScenes?: string[];
 }
 
 export default function LoadingProvider({
   children,
-  criticalSelectors,
+  criticalScenes = ["hero"],
 }: LoadingProviderProps) {
-  const { isReady, progress } = useAppReady({ criticalSelectors });
+  const { isReady, progress } = useAppReady({ criticalScenes });
 
   return (
-    <>
+    <LoadingContext.Provider value={{ isReady }}>
       {!isReady && <AppLoader progress={progress} />}
       {children}
-    </>
+    </LoadingContext.Provider>
   );
 }

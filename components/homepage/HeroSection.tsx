@@ -7,7 +7,7 @@ import { initHero3DScene } from "@/utils/animations/hero-3d-scene";
 
 export default function HeroSection() {
   const { t } = useTranslation();
-  const containerRef = useThreeScene(initHero3DScene);
+  const containerRef = useThreeScene(initHero3DScene, "hero");
 
   return (
     <section className="relative" data-hero-container>
