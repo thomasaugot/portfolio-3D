@@ -1,0 +1,25 @@
+{
+    "brand": "by Thomas Augot",
+    "tagline": "Creando experiencias digitales que inspiran y conectan.",
+    "navigation": {
+      "title": "Navegación"
+    },
+    "services": {
+      "title": "Servicios",
+      "web_development": "Desarrollo Web",
+      "ui_design": "Diseño UI/UX",
+      "interactive": "Experiencias Interactivas",
+      "consulting": "Consultoría Técnica"
+    },
+    "contact": {
+      "title": "Contáctame",
+      "location": "Las Palmas, Islas Canarias"
+    },
+    "credits": "Codificado con ",
+    "by": "por",
+    "copyright": "Todos los derechos reservados.",
+    "legal": {
+      "privacy": "Política de Privacidad",
+      "terms": "Términos de Servicio"
+    }
+  }

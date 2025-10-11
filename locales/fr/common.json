@@ -37,5 +37,12 @@
     "impact": "Impact",
     "overview": "Aperçu",
     "description": "Description"
+  },
+  "meta": {
+    "title": {
+      "hello": "Bonjour!",
+      "name": "Je suis Thomas",
+      "role": "Développeur Web Full-Stack"
+    }
   }
 }

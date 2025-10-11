@@ -105,5 +105,55 @@
         "client_acquisition": "Génération directe de leads via système de contact intégré"
       }
     }
+  },
+  "galaga_agency": {
+    "title": "Site Web 2.0 pour Galaga Agency",
+    "preview": {
+      "tagline": "Une nouvelle ère numérique pour Galaga Agency.",
+      "description": "J’ai conçu et développé le nouveau site de Galaga Agency depuis zéro — une expérience immersive et audacieuse qui fusionne créativité, technologie et identité. La plateforme traduit la vision avant-gardiste de Galaga à travers des visuels 3D dynamiques, du motion design et des performances haut de gamme.",
+      "key_points": {
+        "brand_reinvention": "Réinvention complète de la présence numérique de Galaga",
+        "modern_tech": "Propulsé par Next.js 15, TypeScript, GSAP et Three.js",
+        "interactive_design": "Storytelling 3D immersif et transitions fluides"
+      },
+      "cta": "portfolio.common.cta.view_full_case"
+    },
+    "details": {
+      "challenge": "L’ancien site Webflow ne reflétait plus l’esprit innovant ni la qualité du travail créatif de Galaga. Il manquait de profondeur, de mouvement et d’identité propre. Mon défi consistait à concevoir un nouvel espace numérique qui exprime l’énergie, la culture et l’expertise technologique de Galaga.",
+      "solution": "J’ai conçu et développé un écosystème numérique entièrement nouveau — expressif, moderne et résolument Galaga. Le résultat est une fusion harmonieuse entre identité visuelle, interactivité et narration qui positionne l’agence comme un leader créatif.",
+      "technical_approach": "Développé avec Next.js 15 et TypeScript, le site garantit performance et évolutivité. J’ai utilisé GSAP pour orchestrer des animations cinématiques et Three.js pour créer des scènes 3D interactives et réactives. Tailwind CSS assure une cohérence visuelle et une adaptabilité fluide sur tous les appareils.",
+      "results": "Le nouveau site a transformé la perception de la marque Galaga, alignant son image numérique sur son identité créative. Il communique l’innovation à travers le mouvement, la profondeur et la précision. L’engagement des utilisateurs et le temps passé sur le site ont considérablement augmenté.",
+      "impact": {
+        "brand_perception": "Renforcé l’image de Galaga avec une identité visuelle forte et contemporaine",
+        "interactive_experience": "Créé une expérience 3D immersive et une navigation fluide",
+        "tech_innovation": "Mise en avant de technologies de pointe reflétant l’innovation de Galaga",
+        "future_ready": "Construit un système modulaire et évolutif, prêt pour l’avenir"
+      }
+    }
+  },
+  "reloj_laboral": {
+    "title": "Reloj Laboral — Système de pointage numérique",
+    "preview": {
+      "tagline": "J’ai créé un écosystème complet de pointage digital pour Galaga Agency.",
+      "description": "J’ai conçu et développé Reloj Laboral, une plateforme full-stack conforme à la réglementation espagnole 2025 sur le contrôle horaire. Le système inclut des interfaces dédiées pour les employés, les administrateurs et les inspecteurs officiels, toutes reliées à une infrastructure sécurisée et traçable.",
+      "key_points": {
+        "digital_compliance": "Conforme à la législation espagnole 2025 sur le contrôle horaire digital",
+        "full_stack": "Solution complète — frontend, backend et base de données",
+        "multi_role_system": "Interfaces personnalisées pour employés, administrateurs et inspecteurs"
+      },
+      "cta": "portfolio.common.cta.view_full_case"
+    },
+    "details": {
+      "challenge": "Les entreprises espagnoles doivent désormais enregistrer numériquement les heures de travail selon l’article 34.9 du Statut des Travailleurs. La plupart des solutions existantes étaient limitées, obsolètes ou non conformes. Mon objectif était de créer une plateforme moderne, fiable et conforme à la législation, avec une expérience fluide pour tous les rôles.",
+      "solution": "J’ai développé à la fois le frontend et le backend depuis zéro : un système robuste et modulaire avec rôles différenciés et traçabilité complète. L’interface est simple et élégante, tandis que le backend garantit la sécurité et l’auditabilité. Le projet a été entièrement réalisé sous l’infrastructure de Galaga Agency.",
+      "technical_approach": "Le frontend a été développé avec React 18, TypeScript et Vite, en utilisant Tailwind CSS pour une cohérence visuelle optimale. GSAP apporte dynamisme et fluidité à l’expérience utilisateur. Le backend repose sur Node.js + Express avec PostgreSQL et JWT pour l’authentification. Initialement basé sur Supabase, le système a évolué vers une architecture PERN personnalisée pour un contrôle total et une conformité complète.",
+      "results": "Le système permet un suivi du temps de travail 100 % conforme et entièrement traçable. Employés, administrateurs et inspecteurs accèdent aux données en temps réel depuis n’importe quel appareil. Les rapports PDF mensuels et les outils d’audit automatisent des processus autrefois fastidieux.",
+      "impact": {
+        "compliance_ready": "Conformité totale avec la législation espagnole sur le contrôle horaire digital",
+        "operational_efficiency": "Réduction du travail administratif grâce à l’automatisation",
+        "scalable_infrastructure": "Architecture modulaire et évolutive prête pour l’avenir",
+        "secure_and_auditable": "Sécurité et traçabilité totales grâce à un contrôle des rôles et journaux d’audit"
+      }
+    }
   }
 }

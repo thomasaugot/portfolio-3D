@@ -3,6 +3,7 @@ import "../globals.css";
 import { TranslationProvider } from "@/lib/providers/TranslationProvider";
 import { ThemeProvider } from "@/lib/providers/ThemeProvider";
 import { LanguageDiscovery } from "@/components/ui/LanguageDiscovery";
+import { TabTitleAnimationProvider } from "@/lib/providers/TabTitleAnimationProvider";
 
 export default async function LocaleLayout({
   children,
@@ -18,8 +19,9 @@ export default async function LocaleLayout({
       <body className="antialiased">
         <ThemeProvider>
           <TranslationProvider>
-              <LanguageDiscovery />
-              <main>{children}</main>
+            <TabTitleAnimationProvider />
+            {/* <LanguageDiscovery /> */}
+            <main>{children}</main>
           </TranslationProvider>
         </ThemeProvider>
       </body>

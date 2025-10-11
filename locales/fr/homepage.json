@@ -1,8 +1,8 @@
 {
   "hero_title": "Développeur Full-Stack",
-  "hero_main_title_1": "Créer des",
-  "hero_main_title_2": "Solutions",
-  "hero_main_title_3": "Digitales",
+  "hero_main_title_1": "Solutions",
+  "hero_main_title_2": "Digitales",
+  "hero_main_title_3": "Sur Mesure",
   "hero_subtitle": "Spécialiste frontend avec capacités full-stack, livrant logiciels, sites web et solutions pour tous les secteurs.",
   "hero_cta": "Voir Mon Travail",
   "stats_years": "Années",
@@ -10,9 +10,8 @@
   "stats_possibilities": "Possibilités",
   "scroll": "Défiler",
   "services": {
-    "section_title_1": "Services &",
-    "section_title_2": "Expertise",
-    "section_subtitle": "Solutions full-stack du concept au déploiement",
+    "section_title_1": "Compétences techniques et expérience",
+    "section_title_2": "Transformer les idées en applications prêtes pour la production",
     "web_development": {
       "title": "Développement Web",
       "description": "Sites web et applications modernes et rapides, conçus pour la performance et l'expérience utilisateur",
@@ -44,6 +43,23 @@
   },
   "projects_section": {
     "title": "Travaux Sélectionnés",
-    "subtitle": "Vrais projets, vrai impact"
+    "subtitle": "Du Projet à la réalité",
+    "cta_title": "Envie d'en Voir Plus?",
+    "cta_subtitle": "Explorez mon portfolio complet de projets dans différentes industries et technologies",
+    "cta_button": "Voir Tous les Projets"
+  },
+  "cta_section": {
+    "badge": "Connectons-nous",
+    "title": "Donnons Vie à Vos Idées",
+    "subtitle": "Que vous recherchiez un développeur pour rejoindre votre équipe, ayez besoin d'une solution web sur mesure, ou souhaitiez simplement discuter de votre prochain projet, je serais ravi d'échanger avec vous.",
+    "portfolio_title": "Voir Portfolio",
+    "portfolio_description": "Découvrez mes derniers projets et ce que je peux créer pour vous",
+    "view_more": "Voir les Projets",
+    "about_title": "À Propos",
+    "about_description": "Découvrez mon parcours, mes compétences et ce qui alimente ma passion pour le développement",
+    "learn_more": "En Savoir Plus",
+    "contact_title": "Me Contacter",
+    "contact_description": "Discutons de votre projet et de la façon dont nous pouvons collaborer",
+    "get_in_touch": "Me Contacter"
   }
 }
