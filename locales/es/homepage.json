@@ -10,9 +10,8 @@
   "stats_possibilities": "Posibilidades",
   "scroll": "Desplazar",
   "services": {
-    "section_title_1": "Servicios y",
-    "section_title_2": "Experiencia",
-    "section_subtitle": "Soluciones full-stack desde el concepto hasta el despliegue",
+    "section_title_1": "Habilidades técnicas y experiencia",
+    "section_title_2": "Convirtiendo ideas en aplicaciones listas para producción",
     "web_development": {
       "title": "Desarrollo Web",
       "description": "Sitios web y aplicaciones rápidas y modernas, construidas para rendimiento y experiencia de usuario",
@@ -44,6 +43,23 @@
   },
   "projects_section": {
     "title": "Trabajos Seleccionados",
-    "subtitle": "Proyectos reales, impacto real"
+    "subtitle": "Proyectos reales, impacto real",
+    "cta_title": "¿Quieres Ver Más?",
+    "cta_subtitle": "Explora mi portafolio completo de proyectos en diferentes industrias y tecnologías",
+    "cta_button": "Ver Todos los Proyectos"
+  },
+  "cta_section": {
+    "badge": "Conectemos",
+    "title": "¿Listo para Dar Vida a Tus Ideas?",
+    "subtitle": "Ya sea que busques un desarrollador para unirse a tu equipo, necesites una solución web personalizada, o simplemente quieras discutir tu próximo proyecto, me encantaría escucharte.",
+    "portfolio_title": "Ver Portfolio",
+    "portfolio_description": "Explora mis últimos proyectos y descubre lo que puedo crear para ti",
+    "view_more": "Ver Proyectos",
+    "about_title": "Sobre Mí",
+    "about_description": "Conoce más sobre mi trayectoria, habilidades y lo que impulsa mi pasión por el desarrollo",
+    "learn_more": "Saber Más",
+    "contact_title": "Contactar",
+    "contact_description": "Hablemos de tu proyecto y cómo podemos trabajar juntos",
+    "get_in_touch": "Contáctame"
   }
 }

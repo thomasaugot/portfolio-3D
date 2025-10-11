@@ -1,20 +1,22 @@
 import { useEffect, useRef } from "react";
 
-type SceneInitFunction = () => Promise<(() => void) | void> | (() => void) | void;
-
-let sceneInitialized = false;
+type SceneInitFunction = () =>
+  | Promise<(() => void) | void>
+  | (() => void)
+  | void;
 
 export function useThreeScene(initFunction: SceneInitFunction) {
   const cleanupRef = useRef<(() => void) | undefined>(undefined);
   const containerRef = useRef<HTMLDivElement>(null);
+  const initializedRef = useRef(false);
 
   useEffect(() => {
-    if (sceneInitialized || !containerRef.current) return;
+    if (initializedRef.current || !containerRef.current) return;
 
     const init = async () => {
-      sceneInitialized = true;
+      initializedRef.current = true;
       const result = await initFunction();
-      if (typeof result === 'function') {
+      if (typeof result === "function") {
         cleanupRef.current = result;
       }
     };
@@ -24,7 +26,7 @@ export function useThreeScene(initFunction: SceneInitFunction) {
     return () => {
       if (cleanupRef.current) {
         cleanupRef.current();
-        sceneInitialized = false;
+        initializedRef.current = false;
       }
     };
   }, [initFunction]);

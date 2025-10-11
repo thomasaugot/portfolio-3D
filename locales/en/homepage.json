@@ -10,9 +10,8 @@
   "stats_possibilities": "Possibilities",
   "scroll": "Scroll",
   "services": {
-    "section_title_1": "Services &",
-    "section_title_2": "Expertise",
-    "section_subtitle": "Full-stack solutions from concept to deployment",
+    "section_title_1": "Technical Skills & Experience",
+    "section_title_2": "Turning Ideas Into Production-Ready Applications",
     "web_development": {
       "title": "Web Development",
       "description": "Fast, modern websites and web applications built for performance and user experience",
@@ -44,6 +43,23 @@
   },
   "projects_section": {
     "title": "Selected Work",
-    "subtitle": "Real projects, real impact"
+    "subtitle": "Real projects, real impact",
+    "cta_title": "Want to See More?",
+    "cta_subtitle": "Explore my complete portfolio of projects across different industries and technologies",
+    "cta_button": "View All Projects"
+  },
+  "cta_section": {
+    "badge": "Let's Connect",
+    "title": "Ready to Bring Your Ideas to Life?",
+    "subtitle": "Whether you're looking for a developer to join your team, need a custom web solution, or just want to discuss your next project, I'd love to hear from you.",
+    "portfolio_title": "View Portfolio",
+    "portfolio_description": "Explore my latest projects and see what I can create for you",
+    "view_more": "View Projects",
+    "about_title": "About Me",
+    "about_description": "Learn more about my journey, skills, and what drives my passion for development",
+    "learn_more": "Learn More",
+    "contact_title": "Get in Touch",
+    "contact_description": "Let's discuss your project and how we can work together",
+    "get_in_touch": "Contact Me"
   }
 }

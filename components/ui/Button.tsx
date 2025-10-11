@@ -1,6 +1,7 @@
 "use client";
 
 import { ButtonHTMLAttributes, ReactNode } from "react";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -9,6 +10,8 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
   className?: string;
   isLoading?: boolean;
+  href?: string;
+  asLink?: boolean;
 }
 
 export const Button = ({
@@ -18,6 +21,8 @@ export const Button = ({
   className,
   isLoading = false,
   disabled,
+  href,
+  asLink = false,
   ...props
 }: ButtonProps) => {
   const baseStyles =
@@ -41,47 +46,58 @@ export const Button = ({
       before:transition-transform before:duration-700 before:ease-in-out
     `,
     outlined: `
-  relative overflow-hidden
-  bg-[var(--color-bg)] text-[var(--color-text)] font-semibold
-  border-2 border-transparent
-  [background-image:linear-gradient(var(--color-bg),var(--color-bg)),linear-gradient(222deg,var(--primary-color)_67.22%,var(--secondary-color)_93.57%)]
-  [background-origin:border-box,border-box]
-  [background-clip:padding-box,border-box]
-  before:content-[''] before:absolute before:inset-0 before:-z-10
-  before:bg-[radial-gradient(circle_at_center,var(--primary-color)_0%,var(--secondary-color)_100%)]
-  before:scale-[0.3] before:opacity-0 before:blur-xl
-  hover:before:scale-[1.5] hover:before:opacity-100 hover:before:blur-0
-  before:transition-all before:duration-1000 before:ease-[cubic-bezier(0.19,1,0.22,1)]
-  hover:text-black
-  transition-colors duration-500
-`,
-
+      relative overflow-hidden
+      bg-[var(--color-bg)] text-[var(--color-text)] font-semibold
+      border-2 border-transparent
+      [background-image:linear-gradient(var(--color-bg),var(--color-bg)),linear-gradient(222deg,var(--primary-color)_67.22%,var(--secondary-color)_93.57%)]
+      [background-origin:border-box,border-box]
+      [background-clip:padding-box,border-box]
+      before:content-[''] before:absolute before:inset-0 before:-z-10
+      before:bg-[radial-gradient(circle_at_center,var(--primary-color)_0%,var(--secondary-color)_100%)]
+      before:scale-[0.3] before:opacity-0 before:blur-xl
+      hover:before:scale-[1.5] hover:before:opacity-100 hover:before:blur-0
+      before:transition-all before:duration-1000 before:ease-[cubic-bezier(0.19,1,0.22,1)]
+      hover:text-black
+      transition-colors duration-500
+    `,
     ghost: `
       bg-transparent text-muted hover:text-text hover:bg-surface
       transition-all duration-300
     `,
   };
 
+  const combinedClassName = cn(
+    baseStyles,
+    sizeStyles[size],
+    variantStyles[variant],
+    isLoading && "pointer-events-none",
+    className
+  );
+
+  const content = isLoading ? (
+    <div className="flex items-center gap-2">
+      <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+      Loading...
+    </div>
+  ) : (
+    children
+  );
+
+  if (asLink && href) {
+    return (
+      <Link href={href} className={combinedClassName}>
+        {content}
+      </Link>
+    );
+  }
+
   return (
     <button
-      className={cn(
-        baseStyles,
-        sizeStyles[size],
-        variantStyles[variant],
-        isLoading && "pointer-events-none",
-        className
-      )}
+      className={combinedClassName}
       disabled={disabled || isLoading}
       {...props}
     >
-      {isLoading ? (
-        <div className="flex items-center gap-2">
-          <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-          Loading...
-        </div>
-      ) : (
-        children
-      )}
+      {content}
     </button>
   );
 };

@@ -105,5 +105,55 @@
         "client_acquisition": "Direct lead generation through integrated contact system"
       }
     }
+  },
+  "galaga_agency": {
+    "title": "Galaga Agency Website 2.0",
+    "preview": {
+      "tagline": "A new digital era for Galaga Agency.",
+      "description": "I built Galaga Agency’s new website from the ground up — a bold, immersive experience that merges creativity, technology, and identity. The platform captures Galaga’s forward-thinking vision through dynamic 3D visuals, motion design, and high-end performance.",
+      "key_points": {
+        "brand_reinvention": "Complete reinvention of Galaga’s online presence",
+        "modern_tech": "Powered by Next.js 15, TypeScript, GSAP, and Three.js",
+        "interactive_design": "Immersive 3D storytelling and fluid motion transitions"
+      },
+      "cta": "portfolio.common.cta.view_full_case"
+    },
+    "details": {
+      "challenge": "The previous Webflow website no longer reflected Galaga’s innovative mindset or the quality of its creative work. It lacked depth, motion, and a distinct identity. My challenge was to conceive a completely new digital space that truly represents Galaga’s energy, culture, and technological edge.",
+      "solution": "I designed and built a new digital ecosystem from scratch — visually expressive, technically advanced, and unmistakably Galaga. The result is a seamless fusion of branding, interactivity, and storytelling that positions the agency as a creative leader.",
+      "technical_approach": "Developed with Next.js 15 and TypeScript, the website delivers top-tier performance and maintainability. I used GSAP to orchestrate cinematic animations and transitions, and Three.js to create real-time 3D scenes and motion-reactive environments. Tailwind CSS ensures design consistency and fluid responsiveness across devices.",
+      "results": "The new website elevated Galaga’s brand perception to match its creative reputation. It communicates innovation through motion, depth, and precision — turning every interaction into a visual narrative. Engagement and time-on-site metrics improved dramatically, confirming its emotional and aesthetic impact.",
+      "impact": {
+        "brand_perception": "Elevated Galaga’s image through a bold, modern visual identity",
+        "interactive_experience": "Created immersive 3D storytelling and smooth navigation flow",
+        "tech_innovation": "Showcased cutting-edge technologies to mirror Galaga’s innovation",
+        "future_ready": "Built a modular, scalable system ready for future evolutions"
+      }
+    }
+  },
+  "reloj_laboral": {
+    "title": "Reloj Laboral — Digital Time Tracking System",
+    "preview": {
+      "tagline": "Building a complete digital time tracking ecosystem for Galaga Agency.",
+      "description": "I designed and developed Reloj Laboral, a full-stack platform that enables companies to comply with Spain’s 2025 labor regulations. The system includes distinct interfaces for employees, administrators, and official inspectors — all connected through a secure and auditable infrastructure.",
+      "key_points": {
+        "digital_compliance": "Compliant with the 2025 Spanish digital labor law",
+        "full_stack": "End-to-end solution — frontend, backend, and database architecture",
+        "multi_role_system": "Custom dashboards for employees, admins, and inspectors"
+      },
+      "cta": "portfolio.common.cta.view_full_case"
+    },
+    "details": {
+      "challenge": "Spanish companies are legally required to maintain precise digital records of working hours under Article 34.9 of the Estatuto de los Trabajadores. Many systems on the market were outdated, insecure, or not compliant. I set out to create a new digital ecosystem that met the full legal framework while remaining elegant and user-friendly.",
+      "solution": "I built both the frontend and backend from scratch — a robust, modular system with differentiated user roles and full audit capability. The interface is intuitive, while the backend enforces strict access policies and traceability for every action. The project was developed end-to-end under Galaga Agency’s ownership.",
+      "technical_approach": "The frontend was built with React 18, TypeScript, and Vite, using Tailwind CSS for a clean, consistent design system. Animations were implemented with GSAP to enhance UX. For the backend, I developed a Node.js + Express API using PostgreSQL and JWT authentication. Initially integrated with Supabase, later extended to a custom PERN stack for complete control and compliance.",
+      "results": "The system provides legally compliant digital time tracking with full transparency and auditability. Employees, admins, and inspectors now access real-time data securely from any device. Monthly PDF reports, correction workflows, and official export tools automate what was once a manual, error-prone process.",
+      "impact": {
+        "compliance_ready": "Achieved full compliance with Spanish digital time tracking law",
+        "operational_efficiency": "Reduced administrative overhead with automated reporting",
+        "scalable_infrastructure": "Built a scalable backend with modular architecture",
+        "secure_and_auditable": "Ensured data integrity through role-based access and audit logs"
+      }
+    }
   }
 }

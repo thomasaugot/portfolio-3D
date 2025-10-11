@@ -1,39 +1,36 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&family=Audiowide&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Audiowide&display=swap");
+
 @import "tailwindcss";
 
 @theme {
-  --font-inter: "Inter", sans-serif;
-  --font-mono: "JetBrains Mono", monospace;
+  --font-primary: "DM Sans", sans-serif;
   --font-fun: "Audiowide", sans-serif;
   --primary-color: #ccff02;
   --secondary-color: #02bccc;
-  --color-black: #2c2c2c;
-  --color-dark-bg: #2c2c2c;
+  --color-black: #212121;
+  --color-dark-bg: #212121;
   --color-dark-surface: #161b22;
   --color-dark-border: #30363d;
   --color-light-text: #f0f6fc;
   --color-muted-text: #8b949e;
 }
 
-/* Light theme - ONLY changed text from black to warm gray */
 :root {
   --color-bg: #ffffff;
-  --color-surface: #f8fafc;
+  --color-surface: #f5f5f5;
   --color-border: #e2e8f0;
-  --color-text: #2d3748; /* Changed from black to warm gray */
+  --color-text: #2d3748;
   --color-text-muted: #64748b;
 }
 
-/* Dark theme - EXACTLY as you had it */
 .dark {
   --color-bg: var(--color-black);
-  --color-surface: #1e293b;
+  --color-surface: #1a1a1a;
   --color-border: #334155;
   --color-text: #f1f5f9;
   --color-text-muted: #94a3b8;
 }
 
-/* Map CSS variables to Tailwind classes */
 @theme {
   --color-primary: var(--primary-color);
   --color-secondary: var(--secondary-color);
@@ -44,7 +41,46 @@
   --color-text-muted: var(--color-text-muted);
 }
 
-/* Your original gradients - UNCHANGED */
+body {
+  font-family: var(--font-primary);
+  background-color: var(--color-black);
+  overflow-x: hidden;
+}
+
+h1 {
+  @apply text-4xl sm:text-5xl md:text-6xl lg:text-7xl;
+  line-height: 1.2;
+}
+
+h2 {
+  @apply text-3xl sm:text-4xl md:text-5xl lg:text-6xl;
+  line-height: 1.3;
+}
+
+h3 {
+  @apply text-2xl sm:text-3xl md:text-4xl lg:text-5xl;
+  line-height: 1.3;
+}
+
+h4 {
+  @apply text-xl sm:text-2xl md:text-3xl lg:text-4xl;
+  line-height: 1.4;
+}
+
+h5 {
+  @apply text-lg sm:text-xl md:text-2xl;
+  line-height: 1.4;
+}
+
+h6 {
+  @apply text-base sm:text-lg md:text-xl;
+  line-height: 1.4;
+}
+
+.font-fun {
+  font-family: var(--font-fun);
+}
+
 .gradient-primary {
   background-image: linear-gradient(
     222deg,
@@ -77,7 +113,6 @@ button {
   cursor: pointer;
 }
 
-/* Your original animations - UNCHANGED */
 @keyframes orbit {
   from {
     transform: rotate(0deg);

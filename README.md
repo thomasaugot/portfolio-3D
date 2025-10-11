@@ -1,181 +1,358 @@
-Translation & Project Data System Documentation
-===============================================
+# 3D Portfolio
+### Translation & Project Data System Documentation
 
-Overview
---------
+## Table of Contents
+- [Overview](#overview)
+- [File Structure](#file-structure)
+- [Translation System](#translation-system)
+  - [How It Works](#how-it-works)
+  - [Adding New Translations](#adding-new-translations)
+  - [Translation Key Naming](#translation-key-naming)
+- [Project Data System](#project-data-system)
+  - [Adding New Projects](#adding-new-projects)
+  - [Using Projects in Components](#using-projects-in-components)
+- [Common Tasks](#common-tasks)
+- [Adding a New Translation File](#adding-a-new-translation-file)
+- [Important Notes](#important-notes)
+- [Troubleshooting](#troubleshooting)
+- [Animation & Three.js Setup](#animation--threejs-setup)
+  - [File Structure](#file-structure-1)
+  - [GSAP Animations](#gsap-animations)
+  - [Three.js Scenes](#threejs-scenes)
+  - [Loading State](#loading-state)
+  - [Rules](#rules)
 
-This portfolio uses a custom translation system with nested locale files and a centralized project data structure. All content is managed through TypeScript types and JSON translation files.
+---
 
-File Structure
---------------
+## Overview
 
-`   types/    └── project.ts                    # TypeScript interfaces for projects  data/    └── projects.ts                   # All project data with translation keys  lib/    └── TranslationProvider.tsx       # Translation context + hook  hooks/    └── useTranslationReady.ts        # Helper hook for translation loading state    └── useLanguageToggle.ts          # Language switching logic  locales/    ├── en/    │   ├── nav.json                  # Navigation translations    │   ├── homepage.json             # Homepage content    │   └── portfolio.json            # Project content    ├── fr/    │   └── (same structure)    └── es/        └── (same structure)   `
+This portfolio uses a custom translation system with nested locale files and a centralized project data structure.
+All content is managed through TypeScript types and JSON translation files.
 
-How Translations Work
----------------------
+---
 
-The system loads 3 JSON files per language and merges them into one object:
+## File Structure
 
-`   {    nav: { ... },           // from nav.json    homepage: { ... },      // from homepage.json    portfolio: { ... }      // from portfolio.json  }   `
+```
+types/
+  └── project.ts
+data/
+  └── projects.ts
+lib/
+  └── TranslationProvider.tsx
+hooks/
+  ├── useTranslationReady.ts
+  └── useLanguageToggle.ts
+locales/
+  ├── en/
+  │   ├── nav.json
+  │   ├── homepage.json
+  │   └── portfolio.json
+  ├── fr/
+  │   └── (same structure)
+  └── es/
+      └── (same structure)
+```
 
-Translation keys use dot notation: t("homepage.hero\_title")
+---
 
-Adding New Translations
------------------------
+## Translation System
 
-### 1\. Add Keys to All Language Files
+### How It Works
 
-Add the same key structure to en/, fr/, and es/ in the appropriate file:
+The system loads three JSON files per language and merges them into one object:
 
-**Example: Adding a new section to homepage**
+```json
+{
+  "nav": { },
+  "homepage": { },
+  "portfolio": { }
+}
+```
 
-locales/en/homepage.json:
+Translation keys use dot notation:
 
-`   {    "new_section": {      "title": "My New Section",      "description": "Section description"    }  }   `
+```tsx
+t("homepage.hero_title")
+```
 
-locales/fr/homepage.json:
+---
 
-`   {    "new_section": {      "title": "Ma Nouvelle Section",      "description": "Description de la section"    }  }   `
+### Adding New Translations
 
-locales/es/homepage.json:
+#### 1. Add Keys to All Language Files
 
-`   {    "new_section": {      "title": "Mi Nueva Sección",      "description": "Descripción de la sección"    }  }   `
+Example (new section in homepage):
 
-### 2\. Use in Components
+```json
+{
+  "new_section": {
+    "title": "My New Section",
+    "description": "Section description"
+  }
+}
+```
 
-tsx
+Repeat for all languages.
 
-Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`   import { useTranslation } from "@/lib/TranslationProvider";  export default function MyComponent() {    const { t } = useTranslation();    return (                {t("homepage.new_section.title")} ---------------------------------          {t("homepage.new_section.description")}    );  }   `
+#### 2. Use in Components
 
-Adding New Projects
--------------------
+```tsx
+import { useTranslation } from "@/lib/TranslationProvider";
 
-### 1\. Update TypeScript Types (if needed)
+export default function MyComponent() {
+  const { t } = useTranslation();
+  return (
+    <>
+      <h2>{t("homepage.new_section.title")}</h2>
+      <p>{t("homepage.new_section.description")}</p>
+    </>
+  );
+}
+```
 
-If your new project requires different fields, update types/project.ts first.
+---
 
-### 2\. Add Project Data
+### Translation Key Naming
 
-Edit data/projects.ts:
+Follow this consistent pattern:
 
-`   {    id: '005',    slug: 'my-new-project',    client: 'Client Name',    title: 'portfolio.my_new_project.title',  // Translation key    year: 2025,    category: 'portfolio.categories.web_app',    technologies: ['Next.js', 'TypeScript'],    featured: true,  // Shows on homepage    preview: {      tagline: 'portfolio.my_new_project.preview.tagline',      description: 'portfolio.my_new_project.preview.description',      keyPoints: [        'portfolio.my_new_project.preview.key_points.point_1',        'portfolio.my_new_project.preview.key_points.point_2',        'portfolio.my_new_project.preview.key_points.point_3'      ],      cta: 'portfolio.common.cta.view_full_case'    },    details: {      challenge: 'portfolio.my_new_project.details.challenge',      solution: 'portfolio.my_new_project.details.solution',      technicalApproach: 'portfolio.my_new_project.details.technical_approach',      results: 'portfolio.my_new_project.details.results',      impact: [        'portfolio.my_new_project.details.impact.impact_1',        'portfolio.my_new_project.details.impact.impact_2'      ]    },    media: {      coverImage: '/projects/my-new-project/cover.jpg',      coverVideo: '/projects/my-new-project/cover-video.mp4',      images: [        '/projects/my-new-project/screenshot-1.jpg',        '/projects/my-new-project/screenshot-2.jpg'      ]    }  }   `
+```
+section.subsection.field
+section.subsection.nested.field
+```
 
-### 3\. Add Translations
+Examples:
+```
+homepage.hero_title
+nav.contact.email
+portfolio.dosxdos_web.preview.tagline
+portfolio.common.cta.view_full_case
+```
 
-Add to locales/en/portfolio.json:
+---
 
-`   {    "my_new_project": {      "title": "Project Title",      "preview": {        "tagline": "One-line description",        "description": "2-3 sentence overview",        "key_points": {          "point_1": "First achievement",          "point_2": "Second achievement",          "point_3": "Third achievement"        }      },      "details": {        "challenge": "Problem description",        "solution": "What you built",        "technical_approach": "How you built it",        "results": "Outcome achieved",        "impact": {          "impact_1": "Specific result 1",          "impact_2": "Specific result 2"        }      }    }  }   `
+## Project Data System
 
-Repeat for fr/ and es/ with translated content.
+### Adding New Projects
 
-### 4\. Add Media Files
+#### 1. Update TypeScript Types
 
-Create folder: /public/projects/my-new-project/
+If the new project has different fields, edit `types/project.ts`.
 
-Add images:
+#### 2. Add Project Data
 
-*   cover.jpg - Main preview image
-    
-*   cover-video.mp4 - Optional homepage video
-    
-*   screenshot-1.jpg, screenshot-2.jpg, etc.
-    
+In `data/projects.ts`:
 
-Using Projects in Components
-----------------------------
+```ts
+{
+  id: '005',
+  slug: 'my-new-project',
+  client: 'Client Name',
+  title: 'portfolio.my_new_project.title',
+  year: 2025,
+  category: 'portfolio.categories.web_app',
+  technologies: ['Next.js', 'TypeScript'],
+  featured: true,
+  preview: {
+    tagline: 'portfolio.my_new_project.preview.tagline',
+    description: 'portfolio.my_new_project.preview.description',
+    keyPoints: [
+      'portfolio.my_new_project.preview.key_points.point_1',
+      'portfolio.my_new_project.preview.key_points.point_2',
+      'portfolio.my_new_project.preview.key_points.point_3'
+    ],
+    cta: 'portfolio.common.cta.view_full_case'
+  },
+  details: {
+    challenge: 'portfolio.my_new_project.details.challenge',
+    solution: 'portfolio.my_new_project.details.solution',
+    technicalApproach: 'portfolio.my_new_project.details.technical_approach',
+    results: 'portfolio.my_new_project.details.results',
+    impact: [
+      'portfolio.my_new_project.details.impact.impact_1',
+      'portfolio.my_new_project.details.impact.impact_2'
+    ]
+  },
+  media: {
+    coverImage: '/projects/my-new-project/cover.jpg',
+    coverVideo: '/projects/my-new-project/cover-video.mp4',
+    images: [
+      '/projects/my-new-project/screenshot-1.jpg',
+      '/projects/my-new-project/screenshot-2.jpg'
+    ]
+  }
+}
+```
 
-### Get Featured Projects (Homepage)
+#### 3. Add Translations
 
-`   import { getFeaturedProjects } from '@/data/projects';  import { useTranslation } from '@/lib/TranslationProvider';  export default function HomePage() {    const { t } = useTranslation();    const featured = getFeaturedProjects();    return (              {featured.map(project => (                        ### {t(project.title)}              {t(project.preview.tagline)}        ))}    );  }   `
+Add to `locales/en/portfolio.json` (and repeat for fr/es).
 
-### Get All Projects (Portfolio Page)
+#### 4. Add Media Files
 
-`   import { getAllProjects } from '@/data/projects';  const allProjects = getAllProjects();   `
+```
+/public/projects/my-new-project/
+  ├── cover.jpg
+  ├── cover-video.mp4
+  ├── screenshot-1.jpg
+  └── screenshot-2.jpg
+```
 
-### Get Single Project
+---
 
-`   import { getProjectBySlug } from '@/data/projects';  const project = getProjectBySlug('my-new-project');   `
+### Using Projects in Components
 
-Translation Key Naming Convention
----------------------------------
+```tsx
+import { getFeaturedProjects } from '@/data/projects';
+import { useTranslation } from '@/lib/TranslationProvider';
 
-Follow this structure consistently:
+export default function HomePage() {
+  const { t } = useTranslation();
+  const featured = getFeaturedProjects();
 
-`   section.subsection.field  section.subsection.nested.field  Examples:  homepage.hero_title  nav.contact.email  portfolio.dosxdos_web.preview.tagline  portfolio.common.cta.view_full_case   `
+  return (
+    <>
+      {featured.map(project => (
+        <div key={project.id}>
+          <h3>{t(project.title)}</h3>
+          <p>{t(project.preview.tagline)}</p>
+        </div>
+      ))}
+    </>
+  );
+}
+```
 
-Common Tasks
-------------
+---
 
-### Adding a New Page Section
+## Common Tasks
 
-1.  Add translations to appropriate locale file (homepage.json, nav.json, etc.)
-    
-2.  Use t() function in component
-    
-3.  Translate to all 3 languages
-    
+| Task | Steps |
+|------|-------|
+| Add new section | Add keys → Use `t()` → Translate all languages |
+| Change text | Edit text in all language files |
+| Add new file | Create JSON files → Update `TranslationProvider.tsx` |
 
-### Changing Existing Text
+---
 
-1.  Find the translation key in your component
-    
-2.  Update the text in all 3 language files (en/, fr/, es/)
-    
-3.  Do NOT change the key itself
-    
+## Adding a New Translation File
 
-### Adding a New Translation File
+Example (`about.json`):
 
-If you need a new section (e.g., about.json):
+```ts
+const loadTranslations = async (lang: Language) => {
+  const [nav, homepage, portfolio, about] = await Promise.all([
+    import(`@/locales/${lang}/nav.json`),
+    import(`@/locales/${lang}/homepage.json`),
+    import(`@/locales/${lang}/portfolio.json`),
+    import(`@/locales/${lang}/about.json`)
+  ]);
 
-1.  Create locales/en/about.json, locales/fr/about.json, locales/es/about.json
-    
-2.  Update lib/TranslationProvider.tsx:
-    
+  setTranslations({
+    nav: nav.default,
+    homepage: homepage.default,
+    portfolio: portfolio.default,
+    about: about.default
+  });
+};
+```
 
-``   const loadTranslations = async (lang: Language) => {    const [nav, homepage, portfolio, about] = await Promise.all([      import(`@/locales/${lang}/nav.json`),      import(`@/locales/${lang}/homepage.json`),      import(`@/locales/${lang}/portfolio.json`),      import(`@/locales/${lang}/about.json`)  // Add this    ]);    const merged = {      nav: nav.default,      homepage: homepage.default,      portfolio: portfolio.default,      about: about.default  // Add this    };    setTranslations(merged);  };   ``
+---
 
-Important Notes
----------------
+## Important Notes
 
-*   **Always add translations to all 3 languages** (en, fr, es)
-    
-*   **Keep translation keys consistent** across all language files
-    
-*   **Use descriptive key names** that explain what the content is
-    
-*   **Featured projects** (featured: true) appear on homepage
-    
-*   **Project slugs** stay the same across all languages (used in URLs)
-    
-*   **Media paths** are language-agnostic (same images for all languages)
-    
+- Add translations for **en**, **fr**, **es**.
+- Keep translation keys consistent.
+- Featured projects appear on the homepage.
+- Slugs are shared across languages.
+- Media paths are language-agnostic.
 
-Troubleshooting
----------------
+---
 
-**Translations not loading:**
+## Troubleshooting
 
-*   Check browser console for import errors
-    
-*   Verify JSON syntax (use a JSON validator)
-    
-*   Ensure all 3 language files have the same key structure
-    
+**Translations not loading**
+- Check browser console for import errors.
+- Validate JSON syntax.
+- Ensure all language files share the same structure.
 
-**Missing translations showing keys:**
+**Missing translations showing keys**
+- Key missing or misspelled.
 
-*   The key doesn't exist in the JSON file
-    
-*   Typo in the key name
-    
-*   Language file not loaded properly
-    
+**Project not appearing**
+- Not marked `featured: true`.
+- Missing from `projects.ts`.
+- Missing translation key.
 
-**Project not appearing:**
+---
 
-*   Check if featured: true for homepage
-    
-*   Verify project is in data/projects.ts array
-    
-*   Ensure translation keys exist in portfolio.json
+## Animation & Three.js Setup
+
+### File Structure
+
+```
+lib/animations/
+  ├── gsap.ts
+  ├── three.ts
+  └── index.ts
+utils/animations/
+  └── [name]-animations.ts
+hooks/
+  ├── useAppReady.ts
+  └── useThreeScene.ts
+```
+
+### GSAP Animations
+
+```ts
+import { gsap } from "@/lib/animations";
+
+export function initMyAnimation() {
+  const el = document.querySelector('[data-animate="my-thing"]');
+  if (!el) return;
+  gsap.to(el, { opacity: 1, y: 0, duration: 1 });
+}
+```
+
+### Three.js Scenes
+
+```ts
+import { THREE } from "@/lib/animations";
+
+export function initMyScene() {
+  const container = document.querySelector('[data-3d-container="my-scene"]');
+  if (!container) return;
+
+  const scene = new THREE.Scene();
+  const renderer = new THREE.WebGLRenderer({ alpha: true });
+  container.appendChild(renderer.domElement);
+
+  function animate() {
+    requestAnimationFrame(animate);
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  return () => {
+    renderer.dispose();
+    container.removeChild(renderer.domElement);
+  };
+}
+```
+
+### Loading State
+
+```tsx
+<LoadingProvider criticalSelectors={['[data-3d-container="my-scene"]']}>
+  {children}
+</LoadingProvider>
+```
+
+### Rules
+
+- Always check element existence before animating.
+- Use `data-animate` for GSAP targets.
+- Use `data-3d-container` for Three.js containers.
+- Return cleanup in Three.js init functions.
+- Call GSAP inits inside `useGSAP()`.

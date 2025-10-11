@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { routeTranslations, defaultLocale, type Language } from "@/utils/route-translations";
+import { routeTranslations, defaultLocale, type Language, locales } from "@/utils/route-translations";
 
 interface TranslationContextType {
   t: (key: string) => string;
@@ -13,15 +13,23 @@ interface TranslationContextType {
 
 const TranslationContext = createContext<TranslationContextType | undefined>(undefined);
 
+function detectBrowserLanguage(): Language {
+  if (typeof window === 'undefined') return defaultLocale;
+  
+  const browserLang = navigator.language.split('-')[0].toLowerCase();
+  return locales.includes(browserLang as Language) ? (browserLang as Language) : defaultLocale;
+}
+
 export function TranslationProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   
   const [language, setLanguage] = useState<Language>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('preferred-language') as Language;
-      if (saved && ['en', 'fr', 'es'].includes(saved)) {
+      if (saved && locales.includes(saved)) {
         return saved;
       }
+      return detectBrowserLanguage();
     }
     const currentLocale = pathname.split('/')[1] as Language;
     return currentLocale || defaultLocale;
@@ -31,18 +39,20 @@ export function TranslationProvider({ children }: { children: React.ReactNode })
 
   const loadTranslations = async (lang: Language) => {
     try {
-      const [nav, homepage, portfolio, common] = await Promise.all([
+      const [nav, homepage, portfolio, common, footer] = await Promise.all([
         import(`@/locales/${lang}/nav.json`),
         import(`@/locales/${lang}/homepage.json`),
         import(`@/locales/${lang}/portfolio.json`),
-        import(`@/locales/${lang}/common.json`)
+        import(`@/locales/${lang}/common.json`),
+        import(`@/locales/${lang}/footer.json`)
       ]);
 
       const merged = {
         nav: nav.default,
         homepage: homepage.default,
         portfolio: portfolio.default,
-        common: common.default
+        common: common.default,
+        footer: footer.default
       };
 
       setTranslations(merged);
@@ -53,12 +63,22 @@ export function TranslationProvider({ children }: { children: React.ReactNode })
 
   useEffect(() => {
     const urlLocale = pathname.split('/')[1] as Language;
-    if (urlLocale && ['en', 'fr', 'es'].includes(urlLocale)) {
+    if (urlLocale && locales.includes(urlLocale)) {
       if (urlLocale !== language) {
         setLanguage(urlLocale);
         if (typeof window !== 'undefined') {
           localStorage.setItem('preferred-language', urlLocale);
         }
+      }
+    } else if (typeof window !== 'undefined') {
+      const browserLang = detectBrowserLanguage();
+      const savedLang = localStorage.getItem('preferred-language') as Language;
+      const targetLang = savedLang || browserLang;
+      
+      if (targetLang !== defaultLocale || pathname === '/') {
+        const newPath = translateRoute(pathname, targetLang);
+        window.history.replaceState({}, '', newPath);
+        setLanguage(targetLang);
       }
     }
   }, [pathname, language]);
@@ -111,9 +131,8 @@ export function TranslationProvider({ children }: { children: React.ReactNode })
   };
 
   const nextLanguage = (): Language => {
-    const languages: Language[] = ['en', 'fr', 'es'];
-    const currentIndex = languages.indexOf(language);
-    return languages[(currentIndex + 1) % languages.length];
+    const currentIndex = locales.indexOf(language);
+    return locales[(currentIndex + 1) % locales.length];
   };
 
   return (

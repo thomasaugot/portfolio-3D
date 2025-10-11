@@ -11,8 +11,9 @@ export function initMenuAnimations() {
   const menuOverlay = document.querySelector('[data-animate="menu-overlay"]');
   const menuBlob = document.querySelector('[data-animate="menu-blob"]');
   const menuContainer = document.querySelector('[data-animate="menu-container"]');
+  const menuContent = document.querySelector('[data-animate="menu-content"]');
 
-  if (!menuTrigger || !menuOverlay || !menuBlob || !menuContainer) return;
+  if (!menuTrigger || !menuOverlay || !menuBlob || !menuContainer || !menuContent) return;
 
   let isOpen = false;
 
@@ -44,16 +45,15 @@ export function initMenuAnimations() {
 
   function resetMenuToClosedState() {
     const menuItems = document.querySelectorAll('[data-animate="menu-item"]');
-    const menuLines = document.querySelectorAll('[data-animate="menu-line"]');
     const line1 = document.querySelector('[data-animate="burger-line-1"]');
     const line2 = document.querySelector('[data-animate="burger-line-2"]');
     const line3 = document.querySelector('[data-animate="burger-line-3"]');
 
     gsap.set(menuContainer, { pointerEvents: "none" });
     gsap.set(menuOverlay, { opacity: 0, pointerEvents: "none" });
-    gsap.set(menuBlob, { scale: 1, rotate: 0, opacity: 1 });
-    gsap.set(menuItems, { opacity: 0, y: 0, scale: 1 });
-    gsap.set(menuLines, { scaleX: 0 });
+    gsap.set(menuContent, { opacity: 0 });
+    gsap.set(menuBlob, { scale: 1, rotate: 0 });
+    gsap.set(menuItems, { opacity: 0, x: -30 });
     gsap.set([line1, line3], { rotation: 0, y: 0 });
     gsap.set(line2, { opacity: 1 });
   }
@@ -64,7 +64,6 @@ export function initMenuAnimations() {
 
     const { isLight } = getThemeState();
     const menuItems = document.querySelectorAll('[data-animate="menu-item"]');
-    const menuLines = document.querySelectorAll('[data-animate="menu-line"]');
     const line1 = document.querySelector('[data-animate="burger-line-1"]');
     const line2 = document.querySelector('[data-animate="burger-line-2"]');
     const line3 = document.querySelector('[data-animate="burger-line-3"]');
@@ -73,20 +72,8 @@ export function initMenuAnimations() {
 
     const screenWidth = window.innerWidth;
     const isMobile = screenWidth < 768;
-    const isTablet = screenWidth >= 768 && screenWidth < 1024;
-
-    let blobScale, yOffset;
-
-    if (isMobile) {
-      blobScale = 15;
-      yOffset = 6;
-    } else if (isTablet) {
-      blobScale = 14;
-      yOffset = 8;
-    } else {
-      blobScale = 26;
-      yOffset = 8;
-    }
+    const blobScale = isMobile ? 12 : 18;
+    const yOffset = isMobile ? 6 : 8;
 
     currentTimeline = gsap.timeline({
       onComplete: () => {
@@ -96,59 +83,60 @@ export function initMenuAnimations() {
     });
 
     currentTimeline
-      .to([line1, line3], { y: yOffset, duration: 0.15, ease: "power2.out" }, 0)
-      .to(line1, { rotation: 45, duration: 0.15, ease: "power2.out" }, 0.15)
-      .to(line3, { rotation: -45, y: -yOffset, duration: 0.15, ease: "power2.out" }, 0.15)
-      .to(line2, { opacity: 0, duration: 0.1 }, 0)
+      .to([line1, line3], { 
+        y: yOffset, 
+        duration: 0.2, 
+        ease: "power2.out" 
+      }, 0)
+      .to(line1, { 
+        rotation: 45, 
+        duration: 0.2, 
+        ease: "power2.out" 
+      }, 0.2)
+      .to(line3, { 
+        rotation: -45, 
+        y: -yOffset, 
+        duration: 0.2, 
+        ease: "power2.out" 
+      }, 0.2)
+      .to(line2, { 
+        opacity: 0, 
+        duration: 0.15 
+      }, 0)
       .to(menuBlob, {
         scale: blobScale,
-        duration: 0.5,
-        rotate: isLight ? 12 : 6,
+        duration: 0.7,
+        rotate: isLight ? 8 : 5,
         ease: "power3.out",
-        transformOrigin: "center center",
-        opacity: 1,
-        backgroundColor: isLight ? "#ccff02" : "#02bccc",
-        onStart: () => {
-          (menuBlob as HTMLElement).style.backgroundSize = "100% 100%";
-        }
       }, 0.1)
       .to(menuOverlay, {
         opacity: 1,
         pointerEvents: "auto",
-        duration: 0.3,
+        duration: 0.5,
         ease: "power2.out",
-      }, "-=0.3")
+      }, 0.3)
+      .to(menuContent, {
+        opacity: 1,
+        duration: 0.5,
+        ease: "power2.out",
+      }, 0.4)
       .fromTo(menuItems, {
-        y: isLight ? 50 : 40,
+        x: -30,
         opacity: 0,
-        scale: isLight ? 0.9 : 1,
       }, {
-        y: 0,
+        x: 0,
         opacity: 1,
-        scale: 1,
-        duration: isLight ? 0.5 : 0.4,
-        stagger: 0.08,
-        ease: isLight ? "back.out(1.2)" : "power2.out",
-      }, "-=0.15")
-      .fromTo(menuLines, {
-        scaleX: 0,
-        opacity: 0
-      }, {
-        scaleX: 1,
-        opacity: 1,
-        duration: 0.4,
+        duration: 0.6,
         stagger: 0.08,
         ease: "power3.out",
-      }, "-=0.35");
+      }, 0.5);
   }
 
   function closeMenu() {
     isAnimating = true;
     killCurrentAnimation();
 
-    const { isLight } = getThemeState();
     const menuItems = document.querySelectorAll('[data-animate="menu-item"]');
-    const menuLines = document.querySelectorAll('[data-animate="menu-line"]');
     const line1 = document.querySelector('[data-animate="burger-line-1"]');
     const line2 = document.querySelector('[data-animate="burger-line-2"]');
     const line3 = document.querySelector('[data-animate="burger-line-3"]');
@@ -162,19 +150,40 @@ export function initMenuAnimations() {
     });
 
     currentTimeline
-      .to(menuLines, { scaleX: 0, opacity: 0, duration: 0.2, stagger: 0.03, ease: "power2.in" }, 0)
       .to(menuItems, {
-        y: isLight ? -40 : -30,
+        x: -30,
         opacity: 0,
-        scale: isLight ? 0.9 : 1,
         duration: 0.3,
         stagger: 0.04,
         ease: "power2.in",
-      }, 0.05)
-      .to(menuOverlay, { opacity: 0, pointerEvents: "none", duration: 0.25, ease: "power2.in" }, "-=0.15")
-      .to(menuBlob, { scale: 1, duration: 0.4, rotate: 0, ease: "back.out(1.4)" }, "-=0.2")
-      .to([line1, line3], { rotation: 0, y: 0, duration: 0.2, ease: "power2.inOut" }, "-=0.2")
-      .to(line2, { opacity: 1, duration: 0.15 }, "-=0.15");
+      }, 0)
+      .to(menuContent, { 
+        opacity: 0, 
+        duration: 0.3, 
+        ease: "power2.in" 
+      }, 0.1)
+      .to(menuOverlay, { 
+        opacity: 0, 
+        pointerEvents: "none", 
+        duration: 0.4, 
+        ease: "power2.in" 
+      }, 0.2)
+      .to(menuBlob, { 
+        scale: 1, 
+        duration: 0.5, 
+        rotate: 0, 
+        ease: "power3.out" 
+      }, 0.2)
+      .to([line1, line3], { 
+        rotation: 0, 
+        y: 0, 
+        duration: 0.2, 
+        ease: "power2.inOut" 
+      }, 0.3)
+      .to(line2, { 
+        opacity: 1, 
+        duration: 0.15 
+      }, 0.4);
   }
 
   closeMenuFn = closeMenu;
