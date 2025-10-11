@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "../globals.css";
 import { TranslationProvider } from "@/lib/providers/TranslationProvider";
 import { ThemeProvider } from "@/lib/providers/ThemeProvider";
-import { LanguageDiscovery } from "@/components/ui/LanguageDiscovery";
 import { TabTitleAnimationProvider } from "@/lib/providers/TabTitleAnimationProvider";
+import LoadingProvider from "@/lib/providers/LoadingProvider";
 
 export default async function LocaleLayout({
   children,
@@ -20,8 +20,9 @@ export default async function LocaleLayout({
         <ThemeProvider>
           <TranslationProvider>
             <TabTitleAnimationProvider />
-            {/* <LanguageDiscovery /> */}
-            <main>{children}</main>
+            <LoadingProvider criticalScenes={["hero"]}>
+              <main>{children}</main>
+            </LoadingProvider>
           </TranslationProvider>
         </ThemeProvider>
       </body>

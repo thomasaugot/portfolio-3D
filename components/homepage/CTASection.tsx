@@ -7,7 +7,7 @@ import { initCTA3DScene } from "@/utils/animations/cta-3d-scene";
 
 export default function CTASection() {
   const { t, language } = useTranslation();
-  const ctaContainerRef = useThreeScene(initCTA3DScene);
+  const ctaContainerRef = useThreeScene(initCTA3DScene, "cta");
 
   const ctaCards = [
     {
