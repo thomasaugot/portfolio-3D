@@ -8,6 +8,43 @@ type SceneInitFunction = () =>
 const sceneStates = new Map<string, boolean>();
 const readyCallbacks = new Set<() => void>();
 
+let loadQueue: Array<{
+  sceneId: string;
+  initFunction: SceneInitFunction;
+  registrationOrder: number;
+}> = [];
+let isProcessing = false;
+let registrationCounter = 0;
+
+async function processQueue() {
+  if (isProcessing || loadQueue.length === 0) return;
+  
+  isProcessing = true;
+  
+  loadQueue.sort((a, b) => a.registrationOrder - b.registrationOrder);
+  
+  const item = loadQueue.shift();
+  if (!item) {
+    isProcessing = false;
+    return;
+  }
+  
+  console.log(`🎬 Loading ${item.sceneId} (order ${item.registrationOrder})`);
+  
+  try {
+    const result = await item.initFunction();
+    sceneStates.set(item.sceneId, true);
+    readyCallbacks.forEach(callback => callback());
+    
+    return result;
+  } finally {
+    const delay = item.registrationOrder === 0 ? 0 : 300;
+    await new Promise(resolve => setTimeout(resolve, delay));
+    isProcessing = false;
+    processQueue();
+  }
+}
+
 export function useThreeScene(
   initFunction: SceneInitFunction,
   sceneId: string
@@ -15,24 +52,26 @@ export function useThreeScene(
   const cleanupRef = useRef<(() => void) | undefined>(undefined);
   const containerRef = useRef<HTMLDivElement>(null);
   const initializedRef = useRef(false);
+  const registrationOrderRef = useRef<number>(registrationCounter++);
 
   useEffect(() => {
     if (initializedRef.current || !containerRef.current) return;
 
-    const init = async () => {
-      initializedRef.current = true;
-      const result = await initFunction();
-      if (typeof result === "function") {
-        cleanupRef.current = result;
-      }
-
-      await new Promise(resolve => setTimeout(resolve, 100));
-
-      sceneStates.set(sceneId, true);
-      readyCallbacks.forEach(callback => callback());
-    };
-
-    init();
+    initializedRef.current = true;
+    
+    loadQueue.push({
+      sceneId,
+      initFunction: async () => {
+        const result = await initFunction();
+        if (typeof result === "function") {
+          cleanupRef.current = result;
+        }
+        return result;
+      },
+      registrationOrder: registrationOrderRef.current
+    });
+    
+    processQueue();
 
     return () => {
       if (cleanupRef.current) {
@@ -40,6 +79,7 @@ export function useThreeScene(
         initializedRef.current = false;
       }
       sceneStates.delete(sceneId);
+      loadQueue = loadQueue.filter(item => item.sceneId !== sceneId);
     };
   }, [initFunction, sceneId]);
 
@@ -67,6 +107,6 @@ export function waitForScenes(sceneIds: string[]): Promise<void> {
     setTimeout(() => {
       readyCallbacks.delete(callback);
       resolve();
-    }, 10000);
+    }, 15000);
   });
 }
