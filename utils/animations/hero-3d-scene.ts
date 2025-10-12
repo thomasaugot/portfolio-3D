@@ -1,6 +1,6 @@
 import { THREE } from "@/lib/animations";
 import { getThemeState } from "@/utils/theme-helpers";
-import type { SceneConfig } from "@/types/three.types";
+import type { SceneConfig } from "@/types/three";
 
 const getViewportConfig = (): SceneConfig => {
   const width = window.innerWidth;
@@ -63,8 +63,12 @@ const createHexFloor = (config: SceneConfig) => {
   for (let q = -radius; q <= radius; q++) {
     for (let r = -radius; r <= radius; r++) {
       const s = -q - r;
-      
-      if (Math.abs(q) > radius || Math.abs(r) > radius || Math.abs(s) > radius) {
+
+      if (
+        Math.abs(q) > radius ||
+        Math.abs(r) > radius ||
+        Math.abs(s) > radius
+      ) {
         continue;
       }
 

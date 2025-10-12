@@ -28,7 +28,7 @@ export default function Home() {
   });
 
   return (
-    <>
+    <main className="text-text bg-bg overflow-x-hidden">
       <Menu />
       <HeroSection />
       <SkillsSection />
@@ -36,6 +36,6 @@ export default function Home() {
       <ProjectsShowcase />
       <CTASection />
       <Footer />
-    </>
+    </main>
   );
 }

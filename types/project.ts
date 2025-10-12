@@ -1,4 +1,3 @@
-// goes in the homepage
 export interface ProjectPreview {
   tagline: string;
   description: string;
@@ -14,16 +13,14 @@ export interface ProjectDetails {
   impact: string[];
 }
 
-
-// fort he media of each project
 export interface ProjectMedia {
   coverImage: string;
   coverVideo?: string;
-  images: string[];
+  laptopTexture: string;
+  mobileTexture: string;
   videos?: string[];
 }
 
-// combines everything togetehr
 export interface Project {
   id: string;
   slug: string;

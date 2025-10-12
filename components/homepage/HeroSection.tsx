@@ -33,7 +33,7 @@ export default function HeroSection() {
                   {t("homepage.hero_main_title_1")}
                 </span>
                 <span
-                  className="block opacity-0 gradient-primary bg-clip-text text-transparent font-fun text-6xl sm:text-7xl md:text-8xl lg:text-9xl xl:text-[9rem] pb-1 pr-2 relative z-10 font-light tracking-tighter drop-shadow-[0_4px_12px_rgba(0,0,0,0.4)]"
+                  className="block opacity-0 gradient-primary bg-clip-text text-transparent font-fun text-5xl md:text-8xl lg:text-9xl xl:text-[9rem] pb-1 pr-2 relative z-10 font-light tracking-tighter drop-shadow-[0_4px_12px_rgba(0,0,0,0.4)]"
                   style={{
                     transform: "translateX(0)",
                     width: "max-content",

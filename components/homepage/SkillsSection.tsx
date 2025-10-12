@@ -42,7 +42,7 @@ export default function SkillsSection() {
   return (
     <section
       data-skills-section
-      className="min-h-screen flex items-center justify-center relative z-20 -mt-[100vh] opacity-0 py-32 overflow-visible"
+      className="xl:min-h-screen flex items-center justify-center relative z-20 -mt-[100vh] opacity-0 xl:py-32 overflow-visible"
     >
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-bg/50 to-bg pointer-events-none" />
 

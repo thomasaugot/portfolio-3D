@@ -17,7 +17,7 @@ export const projects: Project[] = [
       "Lexical",
       "NextAuth",
     ],
-    featured: true,
+    featured: false,
     preview: {
       tagline: "portfolio.dosxdos_web.preview.tagline",
       description: "portfolio.dosxdos_web.preview.description",
@@ -42,21 +42,10 @@ export const projects: Project[] = [
       ],
     },
     media: {
-      coverImage:
-        "/assets/images/portfolio/reloj-laboral-galaga/reloj-laboral-galaga-1.png",
-      coverVideo:
-        "/assets/videos/portfolio/demo-web-dosxdos.mp4",
-      images: [
-        "/assets/images/portfolio/reloj-laboral-galaga/reloj-laboral-galaga-1.png",
-        "/assets/images/portfolio/reloj-laboral-galaga/reloj-laboral-galaga-2.png",
-        "/assets/images/portfolio/reloj-laboral-galaga/reloj-laboral-galaga-3.png",
-        "/assets/images/portfolio/reloj-laboral-galaga/reloj-laboral-galaga-4.png",
-        "/assets/images/portfolio/reloj-laboral-galaga/reloj-laboral-galaga-5.png",
-        "/assets/images/portfolio/reloj-laboral-galaga/reloj-laboral-galaga-6.png",
-        "/assets/images/portfolio/reloj-laboral-galaga/reloj-laboral-galaga-7.png",
-        "/assets/images/portfolio/reloj-laboral-galaga/reloj-laboral-galaga-8.png",
-        "/assets/images/portfolio/reloj-laboral-galaga/reloj-laboral-galaga-9.png",
-      ],
+      coverImage: "/assets/images/portfolio/reloj-laboral-galaga/reloj-laboral-galaga-1.png",
+      coverVideo: "/assets/videos/portfolio/demo-web-dosxdos.mp4",
+      laptopTexture: "/assets/images/portfolio/reloj-laboral-galaga/reloj-laboral-galaga-2.png",
+      mobileTexture: "/assets/images/portfolio/reloj-laboral-galaga/reloj-laboral-galaga-1.png",
     },
   },
   {
@@ -98,21 +87,10 @@ export const projects: Project[] = [
       ],
     },
     media: {
-      coverImage:
-        "/assets/images/portfolio/reloj-laboral-galaga/reloj-laboral-galaga-1.png",
-      coverVideo:
-        "/assets/videos/portfolio/demo-reloj-laboral.mp4",
-      images: [
-        "/assets/images/portfolio/reloj-laboral-galaga/reloj-laboral-galaga-1.png",
-        "/assets/images/portfolio/reloj-laboral-galaga/reloj-laboral-galaga-2.png",
-        "/assets/images/portfolio/reloj-laboral-galaga/reloj-laboral-galaga-3.png",
-        "/assets/images/portfolio/reloj-laboral-galaga/reloj-laboral-galaga-4.png",
-        "/assets/images/portfolio/reloj-laboral-galaga/reloj-laboral-galaga-5.png",
-        "/assets/images/portfolio/reloj-laboral-galaga/reloj-laboral-galaga-6.png",
-        "/assets/images/portfolio/reloj-laboral-galaga/reloj-laboral-galaga-7.png",
-        "/assets/images/portfolio/reloj-laboral-galaga/reloj-laboral-galaga-8.png",
-        "/assets/images/portfolio/reloj-laboral-galaga/reloj-laboral-galaga-9.png",
-      ],
+      coverImage: "/assets/images/portfolio/reloj-laboral-galaga/reloj-laboral-galaga-1.png",
+      coverVideo: "/assets/videos/portfolio/demo-reloj-laboral.mp4",
+      laptopTexture: "/assets/images/portfolio/reloj-laboral-galaga/reloj-laboral-galaga-5.png",
+      mobileTexture: "/assets/images/portfolio/reloj-laboral-galaga/reloj-laboral-galaga-7.png",
     },
   },
   {
@@ -155,21 +133,10 @@ export const projects: Project[] = [
       ],
     },
     media: {
-      coverImage:
-        "/assets/images/portfolio/energia-solar-canarias/energia-solar-canarias-1.png",
-      coverVideo:
-        "/assets/videos/portfolio/demo-energia-solar-canarias.mp4",
-      images: [
-        "/assets/images/portfolio/energia-solar-canarias/energia-solar-canarias-1.png",
-        "/assets/images/portfolio/energia-solar-canarias/energia-solar-canarias-2.png",
-        "/assets/images/portfolio/energia-solar-canarias/energia-solar-canarias-3.png",
-        "/assets/images/portfolio/energia-solar-canarias/energia-solar-canarias-4.png",
-        "/assets/images/portfolio/energia-solar-canarias/energia-solar-canarias-5.png",
-        "/assets/images/portfolio/energia-solar-canarias/energia-solar-canarias-6.png",
-        "/assets/images/portfolio/energia-solar-canarias/energia-solar-canarias-7.png",
-        "/assets/images/portfolio/energia-solar-canarias/energia-solar-canarias-8.png",
-        "/assets/images/portfolio/energia-solar-canarias/energia-solar-canarias-9.png",
-      ],
+      coverImage: "/assets/images/portfolio/energia-solar-canarias/energia-solar-canarias-1.png",
+      coverVideo: "/assets/videos/portfolio/demo-energia-solar-canarias.mp4",
+      laptopTexture: "/assets/images/portfolio/energia-solar-canarias/energia-solar-canarias-laptop-texture.png",
+      mobileTexture: "/assets/images/portfolio/energia-solar-canarias/energia-solar-canarias-mobile-texture.png",
     },
   },
   {
@@ -200,8 +167,7 @@ export const projects: Project[] = [
     details: {
       challenge: "portfolio.charpente_durand.details.challenge",
       solution: "portfolio.charpente_durand.details.solution",
-      technicalApproach:
-        "portfolio.charpente_durand.details.technical_approach",
+      technicalApproach: "portfolio.charpente_durand.details.technical_approach",
       results: "portfolio.charpente_durand.details.results",
       impact: [
         "portfolio.charpente_durand.details.impact.visibility",
@@ -210,21 +176,10 @@ export const projects: Project[] = [
       ],
     },
     media: {
-      coverImage:
-        "/assets/images/portfolio/charpente-menuiserie-durand/charpente-menuiserie-durand-1.png",
-      coverVideo:
-        "/assets/videos/portfolio/demo-charpente-menuiserie-durand.mp4",
-      images: [
-        "/assets/images/portfolio/charpente-menuiserie-durand/charpente-menuiserie-durand-1.png",
-        "/assets/images/portfolio/charpente-menuiserie-durand/charpente-menuiserie-durand-2.png",
-        "/assets/images/portfolio/charpente-menuiserie-durand/charpente-menuiserie-durand-3.png",
-        "/assets/images/portfolio/charpente-menuiserie-durand/charpente-menuiserie-durand-4.png",
-        "/assets/images/portfolio/charpente-menuiserie-durand/charpente-menuiserie-durand-5.png",
-        "/assets/images/portfolio/charpente-menuiserie-durand/charpente-menuiserie-durand-6.png",
-        "/assets/images/portfolio/charpente-menuiserie-durand/charpente-menuiserie-durand-7.png",
-        "/assets/images/portfolio/charpente-menuiserie-durand/charpente-menuiserie-durand-8.png",
-        "/assets/images/portfolio/charpente-menuiserie-durand/charpente-menuiserie-durand-9.png",
-      ],
+      coverImage: "/assets/images/portfolio/charpente-menuiserie-durand/charpente-menuiserie-durand-1.png",
+      coverVideo: "/assets/videos/portfolio/demo-charpente-menuiserie-durand.mp4",
+      laptopTexture: "/assets/images/portfolio/charpente-menuiserie-durand/charpente-menuiserie-durand-2.png",
+      mobileTexture: "/assets/images/portfolio/charpente-menuiserie-durand/charpente-menuiserie-durand-4.png",
     },
   },
   {
@@ -265,21 +220,10 @@ export const projects: Project[] = [
       ],
     },
     media: {
-      coverImage:
-        "/assets/images/portfolio/reloj-laboral-galaga/reloj-laboral-galaga-1.png",
-      coverVideo:
-        "/assets/videos/portfolio/demo-reloj-laboral.mp4",
-      images: [
-        "/assets/images/portfolio/reloj-laboral-galaga/reloj-laboral-galaga-1.png",
-        "/assets/images/portfolio/reloj-laboral-galaga/reloj-laboral-galaga-2.png",
-        "/assets/images/portfolio/reloj-laboral-galaga/reloj-laboral-galaga-3.png",
-        "/assets/images/portfolio/reloj-laboral-galaga/reloj-laboral-galaga-4.png",
-        "/assets/images/portfolio/reloj-laboral-galaga/reloj-laboral-galaga-5.png",
-        "/assets/images/portfolio/reloj-laboral-galaga/reloj-laboral-galaga-6.png",
-        "/assets/images/portfolio/reloj-laboral-galaga/reloj-laboral-galaga-7.png",
-        "/assets/images/portfolio/reloj-laboral-galaga/reloj-laboral-galaga-8.png",
-        "/assets/images/portfolio/reloj-laboral-galaga/reloj-laboral-galaga-9.png",
-      ],
+      coverImage: "/assets/images/portfolio/reloj-laboral-galaga/reloj-laboral-galaga-1.png",
+      coverVideo: "/assets/videos/portfolio/demo-reloj-laboral.mp4",
+      laptopTexture: "/assets/images/portfolio/galaga-agency/galaga-agency-laptop-texture.png",
+      mobileTexture: "/assets/images/portfolio/galaga-agency/galaga-agency-mobile-texture.png",
     },
   },
   {
@@ -301,7 +245,7 @@ export const projects: Project[] = [
       "JWT",
       "GSAP",
     ],
-    featured: false,
+    featured: true,
     preview: {
       tagline: "portfolio.reloj_laboral.preview.tagline",
       description: "portfolio.reloj_laboral.preview.description",
@@ -325,21 +269,10 @@ export const projects: Project[] = [
       ],
     },
     media: {
-      coverImage:
-        "/assets/images/portfolio/reloj-laboral-galaga/reloj-laboral-galaga-1.png",
-      coverVideo:
-        "/assets/videos/portfolio/demo-reloj-laboral.mp4",
-      images: [
-        "/assets/images/portfolio/reloj-laboral-galaga/reloj-laboral-galaga-1.png",
-        "/assets/images/portfolio/reloj-laboral-galaga/reloj-laboral-galaga-2.png",
-        "/assets/images/portfolio/reloj-laboral-galaga/reloj-laboral-galaga-3.png",
-        "/assets/images/portfolio/reloj-laboral-galaga/reloj-laboral-galaga-4.png",
-        "/assets/images/portfolio/reloj-laboral-galaga/reloj-laboral-galaga-5.png",
-        "/assets/images/portfolio/reloj-laboral-galaga/reloj-laboral-galaga-6.png",
-        "/assets/images/portfolio/reloj-laboral-galaga/reloj-laboral-galaga-7.png",
-        "/assets/images/portfolio/reloj-laboral-galaga/reloj-laboral-galaga-8.png",
-        "/assets/images/portfolio/reloj-laboral-galaga/reloj-laboral-galaga-9.png",
-      ],
+      coverImage: "/assets/images/portfolio/reloj-laboral-galaga/reloj-laboral-galaga-1.png",
+      coverVideo: "/assets/videos/portfolio/demo-reloj-laboral.mp4",
+      laptopTexture: "/assets/images/portfolio/reloj-laboral-galaga/reloj-laboral-galaga-2.png",
+      mobileTexture: "/assets/images/portfolio/reloj-laboral-galaga/reloj-laboral-galaga-4.png",
     },
   },
 ];
