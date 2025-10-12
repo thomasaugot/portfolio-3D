@@ -79,14 +79,15 @@ export default function CTASection() {
     <section
       data-cta-section
       className="relative min-h-screen flex items-center justify-center pb-48 overflow-visible"
+      style={{ perspective: "2500px" }}
     >
       <div
         ref={ctaContainerRef}
         data-3d-container="cta"
-        className="absolute inset-0 w-full h-full pointer-events-none z-0 opacity-60"
+        className="absolute inset-0 w-full h-full pointer-events-none z-0 opacity-70"
       />
 
-      <div className="absolute inset-0  pointer-events-none" />
+      <div className="absolute inset-0 pointer-events-none" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-8 w-full">
         <div className="text-center mb-20" data-cta-header>
@@ -99,24 +100,24 @@ export default function CTASection() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="relative grid md:grid-cols-3 gap-8" style={{ transformStyle: "preserve-3d" }}>
           {ctaCards.map((card, index) => (
             <Link
               key={card.href}
               href={card.href}
               data-cta-card
               data-index={index}
-              className="group relative block"
-              style={{ perspective: "1000px" }}
+              className="group relative block transition-all duration-700 hover:scale-110 hover:!z-[100]"
+              style={{ transformStyle: "preserve-3d" }}
             >
               <div
                 data-card-glow
-                className="absolute inset-0 bg-gradient-to-br from-primary/40 to-secondary/40 rounded-3xl blur-2xl opacity-0"
+                className="absolute inset-0 bg-gradient-to-br from-primary/40 to-secondary/40 rounded-3xl blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
               />
 
               <div className="absolute -inset-[1px] bg-gradient-to-br from-primary via-secondary to-primary rounded-3xl opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
 
-              <div className="relative bg-bg backdrop-blur-xl rounded-3xl p-8 transition-all duration-500 h-full overflow-hidden">
+              <div className="relative bg-bg/95 backdrop-blur-xl rounded-3xl p-8 transition-all duration-500 h-full overflow-hidden shadow-2xl">
                 <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-primary/5 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
                 <div className="relative z-10 flex flex-col h-full">
