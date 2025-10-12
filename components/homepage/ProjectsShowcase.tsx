@@ -17,7 +17,7 @@ export default function ProjectsShowcase() {
         <section
           data-projects-section
           className="relative overflow-visible bg-gradient-to-b from-bg via-bg to-transparent"
-          style={{ height: `${projects.length * 100}vh` }}
+          style={{ height: `${projects.length * 150}vh` }}
         >
           <div
             className="sticky top-0 h-screen overflow-visible flex items-center justify-center"

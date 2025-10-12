@@ -1,6 +1,7 @@
 import { THREE } from "@/lib/animations";
 import { getThemeState } from "@/utils/theme-helpers";
 import type { SceneConfig } from "@/types/three";
+import { perfMonitor } from "@/utils/performance-monitor";
 
 const getViewportConfig = (): SceneConfig => {
   const width = window.innerWidth;
@@ -15,6 +16,8 @@ const getViewportConfig = (): SceneConfig => {
 };
 
 const createScene = (container: HTMLElement, config: SceneConfig) => {
+  const measure = perfMonitor.startMeasure('hero:createScene');
+  
   const scene = new THREE.Scene();
 
   const camera = new THREE.PerspectiveCamera(
@@ -31,16 +34,23 @@ const createScene = (container: HTMLElement, config: SceneConfig) => {
   );
   camera.lookAt(0, 0, 0);
 
-  const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+  const renderer = new THREE.WebGLRenderer({ 
+    alpha: true, 
+    antialias: true,
+    powerPreference: "high-performance"
+  });
   renderer.setSize(container.clientWidth, container.clientHeight);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setClearColor(0x000000, 0);
   container.appendChild(renderer.domElement);
 
+  measure();
   return { scene, camera, renderer };
 };
 
 const setupLighting = (scene: THREE.Scene, isLight: boolean) => {
+  const measure = perfMonitor.startMeasure('hero:setupLighting');
+  
   const ambientLight = new THREE.AmbientLight(0xffffff, isLight ? 1.2 : 0.9);
   scene.add(ambientLight);
 
@@ -53,9 +63,13 @@ const setupLighting = (scene: THREE.Scene, isLight: boolean) => {
     fillLight.position.set(-200, 300, -300);
     scene.add(fillLight);
   }
+  
+  measure();
 };
 
 const createHexFloor = (config: SceneConfig) => {
+  const measure = perfMonitor.startMeasure('hero:createHexFloor');
+  
   const group = new THREE.Group();
   const hexSize = config.isMobile ? 60 : 80;
   const radius = config.isMobile ? 8 : 12;
@@ -117,16 +131,18 @@ const createHexFloor = (config: SceneConfig) => {
     }
   }
 
+  measure();
   return group;
 };
 
 const loadTexture = async (
   renderer: THREE.WebGLRenderer
 ): Promise<THREE.Texture | null> => {
+  const measure = perfMonitor.startMeasure('hero:loadTexture');
   const textureLoader = new THREE.TextureLoader();
 
   try {
-    return await new Promise<THREE.Texture>((resolve, reject) => {
+    const texture = await new Promise<THREE.Texture>((resolve, reject) => {
       textureLoader.load(
         "/assets/images/vscode-texture.png",
         (texture) => {
@@ -144,8 +160,11 @@ const loadTexture = async (
         reject
       );
     });
+    measure();
+    return texture;
   } catch (error) {
     console.warn("⚠️ Could not load VS Code texture");
+    measure();
     return null;
   }
 };
@@ -154,6 +173,8 @@ const loadCodeModel = async (
   scene: THREE.Scene,
   config: SceneConfig
 ): Promise<THREE.Group | null> => {
+  const measure = perfMonitor.startMeasure('hero:loadCodeModel');
+  
   const { GLTFLoader } = await import(
     "three/examples/jsm/loaders/GLTFLoader.js"
   );
@@ -194,6 +215,7 @@ const loadCodeModel = async (
       }
 
       scene.add(wrapper);
+      measure();
       resolve(wrapper);
     });
   });
@@ -204,6 +226,8 @@ const loadLaptopModel = async (
   config: SceneConfig,
   vscodeTexture: THREE.Texture | null
 ): Promise<THREE.Group | null> => {
+  const measure = perfMonitor.startMeasure('hero:loadLaptopModel');
+  
   const { GLTFLoader } = await import(
     "three/examples/jsm/loaders/GLTFLoader.js"
   );
@@ -258,6 +282,7 @@ const loadLaptopModel = async (
       }
 
       scene.add(wrapper);
+      measure();
       resolve(wrapper);
     });
   });
@@ -276,13 +301,17 @@ const setupInteractions = (
   let dragOffset = new THREE.Vector3();
 
   const onMouseDown = (event: MouseEvent) => {
+    const measure = perfMonitor.startMeasure('hero:mouseDown');
     const rect = container.getBoundingClientRect();
     mouse.x = ((event.clientX - rect.left) / container.clientWidth) * 2 - 1;
     mouse.y = -((event.clientY - rect.top) / container.clientHeight) * 2 + 1;
 
     raycaster.setFromCamera(mouse, camera);
 
-    if (!codeWrapper || !laptopWrapper) return;
+    if (!codeWrapper || !laptopWrapper) {
+      measure();
+      return;
+    }
 
     const intersects = raycaster.intersectObjects(
       [codeWrapper, laptopWrapper],
@@ -302,11 +331,13 @@ const setupInteractions = (
       dragOffset.copy(intersectPoint).sub(selectedObject.position);
       container.style.cursor = "grabbing";
     }
+    measure();
   };
 
   const onMouseMove = (event: MouseEvent) => {
     if (!isDragging || !selectedObject) return;
 
+    const measure = perfMonitor.startMeasure('hero:mouseMove');
     const rect = container.getBoundingClientRect();
     mouse.x = ((event.clientX - rect.left) / container.clientWidth) * 2 - 1;
     mouse.y = -((event.clientY - rect.top) / container.clientHeight) * 2 + 1;
@@ -321,6 +352,7 @@ const setupInteractions = (
       selectedObject.position.x = intersectPoint.x - dragOffset.x;
       selectedObject.position.y = intersectPoint.y - dragOffset.y;
     }
+    measure();
   };
 
   const onMouseUp = () => {
@@ -343,10 +375,16 @@ const setupInteractions = (
 };
 
 export async function initHero3DScene() {
+  console.log("🚀 initHero3DScene called");
+  const initMeasure = perfMonitor.startMeasure('hero:init:total');
+  
   const container = document.querySelector(
     '[data-3d-container="hero"]'
   ) as HTMLElement;
-  if (!container) return;
+  if (!container) {
+    initMeasure();
+    return;
+  }
 
   const config = getViewportConfig();
   const { scene, camera, renderer } = createScene(container, config);
@@ -372,17 +410,25 @@ export async function initHero3DScene() {
     : () => {};
 
   const handleResize = () => {
+    const measure = perfMonitor.startMeasure('hero:resize');
     camera.aspect = container.clientWidth / container.clientHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(container.clientWidth, container.clientHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    measure();
   };
   window.addEventListener("resize", handleResize);
 
   let animationId: number;
   let time = 0;
+  let frameCounter = 0;
 
   const animate = () => {
+    // Only measure every 60 frames to reduce overhead
+    const shouldMeasure = frameCounter % 60 === 0;
+    const animateMeasure = shouldMeasure ? perfMonitor.startMeasure('hero:animate') : null;
+    
+    perfMonitor.updateFPS();
     time += 0.01;
 
     hexFloor.rotation.y = Math.sin(time * 0.3) * 0.05;
@@ -412,6 +458,9 @@ export async function initHero3DScene() {
     }
 
     renderer.render(scene, camera);
+    
+    if (animateMeasure) animateMeasure();
+    frameCounter++;
     animationId = requestAnimationFrame(animate);
   };
 
@@ -427,6 +476,9 @@ export async function initHero3DScene() {
     codeModel,
     laptopModel,
   };
+
+  initMeasure();
+  console.log("✅ Hero scene initialized");
 
   return () => {
     window.removeEventListener("resize", handleResize);

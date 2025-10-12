@@ -1,14 +1,8 @@
-/**
- * SCREEN DIMENSIONS REFERENCE:
- * Laptop: 1.35:1 ratio (4:3-ish) - Use 1920x1418px or 2560x1896px screenshots
- * iPhone: 0.36:1 ratio (unusually tall) - Use 1170x3286px (20-25% taller than real phones which are ~0.46 ratio)
- * Real devices: iPhone (1179x2556), Samsung S24 (1080x2340), Pixel 8 (1080x2400)
- */
-
 import { THREE } from "@/lib/animations";
 import { getThemeState } from "@/utils/theme-helpers";
 import { getFeaturedProjects } from "@/data/projects";
 import type { SceneConfig } from "@/types/three";
+import { perfMonitor } from "@/utils/performance-monitor";
 
 const MODEL_PATHS = [
   "/assets/models/iphone-laptop-scene-1.glb",
@@ -30,10 +24,6 @@ const getViewportConfig = (): SceneConfig => {
 
 const createScene = (container: HTMLElement) => {
   const scene = new THREE.Scene();
-
-  const width = window.innerWidth;
-  const isMobile = width < 768;
-
   const camera = new THREE.PerspectiveCamera(
     50,
     container.clientWidth / container.clientHeight,
@@ -43,7 +33,11 @@ const createScene = (container: HTMLElement) => {
   camera.position.set(0, 20, 550);
   camera.lookAt(0, 0, 0);
 
-  const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+  const renderer = new THREE.WebGLRenderer({ 
+    alpha: true, 
+    antialias: true,
+    powerPreference: "high-performance"
+  });
   renderer.setSize(container.clientWidth, container.clientHeight);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setClearColor(0x000000, 0);
@@ -76,7 +70,7 @@ const loadTexture = async (
   const textureLoader = new THREE.TextureLoader();
 
   try {
-    return await new Promise<THREE.Texture>((resolve, reject) => {
+    const texture = await new Promise<THREE.Texture>((resolve, reject) => {
       textureLoader.load(
         texturePath,
         (texture) => {
@@ -94,6 +88,7 @@ const loadTexture = async (
         reject
       );
     });
+    return texture;
   } catch (error) {
     console.warn(`⚠️ Could not load texture: ${texturePath}`);
     return null;
@@ -112,9 +107,7 @@ const loadModel = async (
   laptopGroup: THREE.Object3D | null;
   iphoneGroup: THREE.Object3D | null;
 } | null> => {
-  const { GLTFLoader } = await import(
-    "three/examples/jsm/loaders/GLTFLoader.js"
-  );
+  const { GLTFLoader } = await import("three/examples/jsm/loaders/GLTFLoader.js");
   const loader = new GLTFLoader();
 
   return new Promise((resolve) => {
@@ -122,7 +115,6 @@ const loadModel = async (
       modelPath,
       (gltf) => {
         const model = gltf.scene;
-
         let laptopGroup: THREE.Object3D | null = null;
         let iphoneGroup: THREE.Object3D | null = null;
 
@@ -139,7 +131,6 @@ const loadModel = async (
                 for (let i = 0; i < uvArray.length; i += 2) {
                   const u = uvArray[i];
                   const v = uvArray[i + 1];
-
                   uvArray[i] = (u - 0.5) * 1.5 + 0.6;
                   uvArray[i + 1] = v;
                 }
@@ -211,6 +202,8 @@ const loadModel = async (
 };
 
 export async function initProjects3DScene() {
+  console.log("🎬 initProjects3DScene called");
+  
   const desktopContainers = document.querySelectorAll(
     '[data-3d-container^="project-"]:not([data-3d-container^="project-mobile"])'
   );
@@ -222,6 +215,8 @@ export async function initProjects3DScene() {
     ...Array.from(desktopContainers),
     ...Array.from(mobileContainers),
   ];
+
+  console.log(`📦 Found ${allContainers.length} containers`);
 
   if (allContainers.length === 0) return;
 
@@ -264,6 +259,7 @@ export async function initProjects3DScene() {
       modelPath,
       projectIndex
     );
+    
     if (!modelData) continue;
 
     const { wrapper: modelWrapper, laptopGroup, iphoneGroup } = modelData;
@@ -312,8 +308,13 @@ export async function initProjects3DScene() {
 
     let animationId: number;
     let time = 0;
+    let frameCounter = 0;
 
     const animate = () => {
+      const shouldMeasure = frameCounter % 60 === 0 && frameCounter > 0;
+      const animateMeasure = shouldMeasure ? perfMonitor.startMeasure(`animate:${index}`) : null;
+      
+      perfMonitor.updateFPS();
       time += 0.005;
 
       if (modelWrapper && modelWrapper.children[0]) {
@@ -348,6 +349,9 @@ export async function initProjects3DScene() {
       }
 
       renderer.render(scene, camera);
+      
+      if (animateMeasure) animateMeasure();
+      frameCounter++;
       animationId = requestAnimationFrame(animate);
     };
 
@@ -369,6 +373,8 @@ export async function initProjects3DScene() {
       scrollProgress: 0,
     };
 
+    console.log(`✅ Scene ${index} initialized`);
+
     cleanupFunctions.push(() => {
       window.removeEventListener("resize", handleResize);
       if (animationId) cancelAnimationFrame(animationId);
@@ -378,6 +384,8 @@ export async function initProjects3DScene() {
       delete (window as any)[sceneKey];
     });
   }
+
+  console.log("✅ All project scenes initialized");
 
   return () => {
     cleanupFunctions.forEach((cleanup) => cleanup());

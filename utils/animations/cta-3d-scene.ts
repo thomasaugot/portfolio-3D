@@ -1,6 +1,7 @@
 import { THREE } from "@/lib/animations";
 import { getThemeState } from "@/utils/theme-helpers";
 import type { SceneConfig } from "@/types/three";
+import { perfMonitor } from "@/utils/performance-monitor";
 
 const getViewportConfig = (): SceneConfig => {
   const width = window.innerWidth;
@@ -27,7 +28,11 @@ const createScene = (container: HTMLElement, config: SceneConfig) => {
   camera.position.set(0, 350, 1200);
   camera.lookAt(0, 0, 0);
 
-  const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+  const renderer = new THREE.WebGLRenderer({ 
+    alpha: true, 
+    antialias: true,
+    powerPreference: "high-performance"
+  });
   renderer.setSize(container.clientWidth, container.clientHeight);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setClearColor(0x000000, 0);
@@ -54,7 +59,10 @@ const setupLighting = (scene: THREE.Scene, isLight: boolean) => {
 const createHexFloor = (config: SceneConfig) => {
   const group = new THREE.Group();
   const hexSize = config.isMobile ? 60 : 80;
-  const radius = config.isMobile ? 8 : 12;
+  const radius = config.isMobile ? 6 : 10;
+
+  const color1 = new THREE.Color(0x02bccc);
+  const color2 = new THREE.Color(0xccff02);
 
   for (let q = -radius; q <= radius; q++) {
     for (let r = -radius; r <= radius; r++) {
@@ -87,8 +95,8 @@ const createHexFloor = (config: SceneConfig) => {
         (Math.sin(q * 0.5) + Math.cos(r * 0.5)) * 0.5 + 0.5;
 
       const color = new THREE.Color().lerpColors(
-        new THREE.Color(0x02bccc),
-        new THREE.Color(0xccff02),
+        color1,
+        color2,
         gradientFactor
       );
 
@@ -108,6 +116,7 @@ const createHexFloor = (config: SceneConfig) => {
       (hex as any).baseOpacity = opacity * (config.isLight ? 0.6 : 0.4);
       (hex as any).pulseOffset = distance * 0.2;
       (hex as any).gradientFactor = gradientFactor;
+      (hex as any).baseColor = color.clone();
 
       group.add(hex);
     }
@@ -117,6 +126,8 @@ const createHexFloor = (config: SceneConfig) => {
 };
 
 export function initCTA3DScene() {
+  console.log("🎬 initCTA3DScene called");
+  
   const container = document.querySelector(
     '[data-3d-container="cta"]'
   ) as HTMLElement;
@@ -140,26 +151,40 @@ export function initCTA3DScene() {
 
   let animationId: number;
   let time = 0;
+  let frameCounter = 0;
+
+  const color1 = new THREE.Color(0x02bccc);
+  const color2 = new THREE.Color(0xccff02);
+  const tempColor = new THREE.Color();
 
   const animate = () => {
-    time += 0.01;
+    const shouldMeasure = frameCounter % 60 === 0 && frameCounter > 0;
+    const measure = shouldMeasure ? perfMonitor.startMeasure('cta:animate') : null;
+    
+    perfMonitor.updateFPS();
+    time += 0.008;
+
+    const sinTime = Math.sin(time);
+    const cosTime = Math.cos(time);
 
     hexFloor.children.forEach((hex) => {
       const material = (hex as THREE.Line).material as THREE.LineBasicMaterial;
-      const pulse = Math.sin(time * 2 + (hex as any).pulseOffset);
+      const pulseOffset = (hex as any).pulseOffset;
+      const gradientFactor = (hex as any).gradientFactor;
+      const baseOpacity = (hex as any).baseOpacity;
+      
+      const pulse = Math.sin(time * 1.5 + pulseOffset);
+      material.opacity = baseOpacity + pulse * 0.15;
 
-      material.opacity = (hex as any).baseOpacity + pulse * 0.2;
-
-      const gradientShift =
-        Math.sin(time + (hex as any).gradientFactor * Math.PI) * 0.5 + 0.5;
-      material.color.lerpColors(
-        new THREE.Color(0x02bccc),
-        new THREE.Color(0xccff02),
-        gradientShift
-      );
+      const gradientShift = (sinTime * 0.3 + 0.5) * (1 - gradientFactor) + gradientFactor;
+      tempColor.lerpColors(color1, color2, gradientShift);
+      material.color.copy(tempColor);
     });
 
     renderer.render(scene, camera);
+    
+    if (measure) measure();
+    frameCounter++;
     animationId = requestAnimationFrame(animate);
   };
 
@@ -171,6 +196,8 @@ export function initCTA3DScene() {
     renderer,
     hexFloor,
   };
+
+  console.log("✅ CTA scene initialized");
 
   return () => {
     window.removeEventListener("resize", handleResize);

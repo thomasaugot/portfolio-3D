@@ -125,7 +125,7 @@ export default function CTASection() {
                     {card.icon}
                   </div>
 
-                  <h3 className="text-2xl font-bold mb-4 group-hover:text-primary transition-colors duration-300">
+                  <h3 className="text-2xl font-bold mb-4 transition-colors duration-300">
                     {card.title}
                   </h3>
 
@@ -134,7 +134,7 @@ export default function CTASection() {
                   </p>
 
                   <div className="relative pt-6 border-t border-border/50">
-                    <div className="flex items-center gap-2 text-sm font-mono text-primary/70 group-hover:text-primary group-hover:gap-3 transition-all duration-300">
+                    <div className="flex items-center gap-2 text-sm font-mono text-primary/70 group-hover:gap-3 transition-all duration-300">
                       {card.label}
                       <svg
                         className="w-4 h-4"
