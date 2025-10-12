@@ -144,7 +144,7 @@ export default function ProjectsShowcase() {
         </section>
       </div>
 
-      <section className="lg:hidden py-20 px-4 space-y-20 bg-gradient-to-b from-bg via-bg to-transparent relative overflow-visible">
+      <section className="lg:hidden px-4 py-20 space-y-20 bg-gradient-to-b from-bg via-bg to-transparent relative overflow-visible">
         <div className="absolute inset-0 pointer-events-none opacity-30">
           <div className="absolute top-20 left-10 w-64 h-64 bg-primary/20 rounded-full blur-[100px]" />
           <div className="absolute bottom-20 right-10 w-64 h-64 bg-secondary/20 rounded-full blur-[100px]" />
@@ -163,17 +163,19 @@ export default function ProjectsShowcase() {
           <div
             key={project.id}
             data-project-panel={index}
-            className="relative space-y-6"
+            className="relative space-y-6 overflow-visible min-h-[350px]"
           >
-            {/* 3D SCENE FOR MOBILE */}
-            <div data-project-image className="relative">
-              <div 
-                data-3d-container={`project-mobile-${index}`}
-                className="relative w-full h-[400px] rounded-2xl overflow-hidden shadow-xl border border-border/50"
-              />
-            </div>
+            <div
+              data-project-image
+              data-3d-container={`project-mobile-${index}`}
+              className="absolute left-0 -top-24 w-full h-[400px] overflow-visible pointer-events-none"
+              style={{
+                transformStyle: "preserve-3d",
+                willChange: "transform, opacity",
+              }}
+            />
 
-            <div data-project-content className="space-y-5">
+            <div data-project-content className="relative pt-[300px] space-y-5 z-10">
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-surface/50 backdrop-blur-sm rounded-full border border-border/50">
                 <div className="w-1.5 h-1.5 rounded-full bg-primary" />
                 <span className="text-xs font-mono text-text/70 tracking-wide uppercase">

@@ -13,7 +13,7 @@ interface StatsProps {
 
 export default function Stats({ stats }: StatsProps) {
   return (
-    <div className="relative pt-20" data-stats-wrapper>
+    <div className="relative md:pt-20" data-stats-wrapper>
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <div className="w-[400px] h-[200px] bg-primary/8 rounded-full blur-[80px]" />
       </div>

@@ -1,7 +1,20 @@
+/**
+ * SCREEN DIMENSIONS REFERENCE:
+ * Laptop: 1.35:1 ratio (4:3-ish) - Use 1920x1418px or 2560x1896px screenshots
+ * iPhone: 0.36:1 ratio (unusually tall) - Use 1170x3286px (20-25% taller than real phones which are ~0.46 ratio)
+ * Real devices: iPhone (1179x2556), Samsung S24 (1080x2340), Pixel 8 (1080x2400)
+ */
+
 import { THREE } from "@/lib/animations";
 import { getThemeState } from "@/utils/theme-helpers";
 import { getFeaturedProjects } from "@/data/projects";
-import type { SceneConfig } from "@/types/three.types";
+import type { SceneConfig } from "@/types/three";
+
+const MODEL_PATHS = [
+  "/assets/models/iphone-laptop-scene-1.glb",
+  "/assets/models/iphone-laptop-scene-2.glb",
+  "/assets/models/iphone-laptop-scene-3.glb",
+];
 
 const getViewportConfig = (): SceneConfig => {
   const width = window.innerWidth;
@@ -17,13 +30,17 @@ const getViewportConfig = (): SceneConfig => {
 
 const createScene = (container: HTMLElement) => {
   const scene = new THREE.Scene();
+
+  const width = window.innerWidth;
+  const isMobile = width < 768;
+
   const camera = new THREE.PerspectiveCamera(
     50,
     container.clientWidth / container.clientHeight,
     0.1,
     2000
   );
-  camera.position.set(0, 20, 480);
+  camera.position.set(0, 20, 550);
   camera.lookAt(0, 0, 0);
 
   const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
@@ -46,7 +63,7 @@ const setupLighting = (scene: THREE.Scene, isLight: boolean) => {
   const dirLight2 = new THREE.DirectionalLight(0xffffff, isLight ? 1.5 : 1.2);
   dirLight2.position.set(-400, 400, -400);
   scene.add(dirLight2);
-  
+
   const frontLight = new THREE.DirectionalLight(0xffffff, isLight ? 1.0 : 0.8);
   frontLight.position.set(0, 0, 500);
   scene.add(frontLight);
@@ -86,20 +103,23 @@ const loadTexture = async (
 const loadModel = async (
   scene: THREE.Scene,
   config: SceneConfig,
-  iphoneTexture: THREE.Texture | null,
   laptopTexture: THREE.Texture | null,
+  iphoneTexture: THREE.Texture | null,
+  modelPath: string,
   projectIndex: number
-): Promise<{ 
-  wrapper: THREE.Group; 
-  laptopGroup: THREE.Object3D | null; 
+): Promise<{
+  wrapper: THREE.Group;
+  laptopGroup: THREE.Object3D | null;
   iphoneGroup: THREE.Object3D | null;
 } | null> => {
-  const { GLTFLoader } = await import("three/examples/jsm/loaders/GLTFLoader.js");
+  const { GLTFLoader } = await import(
+    "three/examples/jsm/loaders/GLTFLoader.js"
+  );
   const loader = new GLTFLoader();
 
   return new Promise((resolve) => {
     loader.load(
-      "/assets/models/iphone-laptop-scene.glb",
+      modelPath,
       (gltf) => {
         const model = gltf.scene;
 
@@ -109,16 +129,34 @@ const loadModel = async (
         model.traverse((child: any) => {
           if (child.isMesh) {
             const meshName = child.name.toLowerCase();
-            
-            // Find laptop screen and apply texture
+
             if (meshName === "screen_screen_0" && laptopTexture) {
+              const geometry = child.geometry;
+              const uvAttribute = geometry.attributes.uv;
+
+              if (uvAttribute) {
+                const uvArray = uvAttribute.array;
+                for (let i = 0; i < uvArray.length; i += 2) {
+                  const u = uvArray[i];
+                  const v = uvArray[i + 1];
+
+                  uvArray[i] = (u - 0.5) * 1.5 + 0.6;
+                  uvArray[i + 1] = v;
+                }
+                uvAttribute.needsUpdate = true;
+              }
+
+              laptopTexture.repeat.set(1, 1);
+              laptopTexture.offset.set(0, 0);
+              laptopTexture.wrapS = THREE.ClampToEdgeWrapping;
+              laptopTexture.wrapT = THREE.ClampToEdgeWrapping;
+
               child.material = new THREE.MeshBasicMaterial({
                 map: laptopTexture,
                 side: THREE.DoubleSide,
               });
               child.material.needsUpdate = true;
-              
-              // Find laptop group
+
               let current = child.parent;
               while (current && !laptopGroup) {
                 if (current.name === "Modern_Slim_Laptop") {
@@ -127,16 +165,13 @@ const loadModel = async (
                 }
                 current = current.parent;
               }
-            }
-            // Find iPhone screen and apply texture
-            else if (meshName === "tppzcqmnlkchipp" && iphoneTexture) {
+            } else if (meshName === "tppzcqmnlkchipp" && iphoneTexture) {
               child.material = new THREE.MeshBasicMaterial({
                 map: iphoneTexture,
                 side: THREE.DoubleSide,
               });
               child.material.needsUpdate = true;
-              
-              // Find iPhone group
+
               let current = child.parent;
               while (current && !iphoneGroup) {
                 if (current.name === "CfdQrXYnljwmMLk") {
@@ -145,10 +180,10 @@ const loadModel = async (
                 }
                 current = current.parent;
               }
-            }
-            // Other materials
-            else if (child.material) {
-              child.material.emissive = new THREE.Color(config.isLight ? 0x404040 : 0x2a2a2a);
+            } else if (child.material) {
+              child.material.emissive = new THREE.Color(
+                config.isLight ? 0x404040 : 0x2a2a2a
+              );
               child.material.emissiveIntensity = config.isLight ? 0.2 : 0.3;
               child.material.needsUpdate = true;
             }
@@ -163,7 +198,7 @@ const loadModel = async (
         const wrapper = new THREE.Group();
         wrapper.add(model);
         scene.add(wrapper);
-        
+
         resolve({ wrapper, laptopGroup, iphoneGroup });
       },
       undefined,
@@ -176,12 +211,18 @@ const loadModel = async (
 };
 
 export async function initProjects3DScene() {
-  // Get both desktop and mobile containers
-  const desktopContainers = document.querySelectorAll('[data-3d-container^="project-"]:not([data-3d-container^="project-mobile"])');
-  const mobileContainers = document.querySelectorAll('[data-3d-container^="project-mobile-"]');
-  
-  const allContainers = [...Array.from(desktopContainers), ...Array.from(mobileContainers)];
-  
+  const desktopContainers = document.querySelectorAll(
+    '[data-3d-container^="project-"]:not([data-3d-container^="project-mobile"])'
+  );
+  const mobileContainers = document.querySelectorAll(
+    '[data-3d-container^="project-mobile-"]'
+  );
+
+  const allContainers = [
+    ...Array.from(desktopContainers),
+    ...Array.from(mobileContainers),
+  ];
+
   if (allContainers.length === 0) return;
 
   const projects = getFeaturedProjects();
@@ -191,43 +232,75 @@ export async function initProjects3DScene() {
     const container = allContainers[index] as HTMLElement;
     if (!container) continue;
 
-    // Determine if this is a mobile container
-    const isMobile = container.getAttribute('data-3d-container')?.includes('mobile');
-    const projectIndex = isMobile ? 
-      parseInt(container.getAttribute('data-3d-container')?.split('-')[2] || '0') : 
-      parseInt(container.getAttribute('data-3d-container')?.split('-')[1] || '0');
+    const isMobile = container
+      .getAttribute("data-3d-container")
+      ?.includes("mobile");
+    const projectIndex = isMobile
+      ? parseInt(
+          container.getAttribute("data-3d-container")?.split("-")[2] || "0"
+        )
+      : parseInt(
+          container.getAttribute("data-3d-container")?.split("-")[1] || "0"
+        );
 
     const project = projects[projectIndex];
-    const iphoneImage = project?.media.images[0] || "";
-    const laptopImage = project?.media.images[1] || "";
+    const modelPath = MODEL_PATHS[projectIndex % MODEL_PATHS.length];
+    const laptopImage = project?.media.laptopTexture;
+    const iphoneImage = project?.media.mobileTexture;
 
     const config = getViewportConfig();
     const { scene, camera, renderer } = createScene(container);
 
     setupLighting(scene, config.isLight);
 
-    const iphoneTexture = await loadTexture(renderer, iphoneImage);
-    const laptopTexture = await loadTexture(renderer, laptopImage);
-    
-    const modelData = await loadModel(scene, config, iphoneTexture, laptopTexture, index);
+    const laptopTexture = await loadTexture(renderer, laptopImage || "");
+    const iphoneTexture = await loadTexture(renderer, iphoneImage || "");
+
+    const modelData = await loadModel(
+      scene,
+      config,
+      laptopTexture,
+      iphoneTexture,
+      modelPath,
+      projectIndex
+    );
     if (!modelData) continue;
-    
+
     const { wrapper: modelWrapper, laptopGroup, iphoneGroup } = modelData;
 
     if (modelWrapper) {
       modelWrapper.position.set(0, 0, 0);
     }
 
-    // Store ORIGINAL positions and rotations
-    const laptopOriginal = laptopGroup ? {
-      pos: { x: laptopGroup.position.x, y: laptopGroup.position.y, z: laptopGroup.position.z },
-      rot: { x: laptopGroup.rotation.x, y: laptopGroup.rotation.y, z: laptopGroup.rotation.z }
-    } : null;
-    
-    const iphoneOriginal = iphoneGroup ? {
-      pos: { x: iphoneGroup.position.x, y: iphoneGroup.position.y, z: iphoneGroup.position.z },
-      rot: { x: iphoneGroup.rotation.x, y: iphoneGroup.rotation.y, z: iphoneGroup.rotation.z }
-    } : null;
+    const laptopOriginal = laptopGroup
+      ? {
+          pos: {
+            x: laptopGroup.position.x,
+            y: laptopGroup.position.y,
+            z: laptopGroup.position.z,
+          },
+          rot: {
+            x: laptopGroup.rotation.x,
+            y: laptopGroup.rotation.y,
+            z: laptopGroup.rotation.z,
+          },
+        }
+      : null;
+
+    const iphoneOriginal = iphoneGroup
+      ? {
+          pos: {
+            x: iphoneGroup.position.x,
+            y: iphoneGroup.position.y,
+            z: iphoneGroup.position.z,
+          },
+          rot: {
+            x: iphoneGroup.rotation.x,
+            y: iphoneGroup.rotation.y,
+            z: iphoneGroup.rotation.z,
+          },
+        }
+      : null;
 
     const handleResize = () => {
       camera.aspect = container.clientWidth / container.clientHeight;
@@ -243,7 +316,6 @@ export async function initProjects3DScene() {
     const animate = () => {
       time += 0.005;
 
-      // Scene-wide subtle float
       if (modelWrapper && modelWrapper.children[0]) {
         modelWrapper.position.y = Math.sin(time * 0.8) * 8;
         const modelChild = modelWrapper.children[0];
@@ -251,29 +323,28 @@ export async function initProjects3DScene() {
         modelChild.rotation.z = Math.sin(time * 0.3) * 0.015;
       }
 
-      // Laptop gentle floating - visible motion with MORE rotation
       if (laptopGroup && laptopOriginal) {
-        laptopGroup.position.x = laptopOriginal.pos.x + Math.sin(time * 0.4) * 4;
-        // Reduced downward movement so laptop stays higher
-        laptopGroup.position.y = laptopOriginal.pos.y - Math.abs(Math.cos(time * 0.35)) * 2;
-        laptopGroup.position.z = laptopOriginal.pos.z + Math.sin(time * 0.3) * 3;
-        
-        // MORE rotation for visual interest
-        laptopGroup.rotation.x = laptopOriginal.rot.x + Math.sin(time * 0.2) * 0.08;
-        laptopGroup.rotation.y = laptopOriginal.rot.y + Math.cos(time * 0.25) * 0.12;
-        laptopGroup.rotation.z = laptopOriginal.rot.z + Math.sin(time * 0.3) * 0.06;
+        laptopGroup.position.y =
+          laptopOriginal.pos.y + Math.sin(time * 0.4) * 6;
+
+        laptopGroup.rotation.x =
+          laptopOriginal.rot.x + Math.sin(time * 0.2) * 0.04;
+        laptopGroup.rotation.y =
+          laptopOriginal.rot.y + Math.cos(time * 0.25) * 0.03;
+        laptopGroup.rotation.z =
+          laptopOriginal.rot.z + Math.sin(time * 0.3) * 0.02;
       }
 
-      // iPhone gentle floating - stays ABOVE with MORE rotation
       if (iphoneGroup && iphoneOriginal) {
-        iphoneGroup.position.x = iphoneOriginal.pos.x + Math.cos(time * 0.5 + 2) * 3.5;
-        iphoneGroup.position.y = iphoneOriginal.pos.y + Math.abs(Math.sin(time * 0.4 + 1)) * 4.5;
-        iphoneGroup.position.z = iphoneOriginal.pos.z + Math.cos(time * 0.35 + 1.5) * 2.5;
-        
-        // MORE rotation for visual interest
-        iphoneGroup.rotation.x = iphoneOriginal.rot.x + Math.cos(time * 0.25) * 0.1;
-        iphoneGroup.rotation.y = iphoneOriginal.rot.y + Math.sin(time * 0.3) * 0.15;
-        iphoneGroup.rotation.z = iphoneOriginal.rot.z + Math.cos(time * 0.35) * 0.08;
+        iphoneGroup.position.y =
+          iphoneOriginal.pos.y + Math.cos(time * 0.5 + 2) * 7;
+
+        iphoneGroup.rotation.x =
+          iphoneOriginal.rot.x + Math.cos(time * 0.25) * 0.05;
+        iphoneGroup.rotation.y =
+          iphoneOriginal.rot.y + Math.sin(time * 0.3) * 0.04;
+        iphoneGroup.rotation.z =
+          iphoneOriginal.rot.z + Math.cos(time * 0.35) * 0.03;
       }
 
       renderer.render(scene, camera);
@@ -282,8 +353,9 @@ export async function initProjects3DScene() {
 
     animate();
 
-    // Store scene data for scroll animations
-    const sceneKey = isMobile ? `__projectScene_mobile_${projectIndex}` : `__projectScene_${projectIndex}`;
+    const sceneKey = isMobile
+      ? `__projectScene_mobile_${projectIndex}`
+      : `__projectScene_${projectIndex}`;
     (window as any)[sceneKey] = {
       scene,
       camera,
@@ -292,12 +364,16 @@ export async function initProjects3DScene() {
       model: modelWrapper?.children[0],
       laptop: laptopGroup,
       iphone: iphoneGroup,
+      laptopOriginal,
+      iphoneOriginal,
+      scrollProgress: 0,
     };
 
     cleanupFunctions.push(() => {
       window.removeEventListener("resize", handleResize);
       if (animationId) cancelAnimationFrame(animationId);
-      if (renderer.domElement.parentNode) container.removeChild(renderer.domElement);
+      if (renderer.domElement.parentNode)
+        container.removeChild(renderer.domElement);
       renderer.dispose();
       delete (window as any)[sceneKey];
     });

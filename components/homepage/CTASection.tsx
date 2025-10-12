@@ -78,7 +78,7 @@ export default function CTASection() {
   return (
     <section
       data-cta-section
-      className="relative min-h-screen flex items-center justify-center pb-48 overflow-visible"
+      className="relative min-h-screen flex items-center justify-center py-20 md:pb-48 overflow-visible"
       style={{ perspective: "2500px" }}
     >
       <div
