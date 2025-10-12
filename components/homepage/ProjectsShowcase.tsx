@@ -1,13 +1,15 @@
 "use client";
 
-import Link from "next/link";
 import { getFeaturedProjects } from "@/data/projects";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
 import { Button } from "../ui/Button";
+import { useThreeScene } from "@/hooks/useThreeScene";
+import { initProjects3DScene } from "@/utils/animations/projects-3d-scene";
 
 export default function ProjectsShowcase() {
   const { t, language } = useTranslation();
   const projects = getFeaturedProjects();
+  const containerRef = useThreeScene(initProjects3DScene, "projects");
 
   return (
     <>
@@ -15,7 +17,7 @@ export default function ProjectsShowcase() {
         <section
           data-projects-section
           className="relative overflow-visible bg-gradient-to-b from-bg via-bg to-transparent"
-          style={{ height: `${projects.length * 150}vh` }}
+          style={{ height: `${projects.length * 100}vh` }}
         >
           <div
             className="sticky top-0 h-screen overflow-visible flex items-center justify-center"
@@ -48,46 +50,20 @@ export default function ProjectsShowcase() {
                   willChange: "transform, opacity",
                 }}
               >
-                <div className="w-full max-w-[1400px] px-20 grid grid-cols-2 gap-20 items-center">
-                  <div
-                    data-project-image
-                    className="relative"
-                    style={{
-                      transformStyle: "preserve-3d",
-                      willChange: "transform, opacity",
-                    }}
-                  >
-                    <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-border/50 bg-surface/5">
-                      {project.media.coverVideo ? (
-                        <video
-                          src={project.media.coverVideo}
-                          autoPlay
-                          loop
-                          muted
-                          playsInline
-                          className="w-full h-auto object-contain"
-                        />
-                      ) : (
-                        <img
-                          src={project.media.coverImage}
-                          alt={t(project.title)}
-                          className="w-full h-[500px] object-cover"
-                        />
-                      )}
-                      <div className="absolute inset-0 bg-gradient-to-t from-bg/40 to-transparent" />
-                    </div>
+                <div
+                  data-project-image
+                  ref={index === 0 ? containerRef : null}
+                  data-3d-container={`project-${index}`}
+                  className="absolute left-0 top-0 w-[60vw] h-screen overflow-visible pointer-events-none"
+                  style={{
+                    transformStyle: "preserve-3d",
+                    willChange: "transform, opacity",
+                    zIndex: 1,
+                  }}
+                />
 
-                    <div className="absolute -bottom-6 left-6 right-6 flex gap-2 flex-wrap">
-                      {project.technologies.slice(0, 4).map((tech) => (
-                        <span
-                          key={tech}
-                          className="px-3 py-1.5 text-xs font-mono bg-surface/90 backdrop-blur-md rounded-lg border border-border/50 text-text"
-                        >
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
+                <div className="w-full max-w-[1400px] px-20 grid grid-cols-2 gap-20 items-center relative z-10">
+                  <div className="relative w-full h-[500px]" />
 
                   <div
                     data-project-content
@@ -189,26 +165,12 @@ export default function ProjectsShowcase() {
             data-project-panel={index}
             className="relative space-y-6"
           >
+            {/* 3D SCENE FOR MOBILE */}
             <div data-project-image className="relative">
-              <div className="relative rounded-2xl overflow-hidden shadow-xl border border-border/50">
-                {project.media.coverVideo ? (
-                  <video
-                    src={project.media.coverVideo}
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    className="w-full h-auto object-contain"
-                  />
-                ) : (
-                  <img
-                    src={project.media.coverImage}
-                    alt={t(project.title)}
-                    className="w-full h-[280px] object-cover"
-                  />
-                )}
-                <div className="absolute inset-0 bg-gradient-to-t from-bg/40 to-transparent" />
-              </div>
+              <div 
+                data-3d-container={`project-mobile-${index}`}
+                className="relative w-full h-[400px] rounded-2xl overflow-hidden shadow-xl border border-border/50"
+              />
             </div>
 
             <div data-project-content className="space-y-5">

@@ -18,17 +18,13 @@ const createScene = (container: HTMLElement, config: SceneConfig) => {
   const scene = new THREE.Scene();
 
   const camera = new THREE.PerspectiveCamera(
-    config.isMobile ? 75 : 60,
+    config.isMobile ? 50 : 45,
     container.clientWidth / container.clientHeight,
     0.1,
     5000
   );
 
-  camera.position.set(
-    0,
-    config.isMobile ? 50 : 30,
-    config.isMobile ? 600 : 800
-  );
+  camera.position.set(0, 350, 1200);
   camera.lookAt(0, 0, 0);
 
   const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
