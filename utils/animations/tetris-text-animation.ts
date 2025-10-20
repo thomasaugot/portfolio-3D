@@ -17,7 +17,7 @@ export function initTetrisTextAnimation() {
   if (!title) return;
 
   if (subtitle) {
-    subtitle.className = "text-[5px] text-text/60 font-light mb-2";
+    subtitle.className = "!text-2xl text-text/60 font-light mb-2";
   }
 
   gsap.set(subtitle, { opacity: 0 });
@@ -30,7 +30,7 @@ export function initTetrisTextAnimation() {
   words.forEach((word) => {
     const wordSpan = document.createElement("span");
     wordSpan.textContent = word;
-    wordSpan.className = "gradient-primary bg-clip-text text-transparent font-fun font-light tracking-tighter text-2xl md:text-3xl lg:text-4xl xl:text-5xl";
+    wordSpan.className = "gradient-primary bg-clip-text text-transparent font-fun font-light tracking-tighter text-2xl md:text-3xl lg:text-4xl xl:text-7xl";
     wordSpan.style.display = "inline-block";
     wordSpan.style.whiteSpace = "nowrap";
     wordSpan.style.marginRight = "0.5rem";
