@@ -26,7 +26,9 @@ export default function LoadingProvider({
   return (
     <LoadingContext.Provider value={{ isReady }}>
       {!isReady && <AppLoader progress={progress} />}
-      {children}
+      <div style={{ opacity: isReady ? 1 : 0, pointerEvents: isReady ? 'auto' : 'none' }}>
+        {children}
+      </div>
     </LoadingContext.Provider>
   );
 }

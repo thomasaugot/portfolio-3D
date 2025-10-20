@@ -15,13 +15,16 @@ import Footer from "@/components/layout/Footer";
 import TechnologyMarquee from "@/components/ui/TechnologyMarquee";
 import { useGSAPAnimations } from "@/hooks/useGSAPAnimations";
 import CTASection from "@/components/homepage/CTASection";
+import { initHeroTitleAnimation } from "@/utils/animations/hero-title-animation";
+import { initTetrisTextAnimation } from "@/utils/animations/tetris-text-animation";
 
 export default function Home() {
   useGSAPAnimations(() => {
-    initMenuAnimations();
+    initHeroTitleAnimation();
     initHeroScrollAnimation();
-    initFadeAnimations();
+    initMenuAnimations();
     initSkillsScrollAnimation();
+    initTetrisTextAnimation();
     initProjectsScrollAnimation();
     initCTAScrollAnimation();
     initFooterAnimations();

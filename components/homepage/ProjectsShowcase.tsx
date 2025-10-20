@@ -26,11 +26,26 @@ export default function ProjectsShowcase() {
               perspectiveOrigin: "50% 50%",
             }}
           >
-            <div className="absolute top-16 left-16 z-50 pointer-events-none">
-              <h2 className="text-3xl text-text/60 font-light mb-2">
+            <div
+              data-projects-header
+              className="absolute top-16 left-16 z-50 pointer-events-none"
+            >
+              <h2
+                data-projects-subtitle
+                className="text-text/60 font-light mb-2"
+              >
                 {t("homepage.projects_section.subtitle")}
               </h2>
-              <h3 className="text-7xl font-bold gradient-primary bg-clip-text text-transparent">
+              <h3
+                data-projects-title
+                className="flex flex-wrap gradient-primary bg-clip-text text-transparent font-fun text-3xl md:text-5xl lg:text-6xl xl:text-7xl pb-1 pr-2 relative z-10 font-light tracking-tighter drop-shadow-[0_4px_12px_rgba(0,0,0,0.4)]"
+                style={{
+                  transform: "translateX(0)",
+                  width: "max-content",
+                  maxWidth: "none",
+                  willChange: "opacity, transform",
+                }}
+              >
                 {t("homepage.projects_section.title")}
               </h3>
             </div>
@@ -175,7 +190,10 @@ export default function ProjectsShowcase() {
               }}
             />
 
-            <div data-project-content className="relative pt-[300px] space-y-5 z-10">
+            <div
+              data-project-content
+              className="relative pt-[300px] space-y-5 z-10"
+            >
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-surface/50 backdrop-blur-sm rounded-full border border-border/50">
                 <div className="w-1.5 h-1.5 rounded-full bg-primary" />
                 <span className="text-xs font-mono text-text/70 tracking-wide uppercase">

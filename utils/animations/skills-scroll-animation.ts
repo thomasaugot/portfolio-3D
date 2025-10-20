@@ -1,161 +1,140 @@
-import { gsap, ScrollTrigger } from "@/lib/animations";
+import { gsap } from "@/lib/animations";
+import { perfMonitor } from "../performance-monitor";
 
-let skillsScrollTrigger: ScrollTrigger | null = null;
+interface ScrollAnimationCleanup {
+  kill: () => void;
+}
 
-export function initSkillsScrollAnimation() {
-  const skillsSection = document.querySelector("[data-skills-section]");
-  if (!skillsSection) return;
+export function initSkillsScrollAnimation(): ScrollAnimationCleanup {
+  const endMeasure = perfMonitor.startMeasure("skills-scroll-init");
+   
+  const skillsSection = document.querySelector("[data-skills-section]") as HTMLElement;
+  if (!skillsSection) {
+    endMeasure();
+    return { kill: () => {} };
+  }
 
   const header = skillsSection.querySelector("[data-header]");
-  const badge = skillsSection.querySelector("[data-badge]");
   const serviceCards = skillsSection.querySelectorAll("[data-service-card]");
-  const stats = skillsSection.querySelectorAll("[data-stat]");
   const statsWrapper = skillsSection.querySelector("[data-stats-wrapper]");
   const statsGlow = skillsSection.querySelector("[data-stats-glow]");
+  const stats = skillsSection.querySelectorAll("[data-stat]");
   const gridBg = skillsSection.querySelector("[data-grid-bg]");
 
-  const tl = gsap.timeline({
+  gsap.set(skillsSection, { opacity: 0 });
+  if (gridBg) gsap.set(gridBg, { opacity: 0, scale: 1.1 });
+  if (header) gsap.set(header.querySelectorAll("h2, h3"), { opacity: 0, y: 30 });
+  serviceCards.forEach((card) => {
+    gsap.set(card, { opacity: 0, y: 50, rotateX: -15 });
+    const glow = card.querySelector("[data-card-glow]");
+    if (glow) gsap.set(glow, { opacity: 0 });
+  });
+  if (statsWrapper) gsap.set(statsWrapper, { opacity: 0, y: 60, scale: 0.9 });
+  if (statsGlow) gsap.set(statsGlow, { opacity: 0, scale: 0.8 });
+  stats.forEach((stat) => gsap.set(stat, { opacity: 0, scale: 0.8, y: 20 }));
+
+  const sectionTimeline = gsap.timeline({
     scrollTrigger: {
       trigger: skillsSection,
       start: "top 80%",
-      once: true,
-      id: "skills-scroll",
-      onRefresh: (self) => {
-        skillsScrollTrigger = self;
-      },
+      end: "bottom bottom",
+      scrub: 0.5,
+      id: "skills-section",
     },
   });
 
-  tl.fromTo(
-    skillsSection,
-    { opacity: 0 },
-    { opacity: 1, duration: 0.3, ease: "power2.out" }
-  );
+  sectionTimeline
+    .to(skillsSection, { opacity: 1, duration: 0.1, ease: "none" }, 0)
+    .to(gridBg, { opacity: 0.2, scale: 1, duration: 0.2, ease: "power2.out" }, 0.05)
+    .to(header?.querySelectorAll("h2, h3") || [], { 
+      opacity: 1, 
+      y: 0, 
+      duration: 0.3, 
+      stagger: 0.08, 
+      ease: "power2.out"
+    }, 0.1);
 
-  if (gridBg) {
-    tl.fromTo(
-      gridBg,
-      { opacity: 0, scale: 1.1 },
-      { opacity: 0.2, scale: 1, duration: 1, ease: "power2.out" },
-      0.1
-    );
-  }
-
-  if (badge) {
-    tl.fromTo(
-      badge,
-      { opacity: 0, y: -20 },
-      { opacity: 1, y: 0, duration: 0.6, ease: "back.out(1.7)" },
-      0.2
-    );
-  }
-
-  if (header) {
-    tl.fromTo(
-      header.querySelectorAll("h2, p"),
-      { opacity: 0, y: 30 },
-      { opacity: 1, y: 0, duration: 0.8, stagger: 0.15, ease: "power3.out" },
-      0.4
-    );
-  }
+  const cardsContainer = skillsSection.querySelector(".grid");
+   
+  const cardsTimeline = gsap.timeline({
+    scrollTrigger: {
+      trigger: cardsContainer || serviceCards[0],
+      start: "top 70%",
+      end: "bottom 40%",
+      scrub: 2,
+      id: "skills-cards-stagger",
+    },
+  });
 
   serviceCards.forEach((card, index) => {
-    const glowElement = card.querySelector("[data-card-glow]") as HTMLElement;
-    const icon = card.querySelector("[data-icon]") as HTMLElement;
-
-    tl.fromTo(
-      card,
-      { opacity: 0, y: 50, rotateX: -15 },
-      {
-        opacity: 1,
-        y: 0,
-        rotateX: 0,
-        duration: 0.8,
-        ease: "power3.out",
-      },
-      0.8 + index * 0.15
-    );
-
-    if (icon) {
-      tl.fromTo(
-        icon,
-        { scale: 0, rotation: -180 },
-        { scale: 1, rotation: 0, duration: 0.6, ease: "back.out(2)" },
-        0.9 + index * 0.15
-      );
-    }
-
-    if (glowElement) {
-      tl.to(
-        glowElement,
-        {
-          opacity: 0.6,
-          duration: 0.8,
-          ease: "power2.out",
-        },
-        1 + index * 0.15
-      );
-
-      tl.to(
-        glowElement,
-        {
-          opacity: 0,
-          duration: 1,
-          ease: "power2.inOut",
-        },
-        1.8 + index * 0.15
-      );
-    }
+    const glow = card.querySelector("[data-card-glow]");
+    const startOffset = index * 0.35;
+    
+    cardsTimeline
+      .to(card, { 
+        opacity: 1, 
+        y: 0, 
+        rotateX: 0, 
+        duration: 0.6, 
+        ease: "power2.out"
+      }, startOffset)
+      .to(glow, { 
+        opacity: 0.6, 
+        duration: 0.25, 
+        ease: "power2.out"
+      }, startOffset + 0.25)
+      .to(glow, { 
+        opacity: 0, 
+        duration: 0.3, 
+        ease: "power2.inOut"
+      }, startOffset + 0.6);
   });
 
-  if (statsWrapper) {
-    tl.fromTo(
-      statsWrapper,
-      { opacity: 0, y: 60, scale: 0.9 },
-      {
-        opacity: 1,
-        y: 0,
-        scale: 1,
-        duration: 1,
-        ease: "power3.out",
-      },
-      1.5
-    );
-  }
-
-  if (statsGlow) {
-    tl.fromTo(
-      statsGlow,
-      { opacity: 0, scale: 0.8 },
-      {
-        opacity: 1,
-        scale: 1,
-        duration: 1.5,
-        ease: "power2.out",
-      },
-      1.6
-    );
-  }
-
-  stats.forEach((stat, index) => {
-    tl.fromTo(
-      stat,
-      { opacity: 0, scale: 0.8, y: 20 },
-      {
-        opacity: 1,
-        scale: 1,
-        y: 0,
-        duration: 0.6,
-        ease: "back.out(1.7)",
-      },
-      1.8 + index * 0.1
-    );
+  const statsTimeline = gsap.timeline({
+    scrollTrigger: {
+      trigger: statsWrapper,
+      start: "top 90%",
+      end: "top 50%",
+      scrub: 0.6,
+      id: "skills-stats",
+    },
   });
 
-  return () => {
-    if (skillsScrollTrigger) {
-      skillsScrollTrigger.kill();
-      skillsScrollTrigger = null;
-    }
+  statsTimeline
+    .to(statsWrapper, { 
+      opacity: 1, 
+      y: 0, 
+      scale: 1, 
+      duration: 0.3, 
+      ease: "power2.out"
+    }, 0)
+    .to(statsGlow, { 
+      opacity: 1, 
+      scale: 1, 
+      duration: 0.4, 
+      ease: "power2.out"
+    }, 0.1)
+    .to(stats, { 
+      opacity: 1, 
+      scale: 1, 
+      y: 0, 
+      duration: 0.35, 
+      stagger: 0.08, 
+      ease: "back.out(1.2)"
+    }, 0.15);
+
+  endMeasure();
+
+  return {
+    kill: () => {
+      const killMeasure = perfMonitor.startMeasure("skills-scroll-kill");
+      sectionTimeline.scrollTrigger?.kill();
+      sectionTimeline.kill();
+      cardsTimeline.scrollTrigger?.kill();
+      cardsTimeline.kill();
+      statsTimeline.scrollTrigger?.kill();
+      statsTimeline.kill();
+      killMeasure();
+    },
   };
 }

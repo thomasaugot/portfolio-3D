@@ -1,0 +1,31 @@
+{
+  "contact": {
+    "hero": {
+      "badge": "Restons Connectés",
+      "title_1": "Prenons",
+      "title_2": "Contact",
+      "subtitle": "Vous avez un projet en tête ? Travaillons ensemble pour créer quelque chose d'incroyable."
+    },
+    "form": {
+      "section_title_1": "Envoyez-Moi Un",
+      "section_title_2": "Message",
+      "section_description": "Que vous ayez une question, une idée de projet, ou que vous vouliez simplement dire bonjour, je ferai de mon mieux pour vous répondre dès que possible.",
+      "name_label": "Nom",
+      "name_placeholder": "Jean Dupont",
+      "email_label": "Email",
+      "email_placeholder": "jean@exemple.com",
+      "subject_label": "Sujet",
+      "subject_placeholder": "Demande de Projet",
+      "message_label": "Message",
+      "message_placeholder": "Parlez-moi de votre projet...",
+      "submit_button": "Envoyer le Message"
+    },
+    "info": {
+      "email_label": "Email",
+      "location_label": "Localisation",
+      "location_value": "Las Palmas, Îles Canaries",
+      "response_label": "Délai de Réponse",
+      "response_value": "Généralement sous 24-48 heures"
+    }
+  }
+}

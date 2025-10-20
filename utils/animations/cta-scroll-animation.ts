@@ -1,125 +1,157 @@
 import { gsap, ScrollTrigger } from "@/lib/animations";
+import { perfMonitor } from "../performance-monitor";
 
-gsap.registerPlugin(ScrollTrigger);
-
-let ctaScrollTrigger: ScrollTrigger | null = null;
+let ctaScrollTriggers: ScrollTrigger[] = [];
 
 export function initCTAScrollAnimation() {
-  if (ctaScrollTrigger) {
-    ctaScrollTrigger.kill();
-    ctaScrollTrigger = null;
+  const measure = perfMonitor.startMeasure("cta-scroll-init");
+   
+  ctaScrollTriggers.forEach(trigger => trigger.kill());
+  ctaScrollTriggers = [];
+
+  const ctaSection = document.querySelector("[data-cta-section]");
+  if (!ctaSection) {
+    measure();
+    return { kill: () => {} };
   }
 
-  setTimeout(() => {
-    const ctaSection = document.querySelector("[data-cta-section]");
-    if (!ctaSection) return;
+  const header = ctaSection.querySelector("[data-cta-header]");
+  const cards = ctaSection.querySelectorAll("[data-cta-card]");
 
-    const header = ctaSection.querySelector("[data-cta-header]");
-    const cards = ctaSection.querySelectorAll("[data-cta-card]");
+  gsap.set(header, { opacity: 0, y: 30 });
+  gsap.set(cards, { opacity: 0, y: 40, scale: 0.95 });
 
-    gsap.set(header, { opacity: 0, y: 30, scale: 0.95 });
-    cards.forEach((card) => {
-      gsap.set(card, {
+  const headerTimeline = gsap.timeline({
+    scrollTrigger: {
+      trigger: header,
+      start: "top 80%",
+      end: "top 40%",
+      scrub: 0.5,
+      id: "cta-header",
+    },
+  });
+
+  headerTimeline.to(header, {
+    opacity: 1,
+    y: 0,
+    duration: 0.4,
+    ease: "power2.out",
+  });
+
+  const cardsTimeline = gsap.timeline({
+    scrollTrigger: {
+      trigger: cards[0],
+      start: "top 70%",
+      end: "top 30%",
+      scrub: 2,
+      id: "cta-cards",
+    },
+  });
+
+  cards.forEach((card, index) => {
+    const startOffset = index * 0.4;
+    const glow = card.querySelector("[data-card-glow]");
+    
+    cardsTimeline
+      .to(card, {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 0.6,
+        ease: "power2.out",
+      }, startOffset)
+      .to(glow, {
+        opacity: 0.6,
+        duration: 0.25,
+        ease: "power2.out",
+      }, startOffset + 0.25)
+      .to(glow, {
         opacity: 0,
-        y: 40,
-        scale: 0.92,
-        rotationX: -8,
-        transformPerspective: 1000
-      });
-    });
+        duration: 0.3,
+        ease: "power2.inOut",
+      }, startOffset + 0.6);
+  });
 
-    const tl = gsap.timeline({
+  const ctaScene = (window as any).__ctaScene;
+  if (ctaScene) {
+    const { hexFloor, camera } = ctaScene;
+
+    const sceneTimeline = gsap.timeline({
       scrollTrigger: {
         trigger: ctaSection,
-        start: "top 75%",
+        start: "top 80%",
         end: "top 30%",
-        scrub: false,
-        toggleActions: "play none none reverse",
+        scrub: 1.5,
+        id: "cta-scene",
       },
     });
 
-    tl.to(header, {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      duration: 0.8,
-      ease: "power2.out",
-    });
+    const startRotX = hexFloor.rotation.x;
+    const startRotY = hexFloor.rotation.y;
+    const startRotZ = hexFloor.rotation.z;
+    const startPosY = hexFloor.position.y;
+    const startPosZ = hexFloor.position.z;
+    const startPosX = hexFloor.position.x;
+    const startCamY = camera.position.y;
+    const startCamZ = camera.position.z;
 
-    cards.forEach((card, index) => {
-      tl.to(
-        card,
+    sceneTimeline
+      .fromTo(hexFloor.rotation,
         {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          rotationX: 0,
-          duration: 0.9,
-          ease: "back.out(1.2)",
+          x: startRotX + Math.PI * 0.08,
+          y: startRotY + Math.PI * 0.12,
+          z: startRotZ + Math.PI * 0.03
         },
-        `-=${0.75 - index * 0.1}`
-      );
-    });
-
-    const ctaScene = (window as any).__ctaScene;
-    if (ctaScene) {
-      const { hexFloor, camera } = ctaScene;
-
-      tl.from(
-        hexFloor.rotation,
         {
-          x: Math.PI * 0.08,
-          y: Math.PI * 0.12,
-          z: Math.PI * 0.03,
-          duration: 1.8,
-          ease: "power3.out",
-        },
-        0
-      );
-
-      tl.from(
-        hexFloor.position,
-        {
-          y: hexFloor.position.y - 120,
-          z: hexFloor.position.z - 250,
-          x: -80,
-          duration: 1.8,
-          ease: "power3.out",
-        },
-        0
-      );
-
-      tl.from(
-        camera.position,
-        {
-          y: camera.position.y + 60,
-          z: camera.position.z + 120,
-          duration: 1.8,
-          ease: "power3.out",
-        },
-        0
-      );
-
-      tl.from(
-        hexFloor,
-        {
-          opacity: 0,
+          x: startRotX,
+          y: startRotY,
+          z: startRotZ,
           duration: 1,
-          ease: "power2.out",
+          ease: "power2.out"
         },
-        0.2
+        0
+      )
+      .fromTo(hexFloor.position,
+        {
+          y: startPosY - 120,
+          z: startPosZ - 250,
+          x: startPosX - 80
+        },
+        {
+          y: startPosY,
+          z: startPosZ,
+          x: startPosX,
+          duration: 1,
+          ease: "power2.out"
+        },
+        0
+      )
+      .fromTo(camera.position,
+        {
+          y: startCamY + 60,
+          z: startCamZ + 120
+        },
+        {
+          y: startCamY,
+          z: startCamZ,
+          duration: 1,
+          ease: "power2.out"
+        },
+        0
       );
-    }
+  }
 
-    if (tl.scrollTrigger) {
-      ctaScrollTrigger = tl.scrollTrigger as ScrollTrigger;
-    }
-  }, 500);
+  if (headerTimeline.scrollTrigger) ctaScrollTriggers.push(headerTimeline.scrollTrigger);
+  if (cardsTimeline.scrollTrigger) ctaScrollTriggers.push(cardsTimeline.scrollTrigger);
 
-  return () => {
-    if (ctaScrollTrigger) {
-      ctaScrollTrigger.kill();
-      ctaScrollTrigger = null;
-    }
+  measure();
+
+  return {
+    kill: () => {
+      const killMeasure = perfMonitor.startMeasure("cta-scroll-kill");
+      ctaScrollTriggers.forEach(trigger => trigger.kill());
+      ctaScrollTriggers = [];
+      killMeasure();
+    },
   };
 }

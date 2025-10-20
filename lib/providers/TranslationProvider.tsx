@@ -2,7 +2,12 @@
 
 import { createContext, useContext, useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { routeTranslations, defaultLocale, type Language, locales } from "@/utils/route-translations";
+import {
+  routeTranslations,
+  defaultLocale,
+  type Language,
+  locales,
+} from "@/utils/route-translations";
 
 interface TranslationContextType {
   t: (key: string) => string;
@@ -11,27 +16,35 @@ interface TranslationContextType {
   nextLanguage: () => Language;
 }
 
-const TranslationContext = createContext<TranslationContextType | undefined>(undefined);
+const TranslationContext = createContext<TranslationContextType | undefined>(
+  undefined
+);
 
 function detectBrowserLanguage(): Language {
-  if (typeof window === 'undefined') return defaultLocale;
-  
-  const browserLang = navigator.language.split('-')[0].toLowerCase();
-  return locales.includes(browserLang as Language) ? (browserLang as Language) : defaultLocale;
+  if (typeof window === "undefined") return defaultLocale;
+
+  const browserLang = navigator.language.split("-")[0].toLowerCase();
+  return locales.includes(browserLang as Language)
+    ? (browserLang as Language)
+    : defaultLocale;
 }
 
-export function TranslationProvider({ children }: { children: React.ReactNode }) {
+export function TranslationProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const pathname = usePathname();
-  
+
   const [language, setLanguage] = useState<Language>(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('preferred-language') as Language;
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("preferred-language") as Language;
       if (saved && locales.includes(saved)) {
         return saved;
       }
       return detectBrowserLanguage();
     }
-    const currentLocale = pathname.split('/')[1] as Language;
+    const currentLocale = pathname.split("/")[1] as Language;
     return currentLocale || defaultLocale;
   });
 
@@ -39,12 +52,13 @@ export function TranslationProvider({ children }: { children: React.ReactNode })
 
   const loadTranslations = async (lang: Language) => {
     try {
-      const [nav, homepage, portfolio, common, footer] = await Promise.all([
+      const [nav, homepage, portfolio, common, footer, contact] = await Promise.all([
         import(`@/locales/${lang}/nav.json`),
         import(`@/locales/${lang}/homepage.json`),
         import(`@/locales/${lang}/portfolio.json`),
         import(`@/locales/${lang}/common.json`),
-        import(`@/locales/${lang}/footer.json`)
+        import(`@/locales/${lang}/footer.json`),
+        import(`@/locales/${lang}/contact.json`),
       ]);
 
       const merged = {
@@ -52,7 +66,8 @@ export function TranslationProvider({ children }: { children: React.ReactNode })
         homepage: homepage.default,
         portfolio: portfolio.default,
         common: common.default,
-        footer: footer.default
+        footer: footer.default,
+        contact: contact.default,
       };
 
       setTranslations(merged);
@@ -62,22 +77,22 @@ export function TranslationProvider({ children }: { children: React.ReactNode })
   };
 
   useEffect(() => {
-    const urlLocale = pathname.split('/')[1] as Language;
+    const urlLocale = pathname.split("/")[1] as Language;
     if (urlLocale && locales.includes(urlLocale)) {
       if (urlLocale !== language) {
         setLanguage(urlLocale);
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('preferred-language', urlLocale);
+        if (typeof window !== "undefined") {
+          localStorage.setItem("preferred-language", urlLocale);
         }
       }
-    } else if (typeof window !== 'undefined') {
+    } else if (typeof window !== "undefined") {
       const browserLang = detectBrowserLanguage();
-      const savedLang = localStorage.getItem('preferred-language') as Language;
+      const savedLang = localStorage.getItem("preferred-language") as Language;
       const targetLang = savedLang || browserLang;
-      
-      if (targetLang !== defaultLocale || pathname === '/') {
+
+      if (targetLang !== defaultLocale || pathname === "/") {
         const newPath = translateRoute(pathname, targetLang);
-        window.history.replaceState({}, '', newPath);
+        window.history.replaceState({}, "", newPath);
         setLanguage(targetLang);
       }
     }
@@ -102,31 +117,37 @@ export function TranslationProvider({ children }: { children: React.ReactNode })
     return typeof value === "string" ? value : key;
   };
 
-  const translateRoute = (currentPath: string, targetLang: Language): string => {
-    const pathWithoutLocale = currentPath.replace(/^\/[a-z]{2}/, '') || '/';
-    const segments = pathWithoutLocale.split('/').filter(Boolean);
-    
+  const translateRoute = (
+    currentPath: string,
+    targetLang: Language
+  ): string => {
+    const pathWithoutLocale = currentPath.replace(/^\/[a-z]{2}/, "") || "/";
+    const segments = pathWithoutLocale.split("/").filter(Boolean);
+
     if (segments.length === 0) {
       return `/${targetLang}`;
     }
 
     const mainRoute = segments[0];
     const translations = routeTranslations[targetLang];
-    const translatedRoute = translations[mainRoute as keyof typeof translations] || mainRoute;
-    
+    const translatedRoute =
+      translations[mainRoute as keyof typeof translations] || mainRoute;
+
     const remainingSegments = segments.slice(1);
-    const newPath = `/${targetLang}/${translatedRoute}${remainingSegments.length > 0 ? '/' + remainingSegments.join('/') : ''}`;
-    
+    const newPath = `/${targetLang}/${translatedRoute}${
+      remainingSegments.length > 0 ? "/" + remainingSegments.join("/") : ""
+    }`;
+
     return newPath;
   };
 
   const changeLanguage = async (newLanguage: Language) => {
     const newPath = translateRoute(pathname, newLanguage);
-    window.history.replaceState({}, '', newPath);
+    window.history.replaceState({}, "", newPath);
     setLanguage(newLanguage);
-    
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('preferred-language', newLanguage);
+
+    if (typeof window !== "undefined") {
+      localStorage.setItem("preferred-language", newLanguage);
     }
   };
 

@@ -1,6 +1,21 @@
 import { gsap, ScrollTrigger } from "@/lib/animations";
+import { perfMonitor } from "../performance-monitor";
+import { initHeroTitleAnimation } from "./hero-title-animation";
 
 let heroScrollTrigger: ScrollTrigger | null = null;
+let heroTitleTimeline: gsap.core.Timeline | null = null;
+
+const isLowPerformanceDevice = () => {
+  if (typeof navigator === 'undefined') return false;
+  const connection = (navigator as any).connection;
+  const memory = (performance as any).memory;
+  
+  return (
+    (connection && connection.saveData) ||
+    (memory && memory.jsHeapSizeLimit < 1073741824) ||
+    navigator.hardwareConcurrency < 4
+  );
+};
 
 export function initHeroScrollAnimation() {
   const waitForScene = () => {
@@ -22,14 +37,23 @@ export function initHeroScrollAnimation() {
       return;
     }
 
+    const initMeasure = perfMonitor.startMeasure("hero-scroll-init");
+
+    const titleAnimation = initHeroTitleAnimation();
+    if (titleAnimation) {
+      heroTitleTimeline = titleAnimation;
+    }
+
     const { camera, hexFloor, codeWrapper, laptopWrapper } = heroScene;
+    const lowPerf = isLowPerformanceDevice();
+    const scrubSpeed = lowPerf ? 1.5 : 2.2;
 
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: heroSection,
         start: "top top",
         end: "+=280%",
-        scrub: 2.2,
+        scrub: scrubSpeed,
         pin: true,
         id: "hero-scroll",
         anticipatePin: 1,
@@ -45,7 +69,6 @@ export function initHeroScrollAnimation() {
       },
     });
 
-    // Elegant content fade with subtle blur
     if (heroContent) {
       tl.to(
         heroContent,
@@ -55,13 +78,13 @@ export function initHeroScrollAnimation() {
           y: -70,
           filter: "blur(3px)",
           duration: 0.45, 
-          ease: "power2.out" 
+          ease: "power2.out",
+          force3D: true,
         },
         0
       );
     }
 
-    // Scroll indicator soft fade
     if (scrollIndicator) {
       tl.to(
         scrollIndicator,
@@ -70,19 +93,18 @@ export function initHeroScrollAnimation() {
           y: 15, 
           scale: 0.85,
           duration: 0.2, 
-          ease: "power1.in" 
+          ease: "power1.in",
+          force3D: true,
         },
         0
       );
     }
 
-    // Camera graceful orbital movement - the star of the show
     const startX = camera.position.x;
     const startZ = camera.position.z;
     const startY = camera.position.y;
     const radius = Math.sqrt(startX * startX + startZ * startZ);
     
-    // First phase: gentle rise and orbit start
     tl.to(
       camera.position,
       { 
@@ -91,6 +113,7 @@ export function initHeroScrollAnimation() {
         y: startY + 60, 
         duration: 0.5, 
         ease: "sine.inOut",
+        force3D: true,
         onUpdate: function() {
           camera.lookAt(0, 0, 0);
         }
@@ -98,7 +121,6 @@ export function initHeroScrollAnimation() {
       0.12
     );
 
-    // Second phase: continue orbit with pullback
     tl.to(
       camera.position,
       { 
@@ -107,6 +129,7 @@ export function initHeroScrollAnimation() {
         y: startY + 180, 
         duration: 0.7, 
         ease: "sine.inOut",
+        force3D: true,
         onUpdate: function() {
           camera.lookAt(0, 0, 0);
         }
@@ -114,7 +137,6 @@ export function initHeroScrollAnimation() {
       0.5
     );
 
-    // Hex floor graceful multi-axis rotation
     tl.to(
       hexFloor.rotation,
       { 
@@ -122,12 +144,12 @@ export function initHeroScrollAnimation() {
         y: Math.PI / 6,
         z: Math.PI / 32,
         duration: 1.3, 
-        ease: "sine.inOut" 
+        ease: "sine.inOut",
+        force3D: true,
       },
       0.18
     );
 
-    // Hex floor synchronized drift
     tl.to(
       hexFloor.position,
       { 
@@ -135,55 +157,68 @@ export function initHeroScrollAnimation() {
         z: -85,
         x: -15,
         duration: 1.3, 
-        ease: "sine.inOut" 
+        ease: "sine.inOut",
+        force3D: true,
       },
       0.18
     );
 
-    // Hexagons elegant wave with vertical motion
-    hexFloor.children.forEach((hex: any, index: number) => {
-      const distanceFactor = (hex as any).pulseOffset;
-      const wave = Math.sin(distanceFactor * 0.4);
+    const hexChildren = hexFloor.children;
+    const hexCount = hexChildren.length;
+    const batchSize = lowPerf ? 5 : 3;
+    
+    for (let i = 0; i < hexCount; i += batchSize) {
+      const batch = [];
+      const batchMaterials = [];
+      const batchScales = [];
       
-      // Subtle vertical wave motion
+      for (let j = i; j < Math.min(i + batchSize, hexCount); j++) {
+        const hex = hexChildren[j];
+        batch.push(hex.position);
+        batchMaterials.push(hex.material);
+        batchScales.push(hex.scale);
+      }
+      
+      const avgDistanceFactor = batch.reduce((sum, _, idx) => 
+        sum + (hexChildren[i + idx] as any).pulseOffset, 0) / batch.length;
+      const wave = Math.sin(avgDistanceFactor * 0.4);
+      
       tl.to(
-        hex.position,
+        batch,
         { 
           y: `+=${wave * 10}`,
           duration: 0.9, 
-          ease: "sine.inOut" 
+          ease: "sine.inOut",
+          force3D: true,
         },
-        0.28 + distanceFactor * 0.008
+        0.28 + avgDistanceFactor * 0.008
       );
 
-      // Opacity fade with wave pattern
       tl.to(
-        hex.material,
+        batchMaterials,
         { 
           opacity: 0.12 + Math.abs(wave) * 0.08, 
           duration: 0.7, 
-          ease: "sine.inOut" 
+          ease: "sine.inOut",
         },
-        0.32 + distanceFactor * 0.008
+        0.32 + avgDistanceFactor * 0.008
       );
 
-      // Subtle scale pulse
       tl.to(
-        hex.scale,
+        batchScales,
         { 
           x: 0.95 + wave * 0.05,
           y: 0.95 + wave * 0.05,
           z: 0.95 + wave * 0.05,
           duration: 0.7, 
-          ease: "sine.inOut" 
+          ease: "sine.inOut",
+          force3D: true,
         },
-        0.32 + distanceFactor * 0.008
+        0.32 + avgDistanceFactor * 0.008
       );
-    });
+    }
 
-    // Code wrapper elegant choreographed exit
     if (codeWrapper) {
-      // Position arc movement
       tl.to(
         codeWrapper.position,
         { 
@@ -191,12 +226,12 @@ export function initHeroScrollAnimation() {
           y: 170, 
           z: -190, 
           duration: 1.1, 
-          ease: "power1.inOut" 
+          ease: "power1.inOut",
+          force3D: true,
         },
         0.22
       );
 
-      // Graceful rotation
       tl.to(
         codeWrapper.rotation,
         { 
@@ -204,12 +239,12 @@ export function initHeroScrollAnimation() {
           y: Math.PI * 1.35, 
           z: Math.PI / 11,
           duration: 1.1, 
-          ease: "sine.inOut" 
+          ease: "sine.inOut",
+          force3D: true,
         },
         0.22
       );
 
-      // Smooth opacity fade with material traversal
       tl.to(
         codeWrapper,
         { 
@@ -235,9 +270,7 @@ export function initHeroScrollAnimation() {
       );
     }
 
-    // Laptop wrapper mirrored elegant exit
     if (laptopWrapper) {
-      // Position arc movement (mirrored)
       tl.to(
         laptopWrapper.position,
         { 
@@ -245,12 +278,12 @@ export function initHeroScrollAnimation() {
           y: 155, 
           z: -270, 
           duration: 1.1, 
-          ease: "power1.inOut" 
+          ease: "power1.inOut",
+          force3D: true,
         },
         0.27
       );
 
-      // Graceful rotation (mirrored)
       tl.to(
         laptopWrapper.rotation,
         { 
@@ -258,12 +291,12 @@ export function initHeroScrollAnimation() {
           y: Math.PI * 1.48, 
           z: -Math.PI / 13,
           duration: 1.1, 
-          ease: "sine.inOut" 
+          ease: "sine.inOut",
+          force3D: true,
         },
         0.27
       );
 
-      // Smooth opacity fade with material traversal
       tl.to(
         laptopWrapper,
         { 
@@ -289,17 +322,19 @@ export function initHeroScrollAnimation() {
       );
     }
 
-    // Final scene fade with gentle blur
     tl.to(
       heroContainer,
       { 
         opacity: 0,
         filter: "blur(4px)", 
         duration: 0.45, 
-        ease: "sine.inOut" 
+        ease: "sine.inOut",
+        force3D: true,
       },
       0.88
     );
+
+    initMeasure();
   };
 
   waitForScene();
@@ -307,5 +342,7 @@ export function initHeroScrollAnimation() {
   return () => {
     if (heroScrollTrigger) heroScrollTrigger.kill();
     heroScrollTrigger = null;
+    if (heroTitleTimeline) heroTitleTimeline.kill();
+    heroTitleTimeline = null;
   };
 }

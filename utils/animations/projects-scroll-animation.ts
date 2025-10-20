@@ -9,7 +9,6 @@ let pendingUpdate: number | null = null;
 
 const waitForProjectScenes = (totalProjects: number): Promise<void> => {
   return new Promise((resolve) => {
-    console.log(`⏳ Waiting for ${totalProjects} project scenes...`);
     let attempts = 0;
     const maxAttempts = 200;
     
@@ -31,7 +30,6 @@ const waitForProjectScenes = (totalProjects: number): Promise<void> => {
         console.log(`✅ All ${totalProjects} scenes ready!`, readyScenes);
         resolve();
       } else if (attempts >= maxAttempts) {
-        console.error(`❌ Timeout waiting for scenes. Ready: ${readyScenes.length}/${totalProjects}`, readyScenes);
         resolve();
       } else {
         if (attempts % 20 === 0) {
@@ -192,8 +190,6 @@ export function initProjectsScrollAnimation() {
         }
       }
     });
-
-    console.log("📊 Creating GSAP timeline with ScrollTrigger...");
     
     const stickyContainer = projectsSection.querySelector(".sticky");
 
