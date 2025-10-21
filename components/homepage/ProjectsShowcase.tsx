@@ -59,7 +59,7 @@ export default function ProjectsShowcase() {
               <div
                 key={project.id}
                 data-project-panel={index}
-                className="absolute inset-0 w-full h-full flex items-center justify-center"
+                className="absolute w-full h-[90%] bottom-0 flex items-center justify-center"
                 style={{
                   transformStyle: "preserve-3d",
                   willChange: "transform, opacity",

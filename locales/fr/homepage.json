@@ -3,15 +3,15 @@
   "hero_main_title_1": "Solutions",
   "hero_main_title_2": "Digitales",
   "hero_main_title_3": "Sur Mesure",
-  "hero_subtitle": "Spécialiste frontend avec capacités full-stack, livrant logiciels, sites web et solutions pour tous les secteurs.",
-  "hero_cta": "Voir Mon Travail",
+  "hero_subtitle": "Spécialiste frontend avec capacités full-stack, je développe logiciels, sites web et solutions digitales pour tous les secteurs.",
+  "hero_cta": "Découvrir Mon Travail",
   "stats_years": "Années",
   "stats_projects": "Projets",
   "stats_possibilities": "Possibilités",
   "scroll": "Défiler",
   "services": {
     "section_title_1": "Compétences techniques et expérience",
-    "section_title_2": "Transformer les idées en applications prêtes pour la production",
+    "section_title_2": "Des solutions sur-mesure au pixel près, grâce au code",
     "web_development": {
       "title": "Développement Web",
       "description": "Sites web et applications modernes et rapides, conçus pour la performance et l'expérience utilisateur",
@@ -42,14 +42,14 @@
     "projects_label": "Projets Livrés"
   },
   "projects_section": {
-    "title": "Travaux Sélectionnés",
-    "subtitle": "Du Projet à la réalité",
+    "title": "Mes compétences en action",
+    "subtitle": "Une sélection de projets récents",
     "cta_title": "Envie d'en Voir Plus?",
     "cta_subtitle": "Explorez mon portfolio complet de projets dans différentes industries et technologies",
     "cta_button": "Voir Tous les Projets"
   },
   "cta_section": {
-    "badge": "Connectons-nous",
+    "badge": "Contactez-moi dès maintenant",
     "title": "Donnons Vie à Vos Idées",
     "subtitle": "Que vous recherchiez un développeur pour rejoindre votre équipe, ayez besoin d'une solution web sur mesure, ou souhaitiez simplement discuter de votre prochain projet, je serais ravi d'échanger avec vous.",
     "portfolio_title": "Voir Portfolio",
