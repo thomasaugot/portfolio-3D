@@ -84,8 +84,9 @@ export class PerformanceMonitor {
 
 export const perfMonitor = PerformanceMonitor.getInstance();
 
-if (typeof window !== 'undefined') {
+// Only log performance metrics in development mode and less frequently
+if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
   setInterval(() => {
     perfMonitor.logMetrics();
-  }, 10000);
+  }, 30000); // Every 30 seconds instead of 10
 }

@@ -20,7 +20,7 @@ export default async function LocaleLayout({
         <ThemeProvider>
           <TranslationProvider>
             <TabTitleAnimationProvider />
-            <LoadingProvider criticalScenes={["hero"]}>
+            <LoadingProvider criticalScenes={[]}>
               <main>{children}</main>
             </LoadingProvider>
           </TranslationProvider>

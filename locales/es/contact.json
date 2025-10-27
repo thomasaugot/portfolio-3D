@@ -1,31 +1,43 @@
 {
-  "contact": {
-    "hero": {
-      "badge": "Conectemos",
-      "title_1": "Ponte En",
-      "title_2": "Contacto",
-      "subtitle": "¿Tienes un proyecto en mente? Trabajemos juntos para crear algo increíble."
-    },
-    "form": {
-      "section_title_1": "Envíame Un",
-      "section_title_2": "Mensaje",
-      "section_description": "Ya sea que tengas una pregunta, una idea de proyecto, o simplemente quieras saludar, haré lo posible por responderte lo antes posible.",
-      "name_label": "Nombre",
-      "name_placeholder": "Juan Pérez",
-      "email_label": "Email",
-      "email_placeholder": "juan@ejemplo.com",
-      "subject_label": "Asunto",
-      "subject_placeholder": "Consulta de Proyecto",
-      "message_label": "Mensaje",
-      "message_placeholder": "Cuéntame sobre tu proyecto...",
-      "submit_button": "Enviar Mensaje"
-    },
-    "info": {
-      "email_label": "Email",
-      "location_label": "Ubicación",
-      "location_value": "Las Palmas, Islas Canarias",
-      "response_label": "Tiempo de Respuesta",
-      "response_value": "Normalmente en 24-48 horas"
-    }
+  "badge": "Conectemos",
+  "title_1": "Ponte En",
+  "title_2": "Contacto",
+  "subtitle": "¿Tienes un proyecto en mente? Trabajemos juntos para crear algo increíble.",
+  "location": "Las Palmas, Islas Canarias",
+  "hero": {
+    "badge": "Conectemos",
+    "title_1": "Ponte En",
+    "title_2": "Contacto",
+    "subtitle": "¿Tienes un proyecto en mente? Trabajemos juntos para crear algo increíble."
+  },
+  "form": {
+    "section_title_1": "Envíame Un",
+    "section_title_2": "Mensaje",
+    "section_description": "Ya sea que tengas una pregunta, una idea de proyecto, o simplemente quieras saludar, haré lo posible por responderte lo antes posible.",
+    "name": "Nombre",
+    "name_label": "Nombre",
+    "name_placeholder": "Juan Pérez",
+    "email": "Email",
+    "email_label": "Email",
+    "email_placeholder": "juan@ejemplo.com",
+    "subject": "Asunto",
+    "subject_label": "Asunto",
+    "subject_placeholder": "Consulta de Proyecto",
+    "message": "Mensaje",
+    "message_label": "Mensaje",
+    "message_placeholder": "Cuéntame sobre tu proyecto...",
+    "submit": "Enviar Mensaje",
+    "submit_button": "Enviar Mensaje"
+  },
+  "info": {
+    "email_label": "Email",
+    "location_label": "Ubicación",
+    "location_value": "Las Palmas, Islas Canarias",
+    "response_label": "Tiempo de Respuesta",
+    "response_value": "Normalmente en 24-48 horas"
+  },
+  "thank_you": {
+    "title": "¡Gracias!",
+    "subtitle": "Gracias por tu visita. No dudes en contactarme."
   }
 }

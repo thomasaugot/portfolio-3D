@@ -2,9 +2,12 @@
 
 import { useState } from "react";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
+import { useThreeScene } from "@/hooks/useThreeScene";
+import { initContactForm3DScene } from "@/utils/animations/contact-form-3d-scene";
 
 export default function ContactFormSection() {
   const { t } = useTranslation();
+  const containerRef = useThreeScene(initContactForm3DScene, "contact-form");
   
   const [formData, setFormData] = useState({
     name: "",
@@ -32,8 +35,19 @@ export default function ContactFormSection() {
   return (
     <section
       data-contact-form-section
-      className="relative min-h-screen flex items-center justify-center py-32 bg-gradient-to-b from-bg via-bg to-transparent"
+      className="relative min-h-screen flex items-center justify-center py-32 overflow-visible"
+      style={{ perspective: "2000px" }}
     >
+      {/* 3D Background Scene */}
+      <div
+        ref={containerRef}
+        data-3d-container="contact-form"
+        className="absolute inset-0 w-full h-full pointer-events-none z-0 opacity-70 lg:opacity-90"
+      />
+
+      {/* Gradient overlay for depth */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-bg/30 to-bg pointer-events-none z-[1]" />
+
       <div className="relative z-10 max-w-7xl mx-auto px-8 w-full">
         <div className="grid lg:grid-cols-2 gap-16 items-start">
           
@@ -98,17 +112,31 @@ export default function ContactFormSection() {
 
           <div
             data-contact-form
-            className="relative"
+            className="relative group"
             style={{ transformStyle: "preserve-3d" }}
+            onMouseMove={(e) => {
+              const rect = e.currentTarget.getBoundingClientRect();
+              const x = e.clientX - rect.left;
+              const y = e.clientY - rect.top;
+              const centerX = rect.width / 2;
+              const centerY = rect.height / 2;
+              const rotateX = (y - centerY) / 30;
+              const rotateY = -(x - centerX) / 30;
+
+              e.currentTarget.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px)";
+            }}
           >
             <div
               data-form-glow
-              className="absolute inset-0 bg-gradient-to-br from-primary/30 to-secondary/30 rounded-3xl blur-3xl opacity-0"
+              className="absolute inset-0 bg-gradient-to-br from-primary/30 to-secondary/30 rounded-3xl blur-3xl opacity-0 group-hover:opacity-60 transition-opacity duration-500"
             />
 
-            <div className="absolute -inset-[1px] bg-gradient-to-br from-primary via-secondary to-primary rounded-3xl opacity-50" />
+            <div className="absolute -inset-[1px] bg-gradient-to-br from-primary via-secondary to-primary rounded-3xl opacity-30 group-hover:opacity-50 transition-opacity duration-300" />
 
-            <div className="relative bg-bg/95 backdrop-blur-xl rounded-3xl p-8 md:p-12">
+            <div className="relative bg-bg/95 backdrop-blur-xl rounded-3xl p-8 md:p-12 shadow-2xl">
               <form onSubmit={handleSubmit} className="space-y-6">
                 
                 <div data-form-field>

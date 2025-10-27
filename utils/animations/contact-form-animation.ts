@@ -16,8 +16,8 @@ export function initContactFormAnimation() {
   const fields = formSection.querySelectorAll("[data-form-field]");
   const button = formSection.querySelector("[data-form-button]");
 
-  gsap.set(info, { opacity: 0, x: -50 });
-  gsap.set(form, { opacity: 0, x: 50 });
+  gsap.set(info, { opacity: 0, x: -50, y: 30 });
+  gsap.set(form, { opacity: 0, x: 50, y: 30, rotationY: -15 });
   gsap.set(fields, { opacity: 0, y: 20 });
   gsap.set(button, { opacity: 0, scale: 0.9 });
 
@@ -33,6 +33,7 @@ export function initContactFormAnimation() {
   infoTimeline.to(info, {
     opacity: 1,
     x: 0,
+    y: 0,
     duration: 0.5,
     ease: "power2.out",
   });
@@ -50,6 +51,8 @@ export function initContactFormAnimation() {
     .to(form, {
       opacity: 1,
       x: 0,
+      y: 0,
+      rotationY: 0,
       duration: 0.6,
       ease: "power2.out",
     }, 0);

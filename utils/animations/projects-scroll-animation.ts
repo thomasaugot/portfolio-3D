@@ -6,6 +6,7 @@ gsap.registerPlugin(ScrollTrigger);
 let projectsScrollTrigger: ScrollTrigger | null = null;
 let lastProgress = -1;
 let pendingUpdate: number | null = null;
+let isUpdating = false;
 
 const waitForProjectScenes = (totalProjects: number): Promise<void> => {
   return new Promise((resolve) => {
@@ -58,20 +59,17 @@ const randomAnimations = [
 ];
 
 const throttledScrollUpdate = (totalPanels: number, progress: number) => {
-  if (pendingUpdate !== null) {
+  // Skip if already updating or change is too small
+  if (isUpdating || Math.abs(progress - lastProgress) < 0.005) {
     return;
   }
 
-  pendingUpdate = window.setTimeout(() => {
+  isUpdating = true;
+  lastProgress = progress;
+
+  // Use requestAnimationFrame for better performance
+  pendingUpdate = requestAnimationFrame(() => {
     const measure = perfMonitor.startMeasure('scrollUpdate');
-    
-    if (Math.abs(progress - lastProgress) < 0.005) {
-      measure();
-      pendingUpdate = null;
-      return;
-    }
-    
-    lastProgress = progress;
 
     for (let i = 0; i < totalPanels; i++) {
       const sceneData = (window as any)[`__projectScene_${i}`];
@@ -81,17 +79,17 @@ const throttledScrollUpdate = (totalPanels: number, progress: number) => {
         0,
         Math.min(1, progress * totalPanels - i)
       );
-      
+
       if (Math.abs(sceneData.scrollProgress - panelProgress) < 0.01) {
         continue;
       }
-      
+
       sceneData.scrollProgress = panelProgress;
 
       if (sceneData.laptop && sceneData.laptopOriginal) {
         const progressPI = panelProgress * Math.PI;
         const progressPI2 = progressPI * 2;
-        
+
         const floatOffset = Math.sin(progressPI2) * 10;
         const rotateX = Math.sin(progressPI) * 0.02;
         const rotateY = Math.cos(progressPI * 0.8) * 0.015;
@@ -106,7 +104,7 @@ const throttledScrollUpdate = (totalPanels: number, progress: number) => {
       if (sceneData.iphone && sceneData.iphoneOriginal) {
         const progressPI = panelProgress * Math.PI;
         const progressPI2 = progressPI * 2;
-        
+
         const floatOffset = Math.cos(progressPI2 + 1) * 12;
         const rotateX = Math.cos(progressPI * 1.1) * 0.025;
         const rotateY = Math.sin(progressPI * 0.9) * 0.02;
@@ -121,7 +119,8 @@ const throttledScrollUpdate = (totalPanels: number, progress: number) => {
 
     measure();
     pendingUpdate = null;
-  }, 16);
+    isUpdating = false;
+  });
 };
 
 export function initProjectsScrollAnimation() {
@@ -132,9 +131,10 @@ export function initProjectsScrollAnimation() {
     projectsScrollTrigger.kill();
     projectsScrollTrigger = null;
     lastProgress = -1;
-    
+    isUpdating = false;
+
     if (pendingUpdate !== null) {
-      clearTimeout(pendingUpdate);
+      cancelAnimationFrame(pendingUpdate);
       pendingUpdate = null;
     }
   }
@@ -448,11 +448,12 @@ export function initProjectsScrollAnimation() {
       projectsScrollTrigger.kill();
       projectsScrollTrigger = null;
       lastProgress = -1;
+      isUpdating = false;
       console.log("✅ ScrollTrigger cleaned up");
     }
-    
+
     if (pendingUpdate !== null) {
-      clearTimeout(pendingUpdate);
+      cancelAnimationFrame(pendingUpdate);
       pendingUpdate = null;
     }
   };

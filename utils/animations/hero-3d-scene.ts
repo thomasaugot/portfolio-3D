@@ -3,6 +3,18 @@ import { getThemeState } from "@/utils/theme-helpers";
 import type { SceneConfig } from "@/types/three";
 import { perfMonitor } from "@/utils/performance-monitor";
 
+const isLowPerformanceDevice = () => {
+  if (typeof navigator === 'undefined') return false;
+  const connection = (navigator as any).connection;
+  const memory = (performance as any).memory;
+
+  return (
+    (connection && connection.saveData) ||
+    (memory && memory.jsHeapSizeLimit < 1073741824) || // Less than 1GB heap
+    navigator.hardwareConcurrency < 4
+  );
+};
+
 const getViewportConfig = (): SceneConfig => {
   const width = window.innerWidth;
   const { isLight } = getThemeState();
@@ -34,13 +46,16 @@ const createScene = (container: HTMLElement, config: SceneConfig) => {
   );
   camera.lookAt(0, 0, 0);
 
-  const renderer = new THREE.WebGLRenderer({ 
-    alpha: true, 
-    antialias: true,
+  const lowPerf = isLowPerformanceDevice();
+  const renderer = new THREE.WebGLRenderer({
+    alpha: true,
+    antialias: !config.isMobile && !lowPerf, // Disable antialias on mobile and low-perf devices
     powerPreference: "high-performance"
   });
   renderer.setSize(container.clientWidth, container.clientHeight);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  // Reduce pixel ratio on mobile for better performance
+  const maxPixelRatio = config.isMobile ? 1.5 : 2;
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, maxPixelRatio));
   renderer.setClearColor(0x000000, 0);
   container.appendChild(renderer.domElement);
 
@@ -69,10 +84,11 @@ const setupLighting = (scene: THREE.Scene, isLight: boolean) => {
 
 const createHexFloor = (config: SceneConfig) => {
   const measure = perfMonitor.startMeasure('hero:createHexFloor');
-  
+
   const group = new THREE.Group();
   const hexSize = config.isMobile ? 60 : 80;
-  const radius = config.isMobile ? 8 : 12;
+  // Reduced radius for better performance (was 12)
+  const radius = config.isMobile ? 6 : 9;
 
   for (let q = -radius; q <= radius; q++) {
     for (let r = -radius; r <= radius; r++) {
@@ -153,7 +169,9 @@ const loadTexture = async (
           texture.magFilter = THREE.LinearFilter;
           texture.generateMipmaps = false;
           texture.colorSpace = THREE.SRGBColorSpace;
-          texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+          // Only enable anisotropy on desktop for better performance
+          const config = getViewportConfig();
+          texture.anisotropy = config.isDesktop ? renderer.capabilities.getMaxAnisotropy() : 1;
           resolve(texture);
         },
         undefined,
@@ -186,16 +204,15 @@ const loadCodeModel = async (
 
       model.traverse((child: any) => {
         if (child.isMesh) {
-          child.material = new THREE.MeshPhysicalMaterial({
+          // Use MeshStandardMaterial instead of MeshPhysicalMaterial for better performance
+          child.material = new THREE.MeshStandardMaterial({
             color: config.isLight ? 0xf0f0f0 : 0xffffff,
-            roughness: config.isLight ? 0.3 : 0.95,
-            metalness: config.isLight ? 0.1 : 0.95,
-            transmission: config.isLight ? 0.2 : 0.7,
-            opacity: config.isLight ? 0.7 : 1,
-            ior: config.isLight ? 1.5 : 2.5,
-            thickness: config.isLight ? 2.0 : 5.0,
-            clearcoat: config.isLight ? 1.0 : 5.0,
-            clearcoatRoughness: config.isLight ? 0.1 : 0.55,
+            roughness: config.isLight ? 0.3 : 0.7,
+            metalness: config.isLight ? 0.1 : 0.5,
+            transparent: config.isLight,
+            opacity: config.isLight ? 0.8 : 1,
+            emissive: config.isLight ? 0x000000 : 0x1a1a1a,
+            emissiveIntensity: config.isLight ? 0 : 0.2,
           });
         }
       });
@@ -411,10 +428,12 @@ export async function initHero3DScene() {
 
   const handleResize = () => {
     const measure = perfMonitor.startMeasure('hero:resize');
+    const newConfig = getViewportConfig();
     camera.aspect = container.clientWidth / container.clientHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(container.clientWidth, container.clientHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    const maxPixelRatio = newConfig.isMobile ? 1.5 : 2;
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, maxPixelRatio));
     measure();
   };
   window.addEventListener("resize", handleResize);
@@ -423,11 +442,21 @@ export async function initHero3DScene() {
   let time = 0;
   let frameCounter = 0;
 
+  // Pre-create color objects to avoid allocation in animation loop
+  const hexColor1 = new THREE.Color(0x02bccc);
+  const hexColor2 = new THREE.Color(0xccff02);
+
   const animate = () => {
+    // Skip rendering when tab is hidden
+    if (document.hidden) {
+      animationId = requestAnimationFrame(animate);
+      return;
+    }
+
     // Only measure every 60 frames to reduce overhead
     const shouldMeasure = frameCounter % 60 === 0;
     const animateMeasure = shouldMeasure ? perfMonitor.startMeasure('hero:animate') : null;
-    
+
     perfMonitor.updateFPS();
     time += 0.01;
 
@@ -443,8 +472,8 @@ export async function initHero3DScene() {
       const gradientShift =
         Math.sin(time + (hex as any).gradientFactor * Math.PI) * 0.5 + 0.5;
       material.color.lerpColors(
-        new THREE.Color(0x02bccc),
-        new THREE.Color(0xccff02),
+        hexColor1,
+        hexColor2,
         gradientShift
       );
     });
@@ -484,6 +513,27 @@ export async function initHero3DScene() {
     window.removeEventListener("resize", handleResize);
     cleanupInteractions();
     if (animationId) cancelAnimationFrame(animationId);
+
+    // Properly dispose all geometries, materials, and textures
+    scene.traverse((child: any) => {
+      if (child.geometry) {
+        child.geometry.dispose();
+      }
+      if (child.material) {
+        if (Array.isArray(child.material)) {
+          child.material.forEach((material: any) => {
+            if (material.map) material.map.dispose();
+            material.dispose();
+          });
+        } else {
+          if (child.material.map) child.material.map.dispose();
+          child.material.dispose();
+        }
+      }
+    });
+
+    if (vscodeTexture) vscodeTexture.dispose();
+
     if (renderer.domElement.parentNode)
       container.removeChild(renderer.domElement);
     renderer.dispose();

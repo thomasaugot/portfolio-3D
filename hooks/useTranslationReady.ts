@@ -6,7 +6,8 @@ export function useTranslationReady() {
   const { t } = useTranslation();
 
   useEffect(() => {
-    const testKey = "homepage.hero_title";
+    // Use a common key that exists on all pages
+    const testKey = "common.status.loading";
     const translatedValue = t(testKey);
 
     if (translatedValue !== testKey) {
@@ -18,3 +19,4 @@ export function useTranslationReady() {
 
   return isReady;
 }
+

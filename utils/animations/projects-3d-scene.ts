@@ -10,6 +10,18 @@ const MODEL_PATHS = [
   "/assets/models/iphone-laptop-scene-3.glb",
 ];
 
+const isLowPerformanceDevice = () => {
+  if (typeof navigator === 'undefined') return false;
+  const connection = (navigator as any).connection;
+  const memory = (performance as any).memory;
+
+  return (
+    (connection && connection.saveData) ||
+    (memory && memory.jsHeapSizeLimit < 1073741824) ||
+    navigator.hardwareConcurrency < 4
+  );
+};
+
 const getViewportConfig = (): SceneConfig => {
   const width = window.innerWidth;
   const { isLight } = getThemeState();
@@ -23,6 +35,9 @@ const getViewportConfig = (): SceneConfig => {
 };
 
 const createScene = (container: HTMLElement) => {
+  const config = getViewportConfig();
+  const lowPerf = isLowPerformanceDevice();
+
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(
     50,
@@ -33,13 +48,14 @@ const createScene = (container: HTMLElement) => {
   camera.position.set(0, 20, 550);
   camera.lookAt(0, 0, 0);
 
-  const renderer = new THREE.WebGLRenderer({ 
-    alpha: true, 
-    antialias: true,
+  const renderer = new THREE.WebGLRenderer({
+    alpha: true,
+    antialias: !config.isMobile && !lowPerf,
     powerPreference: "high-performance"
   });
   renderer.setSize(container.clientWidth, container.clientHeight);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  const maxPixelRatio = config.isMobile ? 1.5 : 2;
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, maxPixelRatio));
   renderer.setClearColor(0x000000, 0);
   container.appendChild(renderer.domElement);
 
@@ -81,7 +97,8 @@ const loadTexture = async (
           texture.magFilter = THREE.LinearFilter;
           texture.generateMipmaps = false;
           texture.colorSpace = THREE.SRGBColorSpace;
-          texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+          const config = getViewportConfig();
+          texture.anisotropy = config.isDesktop ? renderer.capabilities.getMaxAnisotropy() : 1;
           resolve(texture);
         },
         undefined,
@@ -299,10 +316,12 @@ export async function initProjects3DScene() {
       : null;
 
     const handleResize = () => {
+      const newConfig = getViewportConfig();
       camera.aspect = container.clientWidth / container.clientHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(container.clientWidth, container.clientHeight);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      const maxPixelRatio = newConfig.isMobile ? 1.5 : 2;
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, maxPixelRatio));
     };
     window.addEventListener("resize", handleResize);
 
@@ -311,9 +330,15 @@ export async function initProjects3DScene() {
     let frameCounter = 0;
 
     const animate = () => {
+      // Skip rendering when tab is hidden
+      if (document.hidden) {
+        animationId = requestAnimationFrame(animate);
+        return;
+      }
+
       const shouldMeasure = frameCounter % 60 === 0 && frameCounter > 0;
       const animateMeasure = shouldMeasure ? perfMonitor.startMeasure(`animate:${index}`) : null;
-      
+
       perfMonitor.updateFPS();
       time += 0.005;
 
@@ -378,6 +403,28 @@ export async function initProjects3DScene() {
     cleanupFunctions.push(() => {
       window.removeEventListener("resize", handleResize);
       if (animationId) cancelAnimationFrame(animationId);
+
+      // Properly dispose all geometries, materials, and textures
+      scene.traverse((child: any) => {
+        if (child.geometry) {
+          child.geometry.dispose();
+        }
+        if (child.material) {
+          if (Array.isArray(child.material)) {
+            child.material.forEach((material: any) => {
+              if (material.map) material.map.dispose();
+              material.dispose();
+            });
+          } else {
+            if (child.material.map) child.material.map.dispose();
+            child.material.dispose();
+          }
+        }
+      });
+
+      if (laptopTexture) laptopTexture.dispose();
+      if (iphoneTexture) iphoneTexture.dispose();
+
       if (renderer.domElement.parentNode)
         container.removeChild(renderer.domElement);
       renderer.dispose();

@@ -3,6 +3,18 @@ import { getThemeState } from "@/utils/theme-helpers";
 import type { SceneConfig } from "@/types/three";
 import { perfMonitor } from "@/utils/performance-monitor";
 
+const isLowPerformanceDevice = () => {
+  if (typeof navigator === 'undefined') return false;
+  const connection = (navigator as any).connection;
+  const memory = (performance as any).memory;
+
+  return (
+    (connection && connection.saveData) ||
+    (memory && memory.jsHeapSizeLimit < 1073741824) ||
+    navigator.hardwareConcurrency < 4
+  );
+};
+
 const getViewportConfig = (): SceneConfig => {
   const width = window.innerWidth;
   const { isLight } = getThemeState();
@@ -28,13 +40,15 @@ const createScene = (container: HTMLElement, config: SceneConfig) => {
   camera.position.set(0, 350, 1200);
   camera.lookAt(0, 0, 0);
 
-  const renderer = new THREE.WebGLRenderer({ 
-    alpha: true, 
-    antialias: true,
+  const lowPerf = isLowPerformanceDevice();
+  const renderer = new THREE.WebGLRenderer({
+    alpha: true,
+    antialias: !config.isMobile && !lowPerf,
     powerPreference: "high-performance"
   });
   renderer.setSize(container.clientWidth, container.clientHeight);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  const maxPixelRatio = config.isMobile ? 1.5 : 2;
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, maxPixelRatio));
   renderer.setClearColor(0x000000, 0);
   container.appendChild(renderer.domElement);
 
@@ -59,7 +73,8 @@ const setupLighting = (scene: THREE.Scene, isLight: boolean) => {
 const createHexFloor = (config: SceneConfig) => {
   const group = new THREE.Group();
   const hexSize = config.isMobile ? 60 : 80;
-  const radius = config.isMobile ? 6 : 10;
+  // Reduced radius for better performance
+  const radius = config.isMobile ? 5 : 8;
 
   const color1 = new THREE.Color(0x02bccc);
   const color2 = new THREE.Color(0xccff02);
@@ -142,10 +157,12 @@ export function initCTA3DScene() {
   scene.add(hexFloor);
 
   const handleResize = () => {
+    const newConfig = getViewportConfig();
     camera.aspect = container.clientWidth / container.clientHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(container.clientWidth, container.clientHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    const maxPixelRatio = newConfig.isMobile ? 1.5 : 2;
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, maxPixelRatio));
   };
   window.addEventListener("resize", handleResize);
 
@@ -158,9 +175,15 @@ export function initCTA3DScene() {
   const tempColor = new THREE.Color();
 
   const animate = () => {
+    // Skip rendering when tab is hidden
+    if (document.hidden) {
+      animationId = requestAnimationFrame(animate);
+      return;
+    }
+
     const shouldMeasure = frameCounter % 60 === 0 && frameCounter > 0;
     const measure = shouldMeasure ? perfMonitor.startMeasure('cta:animate') : null;
-    
+
     perfMonitor.updateFPS();
     time += 0.008;
 
@@ -172,7 +195,7 @@ export function initCTA3DScene() {
       const pulseOffset = (hex as any).pulseOffset;
       const gradientFactor = (hex as any).gradientFactor;
       const baseOpacity = (hex as any).baseOpacity;
-      
+
       const pulse = Math.sin(time * 1.5 + pulseOffset);
       material.opacity = baseOpacity + pulse * 0.15;
 
@@ -202,6 +225,21 @@ export function initCTA3DScene() {
   return () => {
     window.removeEventListener("resize", handleResize);
     if (animationId) cancelAnimationFrame(animationId);
+
+    // Properly dispose all geometries and materials
+    scene.traverse((child: any) => {
+      if (child.geometry) {
+        child.geometry.dispose();
+      }
+      if (child.material) {
+        if (Array.isArray(child.material)) {
+          child.material.forEach((material: any) => material.dispose());
+        } else {
+          child.material.dispose();
+        }
+      }
+    });
+
     if (renderer.domElement.parentNode)
       container.removeChild(renderer.domElement);
     renderer.dispose();

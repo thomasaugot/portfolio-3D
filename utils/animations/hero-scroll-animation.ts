@@ -165,7 +165,8 @@ export function initHeroScrollAnimation() {
 
     const hexChildren = hexFloor.children;
     const hexCount = hexChildren.length;
-    const batchSize = lowPerf ? 5 : 3;
+    // Significantly increased batch size for better performance (was 3-5)
+    const batchSize = lowPerf ? 40 : 30;
     
     for (let i = 0; i < hexCount; i += batchSize) {
       const batch = [];
