@@ -18,6 +18,7 @@ export interface ProjectMedia {
   coverVideo?: string;
   laptopTexture: string;
   mobileTexture: string;
+  gallery?: string[];
   videos?: string[];
 }
 

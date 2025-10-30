@@ -2,13 +2,13 @@
   "badge": "Restons Connectés",
   "title_1": "Prenons",
   "title_2": "Contact",
-  "subtitle": "Vous avez un projet en tête ? Travaillons ensemble pour créer quelque chose d'incroyable.",
+  "subtitle": "Vous avez un projet en tête ? Travaillons ensemble pour votre prochain projet.",
   "location": "Las Palmas, Îles Canaries",
   "hero": {
     "badge": "Restons Connectés",
     "title_1": "Prenons",
     "title_2": "Contact",
-    "subtitle": "Vous avez un projet en tête ? Travaillons ensemble pour créer quelque chose d'incroyable."
+    "subtitle": "Vous avez un projet en tête ? Travaillons ensemble pour votre prochain projet."
   },
   "form": {
     "section_title_1": "Envoyez-Moi Un",
@@ -34,7 +34,7 @@
     "location_label": "Localisation",
     "location_value": "Las Palmas, Îles Canaries",
     "response_label": "Délai de Réponse",
-    "response_value": "Généralement sous 24-48 heures"
+    "response_value": "Réponse sous 24 heures"
   },
   "thank_you": {
     "title": "Merci !",

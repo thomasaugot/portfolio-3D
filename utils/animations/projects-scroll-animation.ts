@@ -45,16 +45,16 @@ const waitForProjectScenes = (totalProjects: number): Promise<void> => {
 
 const randomAnimations = [
   {
-    enter: { rotation: 15, scale: 0.85, x: 100, y: 50 },
-    exit: { rotation: -10, scale: 0.9, x: -80, y: -40 },
+    enter: { rotation: 12, scale: 0.88, x: 80, y: 40, rotationY: 10 },
+    exit: { rotation: -8, scale: 0.92, x: -60, y: -30, rotationY: -8 },
   },
   {
-    enter: { rotation: -20, scale: 0.8, x: -120, y: 60 },
-    exit: { rotation: 15, scale: 0.85, x: 100, y: -50 },
+    enter: { rotation: -15, scale: 0.85, x: -100, y: 50, rotationY: -12 },
+    exit: { rotation: 12, scale: 0.88, x: 80, y: -40, rotationY: 10 },
   },
   {
-    enter: { rotationY: 45, scale: 0.75, x: 80, y: -40 },
-    exit: { rotationY: -30, scale: 0.8, x: -60, y: 60 },
+    enter: { rotationY: 35, scale: 0.82, x: 60, y: -35, rotation: 8 },
+    exit: { rotationY: -25, scale: 0.86, x: -50, y: 50, rotation: -6 },
   },
 ];
 
@@ -198,12 +198,18 @@ export function initProjectsScrollAnimation() {
         trigger: projectsSection,
         start: "top top",
         end: "bottom bottom",
-        scrub: 1,
+        scrub: 0.8,
         pin: stickyContainer || true,
         anticipatePin: 1,
         invalidateOnRefresh: true,
         fastScrollEnd: true,
         preventOverlaps: true,
+        snap: {
+          snapTo: 1 / (totalPanels - 1),
+          duration: { min: 0.2, max: 0.6 },
+          delay: 0.05,
+          ease: "power2.inOut",
+        },
         id: "projects-scroll",
         onUpdate: (self) => {
           throttledScrollUpdate(totalPanels, self.progress);
@@ -217,15 +223,15 @@ export function initProjectsScrollAnimation() {
       const sceneData = (window as any)[`__projectScene_${index}`];
       const anim = randomAnimations[index % randomAnimations.length];
 
-      const duration = 3;
-      const transitionDuration = 1.5;
+      const duration = 2.5;
+      const transitionDuration = 1.2;
 
       if (index === 0) {
         const exitStart = duration - transitionDuration;
 
-        tl.to(panel, { opacity: 0, duration: transitionDuration, ease: "power2.in" }, exitStart);
+        tl.to(panel, { opacity: 0, duration: transitionDuration, ease: "power2.inOut" }, exitStart);
         if (image) {
-          tl.to(image, { opacity: 0, ...anim.exit, duration: transitionDuration, ease: "power2.in" }, exitStart);
+          tl.to(image, { opacity: 0, ...anim.exit, duration: transitionDuration, ease: "power2.inOut" }, exitStart);
         }
         if (content) {
           tl.to(content, {
@@ -233,8 +239,9 @@ export function initProjectsScrollAnimation() {
             x: anim.exit.x ? -anim.exit.x : 0,
             y: anim.exit.y ? -anim.exit.y : 0,
             rotation: anim.exit.rotation ? -anim.exit.rotation : 0,
+            rotationY: anim.exit.rotationY ? -anim.exit.rotationY : 0,
             duration: transitionDuration,
-            ease: "power2.in",
+            ease: "power2.inOut",
           }, exitStart);
         }
 
@@ -278,7 +285,7 @@ export function initProjectsScrollAnimation() {
           opacity: 1,
           zIndex: 2000,
           duration: transitionDuration,
-          ease: "power2.out",
+          ease: "power2.inOut",
         }, enterStart);
 
         if (image) {
@@ -291,8 +298,8 @@ export function initProjectsScrollAnimation() {
             rotationY: 0,
             scale: 1,
             duration: transitionDuration,
-            ease: "power2.out",
-          }, enterStart + 0.1);
+            ease: "back.out(1.4)",
+          }, enterStart + 0.05);
         }
 
         if (content) {
@@ -305,8 +312,8 @@ export function initProjectsScrollAnimation() {
             rotationY: 0,
             scale: 1,
             duration: transitionDuration,
-            ease: "power2.out",
-          }, enterStart + 0.2);
+            ease: "back.out(1.2)",
+          }, enterStart + 0.1);
         }
 
         if (sceneData?.laptop && sceneData?.laptopOriginal) {
@@ -362,10 +369,10 @@ export function initProjectsScrollAnimation() {
         }
 
         if (index < totalPanels - 1) {
-          tl.to(panel, { 
-            opacity: 0, 
-            duration: transitionDuration, 
-            ease: "power2.in" 
+          tl.to(panel, {
+            opacity: 0,
+            duration: transitionDuration,
+            ease: "power2.inOut"
           }, exitStart);
 
           if (image) {
@@ -373,7 +380,7 @@ export function initProjectsScrollAnimation() {
               opacity: 0,
               ...anim.exit,
               duration: transitionDuration,
-              ease: "power2.in",
+              ease: "power2.inOut",
             }, exitStart);
           }
 
@@ -383,8 +390,9 @@ export function initProjectsScrollAnimation() {
               x: anim.exit.x ? -anim.exit.x : 0,
               y: anim.exit.y ? -anim.exit.y : 0,
               rotation: anim.exit.rotation ? -anim.exit.rotation : 0,
+              rotationY: anim.exit.rotationY ? -anim.exit.rotationY : 0,
               duration: transitionDuration,
-              ease: "power2.in",
+              ease: "power2.inOut",
             }, exitStart);
           }
 

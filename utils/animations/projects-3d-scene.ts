@@ -40,13 +40,13 @@ const createScene = (container: HTMLElement) => {
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(
-    50,
+    45,
     container.clientWidth / container.clientHeight,
     0.1,
     2000
   );
-  camera.position.set(0, 20, 550);
-  camera.lookAt(0, 0, 0);
+  camera.position.set(-50, 30, 600);
+  camera.lookAt(-30, 0, 0);
 
   const renderer = new THREE.WebGLRenderer({
     alpha: true,
@@ -63,20 +63,24 @@ const createScene = (container: HTMLElement) => {
 };
 
 const setupLighting = (scene: THREE.Scene, isLight: boolean) => {
-  const ambientLight = new THREE.AmbientLight(0xffffff, isLight ? 2.0 : 1.8);
+  const ambientLight = new THREE.AmbientLight(0xffffff, isLight ? 2.2 : 2.0);
   scene.add(ambientLight);
 
-  const dirLight1 = new THREE.DirectionalLight(0xffffff, isLight ? 2.0 : 1.8);
-  dirLight1.position.set(400, 500, 400);
+  const dirLight1 = new THREE.DirectionalLight(0xffffff, isLight ? 2.2 : 2.0);
+  dirLight1.position.set(450, 550, 450);
   scene.add(dirLight1);
 
-  const dirLight2 = new THREE.DirectionalLight(0xffffff, isLight ? 1.5 : 1.2);
-  dirLight2.position.set(-400, 400, -400);
+  const dirLight2 = new THREE.DirectionalLight(0xffffff, isLight ? 1.6 : 1.4);
+  dirLight2.position.set(-450, 450, -450);
   scene.add(dirLight2);
 
-  const frontLight = new THREE.DirectionalLight(0xffffff, isLight ? 1.0 : 0.8);
-  frontLight.position.set(0, 0, 500);
+  const frontLight = new THREE.DirectionalLight(0xffffff, isLight ? 1.2 : 1.0);
+  frontLight.position.set(0, 100, 550);
   scene.add(frontLight);
+
+  const rimLight = new THREE.DirectionalLight(0x88ccff, isLight ? 0.4 : 0.6);
+  rimLight.position.set(-300, 200, -200);
+  scene.add(rimLight);
 };
 
 const loadTexture = async (
@@ -198,10 +202,10 @@ const loadModel = async (
           }
         });
 
-        const scale = 70;
+        const scale = 75;
         model.scale.set(scale, scale, scale);
-        model.rotation.y = -0.4;
-        model.position.y = -30;
+        model.rotation.y = -0.3;
+        model.position.set(-20, -35, 0);
 
         const wrapper = new THREE.Group();
         wrapper.add(model);
@@ -343,34 +347,34 @@ export async function initProjects3DScene() {
       time += 0.005;
 
       if (modelWrapper && modelWrapper.children[0]) {
-        modelWrapper.position.y = Math.sin(time * 0.8) * 8;
+        modelWrapper.position.y = Math.sin(time * 0.6) * 10;
         const modelChild = modelWrapper.children[0];
-        modelChild.rotation.x = Math.sin(time * 0.4) * 0.02;
-        modelChild.rotation.z = Math.sin(time * 0.3) * 0.015;
+        modelChild.rotation.x = Math.sin(time * 0.3) * 0.015;
+        modelChild.rotation.z = Math.sin(time * 0.25) * 0.012;
       }
 
       if (laptopGroup && laptopOriginal) {
         laptopGroup.position.y =
-          laptopOriginal.pos.y + Math.sin(time * 0.4) * 6;
+          laptopOriginal.pos.y + Math.sin(time * 0.35) * 7;
 
         laptopGroup.rotation.x =
-          laptopOriginal.rot.x + Math.sin(time * 0.2) * 0.04;
+          laptopOriginal.rot.x + Math.sin(time * 0.18) * 0.035;
         laptopGroup.rotation.y =
-          laptopOriginal.rot.y + Math.cos(time * 0.25) * 0.03;
+          laptopOriginal.rot.y + Math.cos(time * 0.22) * 0.028;
         laptopGroup.rotation.z =
-          laptopOriginal.rot.z + Math.sin(time * 0.3) * 0.02;
+          laptopOriginal.rot.z + Math.sin(time * 0.26) * 0.018;
       }
 
       if (iphoneGroup && iphoneOriginal) {
         iphoneGroup.position.y =
-          iphoneOriginal.pos.y + Math.cos(time * 0.5 + 2) * 7;
+          iphoneOriginal.pos.y + Math.cos(time * 0.42 + 2) * 8;
 
         iphoneGroup.rotation.x =
-          iphoneOriginal.rot.x + Math.cos(time * 0.25) * 0.05;
+          iphoneOriginal.rot.x + Math.cos(time * 0.22) * 0.045;
         iphoneGroup.rotation.y =
-          iphoneOriginal.rot.y + Math.sin(time * 0.3) * 0.04;
+          iphoneOriginal.rot.y + Math.sin(time * 0.27) * 0.038;
         iphoneGroup.rotation.z =
-          iphoneOriginal.rot.z + Math.cos(time * 0.35) * 0.03;
+          iphoneOriginal.rot.z + Math.cos(time * 0.32) * 0.028;
       }
 
       renderer.render(scene, camera);

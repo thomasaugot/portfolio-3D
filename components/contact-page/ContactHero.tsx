@@ -33,7 +33,7 @@ export default function ContactHero() {
     setIsSubmitting(true);
 
     // Trigger network animation
-    const event = new CustomEvent('contactFormSubmit');
+    const event = new CustomEvent("contactFormSubmit");
     window.dispatchEvent(event);
 
     // Simulate submission
@@ -45,13 +45,15 @@ export default function ContactHero() {
 
   const handleFieldFocus = (fieldName: string) => {
     setFocusedField(fieldName);
-    const event = new CustomEvent('contactFieldFocus', { detail: { field: fieldName } });
+    const event = new CustomEvent("contactFieldFocus", {
+      detail: { field: fieldName },
+    });
     window.dispatchEvent(event);
   };
 
   const handleFieldBlur = () => {
     setFocusedField(null);
-    const event = new CustomEvent('contactFieldBlur');
+    const event = new CustomEvent("contactFieldBlur");
     window.dispatchEvent(event);
   };
 
@@ -67,15 +69,13 @@ export default function ContactHero() {
         <div className="relative z-10 w-full px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-
               {/* Left Side - Title & Info */}
               <div className="lg:col-span-5 space-y-8 relative">
-
                 <div className="relative" data-contact-hero-content>
                   <div
                     data-hero-badge
                     className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl border border-border bg-bg/80 backdrop-blur-md"
-                    style={{ willChange: 'opacity, transform' }}
+                    style={{ willChange: "opacity, transform" }}
                   >
                     <div className="w-3 h-3 rounded-full bg-primary animate-pulse" />
                     <span className="text-sm font-mono uppercase tracking-wider font-medium text-muted">
@@ -87,7 +87,7 @@ export default function ContactHero() {
                     <span
                       data-hero-line
                       className="block text-text pb-1 drop-shadow-[0_2px_8px_rgba(0,0,0,0.3)] text-4xl sm:text-5xl md:text-6xl lg:text-7xl"
-                      style={{ willChange: 'opacity, transform' }}
+                      style={{ willChange: "opacity, transform" }}
                     >
                       {t("contact.hero.title_1")}
                     </span>
@@ -98,7 +98,7 @@ export default function ContactHero() {
                         transform: "translateX(0)",
                         width: "max-content",
                         maxWidth: "none",
-                        willChange: 'opacity, transform',
+                        willChange: "opacity, transform",
                       }}
                     >
                       {t("contact.hero.title_2")}
@@ -108,7 +108,7 @@ export default function ContactHero() {
                   <p
                     data-hero-subtitle
                     className="text-lg leading-relaxed text-text-muted max-w-md mt-8"
-                    style={{ willChange: 'opacity, transform' }}
+                    style={{ willChange: "opacity, transform" }}
                   >
                     {t("contact.hero.subtitle")}
                   </p>
@@ -136,24 +136,52 @@ export default function ContactHero() {
                 <div
                   data-hero-contact-info
                   className="space-y-4 pt-4"
-                  style={{ willChange: 'opacity, transform' }}
+                  style={{ willChange: "opacity, transform" }}
                 >
                   <div className="flex items-center gap-3 text-sm">
                     <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                      <svg className="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      <svg
+                        className="w-4 h-4 text-primary"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                        />
                       </svg>
                     </div>
-                    <a href="mailto:contact@example.com" className="font-mono text-text-muted hover:text-primary transition-colors">
-                      contact@example.com
+                    <a
+                      href="mailto:thomas.augot@gmail.com"
+                      className="font-mono text-text-muted hover:text-primary transition-colors"
+                    >
+                      thomas.augot@gmail.com
                     </a>
                   </div>
 
                   <div className="flex items-center gap-3 text-sm">
                     <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                      <svg className="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <svg
+                        className="w-4 h-4 text-primary"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
                       </svg>
                     </div>
                     <span className="font-mono text-text-muted">
@@ -163,8 +191,18 @@ export default function ContactHero() {
 
                   <div className="flex items-center gap-3 text-sm">
                     <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                      <svg className="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      <svg
+                        className="w-4 h-4 text-primary"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
                       </svg>
                     </div>
                     <span className="text-text-muted">
@@ -172,7 +210,6 @@ export default function ContactHero() {
                     </span>
                   </div>
                 </div>
-
               </div>
 
               {/* Right Side - Form */}
@@ -185,7 +222,7 @@ export default function ContactHero() {
                   <div
                     data-form-glow
                     className={`absolute -inset-4 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-3xl blur-2xl transition-opacity duration-500 ${
-                      focusedField ? 'opacity-70' : 'opacity-0'
+                      focusedField ? "opacity-70" : "opacity-0"
                     }`}
                   />
 
@@ -195,10 +232,12 @@ export default function ContactHero() {
                   {/* Form container */}
                   <div className="relative bg-bg/95 backdrop-blur-xl rounded-2xl p-6 md:p-8 lg:p-10">
                     <form onSubmit={handleSubmit} className="space-y-5">
-
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div data-form-field>
-                          <label htmlFor="name" className="block text-xs font-mono text-text-muted mb-2 uppercase tracking-wider">
+                          <label
+                            htmlFor="name"
+                            className="block text-xs font-mono text-text-muted mb-2 uppercase tracking-wider"
+                          >
                             {t("contact.form.name_label")}
                           </label>
                           <input
@@ -220,7 +259,10 @@ export default function ContactHero() {
                         </div>
 
                         <div data-form-field>
-                          <label htmlFor="email" className="block text-xs font-mono text-text-muted mb-2 uppercase tracking-wider">
+                          <label
+                            htmlFor="email"
+                            className="block text-xs font-mono text-text-muted mb-2 uppercase tracking-wider"
+                          >
                             {t("contact.form.email_label")}
                           </label>
                           <input
@@ -243,7 +285,10 @@ export default function ContactHero() {
                       </div>
 
                       <div data-form-field>
-                        <label htmlFor="subject" className="block text-xs font-mono text-text-muted mb-2 uppercase tracking-wider">
+                        <label
+                          htmlFor="subject"
+                          className="block text-xs font-mono text-text-muted mb-2 uppercase tracking-wider"
+                        >
                           {t("contact.form.subject_label")}
                         </label>
                         <input
@@ -265,7 +310,10 @@ export default function ContactHero() {
                       </div>
 
                       <div data-form-field>
-                        <label htmlFor="message" className="block text-xs font-mono text-text-muted mb-2 uppercase tracking-wider">
+                        <label
+                          htmlFor="message"
+                          className="block text-xs font-mono text-text-muted mb-2 uppercase tracking-wider"
+                        >
                           {t("contact.form.message_label")}
                         </label>
                         <textarea
@@ -293,16 +341,16 @@ export default function ContactHero() {
                         className="w-full px-8 py-4 bg-gradient-to-r from-primary to-secondary text-bg font-bold rounded-xl hover:shadow-[0_0_30px_rgba(2,188,204,0.5)] transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden group"
                       >
                         <span className="relative z-10">
-                          {isSubmitting ? "Sending..." : t("contact.form.submit_button")}
+                          {isSubmitting
+                            ? "Sending..."
+                            : t("contact.form.submit_button")}
                         </span>
                         <div className="absolute inset-0 bg-gradient-to-r from-secondary to-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                       </button>
-
                     </form>
                   </div>
                 </div>
               </div>
-
             </div>
           </div>
         </div>

@@ -1,4 +1,21 @@
 {
+  "header": {
+    "title": "Projets Sélectionnés",
+    "subtitle": "Portfolio"
+  },
+  "hero": {
+    "badge": "Portfolio",
+    "title": "Projets Sélectionnés",
+    "subtitle": "Explorez mes projets",
+    "description": "Découvrez une collection de projets web mettant en avant le développement moderne, le design créatif et l'innovation technique.",
+    "scroll_hint": "Faites défiler pour explorer"
+  },
+  "cta": {
+    "title": "Prêt à créer quelque chose d'incroyable ?",
+    "description": "Transformons votre vision en réalité. Discutons de votre prochain projet.",
+    "primaryButton": "Démarrer un projet",
+    "secondaryButton": "Retour à l'accueil"
+  },
   "common": {
     "cta": {
       "view_full_case": "Voir l'Étude Complète"
