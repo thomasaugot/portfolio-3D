@@ -5,20 +5,30 @@
   },
   "hero": {
     "badge": "Portfolio",
-    "title": "Selected Works",
-    "subtitle": "Explore my projects",
+    "title": "Things I Made",
+    "subtitle": "A curated selection of what I consider my most complete and advanced work",
     "description": "Discover a curated collection of web projects showcasing modern development, creative design, and technical innovation.",
     "scroll_hint": "Scroll to explore"
   },
   "cta": {
-    "title": "Ready to build something amazing?",
-    "description": "Let's turn your vision into reality. Get in touch to discuss your next project.",
-    "primaryButton": "Start a project",
+    "title": "Got a project in mind?",
+    "description": "Let's work together to bring it to life. Reach out to discuss what you need.",
+    "primaryButton": "Get in touch",
     "secondaryButton": "Back to home"
   },
   "common": {
     "cta": {
       "view_full_case": "View Full Case Study"
+    },
+    "ui": {
+      "view_details": "View Details",
+      "technologies": "Technologies",
+      "gallery": "Gallery",
+      "challenge": "Challenge",
+      "solution": "Solution",
+      "technical_approach": "Technical Approach",
+      "impact": "Impact",
+      "results": "Results"
     }
   },
   "categories": {

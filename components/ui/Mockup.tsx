@@ -10,7 +10,7 @@ export function Mockup({ variant, src, alt, className = "" }: MockupProps) {
           <div className="absolute inset-0 rounded-2xl bg-[#1a1a1a] shadow-2xl" style={{ padding: "3.5%" }}>
             <div className="absolute inset-0 rounded-2xl opacity-30 blur-xl" style={{ background: "radial-gradient(circle, rgba(2,188,204,0.3), transparent 70%)" }} />
             <div className="relative w-full h-full rounded-lg overflow-hidden bg-black">
-              <Image src={src} alt={alt} fill className="object-cover object-top" sizes="(max-width: 768px) 100vw, 1200px" />
+              <Image src={src} alt={alt} fill className="object-contain" sizes="(max-width: 768px) 100vw, 1200px" />
               <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.1), transparent 50%)" }} />
             </div>
             <div className="absolute top-[1.5%] left-1/2 -translate-x-1/2 w-[15%] h-[2%] bg-black rounded-full flex items-center justify-center">
@@ -31,7 +31,7 @@ export function Mockup({ variant, src, alt, className = "" }: MockupProps) {
         <div className="absolute inset-0 rounded-[2.5rem] bg-[#1a1a1a]" style={{ padding: "2.5%", boxShadow: "0 20px 40px -10px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.1)" }}>
           <div className="absolute inset-0 rounded-[2.5rem] opacity-20 blur-2xl" style={{ background: "radial-gradient(circle, rgba(204,255,2,0.4), transparent 70%)" }} />
           <div className="relative w-full h-full rounded-[2rem] overflow-hidden bg-black">
-            <Image src={src} alt={alt} fill className="object-cover object-top" sizes="400px" />
+            <Image src={src} alt={alt} fill className="object-contain" sizes="400px" />
             <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.08), transparent 60%)" }} />
           </div>
           <div className="absolute top-[3%] left-1/2 -translate-x-1/2 w-[30%] h-[2.5%] bg-black rounded-full flex items-center justify-center gap-2">
@@ -48,7 +48,7 @@ export function Mockup({ variant, src, alt, className = "" }: MockupProps) {
       <div className={`relative w-full ${className}`} style={{ aspectRatio: "4/3" }}>
         <div className="absolute inset-0 rounded-3xl bg-[#1a1a1a]" style={{ padding: "3%", boxShadow: "0 25px 50px -12px rgba(0,0,0,0.7)" }}>
           <div className="relative w-full h-full rounded-2xl overflow-hidden bg-black">
-            <Image src={src} alt={alt} fill className="object-cover object-top" sizes="800px" />
+            <Image src={src} alt={alt} fill className="object-contain" sizes="800px" />
             <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.06), transparent 50%)" }} />
           </div>
           <div className="absolute top-[1%] left-1/2 -translate-x-1/2 w-[1.5%] h-[1.5%] rounded-full bg-gray-900" />
@@ -63,7 +63,7 @@ export function Mockup({ variant, src, alt, className = "" }: MockupProps) {
         <div className="relative w-full" style={{ aspectRatio: "16/10" }}>
           <div className="absolute inset-0 rounded-2xl bg-[#1a1a1a]" style={{ padding: "2%", boxShadow: "0 25px 50px -12px rgba(0,0,0,0.8)" }}>
             <div className="relative w-full h-full rounded-xl overflow-hidden bg-black">
-              <Image src={src} alt={alt} fill className="object-cover object-top" sizes="1400px" />
+              <Image src={src} alt={alt} fill className="object-contain" sizes="1400px" />
               <div className="absolute inset-0 opacity-20" style={{ background: "radial-gradient(circle, rgba(2,188,204,0.3), transparent 60%)" }} />
             </div>
           </div>
@@ -93,7 +93,7 @@ export function Mockup({ variant, src, alt, className = "" }: MockupProps) {
           </div>
         </div>
         <div className="relative w-full" style={{ aspectRatio: "16/10" }}>
-          <Image src={src} alt={alt} fill className="object-cover object-top" sizes="1200px" />
+          <Image src={src} alt={alt} fill className="object-contain" sizes="1200px" />
         </div>
       </div>
     );

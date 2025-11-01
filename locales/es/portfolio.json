@@ -5,13 +5,29 @@
   },
   "hero": {
     "badge": "Portfolio",
-    "title": "Proyectos Seleccionados",
-    "subtitle": "Explora una colección curada de proyectos que muestran desarrollo web moderno, diseño UX e innovación técnica.",
+    "title": "Lo que he creado",
+    "subtitle": "Una selección cuidada de lo que considero mi trabajo más completo y avanzado",
     "scroll_hint": "Desplázate para explorar"
+  },
+  "cta": {
+    "title": "¿Tienes un proyecto en mente?",
+    "description": "Trabajemos juntos para darle vida. Escríbeme para hablar de lo que necesitas.",
+    "primaryButton": "Contactar",
+    "secondaryButton": "Volver al inicio"
   },
   "common": {
     "cta": {
       "view_full_case": "Ver Caso Completo"
+    },
+    "ui": {
+      "view_details": "Ver Detalles",
+      "technologies": "Tecnologías",
+      "gallery": "Galería",
+      "challenge": "Desafío",
+      "solution": "Solución",
+      "technical_approach": "Enfoque Técnico",
+      "impact": "Impacto",
+      "results": "Resultados"
     }
   },
   "categories": {

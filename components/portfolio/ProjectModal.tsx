@@ -1,6 +1,6 @@
-// ProjectModal.tsx - FIXED VERSION
+// ProjectModal.tsx - BLOB MORPH ANIMATION
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { gsap } from "@/lib/animations";
 import { Mockup } from "@/components/ui/Mockup";
 import type { Project } from "@/types/project";
@@ -10,144 +10,261 @@ interface ProjectModalProps { project: Project; onClose: () => void; }
 
 export default function ProjectModal({ project, onClose }: ProjectModalProps) {
   const { t } = useTranslation();
-  const modalRef = useRef<HTMLDivElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const morphRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const blobPositionRef = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
-    if (modalRef.current && contentRef.current) {
-      gsap.fromTo(modalRef.current, { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" });
-      gsap.fromTo(contentRef.current, { scale: 0.8, opacity: 0, rotateX: 20 }, { scale: 1, opacity: 1, rotateX: 0, duration: 0.6, ease: "back.out(1.5)" });
+
+    // Get blob cursor and position
+    const blobCursor = document.querySelector('[data-blob-cursor]') as HTMLElement;
+    const portfolioScene = (window as any).__portfolioScene;
+
+    if (portfolioScene) {
+      portfolioScene.modalOpen = true;
     }
-    return () => { document.body.style.overflow = ""; };
+
+    // Store blob position for close animation
+    const blobRect = blobCursor?.getBoundingClientRect();
+    const startX = blobRect ? blobRect.left + blobRect.width / 2 : window.innerWidth / 2;
+    const startY = blobRect ? blobRect.top + blobRect.height / 2 : window.innerHeight / 2;
+    blobPositionRef.current = { x: startX, y: startY };
+
+    const tl = gsap.timeline();
+
+    // 1. Set morph element to exact blob position and appearance
+    if (morphRef.current && overlayRef.current) {
+      gsap.set(morphRef.current, {
+        left: startX,
+        top: startY,
+        width: 140,
+        height: 140,
+        xPercent: -50,
+        yPercent: -50,
+        borderRadius: '30% 70% 70% 30% / 30% 30% 70% 70%',
+        opacity: 1,
+        scale: 1
+      });
+
+      gsap.set(overlayRef.current, { opacity: 0 });
+
+      // 2. Hide blob and show morph at the exact same instant (no gap)
+      if (blobCursor) {
+        tl.add(() => {
+          blobCursor.style.opacity = '0';
+          blobCursor.style.pointerEvents = 'none';
+          blobCursor.style.display = 'none';
+        }, 0);
+      }
+
+      // 3. Start expanding the morph immediately
+      tl.to(morphRef.current, {
+        scale: 1.2,
+        duration: 0.2,
+        ease: "power2.out"
+      }, 0);
+
+      // 4. Fade in overlay
+      tl.to(overlayRef.current, {
+        opacity: 1,
+        duration: 0.4,
+        ease: "power2.out"
+      }, 0.1);
+
+      // 5. Expand and morph into full modal
+      tl.to(morphRef.current, {
+        left: '50%',
+        top: '50%',
+        width: '85vw',
+        height: '80vh',
+        maxWidth: 800,
+        maxHeight: '80vh',
+        scale: 1,
+        borderRadius: '24px',
+        duration: 0.7,
+        ease: "expo.out"
+      }, 0.2);
+
+      // 6. Fade in content
+      if (contentRef.current) {
+        tl.fromTo(contentRef.current,
+          { opacity: 0 },
+          { opacity: 1, duration: 0.4, ease: "power2.out" },
+          0.6
+        );
+      }
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, []);
 
   const handleClose = () => {
-    if (modalRef.current && contentRef.current) {
-      gsap.to(contentRef.current, { scale: 0.8, opacity: 0, rotateX: -20, duration: 0.4, ease: "back.in(1.5)" });
-      gsap.to(modalRef.current, { opacity: 0, duration: 0.3, ease: "power2.in", delay: 0.1, onComplete: onClose });
+    const portfolioScene = (window as any).__portfolioScene;
+    const blobCursor = document.querySelector('[data-blob-cursor]') as HTMLElement;
+
+    const tl = gsap.timeline({ onComplete: () => {
+      if (portfolioScene) {
+        portfolioScene.modalOpen = false;
+      }
+      if (blobCursor) {
+        blobCursor.style.display = 'block';
+        gsap.set(blobCursor, { scale: 1, opacity: 0 });
+        gsap.to(blobCursor, { opacity: 1, duration: 0.2, ease: "power2.out" });
+      }
+      onClose();
+    }});
+
+    // 1. Fade out content
+    if (contentRef.current) {
+      tl.to(contentRef.current, {
+        opacity: 0,
+        duration: 0.25,
+        ease: "power2.in"
+      }, 0);
+    }
+
+    // 2. Morph back to blob shape at stored position
+    if (morphRef.current) {
+      tl.to(morphRef.current, {
+        left: blobPositionRef.current.x,
+        top: blobPositionRef.current.y,
+        width: 140,
+        height: 140,
+        maxWidth: 140,
+        maxHeight: 140,
+        borderRadius: '30% 70% 70% 30% / 30% 30% 70% 70%',
+        duration: 0.6,
+        ease: "expo.in"
+      }, 0.15);
+
+      // 3. Fade out morph and overlay together
+      tl.to(morphRef.current, {
+        opacity: 0,
+        duration: 0.2,
+        ease: "power2.in"
+      }, 0.7);
+    }
+
+    // 4. Fade out overlay
+    if (overlayRef.current) {
+      tl.to(overlayRef.current, {
+        opacity: 0,
+        duration: 0.3,
+        ease: "power2.in"
+      }, 0.6);
     }
   };
 
   const gallery = project.media?.gallery || [];
-  const nextImage = () => setCurrentImageIndex((prev) => (prev + 1) % gallery.length);
-  const prevImage = () => setCurrentImageIndex((prev) => (prev - 1 + gallery.length) % gallery.length);
 
   return (
-    <div ref={modalRef} className="fixed inset-0 z-[9999] flex items-center justify-center p-4 md:p-8" style={{ background: "rgba(0, 0, 0, 0.85)", backdropFilter: "blur(20px)" }} onClick={handleClose}>
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute w-96 h-96 rounded-full blur-3xl animate-pulse" style={{ background: "radial-gradient(circle, rgba(2,188,204,0.3), transparent 70%)", top: "10%", left: "15%", animation: "float 8s ease-in-out infinite" }} />
-        <div className="absolute w-96 h-96 rounded-full blur-3xl animate-pulse" style={{ background: "radial-gradient(circle, rgba(204,255,2,0.3), transparent 70%)", bottom: "10%", right: "15%", animation: "float 10s ease-in-out infinite reverse" }} />
-      </div>
+    <div ref={overlayRef} className="fixed inset-0 z-[9999]" style={{ background: "rgba(0, 0, 0, 0.9)", backdropFilter: "blur(20px)" }} onClick={handleClose}>
+      <div
+        ref={morphRef}
+        className="fixed bg-bg/95 backdrop-blur-2xl border border-primary/20 overflow-y-auto overflow-x-hidden"
+        style={{
+          borderRadius: '30% 70% 70% 30% / 30% 30% 70% 70%',
+          boxShadow: "0 0 60px rgba(2,188,204,0.4), 0 0 100px rgba(204,255,2,0.2)"
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div ref={contentRef} className="relative w-full min-h-full">
+          {/* Close button */}
+          <button
+            onClick={handleClose}
+            className="absolute top-4 right-4 z-50 w-14 h-14 flex items-center justify-center rounded-full bg-primary/20 backdrop-blur-sm border-2 border-primary hover:border-secondary hover:bg-primary/30 hover:scale-110 transition-all duration-300 group shadow-lg"
+          >
+            <svg className="w-7 h-7 text-primary group-hover:text-secondary transition-all group-hover:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
 
-      <div ref={contentRef} className="relative w-full max-w-7xl max-h-[90vh] overflow-y-auto bg-surface/95 backdrop-blur-2xl rounded-3xl border-2 border-primary/30 shadow-2xl" style={{ background: "linear-gradient(135deg, rgba(26,26,26,0.95), rgba(42,42,42,0.95))", boxShadow: "0 0 60px rgba(2,188,204,0.3), 0 0 120px rgba(204,255,2,0.2)" }} onClick={(e) => e.stopPropagation()}>
-        <button onClick={handleClose} className="absolute top-6 right-6 z-50 w-12 h-12 flex items-center justify-center rounded-full bg-surface/80 backdrop-blur-sm border border-border/50 hover:border-primary/50 hover:bg-primary/10 transition-all duration-300 group">
-          <svg className="w-6 h-6 text-text/70 group-hover:text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-        </button>
+          <div className="overflow-y-auto h-full p-8">
+            <div className="max-w-4xl mx-auto space-y-8">
 
-        <div className="p-8 md:p-12 space-y-12">
-          <div className="space-y-4">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 backdrop-blur-sm rounded-full border border-primary/30">
-              <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-              <span className="text-sm font-mono text-primary tracking-wide uppercase">{project.year} • {project.client}</span>
-            </div>
-            <h2 className="text-4xl md:text-6xl lg:text-7xl font-black gradient-primary bg-clip-text text-transparent leading-tight">{t(project.title)}</h2>
-            <p className="text-xl text-text/80 leading-relaxed max-w-3xl">{t(project.preview.description)}</p>
-          </div>
-
-          {project.technologies && (
-            <div className="space-y-4">
-              <h3 className="text-2xl font-bold text-text">Technologies</h3>
-              <div className="flex flex-wrap gap-3">
-                {project.technologies.map((tech, index) => (
-                  <span key={index} className="px-4 py-2 text-sm font-mono bg-primary/10 text-primary rounded-lg border border-primary/30 hover:bg-primary/20 hover:border-primary/50 transition-all duration-300">{tech}</span>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {gallery.length > 0 && (
-            <div className="space-y-6">
-              <h3 className="text-2xl font-bold text-text">Gallery</h3>
-              <div className="relative">
-                <div className="relative w-full">
-                  {gallery[currentImageIndex]?.includes("laptop") || gallery[currentImageIndex]?.includes("desktop") ? (
-                    <Mockup variant="laptop" src={gallery[currentImageIndex]} alt={`${t(project.title)} - Screenshot ${currentImageIndex + 1}`} />
-                  ) : gallery[currentImageIndex]?.includes("mobile") || gallery[currentImageIndex]?.includes("phone") ? (
-                    <div className="max-w-md mx-auto"><Mockup variant="mobile" src={gallery[currentImageIndex]} alt={`${t(project.title)} - Screenshot ${currentImageIndex + 1}`} /></div>
-                  ) : (
-                    <Mockup variant="browser" src={gallery[currentImageIndex]} alt={`${t(project.title)} - Screenshot ${currentImageIndex + 1}`} />
-                  )}
+              {/* Header */}
+              <div className="space-y-3">
+                <div className="text-xs text-text/40 font-mono">
+                  {project.client} • {project.year}
                 </div>
-
-                {gallery.length > 1 && (
-                  <>
-                    <button onClick={prevImage} className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center rounded-full bg-surface/90 backdrop-blur-sm border border-primary/30 hover:bg-primary/20 hover:border-primary/50 transition-all duration-300">
-                      <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
-                    </button>
-                    <button onClick={nextImage} className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center rounded-full bg-surface/90 backdrop-blur-sm border border-primary/30 hover:bg-primary/20 hover:border-primary/50 transition-all duration-300">
-                      <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-                    </button>
-                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 bg-surface/90 backdrop-blur-sm rounded-full border border-primary/30">
-                      <span className="text-sm font-mono text-primary">{currentImageIndex + 1} / {gallery.length}</span>
-                    </div>
-                  </>
-                )}
+                <h2 className="text-4xl md:text-5xl font-black gradient-primary bg-clip-text text-transparent">
+                  {t(project.title)}
+                </h2>
               </div>
 
-              {gallery.length > 1 && (
-                <div className="flex gap-4 overflow-x-auto pb-4">
-                  {gallery.map((image, index) => (
-                    <button key={index} onClick={() => setCurrentImageIndex(index)} className={`relative flex-shrink-0 w-32 h-20 rounded-lg overflow-hidden border-2 transition-all duration-300 ${index === currentImageIndex ? "border-primary shadow-lg shadow-primary/30 scale-105" : "border-border/30 hover:border-primary/50 opacity-60 hover:opacity-100"}`}>
-                      <img src={image} alt={`Thumbnail ${index + 1}`} className="w-full h-full object-cover" />
-                    </button>
+              {/* Tech stack */}
+              {project.technologies && (
+                <div className="flex flex-wrap gap-2">
+                  {project.technologies.slice(0, 8).map((tech, index) => (
+                    <span key={index} className="px-3 py-1.5 text-xs font-mono bg-primary/10 text-primary/90 border border-primary/20 rounded">
+                      {tech}
+                    </span>
                   ))}
                 </div>
               )}
-            </div>
-          )}
 
-          <div className="grid md:grid-cols-2 gap-8">
-            <div className="space-y-4 p-6 bg-surface/30 rounded-2xl border border-border/30">
-              <h3 className="text-2xl font-bold text-text">Challenge</h3>
-              <p className="text-text/80 leading-relaxed">{t(project.details.challenge)}</p>
-            </div>
-            <div className="space-y-4 p-6 bg-surface/30 rounded-2xl border border-border/30">
-              <h3 className="text-2xl font-bold text-text">Solution</h3>
-              <p className="text-text/80 leading-relaxed">{t(project.details.solution)}</p>
-            </div>
-          </div>
+              {/* Challenge */}
+              {project.details?.challenge && (
+                <div className="space-y-3">
+                  <h3 className="text-sm font-mono uppercase tracking-widest text-primary">Challenge</h3>
+                  <p className="text-base text-text/80 leading-relaxed">
+                    {t(project.details.challenge)}
+                  </p>
+                </div>
+              )}
 
-          <div className="space-y-4 p-6 bg-gradient-to-br from-primary/5 to-secondary/5 rounded-2xl border border-primary/20">
-            <h3 className="text-2xl font-bold gradient-primary bg-clip-text text-transparent">Technical Approach</h3>
-            <p className="text-text/80 leading-relaxed">{t(project.details.technicalApproach)}</p>
-          </div>
+              {/* Solution */}
+              {project.details?.solution && (
+                <div className="space-y-3">
+                  <h3 className="text-sm font-mono uppercase tracking-widest text-secondary">Solution</h3>
+                  <p className="text-base text-text/80 leading-relaxed">
+                    {t(project.details.solution)}
+                  </p>
+                </div>
+              )}
 
-          {project.details?.impact && (
-            <div className="space-y-6">
-              <h3 className="text-2xl font-bold text-text">Impact</h3>
-              <div className="grid md:grid-cols-2 gap-4">
-                {project.details.impact.map((impact, index) => (
-                  <div key={index} className="flex items-start gap-3 p-4 bg-surface/30 rounded-xl border border-border/30 hover:border-primary/30 transition-all duration-300">
-                    <div className="w-6 h-6 flex-shrink-0 rounded-full bg-primary/20 flex items-center justify-center mt-1">
-                      <svg className="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+              {/* Gallery Grid */}
+              {gallery.length > 0 && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+                  {gallery.map((img, idx) => (
+                    <div key={idx} className="relative group">
+                      {img.includes("laptop") || img.includes("desktop") ? (
+                        <Mockup variant="laptop" src={img} alt={`${t(project.title)} - ${idx + 1}`} />
+                      ) : img.includes("mobile") || img.includes("phone") ? (
+                        <div className="mx-auto max-w-[280px]"><Mockup variant="mobile" src={img} alt={`${t(project.title)} - ${idx + 1}`} /></div>
+                      ) : (
+                        <Mockup variant="browser" src={img} alt={`${t(project.title)} - ${idx + 1}`} />
+                      )}
                     </div>
-                    <p className="text-text/80 leading-relaxed">{t(impact)}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+                  ))}
+                </div>
+              )}
 
-          <div className="space-y-4 p-8 bg-gradient-to-br from-primary/10 via-secondary/10 to-primary/10 rounded-2xl border-2 border-primary/30">
-            <h3 className="text-3xl font-bold gradient-primary bg-clip-text text-transparent">Results</h3>
-            <p className="text-xl text-text/90 leading-relaxed">{t(project.details.results)}</p>
+              {/* CTA */}
+              {project.media?.link && (
+                <div className="pt-4">
+                  <a
+                    href={project.media.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-primary to-secondary text-bg font-mono text-sm rounded-lg hover:shadow-xl hover:shadow-primary/30 transition-all hover:scale-105"
+                  >
+                    <span>View Live Project</span>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </a>
+                </div>
+              )}
+
+            </div>
           </div>
         </div>
       </div>
-
-      <style jsx>{`@keyframes float { 0%, 100% { transform: translateY(0) translateX(0); } 50% { transform: translateY(-30px) translateX(20px); }}`}</style>
     </div>
   );
 }

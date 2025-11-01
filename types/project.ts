@@ -20,6 +20,7 @@ export interface ProjectMedia {
   mobileTexture: string;
   gallery?: string[];
   videos?: string[];
+  link?: string;
 }
 
 export interface Project {

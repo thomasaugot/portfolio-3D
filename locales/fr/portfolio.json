@@ -5,20 +5,30 @@
   },
   "hero": {
     "badge": "Portfolio",
-    "title": "Projets Sélectionnés",
-    "subtitle": "Explorez mes projets",
+    "title": "Ce que j'ai créé",
+    "subtitle": "Une sélection soignée de ce que je considère comme mon travail le plus abouti et avancé",
     "description": "Découvrez une collection de projets web mettant en avant le développement moderne, le design créatif et l'innovation technique.",
     "scroll_hint": "Faites défiler pour explorer"
   },
   "cta": {
-    "title": "Prêt à créer quelque chose d'incroyable ?",
-    "description": "Transformons votre vision en réalité. Discutons de votre prochain projet.",
-    "primaryButton": "Démarrer un projet",
+    "title": "Un projet en tête ?",
+    "description": "Travaillons ensemble pour lui donner vie. Contactez-moi pour en discuter.",
+    "primaryButton": "Me contacter",
     "secondaryButton": "Retour à l'accueil"
   },
   "common": {
     "cta": {
       "view_full_case": "Voir l'Étude Complète"
+    },
+    "ui": {
+      "view_details": "Voir Détails",
+      "technologies": "Technologies",
+      "gallery": "Galerie",
+      "challenge": "Défi",
+      "solution": "Solution",
+      "technical_approach": "Approche Technique",
+      "impact": "Impact",
+      "results": "Résultats"
     }
   },
   "categories": {
