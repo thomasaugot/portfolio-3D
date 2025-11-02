@@ -1,7 +1,7 @@
 "use client";
 
 import { ButtonHTMLAttributes, ReactNode } from "react";
-import Link from "next/link";
+import SafeLink from "@/components/ui/SafeLink";
 import { cn } from "@/lib/utils";
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -85,9 +85,9 @@ export const Button = ({
 
   if (asLink && href) {
     return (
-      <Link href={href} className={combinedClassName}>
+      <SafeLink href={href} className={combinedClassName}>
         {content}
-      </Link>
+      </SafeLink>
     );
   }
 

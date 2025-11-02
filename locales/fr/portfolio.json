@@ -31,6 +31,15 @@
       "results": "Résultats"
     }
   },
+  "modal": {
+    "desktop_view": "Bureau",
+    "mobile_view": "Mobile",
+    "gallery": "Galerie",
+    "technologies": "Technologies",
+    "challenge": "Défi",
+    "solution": "Solution",
+    "view_live": "Voir le Projet en Direct"
+  },
   "categories": {
     "corporate_web": "Site Corporatif",
     "internal_platform": "Plateforme Interne",

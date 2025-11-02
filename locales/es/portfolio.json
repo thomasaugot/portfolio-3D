@@ -30,6 +30,15 @@
       "results": "Resultados"
     }
   },
+  "modal": {
+    "desktop_view": "Escritorio",
+    "mobile_view": "Móvil",
+    "gallery": "Galería",
+    "technologies": "Tecnologías",
+    "challenge": "Desafío",
+    "solution": "Solución",
+    "view_live": "Ver Proyecto en Vivo"
+  },
   "categories": {
     "corporate_web": "Sitio Corporativo",
     "internal_platform": "Plataforma Interna",

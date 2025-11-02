@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import SafeLink from "@/components/ui/SafeLink";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
 import { useThreeScene } from "@/hooks/useThreeScene";
 import { initCTA3DScene } from "@/utils/animations/cta-3d-scene";
@@ -102,7 +102,7 @@ export default function CTASection() {
 
         <div className="relative grid md:grid-cols-3 gap-8" style={{ transformStyle: "preserve-3d" }}>
           {ctaCards.map((card, index) => (
-            <Link
+            <SafeLink
               key={card.href}
               href={card.href}
               data-cta-card
@@ -153,7 +153,7 @@ export default function CTASection() {
                   </div>
                 </div>
               </div>
-            </Link>
+            </SafeLink>
           ))}
         </div>
       </div>

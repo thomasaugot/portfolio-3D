@@ -175,17 +175,17 @@ export async function initPortfolioScene() {
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(
-    config.isMobile ? 75 : 25,
+    config.isMobile ? 70 : 25,
     hexContainer.clientWidth / hexContainer.clientHeight,
     0.1,
     5000
   );
   camera.position.set(
-    config.isMobile ? -100 : -200,
-    config.isMobile ? 50 : 80,
-    config.isMobile ? 800 : 1000
+    config.isMobile ? -80 : -200,
+    config.isMobile ? 60 : 80,
+    config.isMobile ? 700 : 1000
   );
-  camera.lookAt(-50, 0, 0);
+  camera.lookAt(config.isMobile ? -30 : -50, 0, 0);
 
   const renderer = new THREE.WebGLRenderer({
     alpha: true,
@@ -218,8 +218,8 @@ export async function initPortfolioScene() {
   }
 
   const hexFloor = new THREE.Group();
-  const hexSize = config.isMobile ? 40 : 50;
-  const radius = config.isMobile ? 6 : 9;
+  const hexSize = config.isMobile ? 35 : 50;
+  const radius = config.isMobile ? 5 : 9;
 
   for (let q = -radius; q <= radius; q++) {
     for (let r = -radius; r <= radius; r++) {
@@ -303,7 +303,7 @@ export async function initPortfolioScene() {
     if (modelData) {
       const { wrapper, laptopGroup, iphoneGroup } = modelData;
 
-      wrapper.position.set(config.isMobile ? -50 : -120, 0, 0);
+      wrapper.position.set(config.isMobile ? -40 : -120, 0, 0);
       wrapper.visible = i === 0;
       wrapper.scale.set(0.01, 0.01, 0.01);
 
@@ -384,35 +384,41 @@ export async function initPortfolioScene() {
 
     projectModels.forEach((modelData) => {
       if (modelData.wrapper.visible && modelData.wrapper.scale.x > 0.9) {
-        modelData.wrapper.position.y = Math.sin(time * 0.6) * 10;
+        const floatIntensity = config.isMobile ? 6 : 10;
+        modelData.wrapper.position.y = Math.sin(time * 0.6) * floatIntensity;
 
         if (modelData.wrapper.children[0]) {
+          const rotationFactor = config.isMobile ? 0.8 : 1;
           modelData.wrapper.children[0].rotation.x =
-            Math.sin(time * 0.3) * 0.015;
+            Math.sin(time * 0.3) * 0.015 * rotationFactor;
           modelData.wrapper.children[0].rotation.z =
-            Math.sin(time * 0.25) * 0.012;
+            Math.sin(time * 0.25) * 0.012 * rotationFactor;
         }
 
         if (modelData.laptop && modelData.laptopOriginal) {
+          const laptopFloatIntensity = config.isMobile ? 5 : 7;
+          const rotationFactor = config.isMobile ? 0.7 : 1;
           modelData.laptop.position.y =
-            modelData.laptopOriginal.pos.y + Math.sin(time * 0.35) * 7;
+            modelData.laptopOriginal.pos.y + Math.sin(time * 0.35) * laptopFloatIntensity;
           modelData.laptop.rotation.x =
-            modelData.laptopOriginal.rot.x + Math.sin(time * 0.18) * 0.035;
+            modelData.laptopOriginal.rot.x + Math.sin(time * 0.18) * 0.035 * rotationFactor;
           modelData.laptop.rotation.y =
-            modelData.laptopOriginal.rot.y + Math.cos(time * 0.22) * 0.028;
+            modelData.laptopOriginal.rot.y + Math.cos(time * 0.22) * 0.028 * rotationFactor;
           modelData.laptop.rotation.z =
-            modelData.laptopOriginal.rot.z + Math.sin(time * 0.26) * 0.018;
+            modelData.laptopOriginal.rot.z + Math.sin(time * 0.26) * 0.018 * rotationFactor;
         }
 
         if (modelData.iphone && modelData.iphoneOriginal) {
+          const iphoneFloatIntensity = config.isMobile ? 6 : 8;
+          const rotationFactor = config.isMobile ? 0.7 : 1;
           modelData.iphone.position.y =
-            modelData.iphoneOriginal.pos.y + Math.cos(time * 0.42 + 2) * 8;
+            modelData.iphoneOriginal.pos.y + Math.cos(time * 0.42 + 2) * iphoneFloatIntensity;
           modelData.iphone.rotation.x =
-            modelData.iphoneOriginal.rot.x + Math.cos(time * 0.22) * 0.045;
+            modelData.iphoneOriginal.rot.x + Math.cos(time * 0.22) * 0.045 * rotationFactor;
           modelData.iphone.rotation.y =
-            modelData.iphoneOriginal.rot.y + Math.sin(time * 0.27) * 0.038;
+            modelData.iphoneOriginal.rot.y + Math.sin(time * 0.27) * 0.038 * rotationFactor;
           modelData.iphone.rotation.z =
-            modelData.iphoneOriginal.rot.z + Math.cos(time * 0.32) * 0.028;
+            modelData.iphoneOriginal.rot.z + Math.cos(time * 0.32) * 0.028 * rotationFactor;
         }
       }
     });

@@ -1,7 +1,7 @@
 // components/Footer/Footer.tsx
 "use client";
 
-import Link from "next/link";
+import SafeLink from "@/components/ui/SafeLink";
 import Image from "next/image";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
 import { usePathname } from "next/navigation";
@@ -103,7 +103,7 @@ export default function Footer() {
               </h4>
               <nav className="flex flex-col gap-4">
                 {navigationLinks.map((link) => (
-                  <Link
+                  <SafeLink
                     key={link.href}
                     href={link.href}
                     className={`text-lg text-text/60 hover:text-text hover:translate-x-1 transition-all duration-200 ${
@@ -111,7 +111,7 @@ export default function Footer() {
                     }`}
                   >
                     {link.label}
-                  </Link>
+                  </SafeLink>
                 ))}
               </nav>
             </div>
@@ -169,19 +169,19 @@ export default function Footer() {
             <p>© {currentYear} {t("footer.copyright")}</p>
 
             <div className="flex items-center gap-6">
-              <Link
+              <SafeLink
                 href={`/${language}/privacy`}
                 className="hover:text-primary transition-colors duration-200"
               >
                 {t("footer.legal.privacy")}
-              </Link>
+              </SafeLink>
               <span>·</span>
-              <Link
+              <SafeLink
                 href={`/${language}/terms`}
                 className="hover:text-primary transition-colors duration-200"
               >
                 {t("footer.legal.terms")}
-              </Link>
+              </SafeLink>
             </div>
           </div>
         </div>

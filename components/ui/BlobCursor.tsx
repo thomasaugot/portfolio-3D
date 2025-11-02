@@ -13,7 +13,6 @@ export default function BlobCursor() {
       style={{
         opacity: 0,
         transition: 'opacity 0.3s ease',
-        pointerEvents: 'none',
         transform: 'translate(-50%, -50%)'
       }}
     >

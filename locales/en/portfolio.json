@@ -31,6 +31,15 @@
       "results": "Results"
     }
   },
+  "modal": {
+    "desktop_view": "Desktop",
+    "mobile_view": "Mobile",
+    "gallery": "Gallery",
+    "technologies": "Technologies",
+    "challenge": "Challenge",
+    "solution": "Solution",
+    "view_live": "View Live Project"
+  },
   "categories": {
     "corporate_web": "Corporate Website",
     "internal_platform": "Internal Platform",

@@ -27,6 +27,7 @@ export function initPortfolioScroll() {
     const { hexFloor, projectModels, camera } = portfolioScene;
 
     const header = portfolioSection.querySelector("[data-projects-header]");
+    const scrollHint = portfolioSection.querySelector("[data-scroll-hint]");
     const projectCounter = portfolioSection.querySelector(
       "[data-project-counter]"
     );
@@ -57,35 +58,28 @@ export function initPortfolioScroll() {
     const totalProjects = projects.length;
     const totalSlides = totalProjects + 1;
 
+    // Create explicit snap points
+    const snapPoints: number[] = [];
+    for (let i = 0; i <= totalProjects; i++) {
+      snapPoints.push(i / totalProjects);
+    }
+
+    const isMobile = window.innerWidth < 768;
+
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: portfolioSection,
         start: "top top",
         end: "bottom bottom",
-        scrub: 1.5,
+        scrub: isMobile ? 0.5 : 0.1,
+        snap: {
+          snapTo: snapPoints,
+          duration: { min: 0.2, max: 0.6 },
+          delay: 0,
+          ease: "power1.inOut"
+        },
         pin: portfolioSection.querySelector(".sticky"),
         anticipatePin: 1,
-        snap: {
-          snapTo: (value) => {
-            const snapPoints = [];
-            for (let i = 0; i <= totalProjects; i++) {
-              snapPoints.push(i / totalProjects);
-            }
-            let closest = snapPoints[0];
-            let minDiff = Math.abs(value - closest);
-            for (let point of snapPoints) {
-              const diff = Math.abs(value - point);
-              if (diff < minDiff) {
-                minDiff = diff;
-                closest = point;
-              }
-            }
-            return closest;
-          },
-          duration: { min: 0.3, max: 0.8 },
-          delay: 0.2,
-          ease: "power1.inOut",
-        },
         onUpdate: (self) => {
           const progress = self.progress;
           const currentIndex = Math.round(progress * totalProjects);
@@ -118,6 +112,14 @@ export function initPortfolioScroll() {
       tl.to(
         header,
         { opacity: 0, y: -50, duration: 0.02, ease: "power2.in" },
+        0
+      );
+    }
+
+    if (scrollHint) {
+      tl.to(
+        scrollHint,
+        { opacity: 0, y: 20, duration: 0.02, ease: "power2.in" },
         0
       );
     }

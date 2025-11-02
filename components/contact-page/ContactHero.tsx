@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
 import { useThreeScene } from "@/hooks/useThreeScene";
-import { initContactHero3DScene } from "@/utils/animations/contact-hero-3d-scene";
+import { initContactHero3DScene } from "@/utils/animations/contact-3d-scenes";
 
 export default function ContactHero() {
   const { t } = useTranslation();

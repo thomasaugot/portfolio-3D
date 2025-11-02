@@ -8,9 +8,6 @@ export interface ProjectPreview {
 export interface ProjectDetails {
   challenge: string;
   solution: string;
-  technicalApproach: string;
-  results: string;
-  impact: string[];
 }
 
 export interface ProjectMedia {
@@ -18,6 +15,8 @@ export interface ProjectMedia {
   coverVideo?: string;
   laptopTexture: string;
   mobileTexture: string;
+  desktopSkins: string[];
+  mobileSkins: string[];
   gallery?: string[];
   videos?: string[];
   link?: string;
