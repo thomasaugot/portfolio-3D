@@ -17,9 +17,6 @@ export function Mockup({ variant, src, alt, className = "" }: MockupProps) {
               <div className="w-[8%] h-[40%] rounded-full bg-gray-800" />
             </div>
           </div>
-          <div className="absolute left-0 right-0 h-[8%] bg-[#1a1a1a]" style={{ top: "100%", borderRadius: "0 0 12px 12px", boxShadow: "0 10px 25px -5px rgba(0,0,0,0.5)" }}>
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[20%] h-[60%] rounded-md opacity-20" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)" }} />
-          </div>
         </div>
       </div>
     );
@@ -89,7 +86,7 @@ export function Mockup({ variant, src, alt, className = "" }: MockupProps) {
             <svg className="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
-            <span className="text-xs font-mono text-text/50">yourproject.com</span>
+            <span className="text-label text-text/50">yourproject.com</span>
           </div>
         </div>
         <div className="relative w-full" style={{ aspectRatio: "16/10" }}>

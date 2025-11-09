@@ -12,13 +12,19 @@ export function initPortfolioScroll() {
 
   const waitForScene = () => {
     const portfolioScene = (window as any).__portfolioScene;
-    if (!portfolioScene) {
+    if (!portfolioScene || !portfolioScene.isReady) {
+      console.log("⏳ Waiting for portfolio scene to be ready...");
       requestAnimationFrame(waitForScene);
       return;
     }
 
+    console.log("✅ Portfolio scene ready, initializing scroll animations...");
+
     const portfolioSection = document.querySelector("[data-portfolio-section]");
-    if (!portfolioSection) return;
+    if (!portfolioSection) {
+      console.error("❌ Portfolio section not found");
+      return;
+    }
 
     const projects = getAllProjects();
     const projectPanels = portfolioSection.querySelectorAll(
@@ -71,12 +77,30 @@ export function initPortfolioScroll() {
         trigger: portfolioSection,
         start: "top top",
         end: "bottom bottom",
-        scrub: isMobile ? 0.5 : 0.1,
+        scrub: isMobile ? 0.8 : 0.3,
         snap: {
-          snapTo: snapPoints,
-          duration: { min: 0.2, max: 0.6 },
-          delay: 0,
-          ease: "power1.inOut"
+          snapTo: (progress) => {
+            const index = progress * totalProjects;
+
+            // Special handling for hero (first slide at index 0)
+            if (index < 0.5) {
+              // If in first half of hero section, snap to start
+              return 0;
+            }
+
+            const rounded = Math.round(index);
+            const fraction = Math.abs(index - rounded);
+
+            // Only snap if we're reasonably close to a snap point (within 40%)
+            if (fraction < 0.4) {
+              return rounded / totalProjects;
+            }
+            // Otherwise stay where we are
+            return progress;
+          },
+          duration: 0.5,
+          delay: 0.3,
+          ease: "power2.inOut"
         },
         pin: portfolioSection.querySelector(".sticky"),
         anticipatePin: 1,

@@ -97,12 +97,12 @@ export default function Menu() {
                     >
                       <div className="flex items-baseline gap-6">
                         <div className="flex-1">
-                          <div className="text-4xl md:text-6xl lg:text-7xl font-bold mb-2 transition-all duration-300 group-hover:translate-x-2">
+                          <div className="title-section mb-2 transition-all duration-300 group-hover:translate-x-2">
                             <span className="gradient-primary bg-clip-text text-transparent">
                               {t(item.labelKey)}
                             </span>
                           </div>
-                          <p className="text-text-muted text-xs md:text-sm opacity-60 group-hover:opacity-100 transition-opacity duration-300">
+                          <p className="text-body opacity-60 group-hover:opacity-100 transition-opacity duration-300">
                             {t(item.descriptionKey)}
                           </p>
                         </div>
@@ -115,9 +115,9 @@ export default function Menu() {
 
             <div
               data-animate="menu-item"
-              className="opacity-0 absolute bottom-16 left-8 md:left-16 lg:left-24 flex items-center gap-4 text-text-muted text-xs font-mono"
+              className="opacity-0 absolute bottom-16 left-8 md:left-16 lg:left-24 flex items-center gap-4"
             >
-              <p className="flex items-center gap-2">
+              <p className="text-label flex items-center gap-2">
                 {t("footer.credits").replace(" 🌍 ", " ")}
                 <FaHeart className="w-4 h-4 text-red-500 animate-pulse" />
                 <span className="gradient-primary bg-clip-text text-transparent font-bold">

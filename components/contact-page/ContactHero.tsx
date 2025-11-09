@@ -78,22 +78,22 @@ export default function ContactHero() {
                     style={{ willChange: "opacity, transform" }}
                   >
                     <div className="w-3 h-3 rounded-full bg-primary animate-pulse" />
-                    <span className="text-sm font-mono uppercase tracking-wider font-medium text-muted">
+                    <span className="text-label">
                       {t("contact.hero.badge")}
                     </span>
                   </div>
 
-                  <h1 className="font-normal leading-[1.05] space-y-0 md:-space-y-2 lg:-space-y-4 relative pb-2 mt-8">
+                  <h1 className="title-hero space-y-0 md:-space-y-2 lg:-space-y-4 relative pb-2 mt-8">
                     <span
                       data-hero-line
-                      className="block text-text pb-1 drop-shadow-[0_2px_8px_rgba(0,0,0,0.3)] text-4xl sm:text-5xl md:text-6xl lg:text-7xl"
+                      className="block pb-1 text-shadow-soft"
                       style={{ willChange: "opacity, transform" }}
                     >
                       {t("contact.hero.title_1")}
                     </span>
                     <span
                       data-hero-line
-                      className="block gradient-primary bg-clip-text text-transparent font-fun text-5xl md:text-7xl lg:text-8xl pb-1 relative z-10 font-light tracking-tighter drop-shadow-[0_4px_12px_rgba(0,0,0,0.4)]"
+                      className="block title-hero"
                       style={{
                         transform: "translateX(0)",
                         width: "max-content",
@@ -107,7 +107,7 @@ export default function ContactHero() {
 
                   <p
                     data-hero-subtitle
-                    className="text-lg leading-relaxed text-text-muted max-w-md mt-8"
+                    className="subtitle max-w-md mt-8"
                     style={{ willChange: "opacity, transform" }}
                   >
                     {t("contact.hero.subtitle")}
@@ -117,18 +117,15 @@ export default function ContactHero() {
                 {/* Thank you message - TETRIS ANIMATED after scroll */}
                 <div
                   data-thank-you-message
-                  className="absolute top-0 left-0 w-full z-20"
+                  className="absolute top-0 left-0 w-full max-w-md z-20"
                 >
                   <h2
                     data-thank-you-title
-                    className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold mb-4 leading-tight"
+                    className="title-hero mb-4 leading-tight"
                   >
                     {t("contact.thank_you.title")}
                   </h2>
-                  <p
-                    data-thank-you-subtitle
-                    className="text-xl md:text-2xl text-text-muted max-w-xl leading-relaxed"
-                  >
+                  <p data-thank-you-subtitle className="subtitle max-w-xl">
                     {t("contact.thank_you.subtitle")}
                   </p>
                 </div>
@@ -138,7 +135,7 @@ export default function ContactHero() {
                   className="space-y-4 pt-4"
                   style={{ willChange: "opacity, transform" }}
                 >
-                  <div className="flex items-center gap-3 text-sm">
+                  <div className="flex items-center gap-3 text-body">
                     <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
                       <svg
                         className="w-4 h-4 text-primary"
@@ -162,7 +159,7 @@ export default function ContactHero() {
                     </a>
                   </div>
 
-                  <div className="flex items-center gap-3 text-sm">
+                  <div className="flex items-center gap-3 text-body">
                     <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
                       <svg
                         className="w-4 h-4 text-primary"
@@ -189,7 +186,7 @@ export default function ContactHero() {
                     </span>
                   </div>
 
-                  <div className="flex items-center gap-3 text-sm">
+                  <div className="flex items-center gap-3 text-body">
                     <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
                       <svg
                         className="w-4 h-4 text-primary"
@@ -236,7 +233,7 @@ export default function ContactHero() {
                         <div data-form-field>
                           <label
                             htmlFor="name"
-                            className="block text-xs font-mono text-text-muted mb-2 uppercase tracking-wider"
+                            className="block text-label mb-2"
                           >
                             {t("contact.form.name_label")}
                           </label>
@@ -261,7 +258,7 @@ export default function ContactHero() {
                         <div data-form-field>
                           <label
                             htmlFor="email"
-                            className="block text-xs font-mono text-text-muted mb-2 uppercase tracking-wider"
+                            className="block text-label mb-2"
                           >
                             {t("contact.form.email_label")}
                           </label>
@@ -287,7 +284,7 @@ export default function ContactHero() {
                       <div data-form-field>
                         <label
                           htmlFor="subject"
-                          className="block text-xs font-mono text-text-muted mb-2 uppercase tracking-wider"
+                          className="block text-label mb-2"
                         >
                           {t("contact.form.subject_label")}
                         </label>
@@ -312,7 +309,7 @@ export default function ContactHero() {
                       <div data-form-field>
                         <label
                           htmlFor="message"
-                          className="block text-xs font-mono text-text-muted mb-2 uppercase tracking-wider"
+                          className="block text-label mb-2"
                         >
                           {t("contact.form.message_label")}
                         </label>

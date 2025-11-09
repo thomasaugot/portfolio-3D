@@ -50,12 +50,12 @@ export default function ContactForm() {
           <div data-contact-header className="space-y-8">
             <div className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl border border-border bg-bg/80 backdrop-blur-md">
               <div className="w-3 h-3 rounded-full bg-primary animate-pulse" />
-              <span className="text-sm font-mono uppercase tracking-wider font-medium text-muted">
+              <span className="text-label">
                 {t("contact.badge")}
               </span>
             </div>
 
-            <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold text-text leading-[0.95]">
+            <h1 className="title-hero leading-[0.95]">
               {t("contact.title_1")}
               <br />
               <span className="gradient-primary bg-clip-text text-transparent font-fun">
@@ -63,7 +63,7 @@ export default function ContactForm() {
               </span>
             </h1>
 
-            <p className="text-xl text-text-muted leading-relaxed max-w-xl">
+            <p className="subtitle max-w-xl">
               {t("contact.subtitle")}
             </p>
 
@@ -101,7 +101,7 @@ export default function ContactForm() {
               <form onSubmit={handleSubmit} className="space-y-6">
                 
                 <div data-form-field>
-                  <label htmlFor="name" className="block text-sm font-mono text-text-muted mb-2">
+                  <label htmlFor="name" className="block text-label mb-2">
                     {t("contact.form.name")}
                   </label>
                   <input
@@ -123,7 +123,7 @@ export default function ContactForm() {
                 </div>
 
                 <div data-form-field>
-                  <label htmlFor="email" className="block text-sm font-mono text-text-muted mb-2">
+                  <label htmlFor="email" className="block text-label mb-2">
                     {t("contact.form.email")}
                   </label>
                   <input

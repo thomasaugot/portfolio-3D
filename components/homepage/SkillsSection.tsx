@@ -48,11 +48,11 @@ export default function SkillsSection() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-8 w-full">
         <div className="text-center mb-24" data-header>
-          <h2 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-text leading-[0.95] mb-6">
+          <h2 className="title-section mb-6">
             {t("homepage.services.section_title_1")}
           </h2>
 
-          <h3 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl gradient-primary bg-clip-text text-transparent font-light leading-tight">
+          <h3 className="subtitle gradient-primary bg-clip-text text-transparent">
             {t("homepage.services.section_title_2")}
           </h3>
         </div>
@@ -77,16 +77,16 @@ export default function SkillsSection() {
                 <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-primary/5 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
                 <div className="relative z-10">
-                  <h4 className="font-bold mb-4 group-hover:text-primary transition-colors duration-300">
+                  <h4 className="title-item mb-4 group-hover:text-primary transition-colors duration-300">
                     {service.title}
                   </h4>
 
-                  <p className="text-lg text-text-muted mb-8 leading-relaxed">
+                  <p className="text-body mb-8">
                     {service.description}
                   </p>
 
                   <div className="relative pt-6 border-t border-border/50">
-                    <div className="text-sm font-mono text-primary/70">
+                    <div className="text-label text-primary/70">
                       {service.skills}
                     </div>
                   </div>

@@ -16,15 +16,11 @@ export function initTetrisTextAnimation() {
 
   if (!title) return;
 
-  if (subtitle) {
-    subtitle.className = "!text-2xl text-text/60 font-light mb-2";
-  }
-
   gsap.set(subtitle, { opacity: 0 });
 
   const titleText = title.textContent?.trim() || "";
   const words = titleText.split(" ");
-  
+
   title.innerHTML = "";
 
   words.forEach((word) => {

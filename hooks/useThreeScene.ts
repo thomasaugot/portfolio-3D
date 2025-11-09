@@ -18,28 +18,40 @@ let registrationCounter = 0;
 
 async function processQueue() {
   if (isProcessing || loadQueue.length === 0) return;
-  
+
   isProcessing = true;
-  
+
   loadQueue.sort((a, b) => a.registrationOrder - b.registrationOrder);
-  
+
   const item = loadQueue.shift();
   if (!item) {
     isProcessing = false;
     return;
   }
-  
+
   console.log(`🎬 Loading ${item.sceneId} (order ${item.registrationOrder})`);
-  
+
   try {
     const result = await item.initFunction();
+
+    // Add a small delay after scene initialization to ensure everything is ready
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    sceneStates.set(item.sceneId, true);
+    console.log(`✅ ${item.sceneId} scene marked as ready`);
+    readyCallbacks.forEach(callback => callback());
+
+    return result;
+  } catch (error) {
+    console.error(`❌ Failed to load ${item.sceneId}:`, error);
+    // Still mark as complete to avoid blocking other scenes
     sceneStates.set(item.sceneId, true);
     readyCallbacks.forEach(callback => callback());
-    
-    return result;
   } finally {
-    const delay = item.registrationOrder === 0 ? 0 : 300;
-    await new Promise(resolve => setTimeout(resolve, delay));
+    const delay = item.registrationOrder === 0 ? 0 : 200;
+    if (delay > 0) {
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
     isProcessing = false;
     processQueue();
   }

@@ -32,6 +32,8 @@ const loadTexture = async (
       textureLoader.load(
         texturePath,
         (texture) => {
+          const config = getViewportConfig();
+
           texture.flipY = true;
           texture.wrapS = THREE.ClampToEdgeWrapping;
           texture.wrapT = THREE.ClampToEdgeWrapping;
@@ -39,10 +41,16 @@ const loadTexture = async (
           texture.magFilter = THREE.LinearFilter;
           texture.generateMipmaps = false;
           texture.colorSpace = THREE.SRGBColorSpace;
-          const config = getViewportConfig();
           texture.anisotropy = config.isDesktop
-            ? renderer.capabilities.getMaxAnisotropy()
+            ? Math.min(renderer.capabilities.getMaxAnisotropy(), 4)
             : 1;
+
+          // Compress texture on mobile for better performance
+          if (config.isMobile) {
+            texture.minFilter = THREE.LinearFilter;
+            texture.magFilter = THREE.LinearFilter;
+          }
+
           resolve(texture);
         },
         undefined,
@@ -164,14 +172,21 @@ const loadModel = async (
 };
 
 export async function initPortfolioScene() {
+  console.log("🎬 initPortfolioScene: Starting...");
+
   const hexContainer = document.querySelector(
     '[data-3d-container="portfolio-hex"]'
   ) as HTMLElement;
-  
-  if (!hexContainer) return;
+
+  if (!hexContainer) {
+    console.error("❌ Portfolio hex container not found");
+    return;
+  }
 
   const config = getViewportConfig();
   const projects = getAllProjects();
+
+  console.log(`📦 Loading ${projects.length} project models...`);
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(
@@ -191,11 +206,18 @@ export async function initPortfolioScene() {
     alpha: true,
     antialias: !config.isMobile,
     powerPreference: "high-performance",
+    stencil: false, // Disable stencil buffer if not needed
+    depth: true,
   });
   renderer.setSize(hexContainer.clientWidth, hexContainer.clientHeight);
   const maxPixelRatio = config.isMobile ? 1.5 : 2;
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, maxPixelRatio));
   renderer.setClearColor(0x000000, 0);
+
+  // Performance optimizations
+  if (config.isMobile) {
+    renderer.shadowMap.enabled = false; // Disable shadows on mobile
+  }
   hexContainer.appendChild(renderer.domElement);
 
   const ambientLight = new THREE.AmbientLight(
@@ -280,14 +302,19 @@ export async function initPortfolioScene() {
     iphoneOriginal: any;
   }> = [];
 
+  // Load all models with progress tracking
+  const loadStartTime = performance.now();
+
   for (let i = 0; i < projects.length; i++) {
     const project = projects[i];
     const modelPath = MODEL_PATHS[i % MODEL_PATHS.length];
 
-    const laptopTexture = project.media.laptopTexture 
+    console.log(`📥 Loading project ${i + 1}/${projects.length}: ${project.client}`);
+
+    const laptopTexture = project.media.laptopTexture
       ? await loadTexture(renderer, project.media.laptopTexture)
       : null;
-    
+
     const iphoneTexture = project.media.mobileTexture
       ? await loadTexture(renderer, project.media.mobileTexture)
       : null;
@@ -347,6 +374,9 @@ export async function initPortfolioScene() {
     }
   }
 
+  const loadDuration = performance.now() - loadStartTime;
+  console.log(`✅ All models loaded in ${Math.round(loadDuration)}ms`);
+
   const handleResize = () => {
     camera.aspect = hexContainer.clientWidth / hexContainer.clientHeight;
     camera.updateProjectionMatrix();
@@ -359,13 +389,28 @@ export async function initPortfolioScene() {
 
   let animationId: number;
   let time = 0;
+  let lastFrameTime = performance.now();
+  const targetFPS = config.isMobile ? 30 : 60;
+  const frameInterval = 1000 / targetFPS;
 
   const hexColor1 = new THREE.Color(0x02bccc);
   const hexColor2 = new THREE.Color(0xccff02);
 
   const animate = () => {
+    animationId = requestAnimationFrame(animate);
+
+    // Throttle frame rate for better performance
+    const now = performance.now();
+    const elapsed = now - lastFrameTime;
+
+    if (elapsed < frameInterval) {
+      return;
+    }
+
+    lastFrameTime = now - (elapsed % frameInterval);
+
+    // Skip rendering if page is hidden
     if (document.hidden) {
-      animationId = requestAnimationFrame(animate);
       return;
     }
 
@@ -424,7 +469,6 @@ export async function initPortfolioScene() {
     });
 
     renderer.render(scene, camera);
-    animationId = requestAnimationFrame(animate);
   };
 
   animate();
@@ -436,7 +480,10 @@ export async function initPortfolioScene() {
     hexFloor,
     projectModels,
     currentProject: 0,
+    isReady: true,
   };
+
+  console.log("🎉 Portfolio scene fully initialized and ready!");
 
   return () => {
     window.removeEventListener("resize", handleResize);

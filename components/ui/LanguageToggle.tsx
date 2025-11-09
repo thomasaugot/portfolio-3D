@@ -39,12 +39,12 @@ export default function LanguageToggle() {
         type="button"
         disabled
       >
-        <div className="text-xl font-bold transition-colors duration-300 pointer-events-none text-[var(--color-text)]">
+        <div className="subtitle font-bold transition-colors duration-300 pointer-events-none text-[var(--color-text)]">
           --
         </div>
         <div className="w-6 h-0.5 bg-[var(--color-border)] group-hover:rotate-90 transition-all duration-500 origin-center pointer-events-none" />
         <div className="flex items-center gap-2 pointer-events-none">
-          <span className="text-sm font-mono transition-all duration-300 pointer-events-none text-[var(--color-text-muted)]">
+          <span className="text-label transition-all duration-300 pointer-events-none text-[var(--color-text-muted)]">
             --
           </span>
         </div>
@@ -70,7 +70,7 @@ export default function LanguageToggle() {
       }}
       type="button"
     >
-      <div className="text-xl font-bold transition-colors duration-300 pointer-events-none text-[var(--color-text)]">
+      <div className="subtitle font-bold transition-colors duration-300 pointer-events-none text-[var(--color-text)]">
         {languageLabels[currentLanguage]}
       </div>
 
@@ -82,7 +82,7 @@ export default function LanguageToggle() {
           .map(([code, label]) => (
             <span
               key={code}
-              className={`text-sm font-mono transition-all duration-300 pointer-events-none text-[var(--color-text-muted)]
+              className={`text-label transition-all duration-300 pointer-events-none text-[var(--color-text-muted)]
                 ${code === nextLanguage ? "group-hover:scale-110" : ""}
               `}
             >

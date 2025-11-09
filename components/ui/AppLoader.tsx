@@ -28,7 +28,7 @@ export default function AppLoader({ progress }: AppLoaderProps) {
     >
       <div
         data-animate="loading-text"
-        className="text-4xl md:text-5xl font-bold mb-8 text-text h-12"
+        className="title-section mb-8 text-text h-12"
         style={{ fontFamily: "var(--font-display)" }}
       >
         {translationsReady && <span>{t("common.status.loading")}</span>}
@@ -41,7 +41,7 @@ export default function AppLoader({ progress }: AppLoaderProps) {
         />
       </div>
 
-      <div className="mt-6 text-lg text-text" data-animate="percentage">
+      <div className="mt-6 subtitle text-text" data-animate="percentage">
         0%
       </div>
     </div>

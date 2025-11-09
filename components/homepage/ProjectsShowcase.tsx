@@ -32,17 +32,16 @@ export default function ProjectsShowcase() {
             >
               <h2
                 data-projects-subtitle
-                className="text-text/60 font-light mb-2"
+                className="subtitle mb-2"
               >
                 {t("homepage.projects_section.subtitle")}
               </h2>
               <h3
                 data-projects-title
-                className="flex flex-wrap gradient-primary bg-clip-text text-transparent font-fun text-3xl md:text-5xl lg:text-6xl xl:text-7xl pb-1 pr-2 relative z-10 font-light tracking-tighter drop-shadow-[0_4px_12px_rgba(0,0,0,0.4)]"
+                className="flex flex-wrap title-section pb-1 pr-2 relative z-10 max-w-full md:max-w-[40vw]"
                 style={{
                   transform: "translateX(0)",
                   width: "max-content",
-                  maxWidth: "none",
                   willChange: "opacity, transform",
                 }}
               >
@@ -90,24 +89,24 @@ export default function ProjectsShowcase() {
                   >
                     <div className="inline-flex items-center gap-2 px-4 py-2 bg-surface/50 backdrop-blur-sm rounded-full border border-border/50">
                       <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                      <span className="text-xs font-mono text-text/70 tracking-wide uppercase">
+                      <span className="text-label">
                         {project.year} • {project.client}
                       </span>
                     </div>
 
-                    <h3 className="text-6xl font-bold gradient-primary bg-clip-text text-transparent leading-tight">
+                    <h3 className="title-item">
                       {t(project.title)}
                     </h3>
 
                     <div className="space-y-4">
                       <div className="bg-surface/30 backdrop-blur-sm p-6 rounded-xl border border-border/30">
-                        <p className="text-lg text-text/90 leading-relaxed">
+                        <p className="text-body">
                           {t(project.preview.tagline)}
                         </p>
                       </div>
 
                       <div className="bg-surface/20 backdrop-blur-sm p-5 rounded-xl border border-border/20">
-                        <p className="text-base text-text/70 leading-relaxed">
+                        <p className="text-body">
                           {t(project.preview.description)}
                         </p>
                       </div>
@@ -122,7 +121,7 @@ export default function ProjectsShowcase() {
                             >
                               <div className="flex items-start gap-2">
                                 <div className="w-1 h-1 rounded-full bg-primary mt-2 flex-shrink-0" />
-                                <p className="text-sm text-text/80 leading-relaxed">
+                                <p className="text-body">
                                   {t(keyPoint)}
                                 </p>
                               </div>
@@ -166,10 +165,10 @@ export default function ProjectsShowcase() {
         </div>
 
         <div className="relative z-10 mb-12">
-          <h2 className="text-5xl font-bold gradient-primary bg-clip-text text-transparent mb-4">
+          <h2 className="title-hero mb-4">
             {t("homepage.projects_section.title")}
           </h2>
-          <p className="text-lg text-text/60 font-mono">
+          <p className="subtitle">
             {t("homepage.projects_section.subtitle")}
           </p>
         </div>
@@ -196,20 +195,20 @@ export default function ProjectsShowcase() {
             >
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-surface/50 backdrop-blur-sm rounded-full border border-border/50">
                 <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                <span className="text-xs font-mono text-text/70 tracking-wide uppercase">
+                <span className="text-label">
                   {project.year} • {project.client}
                 </span>
               </div>
 
-              <h3 className="text-4xl font-bold gradient-primary bg-clip-text text-transparent leading-tight">
+              <h3 className="title-project">
                 {t(project.title)}
               </h3>
 
               <div className="bg-surface/30 backdrop-blur-sm p-5 rounded-xl border border-border/30 space-y-3">
-                <p className="text-base text-text/90 leading-relaxed">
+                <p className="text-body">
                   {t(project.preview.tagline)}
                 </p>
-                <p className="text-sm text-text/70 leading-relaxed">
+                <p className="text-body">
                   {t(project.preview.description)}
                 </p>
               </div>
@@ -218,7 +217,7 @@ export default function ProjectsShowcase() {
                 {project.technologies.slice(0, 5).map((tech) => (
                   <span
                     key={tech}
-                    className="px-3 py-1.5 text-xs font-mono bg-surface/50 backdrop-blur-sm rounded-lg border border-border/30 text-text/80"
+                    className="tag"
                   >
                     {tech}
                   </span>

@@ -26,10 +26,10 @@ export default function Stats({ stats }: StatsProps) {
             className="text-center relative"
             data-index={index}
           >
-            <div className={`font-bold gradient-primary bg-clip-text text-transparent mb-3 ${stat.isSmall ? 'text-3xl' : 'text-6xl'}`}>
+            <div className={`font-bold gradient-primary bg-clip-text text-transparent mb-3 ${stat.isSmall ? 'text-3xl md:text-4xl' : 'title-section'}`}>
               {stat.value}
             </div>
-            <div className="text-sm text-text-muted uppercase tracking-wider font-mono">
+            <div className="text-label">
               {stat.label}
             </div>
           </div>

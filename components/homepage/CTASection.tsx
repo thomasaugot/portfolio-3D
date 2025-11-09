@@ -91,11 +91,11 @@ export default function CTASection() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-8 w-full">
         <div className="text-center mb-20" data-cta-header>
-          <h2 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-text leading-[0.95] mb-6">
+          <h2 className="title-section mb-6">
             {t("homepage.cta_section.title")}
           </h2>
 
-          <p className="text-xl md:text-2xl text-text/70 max-w-3xl mx-auto leading-relaxed">
+          <p className="subtitle max-w-3xl mx-auto">
             {t("homepage.cta_section.subtitle")}
           </p>
         </div>
@@ -125,16 +125,16 @@ export default function CTASection() {
                     {card.icon}
                   </div>
 
-                  <h3 className="text-2xl font-bold mb-4 transition-colors duration-300 text-nowrap">
+                  <h3 className="title-item mb-4 transition-colors duration-300 text-nowrap">
                     {card.title}
                   </h3>
 
-                  <p className="text-base text-text-muted mb-8 leading-relaxed flex-grow">
+                  <p className="text-body mb-8 flex-grow">
                     {card.description}
                   </p>
 
                   <div className="relative pt-6 border-t border-border/50">
-                    <div className="flex items-center gap-2 text-sm font-mono text-primary/70 group-hover:gap-3 transition-all duration-300">
+                    <div className="flex items-center gap-2 text-label text-primary/70 group-hover:gap-3 transition-all duration-300">
                       {card.label}
                       <svg
                         className="w-4 h-4"

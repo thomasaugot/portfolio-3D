@@ -102,10 +102,10 @@ export function LanguageDiscovery() {
                         : "bg-surface border border-border shadow-md scale-90 opacity-50"
                     }`}
                   >
-                    <div className={`text-4xl font-bold mb-2 ${isSelected ? "text-black" : "text-primary"}`}>
+                    <div className={`title-project font-bold mb-2 ${isSelected ? "text-black" : "text-primary"}`}>
                       {lang.toUpperCase()}
                     </div>
-                    <div className={`text-base font-medium ${isSelected ? "text-black" : "text-text-muted"}`}>
+                    <div className={`text-body font-medium ${isSelected ? "text-black" : "text-text-muted"}`}>
                       {languageNames[lang]}
                     </div>
                   </div>

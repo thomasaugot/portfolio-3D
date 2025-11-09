@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
 import type { Project } from "@/types/project";
 
@@ -23,18 +24,19 @@ export default function PortfolioProjectSlide({
       className="absolute w-full h-full pointer-events-auto"
       style={{ opacity: 0 }}
     >
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center max-w-7xl mx-auto h-full px-4 sm:px-6 lg:px-12 justify-items-center">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center max-w-7xl mx-auto h-full px-6 lg:px-12 justify-items-center">
         <div className="hidden lg:block" />
 
-        <div className="space-y-2 sm:space-y-3 lg:space-y-8 relative z-10 bg-bg/98 lg:bg-transparent p-5 sm:p-6 lg:p-0 rounded-2xl lg:rounded-none backdrop-blur-xl lg:backdrop-blur-none border border-border/50 lg:border-0 w-full max-w-sm sm:max-w-md lg:max-w-none shadow-2xl lg:shadow-none">
+        <div className="space-y-6 lg:space-y-8 relative z-10 bg-bg/98 lg:bg-transparent p-6 lg:p-0 rounded-2xl lg:rounded-none backdrop-blur-xl lg:backdrop-blur-none border border-border/50 lg:border-0 w-full max-w-md lg:max-w-none shadow-2xl lg:shadow-none">
+          
           {/* Badge */}
           <div
             data-project-badge
-            className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-surface/50 backdrop-blur-sm rounded-full border border-border/50"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-surface/50 backdrop-blur-sm rounded-full border border-border/50"
             style={{ opacity: 0 }}
           >
-            <div className="w-1 sm:w-1.5 h-1 sm:h-1.5 rounded-full bg-primary animate-pulse" />
-            <span className="text-[10px] sm:text-xs font-mono text-text/70 tracking-wide uppercase">
+            <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+            <span className="text-label">
               {project.year} • {project.client}
             </span>
           </div>
@@ -42,7 +44,7 @@ export default function PortfolioProjectSlide({
           {/* Title */}
           <h2
             data-project-title
-            className="text-2xl sm:text-3xl md:text-4xl lg:text-7xl xl:text-8xl font-black gradient-primary bg-clip-text text-transparent leading-tight"
+            className="title-section gradient-text"
             style={{ opacity: 0 }}
           >
             {t(project.title)}
@@ -51,40 +53,36 @@ export default function PortfolioProjectSlide({
           {/* Description */}
           <div
             data-project-description
-            className="lg:bg-surface/30 lg:backdrop-blur-sm lg:p-4 sm:lg:p-5 lg:p-6 lg:rounded-lg sm:lg:rounded-xl lg:border lg:border-border/30"
+            className="lg:bg-surface/30 lg:backdrop-blur-sm lg:p-6 lg:rounded-xl lg:border lg:border-border/30"
             style={{ opacity: 0 }}
           >
-            <p className="text-xs sm:text-sm lg:text-lg xl:text-xl text-text/90 leading-relaxed">
+            <p className="text-body">
               {t(project.preview.tagline)}
             </p>
           </div>
 
           {/* Technologies */}
           {project.technologies && (
-            <div data-project-techs className="flex flex-wrap gap-1 sm:gap-2" style={{ opacity: 0 }}>
-              {project.technologies
-                .slice(0, window.innerWidth < 768 ? 4 : 6)
-                .map((tech: string, techIndex: number) => (
-                  <span
-                    key={techIndex}
-                    className="px-2 sm:px-3 py-0.5 sm:py-1.5 text-[9px] sm:text-xs font-mono bg-primary/10 text-primary rounded-md sm:rounded-lg border border-primary/20"
-                  >
-                    {tech}
-                  </span>
-                ))}
+            <div data-project-techs className="flex flex-wrap gap-2" style={{ opacity: 0 }}>
+              {project.technologies.map((tech: string, techIndex: number) => (
+                <span key={techIndex} className="tag">
+                  {tech}
+                </span>
+              ))}
             </div>
           )}
 
           {/* CTA Button */}
           <div data-project-button className="relative" style={{ opacity: 0 }}>
+            {/* Desktop CTA - Text link style */}
             <div className="hidden lg:block relative">
               <button
                 onClick={() => onViewDetails(project)}
-                className="relative text-lg font-mono text-text/70 hover:text-text transition-colors z-10"
+                className="group relative text-body font-mono text-text/70 hover:text-primary transition-colors duration-300 z-10"
               >
                 {t(project.preview.cta)}
                 <svg
-                  className="inline-block w-5 h-5 ml-2"
+                  className="inline-block w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -99,13 +97,14 @@ export default function PortfolioProjectSlide({
               </button>
             </div>
 
+            {/* Mobile CTA - Button style */}
             <button
               onClick={() => onViewDetails(project)}
-              className="lg:hidden w-full px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-primary to-secondary text-bg text-xs sm:text-base font-mono rounded-lg sm:rounded-xl hover:shadow-lg hover:scale-105 active:scale-95 transition-all duration-300 flex items-center justify-center gap-2"
+              className="lg:hidden w-full px-6 py-4 gradient-primary text-bg font-mono text-sm rounded-xl hover:shadow-xl hover:shadow-primary/20 hover:scale-105 active:scale-95 transition-all duration-300 flex items-center justify-center gap-2 uppercase tracking-wider"
             >
               {t(project.preview.cta)}
               <svg
-                className="w-3 h-3 sm:w-5 sm:h-5"
+                className="w-5 h-5"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
