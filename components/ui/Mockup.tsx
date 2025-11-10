@@ -25,9 +25,9 @@ export function Mockup({ variant, src, alt, className = "" }: MockupProps) {
   if (variant === "mobile") {
     return (
       <div className={`relative w-full ${className}`} style={{ aspectRatio: "9/19.5" }}>
-        <div className="absolute inset-0 rounded-[2.5rem] bg-[#1a1a1a]" style={{ padding: "2.5%", boxShadow: "0 20px 40px -10px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.1)" }}>
-          <div className="absolute inset-0 rounded-[2.5rem] opacity-20 blur-2xl" style={{ background: "radial-gradient(circle, rgba(204,255,2,0.4), transparent 70%)" }} />
-          <div className="relative w-full h-full rounded-[2rem] overflow-hidden bg-black">
+        <div className="absolute inset-0 rounded-[1.25rem] sm:rounded-[1.75rem] md:rounded-[2.5rem] bg-[#1a1a1a]" style={{ padding: "2.5%", boxShadow: "0 20px 40px -10px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.1)" }}>
+          <div className="absolute inset-0 rounded-[1.25rem] sm:rounded-[1.75rem] md:rounded-[2.5rem] opacity-20 blur-2xl" style={{ background: "radial-gradient(circle, rgba(204,255,2,0.4), transparent 70%)" }} />
+          <div className="relative w-full h-full rounded-[1rem] sm:rounded-[1.5rem] md:rounded-[2rem] overflow-hidden bg-black">
             <Image src={src} alt={alt} fill className="object-contain" sizes="400px" />
             <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.08), transparent 60%)" }} />
           </div>

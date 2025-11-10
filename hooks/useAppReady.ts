@@ -17,18 +17,18 @@ export function useAppReady(options: UseAppReadyOptions = {}) {
 
     async function init() {
       try {
-        console.log("🚀 useAppReady: Starting init");
+        // console.log("🚀 useAppReady: Starting init");
         setProgress(20);
 
         // Wait for fonts to be loaded
-        console.log("⏳ Waiting for fonts...");
+        // console.log("⏳ Waiting for fonts...");
         await document.fonts.ready;
         if (!mounted) return;
-        console.log("✅ Fonts ready");
+        // console.log("✅ Fonts ready");
         setProgress(40);
 
         // Wait for all stylesheets to be loaded
-        console.log("⏳ Waiting for stylesheets...");
+        // console.log("⏳ Waiting for stylesheets...");
         const styleSheets = Array.from(document.styleSheets);
         await Promise.all(
           styleSheets.map(async (sheet) => {
@@ -51,28 +51,28 @@ export function useAppReady(options: UseAppReadyOptions = {}) {
           })
         );
         if (!mounted) return;
-        console.log("✅ Stylesheets ready");
+        // console.log("✅ Stylesheets ready");
         setProgress(50);
 
         if (criticalScenes.length > 0) {
-          console.log(`⏳ Waiting for scenes: ${criticalScenes.join(", ")}`);
+          // console.log(`⏳ Waiting for scenes: ${criticalScenes.join(", ")}`);
           await waitForScenes(criticalScenes);
           if (!mounted) return;
-          console.log("✅ All critical scenes loaded");
+          // console.log("✅ All critical scenes loaded");
         }
 
         setProgress(90);
 
         // Add a delay to ensure all resources (fonts, scenes, etc.) are fully settled
-        console.log("⏳ Final stabilization delay (500ms)...");
+        // console.log("⏳ Final stabilization delay (500ms)...");
         await new Promise((resolve) => setTimeout(resolve, 500));
         if (!mounted) return;
 
         setProgress(100);
-        console.log("⏳ Setting isReady in 300ms...");
+        // console.log("⏳ Setting isReady in 300ms...");
         setTimeout(() => {
           if (mounted) {
-            console.log("✅ APP IS READY!");
+            // console.log("✅ APP IS READY!");
             setIsReady(true);
           }
         }, 300);
@@ -85,7 +85,7 @@ export function useAppReady(options: UseAppReadyOptions = {}) {
     init();
 
     return () => {
-      console.log("🧹 useAppReady cleanup");
+      // console.log("🧹 useAppReady cleanup");
       mounted = false;
     };
   }, [criticalScenes]);

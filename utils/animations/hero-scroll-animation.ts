@@ -79,7 +79,6 @@ export function initHeroScrollAnimation() {
           filter: "blur(3px)",
           duration: 0.45, 
           ease: "power2.out",
-          force3D: true,
         },
         0
       );
@@ -94,7 +93,6 @@ export function initHeroScrollAnimation() {
           scale: 0.85,
           duration: 0.2, 
           ease: "power1.in",
-          force3D: true,
         },
         0
       );
@@ -113,7 +111,6 @@ export function initHeroScrollAnimation() {
         y: startY + 60, 
         duration: 0.5, 
         ease: "sine.inOut",
-        force3D: true,
         onUpdate: function() {
           camera.lookAt(0, 0, 0);
         }
@@ -129,7 +126,6 @@ export function initHeroScrollAnimation() {
         y: startY + 180, 
         duration: 0.7, 
         ease: "sine.inOut",
-        force3D: true,
         onUpdate: function() {
           camera.lookAt(0, 0, 0);
         }
@@ -145,7 +141,6 @@ export function initHeroScrollAnimation() {
         z: Math.PI / 32,
         duration: 1.3, 
         ease: "sine.inOut",
-        force3D: true,
       },
       0.18
     );
@@ -158,7 +153,6 @@ export function initHeroScrollAnimation() {
         x: -15,
         duration: 1.3, 
         ease: "sine.inOut",
-        force3D: true,
       },
       0.18
     );
@@ -190,7 +184,6 @@ export function initHeroScrollAnimation() {
           y: `+=${wave * 10}`,
           duration: 0.9, 
           ease: "sine.inOut",
-          force3D: true,
         },
         0.28 + avgDistanceFactor * 0.008
       );
@@ -213,7 +206,6 @@ export function initHeroScrollAnimation() {
           z: 0.95 + wave * 0.05,
           duration: 0.7, 
           ease: "sine.inOut",
-          force3D: true,
         },
         0.32 + avgDistanceFactor * 0.008
       );
@@ -228,7 +220,6 @@ export function initHeroScrollAnimation() {
           z: -190, 
           duration: 1.1, 
           ease: "power1.inOut",
-          force3D: true,
         },
         0.22
       );
@@ -241,7 +232,6 @@ export function initHeroScrollAnimation() {
           z: Math.PI / 11,
           duration: 1.1, 
           ease: "sine.inOut",
-          force3D: true,
         },
         0.22
       );
@@ -280,7 +270,6 @@ export function initHeroScrollAnimation() {
           z: -270, 
           duration: 1.1, 
           ease: "power1.inOut",
-          force3D: true,
         },
         0.27
       );
@@ -293,7 +282,6 @@ export function initHeroScrollAnimation() {
           z: -Math.PI / 13,
           duration: 1.1, 
           ease: "sine.inOut",
-          force3D: true,
         },
         0.27
       );
@@ -330,7 +318,6 @@ export function initHeroScrollAnimation() {
         filter: "blur(4px)", 
         duration: 0.45, 
         ease: "sine.inOut",
-        force3D: true,
       },
       0.88
     );

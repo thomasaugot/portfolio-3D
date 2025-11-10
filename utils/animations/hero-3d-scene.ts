@@ -463,20 +463,32 @@ export async function initHero3DScene() {
     hexFloor.rotation.y = Math.sin(time * 0.3) * 0.05;
     hexFloor.rotation.x = Math.sin(time * 0.2) * 0.02;
 
-    hexFloor.children.forEach((hex) => {
-      const material = (hex as THREE.Line).material as THREE.LineBasicMaterial;
-      const pulse = Math.sin(time * 2 + (hex as any).pulseOffset);
+    // PERFORMANCE: Only update hex colors every 3 frames instead of every frame
+    // This reduces CPU load by 66% for hex animations
+    if (frameCounter % 3 === 0) {
+      // PERFORMANCE: Update only 20% of hexes per frame in batches
+      // This spreads the work across multiple frames
+      const totalHexes = hexFloor.children.length;
+      const batchSize = Math.ceil(totalHexes / 5);
+      const startIndex = (Math.floor(frameCounter / 3) * batchSize) % totalHexes;
+      const endIndex = Math.min(startIndex + batchSize, totalHexes);
 
-      material.opacity = (hex as any).baseOpacity + pulse * 0.2;
+      for (let i = startIndex; i < endIndex; i++) {
+        const hex = hexFloor.children[i];
+        const material = (hex as THREE.Line).material as THREE.LineBasicMaterial;
+        const pulse = Math.sin(time * 2 + (hex as any).pulseOffset);
 
-      const gradientShift =
-        Math.sin(time + (hex as any).gradientFactor * Math.PI) * 0.5 + 0.5;
-      material.color.lerpColors(
-        hexColor1,
-        hexColor2,
-        gradientShift
-      );
-    });
+        material.opacity = (hex as any).baseOpacity + pulse * 0.2;
+
+        const gradientShift =
+          Math.sin(time + (hex as any).gradientFactor * Math.PI) * 0.5 + 0.5;
+        material.color.lerpColors(
+          hexColor1,
+          hexColor2,
+          gradientShift
+        );
+      }
+    }
 
     if (codeModel) {
       codeModel.rotation.y += config.isLight ? 0.003 : 0.005;
@@ -487,7 +499,7 @@ export async function initHero3DScene() {
     }
 
     renderer.render(scene, camera);
-    
+
     if (animateMeasure) animateMeasure();
     frameCounter++;
     animationId = requestAnimationFrame(animate);

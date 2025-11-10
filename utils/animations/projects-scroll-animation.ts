@@ -12,29 +12,33 @@ const waitForProjectScenes = (totalProjects: number): Promise<void> => {
   return new Promise((resolve) => {
     let attempts = 0;
     const maxAttempts = 200;
-    
+    const isMobile = window.innerWidth < 1024; // Mobile or tablet
+
     const checkScenes = () => {
       attempts++;
       let allReady = true;
       const readyScenes: number[] = [];
-      
+
       for (let i = 0; i < totalProjects; i++) {
-        const desktopScene = (window as any)[`__projectScene_${i}`];
-        if (desktopScene) {
+        // Check for mobile or desktop scene based on viewport
+        const sceneKey = isMobile ? `__projectScene_mobile_${i}` : `__projectScene_${i}`;
+        const scene = (window as any)[sceneKey];
+        if (scene) {
           readyScenes.push(i);
         } else {
           allReady = false;
         }
       }
-      
+
       if (allReady) {
-        console.log(`✅ All ${totalProjects} scenes ready!`, readyScenes);
+        // console.log(`✅ All ${totalProjects} ${isMobile ? 'MOBILE' : 'DESKTOP'} scenes ready!`, readyScenes);
         resolve();
       } else if (attempts >= maxAttempts) {
+        console.log(`⚠️ Timeout waiting for scenes. Proceeding with ${readyScenes.length}/${totalProjects} ready.`);
         resolve();
       } else {
         if (attempts % 20 === 0) {
-          console.log(`⏳ Still waiting... Ready: ${readyScenes.length}/${totalProjects}`, readyScenes);
+          // console.log(`⏳ Still waiting for ${isMobile ? 'MOBILE' : 'DESKTOP'} scenes... Ready: ${readyScenes.length}/${totalProjects}`, readyScenes);
         }
         requestAnimationFrame(checkScenes);
       }
@@ -124,10 +128,10 @@ const throttledScrollUpdate = (totalPanels: number, progress: number) => {
 };
 
 export function initProjectsScrollAnimation() {
-  console.log("🚀 initProjectsScrollAnimation called");
-  
+  // console.log("🚀 initProjectsScrollAnimation called");
+
   if (projectsScrollTrigger) {
-    console.log("🧹 Cleaning up existing ScrollTrigger");
+    // console.log("🧹 Cleaning up existing ScrollTrigger");
     projectsScrollTrigger.kill();
     projectsScrollTrigger = null;
     lastProgress = -1;
@@ -140,22 +144,22 @@ export function initProjectsScrollAnimation() {
   }
 
   const initAnimation = async () => {
-    console.log("🔍 Looking for projects section...");
+    // console.log("🔍 Looking for projects section...");
     const projectsSection = document.querySelector("[data-projects-section]");
-    
+
     if (!projectsSection) {
       console.error("❌ Projects section not found!");
       return;
     }
-    console.log("✅ Projects section found:", projectsSection);
+    // console.log("✅ Projects section found:", projectsSection);
 
     const allPanels = projectsSection.querySelectorAll("[data-project-panel]");
-    console.log(`📋 Found ${allPanels.length} total panels`);
-    
+    // console.log(`📋 Found ${allPanels.length} total panels`);
+
     const panels = Array.from(allPanels).filter(
       (p: any) => window.getComputedStyle(p).display !== "none"
     );
-    console.log(`👁️ Found ${panels.length} visible panels`);
+    // console.log(`👁️ Found ${panels.length} visible panels`);
 
     if (panels.length === 0) {
       console.error("❌ No visible panels found");
@@ -165,7 +169,7 @@ export function initProjectsScrollAnimation() {
     await waitForProjectScenes(panels.length);
 
     const totalPanels = panels.length;
-    console.log(`🎬 Initializing scroll animation for ${totalPanels} panels`);
+    // console.log(`🎬 Initializing scroll animation for ${totalPanels} panels`);
 
     panels.forEach((panel: any, index) => {
       const image = panel.querySelector("[data-project-image]");
@@ -437,12 +441,12 @@ export function initProjectsScrollAnimation() {
 
     if (tl.scrollTrigger) {
       projectsScrollTrigger = tl.scrollTrigger as ScrollTrigger;
-      console.log("✅ ScrollTrigger initialized successfully!");
-      console.log("ScrollTrigger info:", {
-        start: tl.scrollTrigger.start,
-        end: tl.scrollTrigger.end,
-        pin: tl.scrollTrigger.pin,
-      });
+      // console.log("✅ ScrollTrigger initialized successfully!");
+      // console.log("ScrollTrigger info:", {
+      //   start: tl.scrollTrigger.start,
+      //   end: tl.scrollTrigger.end,
+      //   pin: tl.scrollTrigger.pin,
+      // });
     } else {
       console.error("❌ ScrollTrigger was not created!");
     }
@@ -451,13 +455,13 @@ export function initProjectsScrollAnimation() {
   initAnimation();
 
   return () => {
-    console.log("🧹 Cleanup function called");
+    // console.log("🧹 Cleanup function called");
     if (projectsScrollTrigger) {
       projectsScrollTrigger.kill();
       projectsScrollTrigger = null;
       lastProgress = -1;
       isUpdating = false;
-      console.log("✅ ScrollTrigger cleaned up");
+      // console.log("✅ ScrollTrigger cleaned up");
     }
 
     if (pendingUpdate !== null) {

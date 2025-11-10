@@ -1,6 +1,10 @@
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Audiowide&display=swap");
 @import "tailwindcss";
 
+[data-portfolio-section] {
+  height: var(--portfolio-height, 100vh);
+}
+
 /* ==========================
    THEME & CSS VARIABLES
    ========================= */
@@ -269,13 +273,13 @@ button.outlined:hover {
 
 .subtitle {
   @apply text-lg md:text-xl;
-  @apply text-text/70 leading-relaxed;
+  @apply text-text/70;
   padding-bottom: 5px;
 }
 
 .text-body {
   @apply text-base md:text-lg;
-  @apply text-text/80 leading-relaxed;
+  @apply text-text/80;
 }
 
 .text-label {

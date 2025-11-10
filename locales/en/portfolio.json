@@ -6,7 +6,7 @@
   "hero": {
     "badge": "Portfolio",
     "title": "Things I Made",
-    "subtitle": "A curated selection of what I consider my most complete and advanced work",
+    "subtitle": "A curated selection of some recent projects I'm proud of.",
     "description": "Discover a curated collection of web projects showcasing modern development, creative design, and technical innovation.",
     "scroll_hint": "Scroll to explore"
   },
@@ -44,7 +44,8 @@
     "corporate_web": "Corporate Website",
     "internal_platform": "Internal Platform",
     "crm_platform": "CRM Platform",
-    "business_website": "Business Website"
+    "business_website": "Business Website",
+    "software_platform": "Software Platform"
   },
   "dosxdos_web": {
     "title": "Corporate Website 2.0 + Admin Panel",
@@ -58,17 +59,8 @@
       }
     },
     "details": {
-      "challenge": "Dos por Dos needed a digital presence aligned with their high-end commercial design work. Their previous site was static, lacked portfolio structure, had no SEO strategy, and provided no way to manage content independently.",
-      "solution": "I built a complete web platform with two components: a public-facing animated website showcasing services, portfolio, and blog; and a private admin panel enabling the team to publish and manage content without developer dependency.",
-      "technical_approach": "Built with Next.js 15 (App Router) for optimal SEO and performance. Implemented GSAP animations throughout, Zustand for state management, Lexical as rich text editor, NextAuth for authentication, and Markdown processing for content. All styled with modular SCSS following mobile-first approach. Contact form integrated with Zoho CRM.",
-      "results": "The platform successfully positions Dos por Dos at the digital level their work deserves. The site communicates visual excellence through modern animations and clean design while providing full content autonomy to the internal team.",
-      "impact": {
-        "user_experience": "Engaging, brand-coherent navigation experience",
-        "organic_visibility": "Immediate increase in organic visibility through technical SEO foundation and blog content",
-        "content_autonomy": "Efficient content management without developer dependency",
-        "performance": "Optimized performance on mobile and desktop with improved Core Web Vitals",
-        "scalability": "Scalable architecture ready for future growth without restructuring"
-      }
+      "challenge": "A luxury design studio needed a professional website with autonomous content management. The old site was static with no portfolio structure, no SEO, and required developer intervention for all updates.",
+      "solution": "Built a dual-platform system: an animated Next.js 15 website with GSAP animations and a custom admin panel with Lexical editor. The team can now publish services, portfolio pieces, and blog content independently. Integrated Zoho CRM for lead management and implemented technical SEO with JSON-LD schemas."
     }
   },
   "dosxdos_app": {
@@ -83,16 +75,8 @@
       }
     },
     "details": {
-      "challenge": "Dos × Dos had a functional CRM/REP system on Zoho, but their complementary web tool for route coordination and point-of-sale visualization was outdated. The rigid structure lacked responsive design, hindered mobile navigation, and didn't meet current operational needs of field teams.",
-      "solution": "I redesigned and scaled the internal platform while maintaining Zoho integration. The new application provides clear route visualization via interactive maps, incident registration, real-time notifications, all optimized for mobile devices and deployed as installable apps via WebView.",
-      "technical_approach": "Complete interface redesign for clarity and modern aesthetics, especially on mobile. Refactored components and navigation flows to simplify critical user actions. Fixed accumulated bugs improving stability and reliability. Ensured responsive optimization and adaptive behavior across all screen sizes. Deployed as hybrid installable app on iOS and Android through WebView integration.",
-      "results": "The redesign significantly improved the quality and usability of Dos × Dos internal platform without altering core functionality or previous Zoho integrations.",
-      "impact": {
-        "usability": "More professional, mobile-adapted interface with clear visual hierarchy",
-        "navigation": "Simplified navigation with efficient user routes and reduced friction in repetitive tasks",
-        "stability": "Increased stability and technical confidence through bug fixes affecting daily operations",
-        "multiplatform": "Real cross-platform availability as downloadable iOS and Android apps"
-      }
+      "challenge": "An internal web tool for field teams needed mobile optimization. The outdated interface wasn't responsive and hindered route coordination workflows.",
+      "solution": "Rebuilt the platform as a mobile-first application with interactive maps for route visualization, incident reporting, and push notifications. Maintained Zoho CRM integration while fixing legacy bugs. Deployed as native iOS/Android apps using WebView technology for offline-capable field usage."
     }
   },
   "energia_solar": {
@@ -107,16 +91,8 @@
       }
     },
     "details": {
-      "challenge": "Energía Solar Canarias clients accessed different external platforms (Victron, SolarEdge, GoodWe) each with separate interfaces and credentials. The company lacked a proprietary tool to centralize data, manage users and plants, control pricing, or calculate revenue. Mobile access was fragmented through non-optimized web versions or third-party apps.",
-      "solution": "I developed a modular web application with role-based access. Clients get unified access to all their plants with clear visualization of production, consumption, battery charge, savings, and alerts. Administrators get a complete CRM to manage users, assign plants, review installations, and modify contracts. All data from different providers displays in a visually consistent, unified format.",
-      "technical_approach": "Built with Next.js (App Router) and Tailwind CSS for scalability and consistency. Redux Toolkit manages global state with domain-specific slices and selective persistence. Implemented custom economic calculation system based on admin-defined price ranges. React Hook Form handles complex forms. Framer Motion provides smooth animations. WebView containers deliver native-like iOS and Android app experience.",
-      "results": "The platform successfully centralizes all solar data, user management, alerts, and custom calculations into one unified system. It drastically reduced manual work for the admin team while radically improving client experience.",
-      "impact": {
-        "centralization": "Single platform consolidating data, users, alerts, and custom calculations",
-        "operational_efficiency": "Reduced manual work for administration team",
-        "user_experience": "Radical improvement in client experience: more intuitive, visual, accessible, and complete",
-        "control": "Greater operational control and efficiency for Energía Solar Canarias"
-      }
+      "challenge": "Solar plant clients were juggling three different vendor platforms (Victron, SolarEdge, GoodWe) with separate logins. The company had no unified tool for client management or revenue tracking.",
+      "solution": "Built a dual-role platform with Next.js and Redux Toolkit. Clients access all their plants in one dashboard showing production, consumption, battery status, and savings. Admins use an integrated CRM for user/plant management and custom pricing calculations. Deployed as native iOS/Android apps via WebView for mobile-first access."
     }
   },
   "charpente_durand": {
@@ -131,15 +107,8 @@
       }
     },
     "details": {
-      "challenge": "Charpente Menuiserie Durand needed stronger online presence to compete effectively in their local market. As a carpentry company in France, they required better SEO positioning and a professional digital showcase to attract new clients and support business growth.",
-      "solution": "I developed a professional business website optimized for search engines and local visibility. The site presents their carpentry services clearly, showcases their work, and facilitates client contact through an integrated form system.",
-      "technical_approach": "Built with Next.js for excellent SEO capabilities and performance. Styled entirely with Tailwind CSS for clean, professional aesthetics. Implemented EmailJS for contact form functionality. Deployed on Vercel with optimized configuration for fast loading and reliability.",
-      "results": "The website provides Charpente Durand with a professional digital presence that effectively represents their craftsmanship quality and enables them to compete more effectively in their local market.",
-      "impact": {
-        "visibility": "Improved search engine visibility for local carpentry services",
-        "professional_image": "Professional digital showcase reflecting quality work",
-        "client_acquisition": "Direct lead generation through integrated contact system"
-      }
+      "challenge": "A local carpentry business needed online visibility to compete in their French market. No existing website meant zero SEO presence.",
+      "solution": "Built an SEO-optimized business website with Next.js and Tailwind CSS. Implemented technical SEO with proper schemas, integrated EmailJS for contact forms, and deployed on Vercel for fast performance. Simple, clean design showcasing their carpentry services and portfolio."
     }
   },
   "galaga_agency": {
@@ -155,16 +124,8 @@
       "cta": "portfolio.common.cta.view_full_case"
     },
     "details": {
-      "challenge": "The previous Webflow website no longer reflected Galaga’s innovative mindset or the quality of its creative work. It lacked depth, motion, and a distinct identity. My challenge was to conceive a completely new digital space that truly represents Galaga’s energy, culture, and technological edge.",
-      "solution": "I designed and built a new digital ecosystem from scratch — visually expressive, technically advanced, and unmistakably Galaga. The result is a seamless fusion of branding, interactivity, and storytelling that positions the agency as a creative leader.",
-      "technical_approach": "Developed with Next.js 15 and TypeScript, the website delivers top-tier performance and maintainability. I used GSAP to orchestrate cinematic animations and transitions, and Three.js to create real-time 3D scenes and motion-reactive environments. Tailwind CSS ensures design consistency and fluid responsiveness across devices.",
-      "results": "The new website elevated Galaga’s brand perception to match its creative reputation. It communicates innovation through motion, depth, and precision — turning every interaction into a visual narrative. Engagement and time-on-site metrics improved dramatically, confirming its emotional and aesthetic impact.",
-      "impact": {
-        "brand_perception": "Elevated Galaga’s image through a bold, modern visual identity",
-        "interactive_experience": "Created immersive 3D storytelling and smooth navigation flow",
-        "tech_innovation": "Showcased cutting-edge technologies to mirror Galaga’s innovation",
-        "future_ready": "Built a modular, scalable system ready for future evolutions"
-      }
+      "challenge": "An agency's Webflow site no longer matched their creative caliber. Needed a complete rebuild with bold visuals and technical innovation.",
+      "solution": "Built an immersive 3D experience from scratch using Next.js 15, TypeScript, GSAP, and Three.js. Implemented real-time 3D environments, cinematic scroll animations, and motion-reactive scenes. The site positions Galaga as a technical and creative leader through interactive storytelling and modern performance."
     }
   },
   "reloj_laboral": {
@@ -180,16 +141,8 @@
       "cta": "portfolio.common.cta.view_full_case"
     },
     "details": {
-      "challenge": "Spanish companies are legally required to maintain precise digital records of working hours under Article 34.9 of the Estatuto de los Trabajadores. Many systems on the market were outdated, insecure, or not compliant. I set out to create a new digital ecosystem that met the full legal framework while remaining elegant and user-friendly.",
-      "solution": "I built both the frontend and backend from scratch — a robust, modular system with differentiated user roles and full audit capability. The interface is intuitive, while the backend enforces strict access policies and traceability for every action. The project was developed end-to-end under Galaga Agency’s ownership.",
-      "technical_approach": "The frontend was built with React 18, TypeScript, and Vite, using Tailwind CSS for a clean, consistent design system. Animations were implemented with GSAP to enhance UX. For the backend, I developed a Node.js + Express API using PostgreSQL and JWT authentication. Initially integrated with Supabase, later extended to a custom PERN stack for complete control and compliance.",
-      "results": "The system provides legally compliant digital time tracking with full transparency and auditability. Employees, admins, and inspectors now access real-time data securely from any device. Monthly PDF reports, correction workflows, and official export tools automate what was once a manual, error-prone process.",
-      "impact": {
-        "compliance_ready": "Achieved full compliance with Spanish digital time tracking law",
-        "operational_efficiency": "Reduced administrative overhead with automated reporting",
-        "scalable_infrastructure": "Built a scalable backend with modular architecture",
-        "secure_and_auditable": "Ensured data integrity through role-based access and audit logs"
-      }
+      "challenge": "Spanish companies required compliant digital time tracking by law (Article 34.9). Existing solutions were outdated or non-compliant. Needed a full-stack system with employee, admin, and inspector roles.",
+      "solution": "Built a complete PERN stack application (PostgreSQL, Express, React 18, Node.js) with JWT authentication and role-based access. Frontend uses Vite, TypeScript, Tailwind CSS, and GSAP. Features include real-time tracking, monthly PDF exports, correction workflows, and full audit trails for legal compliance. Initially used Supabase, later migrated to custom backend for complete control."
     }
   }
 }

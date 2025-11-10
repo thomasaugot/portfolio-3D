@@ -3,7 +3,7 @@ import "../globals.css";
 import { TranslationProvider } from "@/lib/providers/TranslationProvider";
 import { ThemeProvider } from "@/lib/providers/ThemeProvider";
 import { TabTitleAnimationProvider } from "@/lib/providers/TabTitleAnimationProvider";
-import LoadingProvider from "@/lib/providers/LoadingProvider";
+import ClientLoadingWrapper from "@/components/ClientLoadingWrapper";
 
 export default async function LocaleLayout({
   children,
@@ -20,9 +20,9 @@ export default async function LocaleLayout({
         <ThemeProvider>
           <TranslationProvider>
             <TabTitleAnimationProvider />
-            <LoadingProvider criticalScenes={[]}>
+            <ClientLoadingWrapper>
               <main>{children}</main>
-            </LoadingProvider>
+            </ClientLoadingWrapper>
           </TranslationProvider>
         </ThemeProvider>
       </body>

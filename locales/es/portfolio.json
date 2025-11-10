@@ -6,7 +6,7 @@
   "hero": {
     "badge": "Portfolio",
     "title": "Lo que he creado",
-    "subtitle": "Una selección cuidada de lo que considero mi trabajo más completo y avanzado",
+    "subtitle": "Una selección cuidada de algunos proyectos recientes de los que estoy orgulloso.",
     "scroll_hint": "Desplázate para explorar"
   },
   "cta": {
@@ -43,7 +43,8 @@
     "corporate_web": "Sitio Corporativo",
     "internal_platform": "Plataforma Interna",
     "crm_platform": "Plataforma CRM",
-    "business_website": "Sitio Profesional"
+    "business_website": "Sitio Profesional",
+    "software_platform": "Plataforma de Software"
   },
   "dosxdos_web": {
     "title": "Sitio Web Corporativo 2.0 + Panel de Administración",

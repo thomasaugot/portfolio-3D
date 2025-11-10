@@ -154,7 +154,10 @@ const loadModel = async (
         const scale = 55;
         model.scale.set(scale, scale, scale);
         model.rotation.y = -0.3;
-        model.position.set(-20, -35, 0);
+
+        // Position model slightly higher on mobile/tablet but not out of screen
+        const modelY = config.isMobile ? 20 : config.isTablet ? 10 : -35;
+        model.position.set(-20, modelY, 0);
 
         const wrapper = new THREE.Group();
         wrapper.add(model);
@@ -189,18 +192,29 @@ export async function initPortfolioScene() {
   console.log(`📦 Loading ${projects.length} project models...`);
 
   const scene = new THREE.Scene();
+
+  // Camera FOV: Mobile 50°, Tablet 35°, Desktop 25°
+  const fov = config.isMobile ? 50 : config.isTablet ? 35 : 25;
+
   const camera = new THREE.PerspectiveCamera(
-    config.isMobile ? 70 : 25,
+    fov,
     hexContainer.clientWidth / hexContainer.clientHeight,
     0.1,
     5000
   );
-  camera.position.set(
-    config.isMobile ? -80 : -200,
-    config.isMobile ? 60 : 80,
-    config.isMobile ? 700 : 1000
-  );
-  camera.lookAt(config.isMobile ? -30 : -50, 0, 0);
+
+  // Camera position: Mobile closer, Tablet medium, Desktop far
+  const cameraX = config.isMobile ? -80 : config.isTablet ? -120 : -200;
+  const cameraY = config.isMobile ? 60 : config.isTablet ? 70 : 80;
+  const cameraZ = config.isMobile ? 500 : config.isTablet ? 700 : 1000;
+
+  camera.position.set(cameraX, cameraY, cameraZ);
+
+  // Look at: Mobile -30, Tablet -30, Desktop -50
+  const lookAtX = config.isMobile ? -30 : config.isTablet ? -30 : -50;
+  // Look at hex grid center to see it fully
+  const lookAtY = config.isMobile ? -40 : config.isTablet ? -60 : -120;
+  camera.lookAt(lookAtX, lookAtY, 0);
 
   const renderer = new THREE.WebGLRenderer({
     alpha: true,
@@ -218,6 +232,7 @@ export async function initPortfolioScene() {
   if (config.isMobile) {
     renderer.shadowMap.enabled = false; // Disable shadows on mobile
   }
+
   hexContainer.appendChild(renderer.domElement);
 
   const ambientLight = new THREE.AmbientLight(
@@ -240,8 +255,10 @@ export async function initPortfolioScene() {
   }
 
   const hexFloor = new THREE.Group();
-  const hexSize = config.isMobile ? 35 : 50;
-  const radius = config.isMobile ? 5 : 9;
+  // Hex size: Mobile 45, Tablet 48, Desktop 50
+  const hexSize = config.isMobile ? 45 : config.isTablet ? 48 : 50;
+  // Hex radius: SMALL to fit completely in viewport without cutoff
+  const radius = config.isMobile ? 4 : config.isTablet ? 5 : 6;
 
   for (let q = -radius; q <= radius; q++) {
     for (let r = -radius; r <= radius; r++) {
@@ -283,7 +300,9 @@ export async function initPortfolioScene() {
       const hex = new THREE.Line(geometry, material);
       const x = hexSize * 1.5 * q;
       const z = hexSize * Math.sqrt(3) * (r + q / 2);
-      hex.position.set(x, config.isMobile ? -150 : -200, z);
+      // Hex Y position: Centered with smaller radius
+      const hexY = config.isMobile ? -100 : config.isTablet ? -120 : -150;
+      hex.position.set(x, hexY, z);
 
       (hex as any).baseOpacity = opacity * (config.isLight ? 0.6 : 0.4);
       (hex as any).pulseOffset = distance * 0.2;
@@ -292,6 +311,9 @@ export async function initPortfolioScene() {
       hexFloor.add(hex);
     }
   }
+
+  // Position hex floor to align with camera lookAt point
+  hexFloor.position.set(lookAtX, 0, 0);
   scene.add(hexFloor);
 
   const projectModels: Array<{
@@ -330,7 +352,9 @@ export async function initPortfolioScene() {
     if (modelData) {
       const { wrapper, laptopGroup, iphoneGroup } = modelData;
 
-      wrapper.position.set(config.isMobile ? -40 : -120, 0, 0);
+      // Model X position: Mobile -30, Tablet -10 (centered), Desktop -120
+      const modelX = config.isMobile ? -30 : config.isTablet ? -10 : -120;
+      wrapper.position.set(modelX, 0, 0);
       wrapper.visible = i === 0;
       wrapper.scale.set(0.01, 0.01, 0.01);
 
@@ -429,41 +453,44 @@ export async function initPortfolioScene() {
 
     projectModels.forEach((modelData) => {
       if (modelData.wrapper.visible && modelData.wrapper.scale.x > 0.9) {
-        const floatIntensity = config.isMobile ? 6 : 10;
+        // Gentle vertical floating only - reduced amplitude to keep models in bounds
+        const floatIntensity = config.isMobile ? 2 : config.isTablet ? 2.5 : 3;
         modelData.wrapper.position.y = Math.sin(time * 0.6) * floatIntensity;
 
         if (modelData.wrapper.children[0]) {
-          const rotationFactor = config.isMobile ? 0.8 : 1;
+          const rotationFactor = config.isMobile ? 0.8 : config.isTablet ? 0.9 : 1;
           modelData.wrapper.children[0].rotation.x =
-            Math.sin(time * 0.3) * 0.015 * rotationFactor;
+            Math.sin(time * 0.3) * 0.01 * rotationFactor;
           modelData.wrapper.children[0].rotation.z =
-            Math.sin(time * 0.25) * 0.012 * rotationFactor;
+            Math.sin(time * 0.25) * 0.008 * rotationFactor;
         }
 
         if (modelData.laptop && modelData.laptopOriginal) {
-          const laptopFloatIntensity = config.isMobile ? 5 : 7;
-          const rotationFactor = config.isMobile ? 0.7 : 1;
+          // Laptop floats with offset phase to avoid crossing iPhone
+          const laptopFloatIntensity = config.isMobile ? 2 : config.isTablet ? 2.3 : 2.5;
+          const rotationFactor = config.isMobile ? 0.7 : config.isTablet ? 0.85 : 1;
           modelData.laptop.position.y =
             modelData.laptopOriginal.pos.y + Math.sin(time * 0.35) * laptopFloatIntensity;
           modelData.laptop.rotation.x =
-            modelData.laptopOriginal.rot.x + Math.sin(time * 0.18) * 0.035 * rotationFactor;
+            modelData.laptopOriginal.rot.x + Math.sin(time * 0.18) * 0.02 * rotationFactor;
           modelData.laptop.rotation.y =
-            modelData.laptopOriginal.rot.y + Math.cos(time * 0.22) * 0.028 * rotationFactor;
+            modelData.laptopOriginal.rot.y + Math.cos(time * 0.22) * 0.015 * rotationFactor;
           modelData.laptop.rotation.z =
-            modelData.laptopOriginal.rot.z + Math.sin(time * 0.26) * 0.018 * rotationFactor;
+            modelData.laptopOriginal.rot.z + Math.sin(time * 0.26) * 0.01 * rotationFactor;
         }
 
         if (modelData.iphone && modelData.iphoneOriginal) {
-          const iphoneFloatIntensity = config.isMobile ? 6 : 8;
-          const rotationFactor = config.isMobile ? 0.7 : 1;
+          // iPhone floats with different phase to stay separated from laptop
+          const iphoneFloatIntensity = config.isMobile ? 2 : config.isTablet ? 2.3 : 2.5;
+          const rotationFactor = config.isMobile ? 0.7 : config.isTablet ? 0.85 : 1;
           modelData.iphone.position.y =
             modelData.iphoneOriginal.pos.y + Math.cos(time * 0.42 + 2) * iphoneFloatIntensity;
           modelData.iphone.rotation.x =
-            modelData.iphoneOriginal.rot.x + Math.cos(time * 0.22) * 0.045 * rotationFactor;
+            modelData.iphoneOriginal.rot.x + Math.cos(time * 0.22) * 0.025 * rotationFactor;
           modelData.iphone.rotation.y =
-            modelData.iphoneOriginal.rot.y + Math.sin(time * 0.27) * 0.038 * rotationFactor;
+            modelData.iphoneOriginal.rot.y + Math.sin(time * 0.27) * 0.02 * rotationFactor;
           modelData.iphone.rotation.z =
-            modelData.iphoneOriginal.rot.z + Math.cos(time * 0.32) * 0.028 * rotationFactor;
+            modelData.iphoneOriginal.rot.z + Math.cos(time * 0.32) * 0.015 * rotationFactor;
         }
       }
     });

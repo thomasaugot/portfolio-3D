@@ -231,7 +231,6 @@ function initContactHeroScrollAnimation() {
           scale: 0.85,
           duration: 0.2,
           ease: "power1.in",
-          force3D: true,
         },
         0
       );
@@ -252,7 +251,6 @@ function initContactHeroScrollAnimation() {
         y: startY + 40,
         duration: 0.5,
         ease: "sine.inOut",
-        force3D: true,
         onUpdate: function() {
           camera.lookAt(0, 0, 0);
         }
@@ -269,7 +267,6 @@ function initContactHeroScrollAnimation() {
         y: startY + 140,
         duration: 0.7,
         ease: "sine.inOut",
-        force3D: true,
         onUpdate: function() {
           camera.lookAt(0, 0, 0);
         }
@@ -286,7 +283,6 @@ function initContactHeroScrollAnimation() {
         z: Math.PI / 36,
         duration: 1.3,
         ease: "sine.inOut",
-        force3D: true,
       },
       0.18
     );
@@ -300,7 +296,6 @@ function initContactHeroScrollAnimation() {
         x: -10,
         duration: 1.3,
         ease: "sine.inOut",
-        force3D: true,
       },
       0.18
     );
@@ -347,8 +342,7 @@ function initContactHeroScrollAnimation() {
             z: (node as any).envelopePosition.z,
             duration: 0.6,
             ease: "power2.inOut",
-            force3D: true,
-          },
+            },
           delay
         );
 

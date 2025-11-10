@@ -15,24 +15,24 @@ export default function HeroSection() {
         <div
           ref={containerRef}
           data-3d-container="hero"
-          className="absolute inset-0 w-full h-full pointer-events-none z-0 opacity-20 md:opacity-40 lg:opacity-100"
+          className="absolute inset-0 w-full h-full pointer-events-none z-0 opacity-20 md:opacity-50 lg:opacity-100"
         />
 
-        <div className="relative z-10 w-full md:w-[80vw] lg:w-full px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center max-w-7xl mx-auto">
-            <div data-animate="slide-up" className="space-y-8">
+        <div className="relative z-10 w-full px-6 md:px-12 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-16 items-center max-w-7xl mx-auto">
+            <div data-animate="slide-up" className="space-y-6 md:space-y-10">
               <div
                 data-hero-badge
-                className="glass inline-flex items-center gap-3 px-6 py-3 rounded-2xl border border-border bg-bg/80 backdrop-blur-md"
+                className="glass inline-flex items-center gap-3 px-6 md:px-8 py-3 md:py-4 rounded-2xl border border-border bg-bg/80 backdrop-blur-md"
                 style={{ willChange: 'opacity, transform' }}
               >
-                <div className="w-3 h-3 rounded-full bg-text animate-pulse" />
-                <span className="text-label">
+                <div className="w-3 h-3 md:w-3.5 md:h-3.5 rounded-full bg-text animate-pulse" />
+                <span className="text-xs md:text-sm font-mono uppercase tracking-wider text-text/60">
                   {t("homepage.hero_title")}
                 </span>
               </div>
 
-              <h1 className="font-normal leading-[1.05] space-y-0 md:-space-y-4 lg:-space-y-6 relative pb-2">
+              <h1 className="space-y-0 md:-space-y-6 lg:-space-y-8 relative pb-2">
                 <span
                   data-hero-line
                   className="block title-hero pb-1 text-shadow-soft"
@@ -63,15 +63,15 @@ export default function HeroSection() {
 
               <p
                 data-hero-subtitle
-                className="subtitle max-w-xl bg-bg/40 backdrop-blur-sm p-4 rounded-xl"
+                className="text-base md:text-xl text-text/70 max-w-xl md:max-w-2xl bg-bg/40 backdrop-blur-sm p-4 md:p-6 rounded-xl"
                 style={{ willChange: 'opacity, transform' }}
               >
                 {t("homepage.hero_subtitle")}
               </p>
 
-              <div 
-                data-hero-buttons 
-                className="flex gap-4 lg:w-3/4 flex-row"
+              <div
+                data-hero-buttons
+                className="flex gap-4 md:gap-6 lg:w-3/4 flex-row"
                 style={{ willChange: 'opacity, transform' }}
               >
                 <Button variant="filled" size="lg" className="w-auto">

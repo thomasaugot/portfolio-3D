@@ -1,15 +1,35 @@
 "use client";
 
+import { useState, useEffect, useRef } from "react";
 import { getFeaturedProjects } from "@/data/projects";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
-import { Button } from "../ui/Button";
-import { useThreeScene } from "@/hooks/useThreeScene";
 import { initProjects3DScene } from "@/utils/animations/projects-3d-scene";
+import ProjectModal from "@/components/portfolio/ProjectModal";
+import type { Project } from "@/types/project";
 
 export default function ProjectsShowcase() {
-  const { t, language } = useTranslation();
+  const { t } = useTranslation();
   const projects = getFeaturedProjects();
-  const containerRef = useThreeScene(initProjects3DScene, "projects");
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const hasInitialized = useRef(false);
+
+  useEffect(() => {
+    if (hasInitialized.current) return;
+
+    let cleanupFn: (() => void) | undefined;
+
+    // Wait for all containers to be in DOM
+    const timer = setTimeout(async () => {
+      console.log("🎬 ProjectsShowcase: Initializing 3D scenes...");
+      cleanupFn = await initProjects3DScene();
+      hasInitialized.current = true;
+    }, 100);
+
+    return () => {
+      clearTimeout(timer);
+      if (cleanupFn) cleanupFn();
+    };
+  }, []);
 
   return (
     <>
@@ -66,7 +86,6 @@ export default function ProjectsShowcase() {
               >
                 <div
                   data-project-image
-                  ref={index === 0 ? containerRef : null}
                   data-3d-container={`project-${index}`}
                   className="absolute left-0 top-0 w-[60vw] h-screen overflow-visible pointer-events-none"
                   style={{
@@ -81,63 +100,56 @@ export default function ProjectsShowcase() {
 
                   <div
                     data-project-content
-                    className="space-y-6"
+                    className="space-y-6 lg:space-y-8"
                     style={{
                       transformStyle: "preserve-3d",
                       willChange: "transform, opacity",
                     }}
                   >
+                    {/* Badge */}
                     <div className="inline-flex items-center gap-2 px-4 py-2 bg-surface/50 backdrop-blur-sm rounded-full border border-border/50">
-                      <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                      <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
                       <span className="text-label">
                         {project.year} • {project.client}
                       </span>
                     </div>
 
-                    <h3 className="title-item">
+                    {/* Title */}
+                    <h2 className="title-section gradient-text">
                       {t(project.title)}
-                    </h3>
+                    </h2>
 
-                    <div className="space-y-4">
-                      <div className="bg-surface/30 backdrop-blur-sm p-6 rounded-xl border border-border/30">
-                        <p className="text-body">
-                          {t(project.preview.tagline)}
-                        </p>
-                      </div>
-
-                      <div className="bg-surface/20 backdrop-blur-sm p-5 rounded-xl border border-border/20">
-                        <p className="text-body">
-                          {t(project.preview.description)}
-                        </p>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-3 pt-2">
-                        {project.preview.keyPoints
-                          .slice(0, 2)
-                          .map((keyPoint, idx) => (
-                            <div
-                              key={idx}
-                              className="bg-surface/20 backdrop-blur-sm p-4 rounded-lg border border-border/20"
-                            >
-                              <div className="flex items-start gap-2">
-                                <div className="w-1 h-1 rounded-full bg-primary mt-2 flex-shrink-0" />
-                                <p className="text-body">
-                                  {t(keyPoint)}
-                                </p>
-                              </div>
-                            </div>
-                          ))}
-                      </div>
+                    {/* Description */}
+                    <div className="lg:bg-surface/30 lg:backdrop-blur-sm lg:p-6 lg:rounded-xl lg:border lg:border-border/30">
+                      <p className="text-body">
+                        {t(project.preview.tagline)}
+                      </p>
                     </div>
 
-                    <Button
-                      asLink
-                      href={`/${language}/portfolio/${project.slug}`}
-                      className="gap-2"
+                    {/* Technologies */}
+                    <div className="flex flex-wrap gap-2">
+                      {project.technologies.map((tech) => (
+                        <span key={tech} className="tag">
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* CTA Button */}
+                    <button
+                      onClick={(e) => {
+                        // Store click position globally for modal animation
+                        (window as any).__modalClickPosition = {
+                          x: e.clientX,
+                          y: e.clientY
+                        };
+                        setSelectedProject(project);
+                      }}
+                      className="group relative text-body font-mono text-text/70 hover:text-primary transition-colors duration-300"
                     >
                       {t(project.preview.cta)}
                       <svg
-                        className="w-4 h-4"
+                        className="inline-block w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -149,7 +161,7 @@ export default function ProjectsShowcase() {
                           d="M13 7l5 5m0 0l-5 5m5-5H6"
                         />
                       </svg>
-                    </Button>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -158,14 +170,14 @@ export default function ProjectsShowcase() {
         </section>
       </div>
 
-      <section className="lg:hidden px-4 py-20 space-y-20 bg-gradient-to-b from-bg via-bg to-transparent relative overflow-visible">
+      <section className="lg:hidden px-4 md:px-12 py-20 md:py-32 space-y-20 md:space-y-32 bg-gradient-to-b from-bg via-bg to-transparent relative overflow-visible">
         <div className="absolute inset-0 pointer-events-none opacity-30">
-          <div className="absolute top-20 left-10 w-64 h-64 bg-primary/20 rounded-full blur-[100px]" />
-          <div className="absolute bottom-20 right-10 w-64 h-64 bg-secondary/20 rounded-full blur-[100px]" />
+          <div className="absolute top-20 left-10 w-64 md:w-96 h-64 md:h-96 bg-primary/20 rounded-full blur-[100px] md:blur-[150px]" />
+          <div className="absolute bottom-20 right-10 w-64 md:w-96 h-64 md:h-96 bg-secondary/20 rounded-full blur-[100px] md:blur-[150px]" />
         </div>
 
-        <div className="relative z-10 mb-12">
-          <h2 className="title-hero mb-4">
+        <div className="relative z-10 mb-12 md:mb-20 max-w-4xl mx-auto">
+          <h2 className="title-hero mb-4 md:mb-6">
             {t("homepage.projects_section.title")}
           </h2>
           <p className="subtitle">
@@ -177,12 +189,12 @@ export default function ProjectsShowcase() {
           <div
             key={project.id}
             data-project-panel={index}
-            className="relative space-y-6 overflow-visible min-h-[350px]"
+            className="relative space-y-6 md:space-y-8 overflow-visible min-h-[350px] md:min-h-[500px] max-w-4xl mx-auto"
           >
             <div
               data-project-image
               data-3d-container={`project-mobile-${index}`}
-              className="absolute left-0 -top-24 w-full h-[400px] overflow-visible pointer-events-none"
+              className="absolute left-0 -top-48 md:-top-64 w-full h-[450px] md:h-[550px] overflow-visible pointer-events-none z-20"
               style={{
                 transformStyle: "preserve-3d",
                 willChange: "transform, opacity",
@@ -191,47 +203,52 @@ export default function ProjectsShowcase() {
 
             <div
               data-project-content
-              className="relative pt-[300px] space-y-5 z-10"
+              className="relative pt-[320px] md:pt-[400px] space-y-6 md:space-y-8 z-10"
             >
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-surface/50 backdrop-blur-sm rounded-full border border-border/50">
-                <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                <span className="text-label">
+              {/* Badge */}
+              <div className="inline-flex items-center gap-2 px-4 md:px-5 py-2 md:py-2.5 bg-surface/50 backdrop-blur-sm rounded-full border border-border/50">
+                <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                <span className="text-xs md:text-sm font-mono uppercase tracking-wider text-text/60">
                   {project.year} • {project.client}
                 </span>
               </div>
 
-              <h3 className="title-project">
+              {/* Title */}
+              <h2 className="text-3xl md:text-5xl font-normal leading-tight gradient-text">
                 {t(project.title)}
-              </h3>
+              </h2>
 
-              <div className="bg-surface/30 backdrop-blur-sm p-5 rounded-xl border border-border/30 space-y-3">
-                <p className="text-body">
+              {/* Description */}
+              <div>
+                <p className="text-base md:text-xl text-text/80">
                   {t(project.preview.tagline)}
-                </p>
-                <p className="text-body">
-                  {t(project.preview.description)}
                 </p>
               </div>
 
-              <div className="flex gap-2 flex-wrap">
-                {project.technologies.slice(0, 5).map((tech) => (
-                  <span
-                    key={tech}
-                    className="tag"
-                  >
+              {/* Technologies */}
+              <div className="flex flex-wrap gap-2 md:gap-3">
+                {project.technologies.map((tech) => (
+                  <span key={tech} className="text-xs md:text-sm px-3 md:px-4 py-1.5 md:py-2 rounded-lg bg-primary/10 text-primary border border-primary/20">
                     {tech}
                   </span>
                 ))}
               </div>
 
-              <Button
-                asLink
-                href={`/${language}/portfolio/${project.slug}`}
-                className="gap-2"
+              {/* CTA Button - Mobile style */}
+              <button
+                onClick={(e) => {
+                  // Store click position globally for modal animation
+                  (window as any).__modalClickPosition = {
+                    x: e.clientX,
+                    y: e.clientY
+                  };
+                  setSelectedProject(project);
+                }}
+                className="w-full md:w-auto md:px-10 px-6 py-4 md:py-5 gradient-primary text-bg font-mono text-sm md:text-base rounded-xl hover:shadow-xl hover:shadow-primary/20 hover:scale-105 active:scale-95 transition-all duration-300 flex items-center justify-center gap-2 uppercase tracking-wider"
               >
                 {t(project.preview.cta)}
                 <svg
-                  className="w-4 h-4"
+                  className="w-5 h-5 md:w-6 md:h-6"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -243,11 +260,18 @@ export default function ProjectsShowcase() {
                     d="M13 7l5 5m0 0l-5 5m5-5H6"
                   />
                 </svg>
-              </Button>
+              </button>
             </div>
           </div>
         ))}
       </section>
+
+      {selectedProject && (
+        <ProjectModal
+          project={selectedProject}
+          onClose={() => setSelectedProject(null)}
+        />
+      )}
     </>
   );
 }

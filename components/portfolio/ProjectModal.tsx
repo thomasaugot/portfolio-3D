@@ -1,7 +1,6 @@
-// ProjectModal.tsx
 "use client";
-import { useEffect, useRef, useState } from "react";
-import { gsap } from "@/lib/animations";
+import { useEffect, useState } from "react";
+import { openProjectModal, closeProjectModal, animateMockupChange } from "@/utils/animations/project-modal-animation";
 import { Mockup } from "@/components/ui/Mockup";
 import type { Project } from "@/types/project";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
@@ -13,96 +12,11 @@ interface ProjectModalProps {
 
 export default function ProjectModal({ project, onClose }: ProjectModalProps) {
   const { t } = useTranslation();
-  const overlayRef = useRef<HTMLDivElement>(null);
-  const morphRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
-  const blobPositionRef = useRef({ x: 0, y: 0 });
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
-
-    const blobCursor = document.querySelector(
-      "[data-blob-cursor]"
-    ) as HTMLElement;
-    const portfolioScene = (window as any).__portfolioScene;
-
-    if (portfolioScene) {
-      portfolioScene.modalOpen = true;
-    }
-
-    const blobRect = blobCursor?.getBoundingClientRect();
-    const startX = blobRect
-      ? blobRect.left + blobRect.width / 2
-      : window.innerWidth / 2;
-    const startY = blobRect
-      ? blobRect.top + blobRect.height / 2
-      : window.innerHeight / 2;
-    blobPositionRef.current = { x: startX, y: startY };
-
-    const tl = gsap.timeline();
-
-    if (morphRef.current && overlayRef.current) {
-      const isMobile = window.innerWidth < 640;
-
-      gsap.set(morphRef.current, {
-        left: startX,
-        top: startY,
-        width: 140,
-        height: 140,
-        xPercent: -50,
-        yPercent: -50,
-        borderRadius: "30% 70% 70% 30% / 30% 30% 70% 70%",
-        opacity: 1,
-        scale: 1,
-      });
-
-      gsap.set(overlayRef.current, { opacity: 0 });
-
-      if (blobCursor) {
-        tl.add(() => {
-          blobCursor.style.opacity = "0";
-          blobCursor.style.pointerEvents = "none";
-          blobCursor.style.display = "none";
-        }, 0);
-      }
-
-      tl.to(
-        morphRef.current,
-        { scale: 1.2, duration: 0.2, ease: "power2.out" },
-        0
-      );
-      tl.to(
-        overlayRef.current,
-        { opacity: 1, duration: 0.4, ease: "power2.out" },
-        0.1
-      );
-      tl.to(
-        morphRef.current,
-        {
-          left: "50%",
-          top: "50%",
-          width: isMobile ? "95vw" : "90vw",
-          height: isMobile ? "92vh" : "90vh",
-          maxWidth: isMobile ? "95vw" : 1600,
-          maxHeight: isMobile ? "92vh" : "90vh",
-          scale: 1,
-          borderRadius: isMobile ? "16px" : "24px",
-          duration: 0.7,
-          ease: "expo.out",
-        },
-        0.2
-      );
-
-      if (contentRef.current) {
-        tl.fromTo(
-          contentRef.current,
-          { opacity: 0 },
-          { opacity: 1, duration: 0.4, ease: "power2.out" },
-          0.6
-        );
-      }
-    }
+    openProjectModal();
 
     return () => {
       document.body.style.overflow = "";
@@ -110,68 +24,7 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
   }, []);
 
   const handleClose = () => {
-    const portfolioScene = (window as any).__portfolioScene;
-    const blobCursor = document.querySelector(
-      "[data-blob-cursor]"
-    ) as HTMLElement;
-
-    const tl = gsap.timeline({
-      onComplete: () => {
-        if (portfolioScene) {
-          portfolioScene.modalOpen = false;
-        }
-        if (blobCursor) {
-          blobCursor.style.display = "block";
-          gsap.set(blobCursor, { scale: 1, opacity: 0 });
-          gsap.to(blobCursor, {
-            opacity: 1,
-            duration: 0.2,
-            ease: "power2.out",
-          });
-        }
-        onClose();
-      },
-    });
-
-    if (contentRef.current) {
-      tl.to(
-        contentRef.current,
-        { opacity: 0, duration: 0.25, ease: "power2.in" },
-        0
-      );
-    }
-
-    if (morphRef.current) {
-      tl.to(
-        morphRef.current,
-        {
-          left: blobPositionRef.current.x,
-          top: blobPositionRef.current.y,
-          width: 140,
-          height: 140,
-          maxWidth: 140,
-          maxHeight: 140,
-          borderRadius: "30% 70% 70% 30% / 30% 30% 70% 70%",
-          duration: 0.6,
-          ease: "expo.in",
-        },
-        0.15
-      );
-
-      tl.to(
-        morphRef.current,
-        { opacity: 0, duration: 0.2, ease: "power2.in" },
-        0.7
-      );
-    }
-
-    if (overlayRef.current) {
-      tl.to(
-        overlayRef.current,
-        { opacity: 0, duration: 0.3, ease: "power2.in" },
-        0.6
-      );
-    }
+    closeProjectModal(window.innerWidth / 2, window.innerHeight / 2, onClose);
   };
 
   const desktopSkins = project.media?.desktopSkins || [];
@@ -179,17 +32,25 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
   const totalImages = Math.max(desktopSkins.length, mobileSkins.length);
 
   const handlePrevious = () => {
-    setCurrentIndex((prev) => (prev - 1 + totalImages) % totalImages);
+    const nextIndex = (currentIndex - 1 + totalImages) % totalImages;
+    animateMockupChange('prev', nextIndex);
+    setTimeout(() => {
+      setCurrentIndex(nextIndex);
+    }, 300);
   };
 
   const handleNext = () => {
-    setCurrentIndex((prev) => (prev + 1) % totalImages);
+    const nextIndex = (currentIndex + 1) % totalImages;
+    animateMockupChange('next', nextIndex);
+    setTimeout(() => {
+      setCurrentIndex(nextIndex);
+    }, 300);
   };
 
   return (
     <div
-      ref={overlayRef}
-      className="fixed inset-0 z-[9999]"
+      data-modal-overlay
+      className="fixed inset-0 z-[999999]"
       style={{
         background: "rgba(0, 0, 0, 0.95)",
         backdropFilter: "blur(20px)",
@@ -197,19 +58,22 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
       onClick={handleClose}
     >
       <div
-        ref={morphRef}
-        className="fixed bg-bg backdrop-blur-xl overflow-hidden"
+        data-modal-morph
+        className="fixed bg-bg backdrop-blur-xl overflow-hidden pointer-events-auto"
         style={{
           borderRadius: "30% 70% 70% 30% / 30% 30% 70% 70%",
           boxShadow: "0 0 0 1px rgba(204,255,2,0.2)",
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        <div ref={contentRef} className="relative w-full h-full flex flex-col">
+        <div data-modal-content className="relative w-full h-full flex flex-col pointer-events-auto">
           {/* Close Button */}
           <button
-            onClick={handleClose}
-            className="absolute top-6 right-6 z-50 w-12 h-12 flex items-center justify-center rounded-xl bg-bg/50 backdrop-blur-sm hover:bg-primary/10 transition-all duration-300 group"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleClose();
+            }}
+            className="absolute top-6 right-6 z-[9999999] w-12 h-12 flex items-center justify-center rounded-xl bg-bg/80 backdrop-blur-sm hover:bg-primary/20 transition-all duration-300 group pointer-events-auto cursor-pointer border border-border/30"
             aria-label="Close modal"
           >
             <svg
@@ -335,31 +199,27 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
                     </div>
                   )}
 
-                  {/* Mockups Container - Smaller desktop */}
-                  <div className="relative max-w-xl mx-auto">
+                  {/* Mockups Container - Overlapping with proper scaling */}
+                  <div className="relative mx-auto">
                     {desktopSkins[currentIndex] && (
-                      <div className="w-full">
+                      <div className="w-full" data-mockup="desktop">
                         <Mockup
                           key={`desktop-${currentIndex}`}
                           variant="laptop"
                           src={desktopSkins[currentIndex]}
-                          alt={`${t(project.title)} - Desktop ${
-                            currentIndex + 1
-                          }`}
+                          alt={`${t(project.title)} - Desktop ${currentIndex + 1}`}
                         />
                       </div>
                     )}
 
-                    {/* Mobile Overlay - Better sized */}
+                    {/* Mobile Overlay */}
                     {mobileSkins[currentIndex] && (
-                      <div className="absolute -bottom-6 -right-6 lg:-bottom-8 lg:-right-8 w-32 lg:w-40 drop-shadow-2xl">
+                      <div className="absolute -bottom-4 -right-4 w-20 sm:w-24 md:w-36 md:-bottom-6 md:-right-6 lg:-bottom-8 lg:-right-8 lg:w-40 drop-shadow-2xl" data-mockup="mobile">
                         <Mockup
                           key={`mobile-${currentIndex}`}
                           variant="mobile"
                           src={mobileSkins[currentIndex]}
-                          alt={`${t(project.title)} - Mobile ${
-                            currentIndex + 1
-                          }`}
+                          alt={`${t(project.title)} - Mobile ${currentIndex + 1}`}
                         />
                       </div>
                     )}

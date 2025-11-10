@@ -45,7 +45,9 @@ const createScene = (container: HTMLElement) => {
     0.1,
     2000
   );
-  camera.position.set(-50, 30, 600);
+
+  // Camera position stays same, models are moved up instead
+  camera.position.set(-50, 30, 700);
   camera.lookAt(-30, 0, 0);
 
   const renderer = new THREE.WebGLRenderer({
@@ -205,7 +207,10 @@ const loadModel = async (
         const scale = 75;
         model.scale.set(scale, scale, scale);
         model.rotation.y = -0.3;
-        model.position.set(-20, -35, 0);
+
+        // Homepage: Center models in viewport
+        const modelY = -35; // Same for all devices - centered
+        model.position.set(-20, modelY, 0);
 
         const wrapper = new THREE.Group();
         wrapper.add(model);
@@ -223,8 +228,9 @@ const loadModel = async (
 };
 
 export async function initProjects3DScene() {
-  console.log("🎬 initProjects3DScene called");
-  
+  // console.log("🎬 initProjects3DScene called");
+
+  const config = getViewportConfig();
   const desktopContainers = document.querySelectorAll(
     '[data-3d-container^="project-"]:not([data-3d-container^="project-mobile"])'
   );
@@ -232,12 +238,15 @@ export async function initProjects3DScene() {
     '[data-3d-container^="project-mobile-"]'
   );
 
-  const allContainers = [
-    ...Array.from(desktopContainers),
-    ...Array.from(mobileContainers),
-  ];
+  // console.log(`🖥️  Found ${desktopContainers.length} desktop containers`);
+  // console.log(`📱 Found ${mobileContainers.length} mobile containers`);
 
-  console.log(`📦 Found ${allContainers.length} containers`);
+  // Only process containers for current viewport
+  const allContainers = config.isMobile || config.isTablet
+    ? Array.from(mobileContainers)
+    : Array.from(desktopContainers);
+
+  // console.log(`📦 Processing ${allContainers.length} containers for ${config.isMobile ? 'MOBILE' : config.isTablet ? 'TABLET' : 'DESKTOP'}`);
 
   if (allContainers.length === 0) return;
 
@@ -259,10 +268,26 @@ export async function initProjects3DScene() {
           container.getAttribute("data-3d-container")?.split("-")[1] || "0"
         );
 
+    // console.log(`🔧 Initializing ${isMobile ? 'MOBILE' : 'DESKTOP'} container #${projectIndex}`);
+
     const project = projects[projectIndex];
     const modelPath = MODEL_PATHS[projectIndex % MODEL_PATHS.length];
     const laptopImage = project?.media.laptopTexture;
     const iphoneImage = project?.media.mobileTexture;
+
+    // Check if container is hidden (display: none or visibility: hidden)
+    const computedStyle = window.getComputedStyle(container);
+    if (computedStyle.display === 'none' || computedStyle.visibility === 'hidden') {
+      console.warn(`⚠️  Container #${projectIndex} is HIDDEN - skipping`);
+      continue;
+    }
+
+    if (!container.clientWidth || !container.clientHeight) {
+      console.warn(`⚠️  Container #${projectIndex} has no dimensions - skipping`);
+      continue;
+    }
+
+    // console.log(`📐 Container dimensions: ${container.clientWidth}x${container.clientHeight}`);
 
     const config = getViewportConfig();
     const { scene, camera, renderer } = createScene(container);
@@ -280,8 +305,13 @@ export async function initProjects3DScene() {
       modelPath,
       projectIndex
     );
-    
-    if (!modelData) continue;
+
+    if (!modelData) {
+      console.error(`❌ Failed to load model for project #${projectIndex}`);
+      continue;
+    }
+
+    // console.log(`✅ Model loaded successfully for project #${projectIndex}`);
 
     const { wrapper: modelWrapper, laptopGroup, iphoneGroup } = modelData;
 
@@ -347,34 +377,37 @@ export async function initProjects3DScene() {
       time += 0.005;
 
       if (modelWrapper && modelWrapper.children[0]) {
-        modelWrapper.position.y = Math.sin(time * 0.6) * 10;
+        // Gentle vertical floating only - reduced amplitude to keep in bounds
+        modelWrapper.position.y = Math.sin(time * 0.6) * 3;
         const modelChild = modelWrapper.children[0];
-        modelChild.rotation.x = Math.sin(time * 0.3) * 0.015;
-        modelChild.rotation.z = Math.sin(time * 0.25) * 0.012;
+        modelChild.rotation.x = Math.sin(time * 0.3) * 0.01;
+        modelChild.rotation.z = Math.sin(time * 0.25) * 0.008;
       }
 
       if (laptopGroup && laptopOriginal) {
+        // Laptop floats with offset phase to avoid crossing iPhone
         laptopGroup.position.y =
-          laptopOriginal.pos.y + Math.sin(time * 0.35) * 7;
+          laptopOriginal.pos.y + Math.sin(time * 0.35) * 2.5;
 
         laptopGroup.rotation.x =
-          laptopOriginal.rot.x + Math.sin(time * 0.18) * 0.035;
+          laptopOriginal.rot.x + Math.sin(time * 0.18) * 0.02;
         laptopGroup.rotation.y =
-          laptopOriginal.rot.y + Math.cos(time * 0.22) * 0.028;
+          laptopOriginal.rot.y + Math.cos(time * 0.22) * 0.015;
         laptopGroup.rotation.z =
-          laptopOriginal.rot.z + Math.sin(time * 0.26) * 0.018;
+          laptopOriginal.rot.z + Math.sin(time * 0.26) * 0.01;
       }
 
       if (iphoneGroup && iphoneOriginal) {
+        // iPhone floats with different phase to stay separated from laptop
         iphoneGroup.position.y =
-          iphoneOriginal.pos.y + Math.cos(time * 0.42 + 2) * 8;
+          iphoneOriginal.pos.y + Math.cos(time * 0.42 + 2) * 2.5;
 
         iphoneGroup.rotation.x =
-          iphoneOriginal.rot.x + Math.cos(time * 0.22) * 0.045;
+          iphoneOriginal.rot.x + Math.cos(time * 0.22) * 0.025;
         iphoneGroup.rotation.y =
-          iphoneOriginal.rot.y + Math.sin(time * 0.27) * 0.038;
+          iphoneOriginal.rot.y + Math.sin(time * 0.27) * 0.02;
         iphoneGroup.rotation.z =
-          iphoneOriginal.rot.z + Math.cos(time * 0.32) * 0.028;
+          iphoneOriginal.rot.z + Math.cos(time * 0.32) * 0.015;
       }
 
       renderer.render(scene, camera);
@@ -402,7 +435,7 @@ export async function initProjects3DScene() {
       scrollProgress: 0,
     };
 
-    console.log(`✅ Scene ${index} initialized`);
+    // console.log(`✅ Scene ${index} initialized`);
 
     cleanupFunctions.push(() => {
       window.removeEventListener("resize", handleResize);
@@ -436,7 +469,7 @@ export async function initProjects3DScene() {
     });
   }
 
-  console.log("✅ All project scenes initialized");
+  // console.log("✅ All project scenes initialized");
 
   return () => {
     cleanupFunctions.forEach((cleanup) => cleanup());

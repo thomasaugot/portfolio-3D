@@ -18,11 +18,8 @@ export function initPortfolioScroll() {
       return;
     }
 
-    console.log("✅ Portfolio scene ready, initializing scroll animations...");
-
     const portfolioSection = document.querySelector("[data-portfolio-section]");
     if (!portfolioSection) {
-      console.error("❌ Portfolio section not found");
       return;
     }
 
@@ -31,6 +28,9 @@ export function initPortfolioScroll() {
       "[data-project-panel]"
     );
     const { hexFloor, projectModels, camera } = portfolioScene;
+
+    console.log(`📋 Found ${projectPanels.length} project panels`);
+    console.log(`📦 Found ${projectModels.length} project models`);
 
     const header = portfolioSection.querySelector("[data-projects-header]");
     const scrollHint = portfolioSection.querySelector("[data-scroll-hint]");
@@ -63,13 +63,6 @@ export function initPortfolioScroll() {
 
     const totalProjects = projects.length;
     const totalSlides = totalProjects + 1;
-
-    // Create explicit snap points
-    const snapPoints: number[] = [];
-    for (let i = 0; i <= totalProjects; i++) {
-      snapPoints.push(i / totalProjects);
-    }
-
     const isMobile = window.innerWidth < 768;
 
     const tl = gsap.timeline({
@@ -80,27 +73,35 @@ export function initPortfolioScroll() {
         scrub: isMobile ? 0.8 : 0.3,
         snap: {
           snapTo: (progress) => {
-            const index = progress * totalProjects;
+            const currentSlide = progress * totalProjects;
+            const nearest = Math.round(currentSlide);
+            const distanceFromNearest = Math.abs(currentSlide - nearest);
 
-            // Special handling for hero (first slide at index 0)
-            if (index < 0.5) {
-              // If in first half of hero section, snap to start
-              return 0;
+            // Only snap if we're VERY close to a snap point (within 8%)
+            // If you're in the middle, stay there - NO SNAP
+            if (distanceFromNearest > 0.08) {
+              return progress; // Don't snap - stay exactly where you are
             }
 
-            const rounded = Math.round(index);
-            const fraction = Math.abs(index - rounded);
-
-            // Only snap if we're reasonably close to a snap point (within 40%)
-            if (fraction < 0.4) {
-              return rounded / totalProjects;
+            // SPECIAL RULE: If between hero (0) and first project (1)
+            if (currentSlide >= 0 && currentSlide <= 1) {
+              // If you're more than 30% into first project, snap to first project
+              if (currentSlide >= 0.3) {
+                return 1 / totalProjects; // First project
+              } else if (currentSlide <= 0.08) {
+                return 0; // Hero only if very close
+              } else {
+                return progress; // Stay in middle, don't snap
+              }
             }
-            // Otherwise stay where we are
-            return progress;
+
+            // For all other slides, snap to nearest
+            return Math.max(0, Math.min(totalProjects, nearest)) / totalProjects;
           },
-          duration: 0.5,
-          delay: 0.3,
-          ease: "power2.inOut"
+          duration: 0.3,
+          delay: 0,
+          ease: "power2.out",
+          inertia: false
         },
         pin: portfolioSection.querySelector(".sticky"),
         anticipatePin: 1,
@@ -163,6 +164,10 @@ export function initPortfolioScroll() {
       const description = panel?.querySelector("[data-project-description]");
       const techs = panel?.querySelector("[data-project-techs]");
       const button = panel?.querySelector("[data-project-button]");
+
+      if (i < totalProjects) {
+        console.log(`Panel ${i}: badge=${!!badge}, title=${!!title}, desc=${!!description}, techs=${!!techs}, button=${!!button}`);
+      }
 
       const slideProgress = i / totalProjects;
       const nextSlideProgress = (i + 1) / totalProjects;
@@ -372,18 +377,23 @@ export function initPortfolioScroll() {
           );
       }
 
+      // Start rotation from first project (i=0), not second
       tl.to(
         hexFloor.rotation,
-        { y: i * Math.PI * 0.35, duration: duration, ease: "sine.inOut" },
+        { y: (i + 1) * Math.PI * 0.35, duration: duration, ease: "sine.inOut" },
         slideProgress
       );
+
+      // Camera lookAt matches hex grid position
+      const lookAtY = isMobile ? -40 : -120;
+      const lookAtX = isMobile ? -30 : -50;
       tl.to(
         camera.position,
         {
           y: 80 + i * 30,
           duration: duration,
           ease: "sine.inOut",
-          onUpdate: () => camera.lookAt(-50, 0, 0),
+          onUpdate: () => camera.lookAt(lookAtX, lookAtY, 0),
         },
         slideProgress
       );
