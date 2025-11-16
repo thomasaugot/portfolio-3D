@@ -35,16 +35,16 @@ export class PerformanceMonitor {
     this.frameCount++;
     const now = performance.now();
     const delta = now - this.lastFPSUpdate;
-    
+
     if (delta >= 1000) {
       this.fps = Math.round((this.frameCount * 1000) / delta);
-      
-      if (this.fps < 30) {
+
+      // Only warn for critically low FPS (< 24 fps) to avoid spam
+      if (this.fps < 24) {
         console.warn(`❌ LOW FPS: ${this.fps} fps`);
-      } else if (this.fps < 50) {
-        console.warn(`⚠️ MEDIUM FPS: ${this.fps} fps`);
       }
-      
+      // Removed medium FPS warning - 30-60 fps is acceptable for 3D scenes
+
       this.frameCount = 0;
       this.lastFPSUpdate = now;
     }

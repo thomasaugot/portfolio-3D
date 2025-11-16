@@ -10,37 +10,38 @@ export interface MenuItem {
 }
 
 export const menuItems: MenuItem[] = [
-  { 
-    label: 'Home', 
-    href: '/', 
+  {
+    label: 'Home',
+    href: '/',
     description: 'Back to homepage',
     labelKey: 'nav.home',
     descriptionKey: 'nav.home_description'
   },
-  { 
-    label: 'About', 
-    href: '/about', 
+  {
+    label: 'About',
+    href: '/about',
     description: 'Background & expertise',
     labelKey: 'nav.about',
     descriptionKey: 'nav.about_description'
   },
-  { 
-    label: 'Portfolio', 
-    href: '/portfolio', 
+  {
+    label: 'Portfolio',
+    href: '/portfolio',
     description: 'Selected projects & case studies',
     labelKey: 'nav.portfolio',
     descriptionKey: 'nav.portfolio_description'
   },
-  { 
-    label: 'Blog', 
-    href: '/blog', 
-    description: 'Thoughts on development & design',
-    labelKey: 'nav.blog',
-    descriptionKey: 'nav.blog_description'
-  },
-  { 
-    label: 'Contact', 
-    href: '/contact', 
+  // Commented out until blog page is created - was causing 404 errors
+  // {
+  //   label: 'Blog',
+  //   href: '/blog',
+  //   description: 'Thoughts on development & design',
+  //   labelKey: 'nav.blog',
+  //   descriptionKey: 'nav.blog_description'
+  // },
+  {
+    label: 'Contact',
+    href: '/contact',
     description: 'Let\'s build something together',
     labelKey: 'nav.contact.menu-item',
     descriptionKey: 'nav.contact_description'

@@ -11,7 +11,7 @@ const MODEL_PATHS = [
 ];
 
 const isLowPerformanceDevice = () => {
-  if (typeof navigator === 'undefined') return false;
+  if (typeof navigator === "undefined") return false;
   const connection = (navigator as any).connection;
   const memory = (performance as any).memory;
 
@@ -46,14 +46,13 @@ const createScene = (container: HTMLElement) => {
     2000
   );
 
-  // Camera position stays same, models are moved up instead
   camera.position.set(-50, 30, 700);
   camera.lookAt(-30, 0, 0);
 
   const renderer = new THREE.WebGLRenderer({
     alpha: true,
     antialias: !config.isMobile && !lowPerf,
-    powerPreference: "high-performance"
+    powerPreference: "high-performance",
   });
   renderer.setSize(container.clientWidth, container.clientHeight);
   const maxPixelRatio = config.isMobile ? 1.5 : 2;
@@ -104,7 +103,9 @@ const loadTexture = async (
           texture.generateMipmaps = false;
           texture.colorSpace = THREE.SRGBColorSpace;
           const config = getViewportConfig();
-          texture.anisotropy = config.isDesktop ? renderer.capabilities.getMaxAnisotropy() : 1;
+          texture.anisotropy = config.isDesktop
+            ? renderer.capabilities.getMaxAnisotropy()
+            : 1;
           resolve(texture);
         },
         undefined,
@@ -130,7 +131,9 @@ const loadModel = async (
   laptopGroup: THREE.Object3D | null;
   iphoneGroup: THREE.Object3D | null;
 } | null> => {
-  const { GLTFLoader } = await import("three/examples/jsm/loaders/GLTFLoader.js");
+  const { GLTFLoader } = await import(
+    "three/examples/jsm/loaders/GLTFLoader.js"
+  );
   const loader = new GLTFLoader();
 
   return new Promise((resolve) => {
@@ -204,12 +207,11 @@ const loadModel = async (
           }
         });
 
-        const scale = 75;
+        const scale = config.isMobile ? 120 : config.isTablet ? 110 : 75;
         model.scale.set(scale, scale, scale);
         model.rotation.y = -0.3;
 
-        // Homepage: Center models in viewport
-        const modelY = -35; // Same for all devices - centered
+        const modelY = config.isMobile ? 20 : config.isTablet ? 10 : -35;
         model.position.set(-20, modelY, 0);
 
         const wrapper = new THREE.Group();
@@ -228,8 +230,6 @@ const loadModel = async (
 };
 
 export async function initProjects3DScene() {
-  // console.log("🎬 initProjects3DScene called");
-
   const config = getViewportConfig();
   const desktopContainers = document.querySelectorAll(
     '[data-3d-container^="project-"]:not([data-3d-container^="project-mobile"])'
@@ -238,15 +238,10 @@ export async function initProjects3DScene() {
     '[data-3d-container^="project-mobile-"]'
   );
 
-  // console.log(`🖥️  Found ${desktopContainers.length} desktop containers`);
-  // console.log(`📱 Found ${mobileContainers.length} mobile containers`);
-
-  // Only process containers for current viewport
-  const allContainers = config.isMobile || config.isTablet
-    ? Array.from(mobileContainers)
-    : Array.from(desktopContainers);
-
-  // console.log(`📦 Processing ${allContainers.length} containers for ${config.isMobile ? 'MOBILE' : config.isTablet ? 'TABLET' : 'DESKTOP'}`);
+  const allContainers =
+    config.isMobile || config.isTablet
+      ? Array.from(mobileContainers)
+      : Array.from(desktopContainers);
 
   if (allContainers.length === 0) return;
 
@@ -268,26 +263,26 @@ export async function initProjects3DScene() {
           container.getAttribute("data-3d-container")?.split("-")[1] || "0"
         );
 
-    // console.log(`🔧 Initializing ${isMobile ? 'MOBILE' : 'DESKTOP'} container #${projectIndex}`);
-
     const project = projects[projectIndex];
     const modelPath = MODEL_PATHS[projectIndex % MODEL_PATHS.length];
     const laptopImage = project?.media.laptopTexture;
     const iphoneImage = project?.media.mobileTexture;
 
-    // Check if container is hidden (display: none or visibility: hidden)
     const computedStyle = window.getComputedStyle(container);
-    if (computedStyle.display === 'none' || computedStyle.visibility === 'hidden') {
+    if (
+      computedStyle.display === "none" ||
+      computedStyle.visibility === "hidden"
+    ) {
       console.warn(`⚠️  Container #${projectIndex} is HIDDEN - skipping`);
       continue;
     }
 
     if (!container.clientWidth || !container.clientHeight) {
-      console.warn(`⚠️  Container #${projectIndex} has no dimensions - skipping`);
+      console.warn(
+        `⚠️  Container #${projectIndex} has no dimensions - skipping`
+      );
       continue;
     }
-
-    // console.log(`📐 Container dimensions: ${container.clientWidth}x${container.clientHeight}`);
 
     const config = getViewportConfig();
     const { scene, camera, renderer } = createScene(container);
@@ -310,8 +305,6 @@ export async function initProjects3DScene() {
       console.error(`❌ Failed to load model for project #${projectIndex}`);
       continue;
     }
-
-    // console.log(`✅ Model loaded successfully for project #${projectIndex}`);
 
     const { wrapper: modelWrapper, laptopGroup, iphoneGroup } = modelData;
 
@@ -364,20 +357,20 @@ export async function initProjects3DScene() {
     let frameCounter = 0;
 
     const animate = () => {
-      // Skip rendering when tab is hidden
       if (document.hidden) {
         animationId = requestAnimationFrame(animate);
         return;
       }
 
       const shouldMeasure = frameCounter % 60 === 0 && frameCounter > 0;
-      const animateMeasure = shouldMeasure ? perfMonitor.startMeasure(`animate:${index}`) : null;
+      const animateMeasure = shouldMeasure
+        ? perfMonitor.startMeasure(`animate:${index}`)
+        : null;
 
       perfMonitor.updateFPS();
       time += 0.005;
 
       if (modelWrapper && modelWrapper.children[0]) {
-        // Gentle vertical floating only - reduced amplitude to keep in bounds
         modelWrapper.position.y = Math.sin(time * 0.6) * 3;
         const modelChild = modelWrapper.children[0];
         modelChild.rotation.x = Math.sin(time * 0.3) * 0.01;
@@ -385,7 +378,6 @@ export async function initProjects3DScene() {
       }
 
       if (laptopGroup && laptopOriginal) {
-        // Laptop floats with offset phase to avoid crossing iPhone
         laptopGroup.position.y =
           laptopOriginal.pos.y + Math.sin(time * 0.35) * 2.5;
 
@@ -398,7 +390,6 @@ export async function initProjects3DScene() {
       }
 
       if (iphoneGroup && iphoneOriginal) {
-        // iPhone floats with different phase to stay separated from laptop
         iphoneGroup.position.y =
           iphoneOriginal.pos.y + Math.cos(time * 0.42 + 2) * 2.5;
 
@@ -411,7 +402,7 @@ export async function initProjects3DScene() {
       }
 
       renderer.render(scene, camera);
-      
+
       if (animateMeasure) animateMeasure();
       frameCounter++;
       animationId = requestAnimationFrame(animate);
@@ -435,13 +426,10 @@ export async function initProjects3DScene() {
       scrollProgress: 0,
     };
 
-    // console.log(`✅ Scene ${index} initialized`);
-
     cleanupFunctions.push(() => {
       window.removeEventListener("resize", handleResize);
       if (animationId) cancelAnimationFrame(animationId);
 
-      // Properly dispose all geometries, materials, and textures
       scene.traverse((child: any) => {
         if (child.geometry) {
           child.geometry.dispose();
@@ -468,8 +456,6 @@ export async function initProjects3DScene() {
       delete (window as any)[sceneKey];
     });
   }
-
-  // console.log("✅ All project scenes initialized");
 
   return () => {
     cleanupFunctions.forEach((cleanup) => cleanup());

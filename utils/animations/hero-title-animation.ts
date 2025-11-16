@@ -44,7 +44,7 @@ export function initHeroTitleAnimation() {
   
   const leftPiece = document.createElement('span');
   leftPiece.textContent = firstHalf;
-  leftPiece.className = 'tetris-left gradient-primary bg-clip-text text-transparent font-fun font-light tracking-tighter';
+  leftPiece.className = 'tetris-left gradient-primary bg-clip-text text-transparent font-fun font-extralight tracking-tighter';
   leftPiece.style.display = 'inline-block';
   leftPiece.style.whiteSpace = 'nowrap';
   leftPiece.style.transformOrigin = 'center center';
@@ -52,7 +52,7 @@ export function initHeroTitleAnimation() {
   
   const rightPiece = document.createElement('span');
   rightPiece.textContent = secondHalf;
-  rightPiece.className = 'tetris-right gradient-primary bg-clip-text text-transparent font-fun font-light tracking-tighter';
+  rightPiece.className = 'tetris-right gradient-primary bg-clip-text text-transparent font-fun font-extralight tracking-tighter';
   rightPiece.style.display = 'inline-block';
   rightPiece.style.whiteSpace = 'nowrap';
   rightPiece.style.transformOrigin = 'center center';

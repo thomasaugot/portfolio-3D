@@ -35,14 +35,14 @@ export default function PortfolioCTA({ totalProjects }: PortfolioCTAProps) {
 
         <div
           data-cta-buttons
-          className="flex flex-row gap-4 justify-center items-center opacity-0 translate-y-8"
+          className="flex flex-col md:flex-row gap-4 justify-center items-stretch opacity-0 translate-y-8 max-w-md mx-auto"
         >
           <Button
             asLink
             href={`/${language}/contact`}
             variant="filled"
             size="lg"
-            className="flex-none"
+            className="flex-1"
           >
             {t("portfolio.cta.primaryButton")}
           </Button>
@@ -51,7 +51,7 @@ export default function PortfolioCTA({ totalProjects }: PortfolioCTAProps) {
             href={`/${language}`}
             variant="outlined"
             size="lg"
-            className="flex-none"
+            className="flex-1"
           >
             {t("portfolio.cta.secondaryButton")}
           </Button>

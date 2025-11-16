@@ -11,29 +11,64 @@ export function initTetrisTextAnimation() {
   const header = document.querySelector("[data-projects-header]");
   if (!header) return;
 
-  const subtitle = header.querySelector("[data-projects-subtitle]") as HTMLElement;
+  const subtitle = header.querySelector(
+    "[data-projects-subtitle]"
+  ) as HTMLElement;
   const title = header.querySelector("[data-projects-title]") as HTMLElement;
 
   if (!title) return;
 
   gsap.set(subtitle, { opacity: 0 });
 
-  const titleText = title.textContent?.trim() || "";
-  const words = titleText.split(" ");
+  // Check if this is a two-part title (portfolio page)
+  const isTwoPartTitle = title.hasAttribute("data-two-part-title");
+  let allWords: HTMLElement[] = [];
 
-  title.innerHTML = "";
+  if (isTwoPartTitle) {
+    // For two-part titles, work with lines not individual words
+    const lines = title.querySelectorAll(
+      "[data-hero-line]"
+    ) as NodeListOf<HTMLElement>;
 
-  words.forEach((word) => {
-    const wordSpan = document.createElement("span");
-    wordSpan.textContent = word;
-    wordSpan.className = "gradient-primary bg-clip-text text-transparent font-fun font-light tracking-tighter";
-    wordSpan.style.display = "inline-block";
-    wordSpan.style.whiteSpace = "nowrap";
-    wordSpan.style.marginRight = "0.5rem";
-    title.appendChild(wordSpan);
-  });
+    lines.forEach((line, lineIndex) => {
+      const text = line.textContent?.trim() || "";
+      const words = text.split(" ");
 
-  const allWords = title.querySelectorAll("span");
+      // Store original classes
+      const originalClasses = line.className;
+
+      line.innerHTML = "";
+
+      words.forEach((word, wordIdx) => {
+        const wordSpan = document.createElement("span");
+        wordSpan.textContent = word;
+        wordSpan.className = originalClasses;
+        wordSpan.style.display = "inline-block";
+        wordSpan.style.whiteSpace = "nowrap";
+        wordSpan.style.marginRight = "0.5rem";
+
+        line.appendChild(wordSpan);
+        allWords.push(wordSpan);
+      });
+    });
+  } else {
+    // Original single-line logic for homepage
+    const titleText = title.textContent?.trim() || "";
+    const words = titleText.split(" ");
+
+    title.innerHTML = "";
+
+    words.forEach((word) => {
+      const wordSpan = document.createElement("span");
+      wordSpan.textContent = word;
+      wordSpan.className = "font-normal";
+      wordSpan.style.display = "inline-block";
+      wordSpan.style.whiteSpace = "nowrap";
+      wordSpan.style.marginRight = "0.5rem";
+      title.appendChild(wordSpan);
+      allWords.push(wordSpan);
+    });
+  }
 
   allWords.forEach((word, index) => {
     const isEven = index % 2 === 0;
@@ -62,35 +97,51 @@ export function initTetrisTextAnimation() {
   allWords.forEach((word, index) => {
     const baseDelay = index * 0.15;
 
-    tl.to(word, {
-      opacity: 1,
-      duration: 0.1,
-      ease: "none",
-    }, baseDelay);
+    tl.to(
+      word,
+      {
+        opacity: 1,
+        duration: 0.1,
+        ease: "none",
+      },
+      baseDelay
+    );
 
-    tl.to(word, {
-      x: 0,
-      y: 0,
-      duration: 0.4,
-      ease: "power2.out",
-    }, baseDelay);
+    tl.to(
+      word,
+      {
+        x: 0,
+        y: 0,
+        duration: 0.4,
+        ease: "power2.out",
+      },
+      baseDelay
+    );
 
-    tl.to(word, {
-      rotationZ: 0,
-      scale: 1,
-      duration: 0.35,
-      ease: "back.out(1.7)",
-    }, baseDelay + 0.25);
+    tl.to(
+      word,
+      {
+        rotationZ: 0,
+        scale: 1,
+        duration: 0.35,
+        ease: "back.out(1.7)",
+      },
+      baseDelay + 0.25
+    );
   });
 
   if (subtitle) {
     const lastWordDelay = (allWords.length - 1) * 0.15 + 0.6;
 
-    tl.to(subtitle, {
-      opacity: 1,
-      duration: 0.5,
-      ease: "power2.out",
-    }, lastWordDelay);
+    tl.to(
+      subtitle,
+      {
+        opacity: 1,
+        duration: 0.5,
+        ease: "power2.out",
+      },
+      lastWordDelay
+    );
   }
 
   if (tl.scrollTrigger) {

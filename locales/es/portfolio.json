@@ -5,7 +5,8 @@
   },
   "hero": {
     "badge": "Portfolio",
-    "title": "Lo que he creado",
+    "title_part1": "Del Concepto",
+    "title_part2": "a la Realidad",
     "subtitle": "Una selección cuidada de algunos proyectos recientes de los que estoy orgulloso.",
     "scroll_hint": "Desplázate para explorar"
   },

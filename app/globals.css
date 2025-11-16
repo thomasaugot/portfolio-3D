@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Audiowide&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700&display=swap");
 @import "tailwindcss";
 
 [data-portfolio-section] {
@@ -12,7 +12,7 @@
 @theme {
   /* Fonts */
   --font-primary: "DM Sans", sans-serif;
-  --font-fun: "Audiowide", sans-serif;
+  --font-fun: "Orbitron", sans-serif;
 
   /* Brand Colors */
   --primary-color: #ccff02;
@@ -66,6 +66,7 @@ body {
 
 .font-fun {
   font-family: var(--font-fun);
+  font-weight: 400;
 }
 
 button {

@@ -5,7 +5,8 @@
   },
   "hero": {
     "badge": "Portfolio",
-    "title": "Things I Made",
+    "title_part1": "Crafting Code,",
+    "title_part2": "Creating Solutions",
     "subtitle": "A curated selection of some recent projects I'm proud of.",
     "description": "Discover a curated collection of web projects showcasing modern development, creative design, and technical innovation.",
     "scroll_hint": "Scroll to explore"

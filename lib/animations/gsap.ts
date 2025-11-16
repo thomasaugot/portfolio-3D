@@ -7,10 +7,13 @@ if (typeof window !== "undefined") {
 
   gsap.config({
     nullTargetWarn: false,
+    trialWarn: false,
+    force3D: true,
   });
 
   ScrollTrigger.config({
     autoRefreshEvents: "visibilitychange,DOMContentLoaded,load",
+    ignoreMobileResize: true,
   });
 }
 

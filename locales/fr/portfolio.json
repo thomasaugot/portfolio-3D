@@ -5,8 +5,9 @@
   },
   "hero": {
     "badge": "Portfolio",
-    "title": "Ce que j'ai créé",
-    "subtitle": "Une sélection soignée de quelques projets récents dont je suis fier.",
+    "title_part1": "Pour chaque projet,",
+    "title_part2": "Une solution",
+    "subtitle": "Une sélection de quelques projets récents dont je suis fier.",
     "description": "Découvrez une collection de projets web mettant en avant le développement moderne, le design créatif et l'innovation technique.",
     "scroll_hint": "Faites défiler pour explorer"
   },

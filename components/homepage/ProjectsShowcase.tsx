@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { getFeaturedProjects } from "@/data/projects";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
 import { initProjects3DScene } from "@/utils/animations/projects-3d-scene";
+import { markSceneReady } from "@/hooks/useThreeScene";
 import ProjectModal from "@/components/portfolio/ProjectModal";
 import type { Project } from "@/types/project";
 
@@ -15,14 +16,19 @@ export default function ProjectsShowcase() {
 
   useEffect(() => {
     if (hasInitialized.current) return;
+    hasInitialized.current = true;
 
     let cleanupFn: (() => void) | undefined;
 
-    // Wait for all containers to be in DOM
     const timer = setTimeout(async () => {
       console.log("🎬 ProjectsShowcase: Initializing 3D scenes...");
-      cleanupFn = await initProjects3DScene();
-      hasInitialized.current = true;
+      try {
+        cleanupFn = await initProjects3DScene();
+        markSceneReady("projects");
+      } catch (error) {
+        console.error("Failed to init projects scene:", error);
+        markSceneReady("projects");
+      }
     }, 100);
 
     return () => {
@@ -50,15 +56,9 @@ export default function ProjectsShowcase() {
               data-projects-header
               className="absolute top-16 left-16 z-50 pointer-events-none"
             >
-              <h2
-                data-projects-subtitle
-                className="subtitle mb-2"
-              >
-                {t("homepage.projects_section.subtitle")}
-              </h2>
               <h3
                 data-projects-title
-                className="flex flex-wrap title-section pb-1 pr-2 relative z-10 max-w-full md:max-w-[40vw]"
+                className="text-4xl md:text-5xl lg:text-6xl font-normal leading-tight mb-4 md:mb-6 flex flex-wrap pb-1 pr-2 relative z-10 max-w-full md:max-w-[40vw]"
                 style={{
                   transform: "translateX(0)",
                   width: "max-content",
@@ -67,6 +67,12 @@ export default function ProjectsShowcase() {
               >
                 {t("homepage.projects_section.title")}
               </h3>
+              <h2
+                data-projects-subtitle
+                className="text-lg md:text-xl gradient-primary bg-clip-text text-transparent"
+              >
+                {t("homepage.projects_section.subtitle")}
+              </h2>
             </div>
 
             <div className="absolute inset-0 pointer-events-none opacity-40">
@@ -106,7 +112,6 @@ export default function ProjectsShowcase() {
                       willChange: "transform, opacity",
                     }}
                   >
-                    {/* Badge */}
                     <div className="inline-flex items-center gap-2 px-4 py-2 bg-surface/50 backdrop-blur-sm rounded-full border border-border/50">
                       <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
                       <span className="text-label">
@@ -114,19 +119,16 @@ export default function ProjectsShowcase() {
                       </span>
                     </div>
 
-                    {/* Title */}
                     <h2 className="title-section gradient-text">
                       {t(project.title)}
                     </h2>
 
-                    {/* Description */}
                     <div className="lg:bg-surface/30 lg:backdrop-blur-sm lg:p-6 lg:rounded-xl lg:border lg:border-border/30">
                       <p className="text-body">
                         {t(project.preview.tagline)}
                       </p>
                     </div>
 
-                    {/* Technologies */}
                     <div className="flex flex-wrap gap-2">
                       {project.technologies.map((tech) => (
                         <span key={tech} className="tag">
@@ -135,10 +137,8 @@ export default function ProjectsShowcase() {
                       ))}
                     </div>
 
-                    {/* CTA Button */}
                     <button
                       onClick={(e) => {
-                        // Store click position globally for modal animation
                         (window as any).__modalClickPosition = {
                           x: e.clientX,
                           y: e.clientY
@@ -177,10 +177,10 @@ export default function ProjectsShowcase() {
         </div>
 
         <div className="relative z-10 mb-12 md:mb-20 max-w-4xl mx-auto">
-          <h2 className="title-hero mb-4 md:mb-6">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-normal leading-tight mb-4 md:mb-6">
             {t("homepage.projects_section.title")}
           </h2>
-          <p className="subtitle">
+          <p className="text-lg md:text-xl gradient-primary bg-clip-text text-transparent">
             {t("homepage.projects_section.subtitle")}
           </p>
         </div>
@@ -194,7 +194,7 @@ export default function ProjectsShowcase() {
             <div
               data-project-image
               data-3d-container={`project-mobile-${index}`}
-              className="absolute left-0 -top-48 md:-top-64 w-full h-[450px] md:h-[550px] overflow-visible pointer-events-none z-20"
+              className="absolute left-0 top-0 w-full h-[300px] md:h-[400px] overflow-visible pointer-events-none z-20"
               style={{
                 transformStyle: "preserve-3d",
                 willChange: "transform, opacity",
@@ -203,9 +203,8 @@ export default function ProjectsShowcase() {
 
             <div
               data-project-content
-              className="relative pt-[320px] md:pt-[400px] space-y-6 md:space-y-8 z-10"
+              className="relative pt-[280px] md:pt-[380px] space-y-6 md:space-y-8 z-10"
             >
-              {/* Badge */}
               <div className="inline-flex items-center gap-2 px-4 md:px-5 py-2 md:py-2.5 bg-surface/50 backdrop-blur-sm rounded-full border border-border/50">
                 <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
                 <span className="text-xs md:text-sm font-mono uppercase tracking-wider text-text/60">
@@ -213,19 +212,16 @@ export default function ProjectsShowcase() {
                 </span>
               </div>
 
-              {/* Title */}
               <h2 className="text-3xl md:text-5xl font-normal leading-tight gradient-text">
                 {t(project.title)}
               </h2>
 
-              {/* Description */}
               <div>
                 <p className="text-base md:text-xl text-text/80">
                   {t(project.preview.tagline)}
                 </p>
               </div>
 
-              {/* Technologies */}
               <div className="flex flex-wrap gap-2 md:gap-3">
                 {project.technologies.map((tech) => (
                   <span key={tech} className="text-xs md:text-sm px-3 md:px-4 py-1.5 md:py-2 rounded-lg bg-primary/10 text-primary border border-primary/20">
@@ -234,10 +230,8 @@ export default function ProjectsShowcase() {
                 ))}
               </div>
 
-              {/* CTA Button - Mobile style */}
               <button
                 onClick={(e) => {
-                  // Store click position globally for modal animation
                   (window as any).__modalClickPosition = {
                     x: e.clientX,
                     y: e.clientY

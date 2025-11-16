@@ -122,3 +122,11 @@ export function waitForScenes(sceneIds: string[]): Promise<void> {
     }, 15000);
   });
 }
+
+// Export function to manually mark a scene as ready
+// Useful for scenes that don't use the useThreeScene hook
+export function markSceneReady(sceneId: string) {
+  sceneStates.set(sceneId, true);
+  console.log(`✅ ${sceneId} scene marked as ready`);
+  readyCallbacks.forEach(callback => callback());
+}

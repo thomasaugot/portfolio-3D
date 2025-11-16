@@ -5,7 +5,7 @@ let heroTitleTimeline: gsap.core.Timeline | null = null;
 let contactHeroScrollTrigger: ScrollTrigger | null = null;
 
 const isLowPerformanceDevice = () => {
-  if (typeof navigator === 'undefined') return false;
+  if (typeof navigator === "undefined") return false;
   const connection = (navigator as any).connection;
   const memory = (performance as any).memory;
 
@@ -18,21 +18,21 @@ const isLowPerformanceDevice = () => {
 
 // Title animation (tetris-style)
 function initContactHeroTitleAnimation() {
-  const badge = document.querySelector('[data-hero-badge]');
-  const lines = document.querySelectorAll('[data-hero-line]');
-  const subtitle = document.querySelector('[data-hero-subtitle]');
-  const contactInfo = document.querySelector('[data-hero-contact-info]');
-  const formWrapper = document.querySelector('[data-contact-form-wrapper]');
+  const badge = document.querySelector("[data-hero-badge]");
+  const lines = document.querySelectorAll("[data-hero-line]");
+  const subtitle = document.querySelector("[data-hero-subtitle]");
+  const contactInfo = document.querySelector("[data-hero-contact-info]");
+  const formWrapper = document.querySelector("[data-contact-form-wrapper]");
 
   if (!badge || lines.length < 2 || !subtitle) return null;
 
-  const dot = badge.querySelector('.animate-pulse') as HTMLElement;
+  const dot = badge.querySelector(".animate-pulse") as HTMLElement;
 
   gsap.set([badge, subtitle], { opacity: 0 });
   if (contactInfo) gsap.set(contactInfo, { opacity: 0, y: 20 });
   if (formWrapper) gsap.set(formWrapper, { opacity: 0, x: 50 });
   if (dot) {
-    gsap.set(dot, { opacity: 0, y: -50, scale: 0, borderRadius: '0%' });
+    gsap.set(dot, { opacity: 0, y: -50, scale: 0, borderRadius: "0%" });
   }
 
   const tl = gsap.timeline({ delay: 0.8 });
@@ -48,35 +48,37 @@ function initContactHeroTitleAnimation() {
   const line2 = lines[1] as HTMLElement;
 
   // Split line2 (the gradient text) for tetris-style animation
-  const text = line2.textContent?.trim() || '';
-  const chars = text.split('');
+  const text = line2.textContent?.trim() || "";
+  const chars = text.split("");
   const midPoint = Math.ceil(chars.length / 2);
-  const firstHalf = chars.slice(0, midPoint).join('');
-  const secondHalf = chars.slice(midPoint).join('');
+  const firstHalf = chars.slice(0, midPoint).join("");
+  const secondHalf = chars.slice(midPoint).join("");
 
-  line2.style.position = 'relative';
-  line2.innerHTML = '';
+  line2.style.position = "relative";
+  line2.innerHTML = "";
 
-  const wrapper = document.createElement('div');
-  wrapper.style.display = 'flex';
-  wrapper.style.alignItems = 'center';
-  wrapper.style.justifyContent = 'flex-start';
-  wrapper.style.gap = '0';
+  const wrapper = document.createElement("div");
+  wrapper.style.display = "flex";
+  wrapper.style.alignItems = "center";
+  wrapper.style.justifyContent = "flex-start";
+  wrapper.style.gap = "0";
 
-  const leftPiece = document.createElement('span');
+  const leftPiece = document.createElement("span");
   leftPiece.textContent = firstHalf;
-  leftPiece.className = 'tetris-left gradient-primary bg-clip-text text-transparent font-fun font-light tracking-tighter';
-  leftPiece.style.display = 'inline-block';
-  leftPiece.style.whiteSpace = 'nowrap';
-  leftPiece.style.transformOrigin = 'center center';
+  leftPiece.className =
+    "tetris-left gradient-primary bg-clip-text text-transparent font-fun font-extralight tracking-tighter";
+  leftPiece.style.display = "inline-block";
+  leftPiece.style.whiteSpace = "nowrap";
+  leftPiece.style.transformOrigin = "center center";
   wrapper.appendChild(leftPiece);
 
-  const rightPiece = document.createElement('span');
+  const rightPiece = document.createElement("span");
   rightPiece.textContent = secondHalf;
-  rightPiece.className = 'tetris-right gradient-primary bg-clip-text text-transparent font-fun font-light tracking-tighter';
-  rightPiece.style.display = 'inline-block';
-  rightPiece.style.whiteSpace = 'nowrap';
-  rightPiece.style.transformOrigin = 'center center';
+  rightPiece.className =
+    "tetris-right gradient-primary bg-clip-text text-transparent font-fun font-extralight tracking-tighter";
+  rightPiece.style.display = "inline-block";
+  rightPiece.style.whiteSpace = "nowrap";
+  rightPiece.style.transformOrigin = "center center";
   wrapper.appendChild(rightPiece);
 
   line2.appendChild(wrapper);
@@ -88,73 +90,105 @@ function initContactHeroTitleAnimation() {
   gsap.set(rightPiece, { opacity: 0, x: 300 });
 
   // Animate left piece sliding in
-  tl.to(leftPiece, {
-    opacity: 1,
-    x: 0,
-    duration: 0.6,
-    ease: "power2.out",
-  }, 0.2);
+  tl.to(
+    leftPiece,
+    {
+      opacity: 1,
+      x: 0,
+      duration: 0.6,
+      ease: "power2.out",
+    },
+    0.2
+  );
 
   // Rotate left piece into place
-  tl.to(leftPiece, {
-    rotationZ: 0,
-    duration: 0.5,
-    ease: "back.out(2)",
-  }, 0.7);
+  tl.to(
+    leftPiece,
+    {
+      rotationZ: 0,
+      duration: 0.5,
+      ease: "back.out(2)",
+    },
+    0.7
+  );
 
   // Animate first line sliding down
-  tl.to(line1, {
-    opacity: 1,
-    y: 0,
-    duration: 0.7,
-    ease: "power2.out",
-  }, 0.9);
-
-  // Animate right piece sliding in
-  tl.to(rightPiece, {
-    opacity: 1,
-    x: 0,
-    duration: 0.6,
-    ease: "power2.out",
-  }, 0.6);
-
-  // Animate subtitle
-  tl.to(subtitle, {
-    opacity: 1,
-    duration: 0.6,
-    ease: "power2.out",
-  }, 1.5);
-
-  // Animate contact info
-  if (contactInfo) {
-    tl.to(contactInfo, {
+  tl.to(
+    line1,
+    {
       opacity: 1,
       y: 0,
       duration: 0.7,
       ease: "power2.out",
-    }, 1.7);
+    },
+    0.9
+  );
+
+  // Animate right piece sliding in
+  tl.to(
+    rightPiece,
+    {
+      opacity: 1,
+      x: 0,
+      duration: 0.6,
+      ease: "power2.out",
+    },
+    0.6
+  );
+
+  // Animate subtitle
+  tl.to(
+    subtitle,
+    {
+      opacity: 1,
+      duration: 0.6,
+      ease: "power2.out",
+    },
+    1.5
+  );
+
+  // Animate contact info
+  if (contactInfo) {
+    tl.to(
+      contactInfo,
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.7,
+        ease: "power2.out",
+      },
+      1.7
+    );
   }
 
   // Animate form wrapper
   if (formWrapper) {
-    tl.to(formWrapper, {
-      opacity: 1,
-      x: 0,
-      duration: 0.8,
-      ease: "power2.out",
-    }, 1.9);
+    tl.to(
+      formWrapper,
+      {
+        opacity: 1,
+        x: 0,
+        duration: 0.8,
+        ease: "power2.out",
+      },
+      1.9
+    );
   }
 
   // Animate dot with bounce
   if (dot) {
-    tl.to(dot, {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      borderRadius: '50%',
-      duration: 0.6,
-      ease: "back.out(1.7)",
-    }, 2.1);
+    tl.to(
+      dot,
+      {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        borderRadius: "50%",
+        duration: 0.6,
+        ease: "back.out(1.7)",
+      },
+      2.1
+    );
   }
 
   return tl;
@@ -173,7 +207,9 @@ function initContactHeroScrollAnimation() {
       '[data-3d-container="contact-hero"]'
     ) as HTMLElement;
     const heroSection = heroContainer?.parentElement?.parentElement;
-    const heroContent = heroSection?.querySelector('[data-contact-hero-content]');
+    const heroContent = heroSection?.querySelector(
+      "[data-contact-hero-content]"
+    );
     const scrollIndicator = heroSection?.querySelector(".absolute.bottom-12");
 
     if (!heroContainer || !heroSection || !heroContent) {
@@ -191,7 +227,7 @@ function initContactHeroScrollAnimation() {
       scrollTrigger: {
         trigger: heroSection,
         start: "top top",
-        end: "+=150%",  // Shorter scroll - ends at morphed state
+        end: "+=150%", // Shorter scroll - ends at morphed state
         scrub: scrubSpeed,
         pin: true,
         id: "contact-hero-scroll",
@@ -200,7 +236,7 @@ function initContactHeroScrollAnimation() {
           snapTo: [0, 1],
           duration: { min: 0.4, max: 0.8 },
           delay: 0.1,
-          ease: "power2.inOut"
+          ease: "power2.inOut",
         },
         onRefresh: (self) => {
           contactHeroScrollTrigger = self;
@@ -251,9 +287,9 @@ function initContactHeroScrollAnimation() {
         y: startY + 40,
         duration: 0.5,
         ease: "sine.inOut",
-        onUpdate: function() {
+        onUpdate: function () {
           camera.lookAt(0, 0, 0);
-        }
+        },
       },
       0.12
     );
@@ -267,9 +303,9 @@ function initContactHeroScrollAnimation() {
         y: startY + 140,
         duration: 0.7,
         ease: "sine.inOut",
-        onUpdate: function() {
+        onUpdate: function () {
           camera.lookAt(0, 0, 0);
-        }
+        },
       },
       0.5
     );
@@ -278,9 +314,9 @@ function initContactHeroScrollAnimation() {
     tl.to(
       hexFloor.rotation,
       {
-        x: Math.PI / 3.5,
-        y: Math.PI / 5,
-        z: Math.PI / 36,
+        x: 0, // Keep it flat (was Math.PI / 3.5)
+        y: Math.PI / 5, // Only spin horizontally
+        z: 0, // No roll (was Math.PI / 36)
         duration: 1.3,
         ease: "sine.inOut",
       },
@@ -342,7 +378,7 @@ function initContactHeroScrollAnimation() {
             z: (node as any).envelopePosition.z,
             duration: 0.6,
             ease: "power2.inOut",
-            },
+          },
           delay
         );
 
@@ -361,8 +397,8 @@ function initContactHeroScrollAnimation() {
     }
 
     // Fade out original title (h1) and subtitle
-    const titleElement = heroContent?.querySelector('h1');
-    const subtitleElement = heroContent?.querySelector('[data-hero-subtitle]');
+    const titleElement = heroContent?.querySelector("h1");
+    const subtitleElement = heroContent?.querySelector("[data-hero-subtitle]");
 
     if (titleElement) {
       tl.to(
@@ -390,38 +426,46 @@ function initContactHeroScrollAnimation() {
     }
 
     // TETRIS ANIMATED THANK YOU MESSAGE
-    const thankYouMessage = heroSection?.querySelector('[data-thank-you-message]') as HTMLElement;
-    const thankYouTitle = thankYouMessage?.querySelector('[data-thank-you-title]') as HTMLElement;
-    const thankYouSubtitle = thankYouMessage?.querySelector('[data-thank-you-subtitle]') as HTMLElement;
+    const thankYouMessage = heroSection?.querySelector(
+      "[data-thank-you-message]"
+    ) as HTMLElement;
+    const thankYouTitle = thankYouMessage?.querySelector(
+      "[data-thank-you-title]"
+    ) as HTMLElement;
+    const thankYouSubtitle = thankYouMessage?.querySelector(
+      "[data-thank-you-subtitle]"
+    ) as HTMLElement;
 
     if (thankYouMessage && thankYouTitle && thankYouSubtitle) {
       // Split the title for tetris animation
-      const text = thankYouTitle.textContent?.trim() || '';
-      const chars = text.split('');
+      const text = thankYouTitle.textContent?.trim() || "";
+      const chars = text.split("");
       const midPoint = Math.ceil(chars.length / 2);
-      const firstHalf = chars.slice(0, midPoint).join('');
-      const secondHalf = chars.slice(midPoint).join('');
+      const firstHalf = chars.slice(0, midPoint).join("");
+      const secondHalf = chars.slice(midPoint).join("");
 
-      thankYouTitle.innerHTML = '';
+      thankYouTitle.innerHTML = "";
 
-      const wrapper = document.createElement('div');
-      wrapper.style.display = 'flex';
-      wrapper.style.alignItems = 'center';
-      wrapper.style.justifyContent = 'flex-start';
-      wrapper.style.gap = '0';
+      const wrapper = document.createElement("div");
+      wrapper.style.display = "flex";
+      wrapper.style.alignItems = "center";
+      wrapper.style.justifyContent = "flex-start";
+      wrapper.style.gap = "0";
 
-      const leftPiece = document.createElement('span');
+      const leftPiece = document.createElement("span");
       leftPiece.textContent = firstHalf;
-      leftPiece.className = 'gradient-primary bg-clip-text text-transparent font-fun font-light tracking-tighter';
-      leftPiece.style.display = 'inline-block';
-      leftPiece.style.whiteSpace = 'nowrap';
+      leftPiece.className =
+        "gradient-primary bg-clip-text text-transparent font-fun font-extralight tracking-tighter";
+      leftPiece.style.display = "inline-block";
+      leftPiece.style.whiteSpace = "nowrap";
       wrapper.appendChild(leftPiece);
 
-      const rightPiece = document.createElement('span');
+      const rightPiece = document.createElement("span");
       rightPiece.textContent = secondHalf;
-      rightPiece.className = 'gradient-primary bg-clip-text text-transparent font-fun font-light tracking-tighter';
-      rightPiece.style.display = 'inline-block';
-      rightPiece.style.whiteSpace = 'nowrap';
+      rightPiece.className =
+        "gradient-primary bg-clip-text text-transparent font-fun font-extralight tracking-tighter";
+      rightPiece.style.display = "inline-block";
+      rightPiece.style.whiteSpace = "nowrap";
       wrapper.appendChild(rightPiece);
 
       thankYouTitle.appendChild(wrapper);
@@ -432,32 +476,48 @@ function initContactHeroScrollAnimation() {
       gsap.set(thankYouSubtitle, { opacity: 0, y: 20 });
 
       // TETRIS ANIMATION - starts RIGHT AFTER dots finish collapsing (at ~1.5)
-      tl.to(leftPiece, {
-        opacity: 1,
-        x: 0,
-        duration: 0.6,
-        ease: "power2.out",
-      }, 1.5);
+      tl.to(
+        leftPiece,
+        {
+          opacity: 1,
+          x: 0,
+          duration: 0.6,
+          ease: "power2.out",
+        },
+        1.5
+      );
 
-      tl.to(leftPiece, {
-        rotationZ: 0,
-        duration: 0.5,
-        ease: "back.out(2)",
-      }, 2.0);
+      tl.to(
+        leftPiece,
+        {
+          rotationZ: 0,
+          duration: 0.5,
+          ease: "back.out(2)",
+        },
+        2.0
+      );
 
-      tl.to(rightPiece, {
-        opacity: 1,
-        x: 0,
-        duration: 0.6,
-        ease: "power2.out",
-      }, 1.8);
+      tl.to(
+        rightPiece,
+        {
+          opacity: 1,
+          x: 0,
+          duration: 0.6,
+          ease: "power2.out",
+        },
+        1.8
+      );
 
-      tl.to(thankYouSubtitle, {
-        opacity: 1,
-        y: 0,
-        duration: 0.6,
-        ease: "power2.out",
-      }, 2.3);
+      tl.to(
+        thankYouSubtitle,
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          ease: "power2.out",
+        },
+        2.3
+      );
     }
 
     // Fade out network dots

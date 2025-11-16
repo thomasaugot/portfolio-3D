@@ -27,19 +27,23 @@ export default function PortfolioPage() {
   useEffect(() => {
     window.scrollTo(0, 0);
 
-    // Set scroll height via CSS variable
     const updateScrollHeight = () => {
       const multiplier = window.innerWidth < 768 ? 100 : 300;
-      const section = document.querySelector('[data-portfolio-section]') as HTMLElement;
+      const section = document.querySelector(
+        "[data-portfolio-section]"
+      ) as HTMLElement;
       if (section) {
-        section.style.setProperty('--portfolio-height', `${(projects.length + 1) * multiplier}vh`);
+        section.style.setProperty(
+          "--portfolio-height",
+          `${(projects.length + 1) * multiplier}vh`
+        );
       }
     };
 
     updateScrollHeight();
-    window.addEventListener('resize', updateScrollHeight);
+    window.addEventListener("resize", updateScrollHeight);
 
-    return () => window.removeEventListener('resize', updateScrollHeight);
+    return () => window.removeEventListener("resize", updateScrollHeight);
   }, [projects.length]);
 
   useGSAPAnimations(() => {
@@ -57,10 +61,16 @@ export default function PortfolioPage() {
       }
     };
 
-    window.addEventListener('blobProjectClick', handleBlobClick as EventListener);
+    window.addEventListener(
+      "blobProjectClick",
+      handleBlobClick as EventListener
+    );
 
     return () => {
-      window.removeEventListener('blobProjectClick', handleBlobClick as EventListener);
+      window.removeEventListener(
+        "blobProjectClick",
+        handleBlobClick as EventListener
+      );
     };
   }, [projects]);
 
@@ -73,36 +83,29 @@ export default function PortfolioPage() {
         <Menu />
 
         <div className="sticky top-0 h-screen overflow-visible z-10">
-          {/* 3D Canvas Wrapper - MOBILE: 70% height at top, DESKTOP: centered full */}
           <div className="absolute inset-0 flex flex-col lg:items-center lg:justify-center items-start justify-start w-full h-full pointer-events-none z-0">
             <div
               ref={containerRef}
               data-3d-container="portfolio-hex"
-              className="w-full h-[70vh] lg:h-full lg:absolute lg:inset-0 pointer-events-none"
+              className="w-full h-full absolute inset-0 pointer-events-none"
             />
           </div>
 
-          {/* Content Container */}
           <div className="relative w-full h-full flex items-center justify-center pointer-events-none z-10">
+            <PortfolioHero />
 
-          {/* Hero Section */}
-          <PortfolioHero />
+            <ProjectCounter total={projects.length} />
 
-          {/* Project Counter */}
-          <ProjectCounter total={projects.length} />
+            {projects.map((project, index) => (
+              <PortfolioProjectSlide
+                key={project.id}
+                project={project}
+                index={index}
+                onViewDetails={setSelectedProject}
+              />
+            ))}
 
-          {/* Project Slides */}
-          {projects.map((project, index) => (
-            <PortfolioProjectSlide
-              key={project.id}
-              project={project}
-              index={index}
-              onViewDetails={setSelectedProject}
-            />
-          ))}
-
-          {/* CTA Section */}
-          <PortfolioCTA totalProjects={projects.length} />
+            <PortfolioCTA totalProjects={projects.length} />
           </div>
         </div>
       </section>

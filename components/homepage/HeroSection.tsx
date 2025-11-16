@@ -71,7 +71,7 @@ export default function HeroSection() {
 
               <div
                 data-hero-buttons
-                className="flex gap-4 md:gap-6 lg:w-3/4 flex-row"
+                className="flex flex-col md:flex-row gap-4 md:gap-6 lg:w-3/4"
                 style={{ willChange: 'opacity, transform' }}
               >
                 <Button variant="filled" size="lg" className="w-auto">
