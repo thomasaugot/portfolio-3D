@@ -87,7 +87,7 @@ export default function HeroSection() {
           </div>
         </div>
 
-        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 animate-bounce opacity-70">
+        <div className="absolute bottom-12 left-0 right-0 mx-auto flex flex-col items-center gap-3 animate-bounce opacity-70 w-fit">
           <span className="text-label">
             {t("homepage.scroll")}
           </span>

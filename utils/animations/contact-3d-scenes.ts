@@ -108,9 +108,9 @@ export async function initContactHero3DScene() {
 
     // Collapse point positioned WHERE THE TITLE IS - FAR LEFT
     const singlePoint = new THREE.Vector3(
-      mobile ? -200 : -400,  // LEFT side where title is
+      mobile ? -200 : -400,   // LEFT side where title is (negative X = left)
       mobile ? 30 : 50,       // Title vertical position
-      100                      // Forward
+      100                     // Forward
     );
 
     for (let i = 0; i < count; i++) {
@@ -152,7 +152,7 @@ export async function initContactHero3DScene() {
 
   // Create hexagon floor
   const hexFloor = new THREE.Group();
-  const hexSize = isMobile ? 50 : 60;
+  const hexSize = isMobile ? 60 : 80;
   const radius = isMobile ? 6 : 9;
 
   for (let q = -radius; q <= radius; q++) {
@@ -324,7 +324,7 @@ export async function initContactHero3DScene() {
     hexFloor.children.forEach((hex) => {
       const material = (hex as THREE.Line).material as THREE.LineBasicMaterial;
       const pulse = Math.sin(time * 2 + (hex as any).pulseOffset);
-      material.opacity = (hex as any).baseOpacity + pulse * 0.25;
+      material.opacity = (hex as any).baseOpacity + pulse * 0.2;
 
       const gradientShift = Math.sin(time + (hex as any).gradientFactor * Math.PI) * 0.5 + 0.5;
       material.color.lerpColors(

@@ -47,6 +47,7 @@ export function initHeroScrollAnimation() {
     const { camera, hexFloor, codeWrapper, laptopWrapper } = heroScene;
     const lowPerf = isLowPerformanceDevice();
     const scrubSpeed = lowPerf ? 1.5 : 2.2;
+    const isMobile = window.innerWidth < 768;
 
     const tl = gsap.timeline({
       scrollTrigger: {
@@ -262,53 +263,89 @@ export function initHeroScrollAnimation() {
     }
 
     if (laptopWrapper) {
-      tl.to(
-        laptopWrapper.position,
-        { 
-          x: 125,
-          y: 155, 
-          z: -270, 
-          duration: 1.1, 
-          ease: "power1.inOut",
-        },
-        0.27
-      );
-
-      tl.to(
-        laptopWrapper.rotation,
-        { 
-          x: -Math.PI / 9,
-          y: Math.PI * 1.48, 
-          z: -Math.PI / 13,
-          duration: 1.1, 
-          ease: "sine.inOut",
-        },
-        0.27
-      );
-
-      tl.to(
-        laptopWrapper,
-        { 
-          opacity: 0, 
-          duration: 0.4, 
-          ease: "sine.in",
-          onUpdate: function() {
-            if (laptopWrapper.children[0]) {
-              const progress = this.progress();
-              const fadeStart = 0.3;
-              const adjustedProgress = progress < fadeStart ? 0 : (progress - fadeStart) / (1 - fadeStart);
-              
-              laptopWrapper.children[0].traverse((child: any) => {
-                if (child.material) {
-                  child.material.opacity = 1 - adjustedProgress;
-                  child.material.transparent = true;
-                }
-              });
+      // Mobile: Fade in laptop as it rotates
+      if (isMobile) {
+        tl.to(
+          laptopWrapper,
+          {
+            opacity: 1,
+            duration: 0.5,
+            ease: "power2.out",
+            onUpdate: function() {
+              if (laptopWrapper.children[0]) {
+                const progress = this.progress();
+                laptopWrapper.children[0].traverse((child: any) => {
+                  if (child.material) {
+                    child.material.opacity = progress;
+                    child.material.transparent = true;
+                  }
+                });
+              }
             }
-          }
-        },
-        0.75
-      );
+          },
+          0
+        );
+
+        tl.to(
+          laptopWrapper.rotation,
+          {
+            y: Math.PI * 0.5,
+            duration: 0.8,
+            ease: "sine.inOut",
+          },
+          0.2
+        );
+      }
+      // Desktop: Original animations
+      else {
+        tl.to(
+          laptopWrapper.position,
+          {
+            x: 125,
+            y: 155,
+            z: -270,
+            duration: 1.1,
+            ease: "power1.inOut",
+          },
+          0.27
+        );
+
+        tl.to(
+          laptopWrapper.rotation,
+          {
+            x: -Math.PI / 9,
+            y: Math.PI * 1.48,
+            z: -Math.PI / 13,
+            duration: 1.1,
+            ease: "sine.inOut",
+          },
+          0.27
+        );
+
+        tl.to(
+          laptopWrapper,
+          {
+            opacity: 0,
+            duration: 0.4,
+            ease: "sine.in",
+            onUpdate: function() {
+              if (laptopWrapper.children[0]) {
+                const progress = this.progress();
+                const fadeStart = 0.3;
+                const adjustedProgress = progress < fadeStart ? 0 : (progress - fadeStart) / (1 - fadeStart);
+
+                laptopWrapper.children[0].traverse((child: any) => {
+                  if (child.material) {
+                    child.material.opacity = 1 - adjustedProgress;
+                    child.material.transparent = true;
+                  }
+                });
+              }
+            }
+          },
+          0.75
+        );
+      }
     }
 
     tl.to(

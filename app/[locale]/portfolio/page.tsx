@@ -1,27 +1,23 @@
 "use client";
 
 import { getAllProjects } from "@/data/projects";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useThreeScene } from "@/hooks/useThreeScene";
 import { useGSAPAnimations } from "@/hooks/useGSAPAnimations";
 import { initMenuAnimations } from "@/utils/animations/menu-animations";
 import { initPortfolioScene } from "@/utils/animations/portfolio-3d-scene";
 import { initPortfolioScroll } from "@/utils/animations/portfolio-scroll-animation";
 import { initTetrisTextAnimation } from "@/utils/animations/tetris-text-animation";
-import { initBlobCursor } from "@/utils/animations/blob-cursor-animation";
 import Menu from "@/components/layout/Menu";
 import Footer from "@/components/layout/Footer";
-import BlobCursor from "@/components/ui/BlobCursor";
-import ProjectModal from "@/components/portfolio/ProjectModal";
+import BlobModalCursor from "@/components/ui/BlobModalCursor";
 import ProjectCounter from "@/components/portfolio/ProjectCounter";
 import PortfolioHero from "@/components/portfolio/PortfolioHero";
 import PortfolioProjectSlide from "@/components/portfolio/PortfolioProjectSlide";
 import PortfolioCTA from "@/components/portfolio/PortfolioCTA";
-import type { Project } from "@/types/project";
 
 export default function PortfolioPage() {
   const projects = getAllProjects();
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const containerRef = useThreeScene(initPortfolioScene, "portfolio");
 
   useEffect(() => {
@@ -50,29 +46,7 @@ export default function PortfolioPage() {
     initMenuAnimations();
     initTetrisTextAnimation();
     initPortfolioScroll();
-    initBlobCursor();
   });
-
-  useEffect(() => {
-    const handleBlobClick = (e: CustomEvent) => {
-      const projectIndex = e.detail.projectIndex;
-      if (projectIndex !== undefined && projects[projectIndex]) {
-        setSelectedProject(projects[projectIndex]);
-      }
-    };
-
-    window.addEventListener(
-      "blobProjectClick",
-      handleBlobClick as EventListener
-    );
-
-    return () => {
-      window.removeEventListener(
-        "blobProjectClick",
-        handleBlobClick as EventListener
-      );
-    };
-  }, [projects]);
 
   return (
     <>
@@ -101,7 +75,18 @@ export default function PortfolioPage() {
                 key={project.id}
                 project={project}
                 index={index}
-                onViewDetails={setSelectedProject}
+                onViewDetails={(project) => {
+                  // Store click position for modal animation
+                  (window as any).__modalClickPosition = {
+                    x: window.innerWidth / 2,
+                    y: window.innerHeight / 2
+                  };
+                  window.dispatchEvent(
+                    new CustomEvent("openProjectModal", {
+                      detail: { project },
+                    })
+                  );
+                }}
               />
             ))}
 
@@ -113,14 +98,7 @@ export default function PortfolioPage() {
         <Footer />
       </div>
 
-      {selectedProject && (
-        <ProjectModal
-          project={selectedProject}
-          onClose={() => setSelectedProject(null)}
-        />
-      )}
-
-      <BlobCursor />
+      <BlobModalCursor projects={projects} />
     </>
   );
 }

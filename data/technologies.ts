@@ -13,12 +13,13 @@ export interface TechnologyCategory {
 }
 
 export const technologies: Technology[] = [
+  // AI
   {
-    id: "openai",
-    name: "Open AI",
-    logo: "/assets/images/technologies/openai-logo.png",
+    id: "chatgpt",
+    name: "ChatGPT",
+    logo: "/assets/images/technologies/chatgpt-logo.png",
     category: "ai",
-    descriptionKey: "technologies.openai.description",
+    descriptionKey: "technologies.chatgpt.description",
   },
   {
     id: "claude",
@@ -28,7 +29,14 @@ export const technologies: Technology[] = [
     descriptionKey: "technologies.claude.description",
   },
 
-  // Development & Web
+  // Frontend Development
+  {
+    id: "react",
+    name: "React.js",
+    logo: "/assets/images/technologies/react-logo.png",
+    category: "development",
+    descriptionKey: "technologies.react.description",
+  },
   {
     id: "nextjs",
     name: "Next.js",
@@ -37,37 +45,37 @@ export const technologies: Technology[] = [
     descriptionKey: "technologies.nextjs.description",
   },
   {
-    id: "react",
-    name: "React",
-    logo: "/assets/images/technologies/react-logo.png",
+    id: "vite",
+    name: "Vite",
+    logo: "/assets/images/technologies/vite-logo.png",
     category: "development",
-    descriptionKey: "technologies.react.description",
+    descriptionKey: "technologies.vite.description",
   },
   {
-    id: "nodejs",
-    name: "Node.js",
-    logo: "/assets/images/technologies/nodejs-logo.png",
+    id: "typescript",
+    name: "TypeScript",
+    logo: "/assets/images/technologies/typescript-logo.png",
     category: "development",
-    descriptionKey: "technologies.nodejs.description",
+    descriptionKey: "technologies.typescript.description",
   },
   {
     id: "javascript",
-    name: "Javascript",
-    logo: "/assets/images/technologies/javascript-logo.png",
+    name: "JavaScript",
+    logo: "/assets/images/technologies/javascript-logo.svg",
     category: "development",
     descriptionKey: "technologies.javascript.description",
   },
   {
-    id: "vercel",
-    name: "Vercel",
-    logo: "/assets/images/technologies/vercel-logo.png",
+    id: "redux",
+    name: "Redux",
+    logo: "/assets/images/technologies/redux-logo.svg",
     category: "development",
-    descriptionKey: "technologies.vercel.description",
+    descriptionKey: "technologies.redux.description",
   },
   {
     id: "sass",
     name: "Sass",
-    logo: "/assets/images/technologies/scss-logo.png",
+    logo: "/assets/images/technologies/sass-logo.png",
     category: "development",
     descriptionKey: "technologies.sass.description",
   },
@@ -79,6 +87,13 @@ export const technologies: Technology[] = [
     descriptionKey: "technologies.tailwind.description",
   },
   {
+    id: "framermotion",
+    name: "Framer Motion",
+    logo: "/assets/images/technologies/framer-motion-logo.png",
+    category: "development",
+    descriptionKey: "technologies.framermotion.description",
+  },
+  {
     id: "gsap",
     name: "GSAP",
     logo: "/assets/images/technologies/gsap-logo.png",
@@ -86,30 +101,81 @@ export const technologies: Technology[] = [
     descriptionKey: "technologies.gsap.description",
   },
   {
-    id: "typescript",
-    name: "TypeScript",
-    logo: "/assets/images/technologies/typescript-logo.png",
+    id: "threejs",
+    name: "Three.js",
+    logo: "/assets/images/technologies/threejs-logo.png",
     category: "development",
-    descriptionKey: "technologies.typescript.description",
+    descriptionKey: "technologies.threejs.description",
+  },
+
+  // Backend Development
+  {
+    id: "nodejs",
+    name: "Node.js",
+    logo: "/assets/images/technologies/nodejs-logo.png",
+    category: "development",
+    descriptionKey: "technologies.nodejs.description",
+  },
+  {
+    id: "expressjs",
+    name: "Express.js",
+    logo: "/assets/images/technologies/express-logo.png",
+    category: "development",
+    descriptionKey: "technologies.expressjs.description",
+  },
+  {
+    id: "postgresql",
+    name: "PostgreSQL",
+    logo: "/assets/images/technologies/postgresql-logo.svg",
+    category: "development",
+    descriptionKey: "technologies.postgresql.description",
+  },
+  {
+    id: "mongodb",
+    name: "MongoDB",
+    logo: "/assets/images/technologies/mongodb-logo.svg",
+    category: "development",
+    descriptionKey: "technologies.mongodb.description",
+  },
+  {
+    id: "supabase",
+    name: "Supabase",
+    logo: "/assets/images/technologies/supabase-logo.svg",
+    category: "development",
+    descriptionKey: "technologies.supabase.description",
+  },
+  {
+    id: "firebase",
+    name: "Firebase",
+    logo: "/assets/images/technologies/firebase-logo.png",
+    category: "development",
+    descriptionKey: "technologies.firebase.description",
   },
 
   // Mobile Development
   {
-    id: "android",
-    name: "Android",
-    logo: "/assets/images/technologies/android-logo.png",
+    id: "reactnative",
+    name: "React Native",
+    logo: "/assets/images/technologies/react-native-logo.png",
     category: "mobile",
-    descriptionKey: "technologies.android.description",
+    descriptionKey: "technologies.reactnative.description",
   },
   {
-    id: "ios",
-    name: "iOS",
-    logo: "/assets/images/technologies/ios-logo.png",
+    id: "expo",
+    name: "Expo",
+    logo: "/assets/images/technologies/expo-logo.svg",
     category: "mobile",
-    descriptionKey: "technologies.ios.description",
+    descriptionKey: "technologies.expo.description",
   },
 
   // Cloud & Infrastructure
+  {
+    id: "vercel",
+    name: "Vercel",
+    logo: "/assets/images/technologies/vercel-logo.png",
+    category: "cloud",
+    descriptionKey: "technologies.vercel.description",
+  },
   {
     id: "aws",
     name: "AWS",
@@ -117,19 +183,55 @@ export const technologies: Technology[] = [
     category: "cloud",
     descriptionKey: "technologies.aws.description",
   },
+  {
+    id: "googlecloud",
+    name: "Google Cloud",
+    logo: "/assets/images/technologies/google-cloud-logo.png",
+    category: "cloud",
+    descriptionKey: "technologies.googlecloud.description",
+  },
+  {
+    id: "docker",
+    name: "Docker",
+    logo: "/assets/images/technologies/docker-logo.png",
+    category: "cloud",
+    descriptionKey: "technologies.docker.description",
+  },
+
+  // CMS & No-Code
+  {
+    id: "wordpress",
+    name: "WordPress",
+    logo: "/assets/images/technologies/wordpress-logo.svg",
+    category: "cms",
+    descriptionKey: "technologies.wordpress.description",
+  },
+  {
+    id: "framer",
+    name: "Framer",
+    logo: "/assets/images/technologies/framer-logo.png",
+    category: "cms",
+    descriptionKey: "technologies.framer.description",
+  },
+
+  // CRM & Collaboration
+  {
+    id: "zohocrm",
+    name: "Zoho CRM",
+    logo: "/assets/images/technologies/zoho-logo.png",
+    category: "crm",
+    descriptionKey: "technologies.zohocrm.description",
+  },
+  {
+    id: "notion",
+    name: "Notion",
+    logo: "/assets/images/technologies/notion-logo.png",
+    category: "collaboration",
+    descriptionKey: "technologies.notion.description",
+  },
 ];
 
 export const technologyCategories: TechnologyCategory[] = [
-  {
-    key: "crm",
-    titleKey: "technologies.categories.crm",
-    color: "teal",
-  },
-  {
-    key: "erp",
-    titleKey: "technologies.categories.erp",
-    color: "azul-profundo",
-  },
   {
     key: "ai",
     titleKey: "technologies.categories.ai",
@@ -151,8 +253,13 @@ export const technologyCategories: TechnologyCategory[] = [
     color: "naranja-tostado",
   },
   {
-    key: "google-workspace",
-    titleKey: "technologies.categories.googleWorkspace",
+    key: "cms",
+    titleKey: "technologies.categories.cms",
+    color: "azul-profundo",
+  },
+  {
+    key: "crm",
+    titleKey: "technologies.categories.crm",
     color: "teal",
   },
   {

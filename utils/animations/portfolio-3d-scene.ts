@@ -249,8 +249,8 @@ export async function initPortfolioScene() {
   }
 
   const hexFloor = new THREE.Group();
-  const hexSize = config.isMobile ? 45 : config.isTablet ? 48 : 50;
-  const radius = config.isMobile ? 7 : config.isTablet ? 5 : 6;
+  const hexSize = config.isMobile ? 60 : 80;
+  const radius = config.isMobile ? 6 : 9;
 
   for (let q = -radius; q <= radius; q++) {
     for (let r = -radius; r <= radius; r++) {

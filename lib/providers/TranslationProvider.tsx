@@ -52,13 +52,14 @@ export function TranslationProvider({
 
   const loadTranslations = async (lang: Language) => {
     try {
-      const [nav, homepage, portfolio, common, footer, contact] = await Promise.all([
+      const [nav, homepage, portfolio, common, footer, contact, about] = await Promise.all([
         import(`@/locales/${lang}/nav.json`),
         import(`@/locales/${lang}/homepage.json`),
         import(`@/locales/${lang}/portfolio.json`),
         import(`@/locales/${lang}/common.json`),
         import(`@/locales/${lang}/footer.json`),
         import(`@/locales/${lang}/contact.json`),
+        import(`@/locales/${lang}/about.json`),
       ]);
 
       const merged = {
@@ -68,6 +69,7 @@ export function TranslationProvider({
         common: common.default,
         footer: footer.default,
         contact: contact.default,
+        about: about.default,
       };
 
       setTranslations(merged);

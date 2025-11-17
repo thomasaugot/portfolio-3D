@@ -415,9 +415,17 @@ export async function initHero3DScene() {
   const codeWrapper = config.isMobile
     ? null
     : await loadCodeModel(scene, config);
-  const laptopWrapper = config.isMobile
-    ? null
-    : await loadLaptopModel(scene, config, vscodeTexture);
+  const laptopWrapper = await loadLaptopModel(scene, config, vscodeTexture);
+
+  // Start with laptop hidden on mobile for fade-in animation
+  if (config.isMobile && laptopWrapper) {
+    laptopWrapper.traverse((child: any) => {
+      if (child.material) {
+        child.material.transparent = true;
+        child.material.opacity = 0;
+      }
+    });
+  }
 
   const codeModel = codeWrapper?.children[0] as THREE.Group | null;
   const laptopModel = laptopWrapper?.children[0] as THREE.Group | null;

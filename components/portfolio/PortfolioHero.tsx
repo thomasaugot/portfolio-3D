@@ -20,7 +20,7 @@ export default function PortfolioHero() {
           <span data-hero-line>{t("portfolio.hero.title_part1")}</span>
           <span
             data-hero-line
-            className="gradient-primary bg-clip-text text-transparent"
+            className="font-fun font-extralight gradient-primary bg-clip-text text-transparent tracking-tighter text-nowrap"
           >
             {t("portfolio.hero.title_part2")}
           </span>

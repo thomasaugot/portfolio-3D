@@ -1,0 +1,116 @@
+{
+  "hero": {
+    "title": "Full-Stack Developer",
+    "subtitle": "3+ Years Experience | React & Node.js | Trilingual"
+  },
+  "intro": {
+    "paragraph_1": "Hi! I'm Thomas, a full-stack developer based in Gran Canaria. Before settling down to code by the ocean, I spent years backpacking around the world—New Zealand, Australia, Germany, and beyond. That nomadic lifestyle taught me to adapt quickly and embrace new challenges, which is exactly how I approach development.",
+    "paragraph_2": "I build modern web applications from end to end. Whether it's crafting smooth user interfaces, setting up servers, or handling databases, I enjoy working across the entire stack. Most of my time goes into frontend work, creating interactive experiences that feel polished and responsive.",
+    "paragraph_3": "Fluent in French, English, and Spanish, I work with international teams and clients worldwide."
+  },
+  "tech_stack": {
+    "title": "Tech Stack",
+    "description": "Technologies I work with on a daily basis"
+  },
+  "specialties": {
+    "title": "What I Do Best",
+    "frontend_dev": {
+      "title": "Frontend Development",
+      "description": "Crafting beautiful, responsive user interfaces with React, Next.js, and TypeScript. I focus on performance, accessibility, and creating delightful user experiences.",
+      "skills": "React, Next.js, TypeScript, Tailwind CSS"
+    },
+    "animations": {
+      "title": "Interactive Animations",
+      "description": "Bringing designs to life with GSAP and Three.js. From scroll-triggered animations to 3D scenes, I create engaging interactions that make websites stand out.",
+      "skills": "GSAP, Three.js, Framer Motion"
+    },
+    "fullstack": {
+      "title": "Full-Stack Solutions",
+      "description": "Building complete applications from database to deployment. I handle both frontend and backend, API integrations, authentication, and deployment workflows.",
+      "skills": "Node.js, PostgreSQL, Firebase, Supabase"
+    },
+    "multilingual": {
+      "title": "Multilingual Projects",
+      "description": "With fluency in French, English, and Spanish, I can develop multilingual applications and communicate effectively with international teams and clients.",
+      "skills": "French, English, Spanish"
+    }
+  },
+  "timeline": {
+    "title": "Experience & Education",
+    "items": [
+      {
+        "type": "work",
+        "title": "Full Stack Developer",
+        "organization": "Galaga Agency",
+        "period": "September 2024 - Present",
+        "location": "Telde, Canary Islands, Spain",
+        "tech": "Next.js, TypeScript, React, Node.js",
+        "description": "Full-stack developer responsible for end-to-end development of client projects and internal platforms. Develop modern web applications using Next.js 15, TypeScript, React, Tailwind CSS, and SCSS. Build complex CRM systems with Redux, develop backend systems with Node.js, Express, and PostgreSQL. Manage server infrastructure including VPS configuration and Docker containerization. Create interactive UI experiences with GSAP, Three.js, and Framer Motion.",
+        "current": "true"
+      },
+      {
+        "type": "education",
+        "title": "Frontend Development - React.js",
+        "organization": "UNIR | Universidad Internacional de La Rioja",
+        "period": "April 2024 - August 2024",
+        "location": "Spain",
+        "tech": "React, JavaScript, Frontend",
+        "description": "Computer Software Engineering specialization focused on React.js and modern frontend development practices."
+      },
+      {
+        "type": "work",
+        "title": "Frontend Developer",
+        "organization": "Frigate",
+        "period": "April 2024 - September 2024",
+        "location": "London, United Kingdom",
+        "tech": "React Native, React, Vite",
+        "description": "Contributed to Frigate's mobile app using React Native. Built the Admin Portal using React, Vite, and Tailwind CSS. Created comprehensive documentation and participated in scrum sessions and code reviews."
+      },
+      {
+        "type": "work",
+        "title": "Software Developer Intern",
+        "organization": "Frigate",
+        "period": "November 2023 - April 2024",
+        "location": "London, United Kingdom",
+        "tech": "Flutterflow, PostgreSQL, Firebase",
+        "description": "Developed the NauBank mobile app using Flutterflow, PostgreSQL, and Firebase. Worked in Agile environment with scrum meetings and code reviews. Maintained PostgreSQL backend and deployed on Heroku. Collaborated on transition from Flutterflow to React Native."
+      },
+      {
+        "type": "work",
+        "title": "React Native Developer",
+        "organization": "Osly Solutions",
+        "period": "July 2023 - November 2023",
+        "location": "Nantes, France",
+        "tech": "React Native, TypeScript, Supabase",
+        "description": "Developed mobile app for digitizing building access in React Native and TypeScript. Implemented offline mode, migrated database to Supabase, enhanced UI design. Released multiple versions on App Store and Google Play Store. Implemented performance optimization and cybersecurity protocols."
+      },
+      {
+        "type": "work",
+        "title": "Web Developer (Volunteer)",
+        "organization": "Association Eurafrique.eu",
+        "period": "April 2023 - November 2023",
+        "location": "Remote",
+        "tech": "React, SCSS, Supabase",
+        "description": "Developed multilingual website in React and SCSS with Supabase database. Managed web hosting administration including cPanel and domain management. Supervised IT team and conducted code reviews."
+      },
+      {
+        "type": "work",
+        "title": "Web Developer",
+        "organization": "Freelance | Self Employed",
+        "period": "February 2023 - April 2024",
+        "location": "Remote",
+        "tech": "Next.js, TypeScript, Tailwind CSS",
+        "description": "Developed websites for construction companies using Next.js and Tailwind CSS. Collaborated on Kingworld Finance's website with Next.js, TypeScript, and Tailwind CSS. Contributed to R&I Software's solutions using React, TypeScript, and SCSS."
+      },
+      {
+        "type": "education",
+        "title": "Full Stack Web Development Program",
+        "organization": "Ironhack",
+        "period": "November 2022 - February 2023",
+        "location": "Spain",
+        "tech": "React, Node.js, Express, MongoDB",
+        "description": "Intensive bootcamp focused on full-stack JavaScript development with React, Node.js, Express, and MongoDB."
+      }
+    ]
+  }
+}

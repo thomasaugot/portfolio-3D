@@ -354,21 +354,21 @@ function initContactHeroScrollAnimation() {
         });
       }
 
-      // Stop network rotation
+      // Stop network rotation - start earlier and finish faster
       tl.to(
         networkGroup.rotation,
         {
           y: 0,
           x: 0,
-          duration: 0.5,
+          duration: 0.3,
           ease: "power2.inOut",
         },
-        0.4
+        0.3
       );
 
-      // Collapse all nodes into single point
+      // Collapse all nodes into single point - start after rotation is complete
       nodes.forEach((node: any, index: number) => {
-        const delay = 0.45 + (index / nodes.length) * 0.2;
+        const delay = 0.65 + (index / nodes.length) * 0.2;
 
         tl.to(
           node.position,
