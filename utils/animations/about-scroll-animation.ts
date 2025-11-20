@@ -16,6 +16,7 @@ const isLowPerformanceDevice = () => {
 };
 
 export function initAboutScroll() {
+  console.log("🚀 initAboutScroll called");
   const initMeasure = perfMonitor.startMeasure("about-scroll-init");
 
   // Kill existing triggers
@@ -24,86 +25,7 @@ export function initAboutScroll() {
 
   const lowPerf = isLowPerformanceDevice();
 
-  // ===== HERO SECTION ANIMATIONS =====
-  const heroSection = document.querySelector('[data-about-hero]');
-  if (heroSection) {
-    // Photo container
-    const photoContainer = heroSection.querySelector('[data-photo-container]');
-    if (photoContainer) {
-      gsap.set(photoContainer, { y: 50, opacity: 0, scale: 0.9 });
-      const st = gsap.to(photoContainer, {
-        y: 0,
-        opacity: 1,
-        scale: 1,
-        duration: 1.2,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: heroSection,
-          start: "top 80%",
-          toggleActions: "play none none none",
-        },
-      });
-      if (st.scrollTrigger) aboutScrollTriggers.push(st.scrollTrigger);
-    }
-
-    // Text content
-    const textContent = heroSection.querySelector('[data-text-content]');
-    if (textContent) {
-      const tetrisTitle = textContent.querySelector('[data-tetris-title]');
-      if (tetrisTitle) {
-        gsap.set(tetrisTitle, { opacity: 0, y: 40 });
-        const st = gsap.to(tetrisTitle, {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: heroSection,
-            start: "top 75%",
-            toggleActions: "play none none none",
-          },
-        });
-        if (st.scrollTrigger) aboutScrollTriggers.push(st.scrollTrigger);
-      }
-
-      const introParagraphs = textContent.querySelectorAll('[data-intro-paragraph]');
-      introParagraphs.forEach((paragraph, index) => {
-        gsap.set(paragraph, { opacity: 0, y: 30 });
-        const st = gsap.to(paragraph, {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          delay: 0.2 + index * 0.15,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: heroSection,
-            start: "top 70%",
-            toggleActions: "play none none none",
-          },
-        });
-        if (st.scrollTrigger) aboutScrollTriggers.push(st.scrollTrigger);
-      });
-
-      const quickStats = textContent.querySelectorAll('[data-quick-stats] > div');
-      quickStats.forEach((stat, index) => {
-        gsap.set(stat, { opacity: 0, scale: 0.8, y: 20 });
-        const st = gsap.to(stat, {
-          opacity: 1,
-          scale: 1,
-          y: 0,
-          duration: 0.6,
-          delay: 0.6 + index * 0.1,
-          ease: "back.out(1.7)",
-          scrollTrigger: {
-            trigger: heroSection,
-            start: "top 60%",
-            toggleActions: "play none none none",
-          },
-        });
-        if (st.scrollTrigger) aboutScrollTriggers.push(st.scrollTrigger);
-      });
-    }
-  }
+  // Hero section animations are now handled directly in the AboutHero component
 
   // ===== TECH STACK SECTION =====
   const techStackSection = document.querySelector('[data-tech-stack-3d]');

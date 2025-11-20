@@ -215,11 +215,12 @@ export async function initAbout3DScene() {
     perfMonitor.updateFPS();
     time += 0.01;
 
-    // Scroll-based floor rotation
+    // Scroll-based floor rotation - animate the whole grid as one unit
     hexFloor.rotation.y = scrollProgress * Math.PI * 0.5 + Math.sin(time * 0.3) * 0.05;
     hexFloor.rotation.x = scrollProgress * 0.3 + Math.sin(time * 0.2) * 0.02;
 
-    // Animate hexagons with scroll-triggered wave effect (every 3 frames in batches)
+    // Animate hexagon colors/opacity (every 3 frames in batches)
+    // Position stays fixed - grid moves as a whole via group rotation
     if (frameCounter % 3 === 0) {
       const totalHexes = hexFloor.children.length;
       const batchSize = Math.ceil(totalHexes / 5);
@@ -230,26 +231,18 @@ export async function initAbout3DScene() {
         const hex = hexFloor.children[i];
         const material = (hex as THREE.Line).material as THREE.LineBasicMaterial;
 
-        // Scroll-based wave effect
-        const scrollWave = Math.sin(scrollProgress * Math.PI * 4 + (hex as any).pulseOffset);
+        // Pulse animation for opacity
         const pulse = Math.sin(time * 2 + (hex as any).pulseOffset);
+        material.opacity = (hex as any).baseOpacity + pulse * 0.2;
 
-        // Combine scroll and time-based animation
-        const combinedPulse = (scrollWave * 0.4 + pulse * 0.6);
-        material.opacity = (hex as any).baseOpacity + combinedPulse * 0.3;
-
-        // Scroll affects color gradient
+        // Color gradient shift
         const gradientShift =
-          (Math.sin(time + (hex as any).gradientFactor * Math.PI) * 0.5 + 0.5) * (1 - scrollProgress * 0.3);
+          Math.sin(time + (hex as any).gradientFactor * Math.PI) * 0.5 + 0.5;
         material.color.lerpColors(
           hexColor1,
           hexColor2,
-          gradientShift + scrollProgress * 0.3
+          gradientShift
         );
-
-        // Scroll-based position wave
-        const positionWave = Math.sin(scrollProgress * Math.PI * 2 + (hex as any).pulseOffset) * 10;
-        hex.position.y = (hex as any).baseY + positionWave;
       }
     }
 

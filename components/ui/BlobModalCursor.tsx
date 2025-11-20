@@ -550,9 +550,7 @@ export default function BlobModalCursor({ projects }: BlobModalCursorProps) {
           ref={blobBgRef}
           className="absolute inset-0 z-[1]"
           style={{
-            opacity: 0,
-            pointerEvents: 'none',
-            display: 'none'
+            pointerEvents: 'none'
           }}
         />
 
@@ -565,9 +563,7 @@ export default function BlobModalCursor({ projects }: BlobModalCursorProps) {
             height: 140,
             left: '50%',
             top: '50%',
-            transform: 'translate(-50%, -50%)',
-            opacity: 0,
-            display: 'none'
+            transform: 'translate(-50%, -50%)'
           }}
         >
           <span className="font-mono text-[12px] font-bold uppercase tracking-wider bg-gradient-to-br from-primary to-secondary bg-clip-text text-transparent">

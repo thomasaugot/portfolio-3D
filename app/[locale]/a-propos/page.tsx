@@ -1,21 +1,55 @@
 "use client";
 
-import { useTranslation } from "@/lib/providers/TranslationProvider";
+import { useEffect } from "react";
+import { useThreeScene } from "@/hooks/useThreeScene";
+import { useGSAPAnimations } from "@/hooks/useGSAPAnimations";
+import { initMenuAnimations } from "@/utils/animations/menu-animations";
+import { initAbout3DScene } from "@/utils/animations/about-3d-scene";
+import { initAboutScroll } from "@/utils/animations/about-scroll-animation";
+import { initAboutHeroAnimation } from "@/utils/animations/about-hero-animation";
+import Menu from "@/components/layout/Menu";
+import Footer from "@/components/layout/Footer";
+import AboutHero from "@/components/about-page/AboutHero";
+import TechStack from "@/components/about-page/TechStack";
+import Specialties from "@/components/about-page/Specialties";
+import Timeline from "@/components/about-page/Timeline";
 
 export default function AboutPage() {
-  const { t } = useTranslation();
+  const containerRef = useThreeScene(initAbout3DScene, "about");
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useGSAPAnimations(() => {
+    initMenuAnimations();
+    initAboutScroll();
+    initAboutHeroAnimation();
+  });
 
   return (
-    <div className="min-h-screen pt-32 px-8 bg-bg text-text">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-5xl font-bold mb-4">{t("about_page.title")}</h1>
-        <p className="text-xl text-text-muted mb-8">
-          {t("about_page.subtitle")}
-        </p>
-        <div className="prose prose-lg text-text">
-          <p>{t("about_page.intro")}</p>
+    <>
+      <Menu />
+      <section className="relative bg-bg overflow-x-clip min-h-screen">
+        {/* Fixed 3D Background */}
+        <div className="fixed inset-0 z-0 pointer-events-none">
+          <div
+            ref={containerRef}
+            data-3d-container="about"
+            className="w-full h-full"
+          />
         </div>
-      </div>
-    </div>
+
+        {/* Scrollable Content */}
+        <div className="relative z-10 overflow-x-hidden">
+          <AboutHero />
+          <TechStack />
+          <Specialties />
+          <Timeline />
+        </div>
+      </section>
+
+      <Footer />
+    </>
   );
 }
