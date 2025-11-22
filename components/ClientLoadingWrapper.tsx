@@ -18,7 +18,7 @@ export default function ClientLoadingWrapper({ children }: ClientLoadingWrapperP
     if (route === '/portfolio') {
       return ['portfolio'];
     } else if (route === '/' || route === '') {
-      return ['hero', 'projects'];
+      return ['hero'];
     }
 
     // For other pages, no critical 3D scenes
