@@ -44,5 +44,12 @@
       "name": "I'm Thomas",
       "role": "Full-Stack Web Developer"
     }
+  },
+  "technologies": {
+    "categories": {
+      "frontend": "Frontend",
+      "backend": "Backend",
+      "tooling": "Tooling"
+    }
   }
 }

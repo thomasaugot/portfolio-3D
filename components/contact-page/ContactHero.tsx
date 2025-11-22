@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
 import { useThreeScene } from "@/hooks/useThreeScene";
 import { initContactHero3DScene } from "@/utils/animations/contact-3d-scenes";
+import { FaLinkedin, FaGithub, FaWhatsapp, FaMedium } from "react-icons/fa";
 
 export default function ContactHero() {
   const { t } = useTranslation();
@@ -59,7 +60,7 @@ export default function ContactHero() {
 
   return (
     <section className="relative" data-contact-hero>
-      <div className="sticky top-0 min-h-screen flex items-center justify-center py-20 lg:py-32 bg-bg overflow-visible z-0">
+      <div className="sticky top-0 min-h-screen flex items-center justify-center py-20 lg:py-32 pb-40 lg:pb-48 bg-bg overflow-visible z-0">
         <div
           ref={containerRef}
           data-3d-container="contact-hero"
@@ -117,7 +118,7 @@ export default function ContactHero() {
                 {/* Thank you message - TETRIS ANIMATED after scroll */}
                 <div
                   data-thank-you-message
-                  className="absolute top-0 left-0 w-full max-w-md z-20"
+                  className="absolute top-1/4 left-0 w-full max-w-md z-20"
                 >
                   <h2
                     data-thank-you-title
@@ -206,7 +207,9 @@ export default function ContactHero() {
                       {t("contact.info.response_value")}
                     </span>
                   </div>
+
                 </div>
+
               </div>
 
               {/* Right Side - Form */}
@@ -347,6 +350,45 @@ export default function ContactHero() {
                     </form>
                   </div>
                 </div>
+              </div>
+            </div>
+
+            {/* Social Links - Centered below */}
+            <div className="mt-16 lg:mt-20 text-center">
+              <p className="subtitle text-text/60 mb-8">{t("contact.social.title")}</p>
+              <div className="flex justify-center gap-6">
+                <button
+                  onClick={() => window.open("https://www.linkedin.com/in/thomas-augot/", "_blank")}
+                  className="relative w-16 h-16 flex items-center justify-center rounded-2xl bg-surface/60 backdrop-blur-sm border border-border/30 hover:border-primary/60 transition-all duration-300 group overflow-hidden hover:scale-110"
+                  aria-label="LinkedIn"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <FaLinkedin className="w-7 h-7 text-text/70 group-hover:text-primary transition-all duration-300 relative z-10" />
+                </button>
+                <button
+                  onClick={() => window.open("https://github.com/thomasaugot", "_blank")}
+                  className="relative w-16 h-16 flex items-center justify-center rounded-2xl bg-surface/60 backdrop-blur-sm border border-border/30 hover:border-primary/60 transition-all duration-300 group overflow-hidden hover:scale-110"
+                  aria-label="GitHub"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <FaGithub className="w-7 h-7 text-text/70 group-hover:text-primary transition-all duration-300 relative z-10" />
+                </button>
+                <button
+                  onClick={() => window.open("https://medium.com/@music.music", "_blank")}
+                  className="relative w-16 h-16 flex items-center justify-center rounded-2xl bg-surface/60 backdrop-blur-sm border border-border/30 hover:border-primary/60 transition-all duration-300 group overflow-hidden hover:scale-110"
+                  aria-label="Medium"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <FaMedium className="w-7 h-7 text-text/70 group-hover:text-primary transition-all duration-300 relative z-10" />
+                </button>
+                <button
+                  onClick={() => window.open("https://wa.me/34684736469", "_blank")}
+                  className="relative w-16 h-16 flex items-center justify-center rounded-2xl bg-surface/60 backdrop-blur-sm border border-border/30 hover:border-primary/60 transition-all duration-300 group overflow-hidden hover:scale-110"
+                  aria-label="WhatsApp"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <FaWhatsapp className="w-7 h-7 text-text/70 group-hover:text-primary transition-all duration-300 relative z-10" />
+                </button>
               </div>
             </div>
           </div>

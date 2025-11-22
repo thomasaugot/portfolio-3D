@@ -1,6 +1,7 @@
 {
   "hero": {
-    "title": "Creando Experiencias Digitales",
+    "title_1": "La Historia",
+    "title_2": "Detrás del Código",
     "subtitle": "Desarrollador Full-Stack | 3+ Años de Experiencia | Trilingüe",
     "stats": {
       "years": "Años",
@@ -15,33 +16,50 @@
   },
   "tech_stack": {
     "title": "Stack Tecnológico",
-    "description": "Tecnologías que utilizo diariamente"
+    "description": "Tecnologías que utilizo diariamente",
+    "categories": {
+      "development": "Desarrollo",
+      "cloud": "Cloud & Móvil",
+      "tools": "IA & Herramientas"
+    }
   },
   "specialties": {
-    "title": "Lo que Mejor Hago",
+    "title": "Lo Que Puedo Hacer",
+    "subtitle": "Del concepto al despliegue, doy vida a las ideas",
+    "skills_label": "Habilidades Clave",
     "frontend_dev": {
       "title": "Desarrollo Frontend",
-      "description": "Creación de interfaces de usuario hermosas y responsive con React, Next.js y TypeScript. Me enfoco en el rendimiento, la accesibilidad y la creación de experiencias de usuario agradables.",
-      "skills": "React, Next.js, TypeScript, Tailwind CSS"
+      "description": "Creación de interfaces de usuario hermosas y responsive con React, Next.js y TypeScript. Me enfoco en el rendimiento, la accesibilidad y la creación de experiencias de usuario agradables."
     },
     "animations": {
       "title": "Animaciones Interactivas",
-      "description": "Dar vida a los diseños con GSAP y Three.js. Desde animaciones activadas por scroll hasta escenas 3D, creo interacciones atractivas que hacen destacar los sitios web.",
-      "skills": "GSAP, Three.js, Framer Motion"
+      "description": "Dar vida a los diseños con GSAP y Three.js. Desde animaciones activadas por scroll hasta escenas 3D, creo interacciones atractivas que hacen destacar los sitios web."
     },
     "fullstack": {
       "title": "Soluciones Full-Stack",
-      "description": "Desarrollo de aplicaciones completas desde la base de datos hasta el despliegue. Manejo tanto frontend como backend, integraciones de APIs, autenticación y flujos de trabajo de despliegue.",
-      "skills": "Node.js, PostgreSQL, Firebase, Supabase"
+      "description": "Desarrollo de aplicaciones completas desde la base de datos hasta el despliegue. Manejo tanto frontend como backend, integraciones de APIs, autenticación y flujos de trabajo de despliegue."
+    },
+    "mobile_apps": {
+      "title": "Aplicaciones Móviles",
+      "description": "Desarrollo de aplicaciones móviles multiplataforma con React Native y Expo. Desde el desarrollo hasta la publicación en App Store y Google Play, gestiono todo el ciclo de desarrollo móvil."
+    },
+    "seo": {
+      "title": "SEO & Rendimiento",
+      "description": "Optimización de sitios web para motores de búsqueda y rendimiento. Implemento SEO técnico, mejoro los Core Web Vitals, y aseguro que tu sitio se posicione bien y cargue rápido."
     },
     "multilingual": {
       "title": "Proyectos Multilingües",
-      "description": "Con fluidez en francés, inglés y español, puedo desarrollar aplicaciones multilingües y comunicarme eficazmente con equipos y clientes internacionales.",
-      "skills": "Francés, Inglés, Español"
+      "description": "Con fluidez en francés, inglés y español, puedo desarrollar aplicaciones multilingües y comunicarme eficazmente con equipos y clientes internacionales."
     }
   },
   "timeline": {
-    "title": "Experiencia & Formación",
+    "title_1": "Mi Trayectoria",
+    "title_2": "como Desarrollador",
+    "now": "ACTUAL",
+    "work": "Trabajo",
+    "education": "Formación",
+    "technologies": "Tecnologías",
+    "view_details": "Ver detalles",
     "items": [
       {
         "type": "work",
@@ -117,5 +135,15 @@
         "description": "Bootcamp intensivo enfocado en desarrollo JavaScript full-stack con React, Node.js, Express y MongoDB."
       }
     ]
+  },
+  "cta": {
+    "title": "Descubre Más",
+    "subtitle": "Conoce más sobre mi perfil y trabajo",
+    "portfolio_title": "Ver Mi Trabajo",
+    "portfolio_description": "Explora mis proyectos recientes y descubre el tipo de trabajo que entrego para clientes y proyectos personales.",
+    "view_portfolio": "Ver Portfolio",
+    "contact_title": "Contactarme",
+    "contact_description": "¿Interesado en colaborar? Envíame un mensaje y hablemos sobre tu proyecto.",
+    "get_in_touch": "Contáctame"
   }
 }

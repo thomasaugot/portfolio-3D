@@ -51,7 +51,7 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="relative overflow-visible pt-32 pb-12">
+    <footer className="relative overflow-visible pt-16 md:pt-32 pb-12 bg-bg">
       {/* Top gradient line */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
       
@@ -67,7 +67,7 @@ export default function Footer() {
               alt="Thomas Logo"
               width={280}
               height={120}
-              className="hover:scale-105 transition-transform duration-300 h-auto w-auto mb-8"
+              className="hover:scale-105 transition-transform duration-300 h-auto w-auto max-w-[180px] md:max-w-[280px] mb-8"
             />
             <p className="subtitle mb-10 max-w-md">
               {t("footer.tagline")}

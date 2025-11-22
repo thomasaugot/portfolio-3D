@@ -9,7 +9,7 @@ export default function AboutHero() {
   return (
     <section
       data-about-hero
-      className="relative min-h-screen flex items-center py-20 pt-28 px-4 sm:px-6 md:px-8 lg:px-12 lg:py-16 overflow-hidden"
+      className="relative min-h-screen flex items-center py-20 pt-28 px-6 md:px-12 lg:px-20 lg:py-16 overflow-hidden"
     >
       <div className="w-full max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-[0.5fr_1fr] gap-6 md:gap-8 lg:gap-12 items-center">
@@ -57,19 +57,21 @@ export default function AboutHero() {
 
           {/* Text Content */}
           <div className="space-y-4 sm:space-y-5 md:space-y-6 order-1 lg:order-2 min-w-0" data-text-content>
-            {/* Title - no glass background */}
-            <h1
-              data-hero-title
-              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-fun font-extralight gradient-text tracking-tighter"
-            >
-              {t("about.hero.title")}
+            {/* Title */}
+            <h1 data-hero-title className="space-y-0 md:-space-y-2">
+              <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-normal text-text">
+                {t("about.hero.title_1")}
+              </span>
+              <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-fun font-extralight gradient-text">
+                {t("about.hero.title_2")}
+              </span>
             </h1>
 
             {/* Subtitle - separate glass block */}
             <div className="bg-bg/50 backdrop-blur-md p-3 sm:p-4 md:p-5 rounded-xl border border-border/20">
               <p
                 data-hero-subtitle
-                className="text-sm sm:text-base md:text-lg lg:text-xl text-text/70 font-mono"
+                className="subtitle font-mono"
               >
                 {t("about.hero.subtitle")}
               </p>

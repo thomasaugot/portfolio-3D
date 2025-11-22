@@ -58,7 +58,7 @@ export default function ProjectsShowcase() {
             >
               <h3
                 data-projects-title
-                className="text-4xl md:text-5xl lg:text-6xl font-normal leading-tight mb-4 md:mb-6 flex flex-wrap pb-1 pr-2 relative z-10 max-w-full md:max-w-[40vw]"
+                className="title-section mb-4 md:mb-6 flex flex-wrap pb-1 pr-2 relative z-10 max-w-full md:max-w-[40vw]"
                 style={{
                   transform: "translateX(0)",
                   width: "max-content",
@@ -69,7 +69,7 @@ export default function ProjectsShowcase() {
               </h3>
               <h2
                 data-projects-subtitle
-                className="text-lg md:text-xl gradient-primary bg-clip-text text-transparent"
+                className="subtitle gradient-text"
               >
                 {t("homepage.projects_section.subtitle")}
               </h2>
@@ -177,10 +177,10 @@ export default function ProjectsShowcase() {
         </div>
 
         <div className="relative z-10 mb-12 md:mb-20 max-w-4xl mx-auto">
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-normal leading-tight mb-4 md:mb-6">
+          <h2 className="title-section mb-4 md:mb-6">
             {t("homepage.projects_section.title")}
           </h2>
-          <p className="text-lg md:text-xl gradient-primary bg-clip-text text-transparent">
+          <p className="subtitle gradient-text">
             {t("homepage.projects_section.subtitle")}
           </p>
         </div>
@@ -212,7 +212,7 @@ export default function ProjectsShowcase() {
                 </span>
               </div>
 
-              <h2 className="text-3xl md:text-5xl font-normal leading-tight gradient-text">
+              <h2 className="title-item gradient-text">
                 {t(project.title)}
               </h2>
 

@@ -63,7 +63,7 @@ export default function HeroSection() {
 
               <p
                 data-hero-subtitle
-                className="text-base md:text-xl text-text/70 max-w-xl md:max-w-2xl bg-bg/40 backdrop-blur-sm p-4 md:p-6 rounded-xl"
+                className="subtitle max-w-xl md:max-w-2xl bg-bg/40 backdrop-blur-sm p-4 md:p-6 rounded-xl"
                 style={{ willChange: 'opacity, transform' }}
               >
                 {t("homepage.hero_subtitle")}

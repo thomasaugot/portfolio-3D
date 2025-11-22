@@ -39,5 +39,8 @@
   "thank_you": {
     "title": "¡Gracias!",
     "subtitle": "Gracias por tu visita. No dudes en contactarme."
+  },
+  "social": {
+    "title": "Encuéntrame en"
   }
 }

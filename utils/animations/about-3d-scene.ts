@@ -215,9 +215,8 @@ export async function initAbout3DScene() {
     perfMonitor.updateFPS();
     time += 0.01;
 
-    // Scroll-based floor rotation - animate the whole grid as one unit
+    // Scroll-based Y rotation only - no tilt on X axis
     hexFloor.rotation.y = scrollProgress * Math.PI * 0.5 + Math.sin(time * 0.3) * 0.05;
-    hexFloor.rotation.x = scrollProgress * 0.3 + Math.sin(time * 0.2) * 0.02;
 
     // Animate hexagon colors/opacity (every 3 frames in batches)
     // Position stays fixed - grid moves as a whole via group rotation

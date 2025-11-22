@@ -111,10 +111,10 @@ export default function Menu() {
               data-animate="menu-item"
               className="opacity-0 absolute bottom-16 left-8 md:left-16 lg:left-24 flex items-center gap-4"
             >
-              <p className="text-label flex items-center gap-2">
+              <p className="text-base md:text-lg text-text/60 flex items-center gap-2 normal-case">
                 {t("footer.credits").replace(" 🌍 ", " ")}
-                <FaHeart className="w-4 h-4 text-red-500 animate-pulse" />
-                <span className="gradient-primary bg-clip-text text-transparent font-bold">
+                <FaHeart className="w-5 h-5 text-primary animate-pulse" />
+                <span className="text-text">
                   {t("footer.brand")}
                 </span>
               </p>

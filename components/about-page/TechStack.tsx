@@ -1,54 +1,158 @@
 "use client";
 
 import { useTranslation } from "@/lib/providers/TranslationProvider";
-import Image from "next/image";
-import { technologies } from "@/data/technologies";
+import { technologies, technologyCategories } from "@/data/technologies";
 
 export default function TechStack() {
   const { t } = useTranslation();
 
-  return (
-    <section data-tech-stack-3d className="relative py-24 md:py-32 px-6 md:px-12 lg:px-20 overflow-hidden">
-      {/* 3D Background */}
-      <div
-        data-3d-container="techstack"
-        className="absolute inset-0 z-0 pointer-events-none"
-      />
+  const groupedTech = technologyCategories
+    .map((category) => ({
+      ...category,
+      items: technologies.filter((tech) => tech.category === category.key),
+    }))
+    .filter((category) => category.items.length > 0);
 
-      <div className="max-w-6xl mx-auto relative z-10">
-        <div className="text-center mb-12 md:mb-16" data-section-header>
-          <h2 data-tetris-title className="title-section gradient-text mb-4">
+  // Generate positions in 3D space - deterministic constellation around center
+  // Tighter on mobile, wider on desktop
+  const generatePositions = (items: typeof technologies, categoryIndex: number) => {
+    return items.map((_, i) => {
+      // Balanced spiral pattern - no randomness
+      const ring = Math.floor(i / 8);
+      const indexInRing = i % 8;
+      // Larger base radius to avoid overlapping with category title
+      const baseRadius = 18 + ring * 6;
+      const angle = (indexInRing / 8) * Math.PI * 2 + ring * 0.4;
+
+      const x = Math.cos(angle) * baseRadius;
+      const y = Math.sin(angle) * (baseRadius * 0.45);
+      // Negative Z = further away from camera, each category 1000px apart
+      const z = -(categoryIndex * 1000);
+      return { x, y, z };
+    });
+  };
+
+  return (
+    <section
+      data-tech-section
+      className="relative"
+      style={{ height: "600vh" }}
+    >
+      {/* Viewport that gets pinned */}
+      <div
+        data-tech-viewport
+        className="h-screen w-full overflow-hidden"
+        style={{
+          perspective: "1000px",
+          perspectiveOrigin: "50% 50%",
+        }}
+      >
+        {/* Title - fixed at top, outside 3D animation */}
+        <div className="absolute top-8 md:top-12 left-0 right-0 text-center z-50 pointer-events-none px-4">
+          <h2 className="title-section text-text">
             {t("about.tech_stack.title")}
           </h2>
-          <p className="text-body text-text/70 max-w-2xl mx-auto">
+          <p className="subtitle gradient-text mt-1 md:mt-2">
             {t("about.tech_stack.description")}
           </p>
         </div>
 
-        <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-7 gap-3 md:gap-4">
-          {technologies.map((tech, index) => (
+        {/* Particles - deterministic positions */}
+        <div className="absolute inset-0 pointer-events-none">
+          {[...Array(40)].map((_, i) => (
             <div
-              key={tech.id}
-              data-tech-card={index}
-              className="group relative aspect-square flex items-center justify-center p-3 md:p-4 rounded-xl bg-bg/80 backdrop-blur-sm border border-border/20 hover:border-primary/40 hover:bg-bg/90 transition-all duration-300 hover:scale-105"
-            >
-              <div className="relative w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 transition-transform duration-300 group-hover:scale-110">
-                <Image
-                  src={tech.logo}
-                  alt={tech.name}
-                  fill
-                  className="object-contain"
-                />
-              </div>
-
-              {/* Tooltip on hover */}
-              <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
-                <span className="text-[10px] md:text-xs font-mono text-text/60 whitespace-nowrap bg-bg/90 px-2 py-1 rounded border border-border/30">
-                  {tech.name}
-                </span>
-              </div>
-            </div>
+              key={i}
+              data-particle
+              className="absolute w-1 h-1 rounded-full"
+              style={{
+                left: `${10 + ((i * 17) % 80)}%`,
+                top: `${10 + ((i * 23) % 80)}%`,
+                background: `rgba(var(--color-primary-rgb), ${0.2 + ((i % 10) * 0.03)})`,
+              }}
+            />
           ))}
+        </div>
+
+        {/* 3D Space */}
+        <div
+          data-tech-space
+          className="absolute inset-0"
+          style={{ transformStyle: "preserve-3d" }}
+        >
+          {groupedTech.map((category, categoryIndex) => {
+            const positions = generatePositions(category.items, categoryIndex);
+
+            return (
+              <div
+                key={category.key}
+                data-tech-layer={categoryIndex}
+                className="absolute inset-0"
+                style={{ transformStyle: "preserve-3d" }}
+              >
+                {/* Category label */}
+                <div
+                  data-category-label={categoryIndex}
+                  className="absolute left-1/2 top-1/2"
+                  style={{
+                    transform: `translate3d(-50%, -50%, ${-(categoryIndex * 1000)}px)`,
+                  }}
+                >
+                  <h3
+                    className="title-section font-fun whitespace-nowrap gradient-text"
+                    style={{
+                      textShadow: "0 0 60px rgba(var(--color-primary-rgb), 0.6)",
+                    }}
+                  >
+                    {t(category.titleKey)}
+                  </h3>
+                </div>
+
+                {/* Logos */}
+                {category.items.map((tech, techIndex) => {
+                  const pos = positions[techIndex];
+                  return (
+                    <div
+                      key={tech.id}
+                      data-tech-logo={`${categoryIndex}-${techIndex}`}
+                      className="absolute left-1/2 top-1/2 group cursor-pointer"
+                      style={{
+                        transform: `translate3d(calc(-50% + ${pos.x}vw), calc(-50% + ${pos.y}vh), ${pos.z}px)`,
+                      }}
+                    >
+                      <div
+                        className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 flex items-center justify-center rounded-lg md:rounded-xl transition-transform duration-300 group-hover:scale-110"
+                        style={{
+                          background: "rgba(var(--color-surface-rgb), 0.95)",
+                          border: "1px solid rgba(var(--color-primary-rgb), 0.4)",
+                          boxShadow: `
+                            0 0 20px rgba(var(--color-primary-rgb), 0.3),
+                            0 8px 30px rgba(0, 0, 0, 0.4)
+                          `,
+                        }}
+                      >
+                        <div
+                          className="w-6 h-6 sm:w-7 sm:h-7 md:w-10 md:h-10 lg:w-12 lg:h-12"
+                          style={{
+                            mask: `url(${tech.logo}) center/contain no-repeat`,
+                            WebkitMask: `url(${tech.logo}) center/contain no-repeat`,
+                            backgroundColor: "#fff",
+                          }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Scroll hint */}
+        <div
+          data-scroll-hint
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 text-text/40 text-sm"
+        >
+          Scroll to explore
         </div>
       </div>
     </section>

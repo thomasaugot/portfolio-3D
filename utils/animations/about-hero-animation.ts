@@ -23,64 +23,67 @@ export function initAboutHeroAnimation() {
 
   // Tetris animation for hero title
   if (heroTitle) {
-    const titleText = heroTitle.innerText || heroTitle.textContent || "";
-    const words = titleText.trim().split(/\s+/).filter(w => w.length > 0);
+    const titleLines = heroTitle.querySelectorAll(':scope > span') as NodeListOf<HTMLElement>;
+    const allWords: HTMLElement[] = [];
 
-    if (words.length > 0) {
-      // Clear and rebuild with spans
-      heroTitle.innerHTML = "";
+    titleLines.forEach((line) => {
+      const lineText = line.textContent || "";
+      const words = lineText.trim().split(/\s+/).filter(w => w.length > 0);
+      const originalClasses = line.className.replace('block ', '');
 
-      const allWords: HTMLElement[] = [];
+      // Clear line and rebuild with word spans
+      line.innerHTML = "";
+      line.style.display = "block";
 
       words.forEach((word) => {
         const wordSpan = document.createElement("span");
         wordSpan.textContent = word;
-        // Apply same styling as portfolio hero gradient text
-        wordSpan.className = "gradient-text font-fun font-extralight tracking-tighter";
+        // Preserve original line styling
+        wordSpan.className = originalClasses;
         wordSpan.style.display = "inline-block";
         wordSpan.style.whiteSpace = "nowrap";
         wordSpan.style.marginRight = "0.3em";
-        heroTitle.appendChild(wordSpan);
+        line.appendChild(wordSpan);
         allWords.push(wordSpan);
       });
+    });
 
-      // Set initial states for all words
-      allWords.forEach((word, index) => {
-        const isEven = index % 2 === 0;
-        gsap.set(word, {
-          opacity: 0,
-          x: isEven ? -200 : 200,
-          y: -100,
-          rotationZ: isEven ? -90 : 90,
-          scale: 0.5,
-        });
+    // Set initial states for all words
+    allWords.forEach((word, index) => {
+      const isEven = index % 2 === 0;
+      gsap.set(word, {
+        opacity: 0,
+        x: isEven ? -200 : 200,
+        y: -100,
+        rotationZ: isEven ? -90 : 90,
+        scale: 0.5,
       });
+    });
 
-      // Animate each word with timeline
-      allWords.forEach((word, index) => {
-        const baseDelay = index * 0.15;
+    // Animate each word with timeline
+    allWords.forEach((word, index) => {
+      const baseDelay = index * 0.15;
 
-        tl.to(word, {
-          opacity: 1,
-          duration: 0.1,
-          ease: "none",
-        }, baseDelay);
+      tl.to(word, {
+        opacity: 1,
+        duration: 0.1,
+        ease: "none",
+      }, baseDelay);
 
-        tl.to(word, {
-          x: 0,
-          y: 0,
-          duration: 0.4,
-          ease: "power2.out",
-        }, baseDelay);
+      tl.to(word, {
+        x: 0,
+        y: 0,
+        duration: 0.4,
+        ease: "power2.out",
+      }, baseDelay);
 
-        tl.to(word, {
-          rotationZ: 0,
-          scale: 1,
-          duration: 0.35,
-          ease: "back.out(1.7)",
-        }, baseDelay + 0.25);
-      });
-    }
+      tl.to(word, {
+        rotationZ: 0,
+        scale: 1,
+        duration: 0.35,
+        ease: "back.out(1.7)",
+      }, baseDelay + 0.25);
+    });
   }
 
   // Subtitle - add to timeline

@@ -44,5 +44,12 @@
       "name": "Soy Thomas",
       "role": "Desarollador Web Full-Stack"
     }
+  },
+  "technologies": {
+    "categories": {
+      "frontend": "Frontend",
+      "backend": "Backend",
+      "tooling": "Herramientas"
+    }
   }
 }

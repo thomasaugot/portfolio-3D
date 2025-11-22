@@ -1,4 +1,3 @@
-// utils/animations/blob-cursor-animation.ts - SUPPORT CLICK
 export function initBlobCursor() {
   // Don't initialize blob cursor on touch devices
   const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;

@@ -1,6 +1,7 @@
 {
   "hero": {
-    "title": "Crafting Digital Experiences",
+    "title_1": "The Story",
+    "title_2": "Behind the Code",
     "subtitle": "3+ Years Experience | React & Node.js | Trilingual",
     "stats": {
       "years": "Years",
@@ -15,33 +16,50 @@
   },
   "tech_stack": {
     "title": "Tech Stack",
-    "description": "Technologies I work with on a daily basis"
+    "description": "Technologies I work with on a daily basis",
+    "categories": {
+      "development": "Development",
+      "cloud": "Cloud & Mobile",
+      "tools": "AI & Tools"
+    }
   },
   "specialties": {
-    "title": "What I Do Best",
+    "title": "What I Can Do",
+    "subtitle": "From concept to deployment, I bring ideas to life",
+    "skills_label": "Key Skills",
     "frontend_dev": {
       "title": "Frontend Development",
-      "description": "Crafting beautiful, responsive user interfaces with React, Next.js, and TypeScript. I focus on performance, accessibility, and creating delightful user experiences.",
-      "skills": "React, Next.js, TypeScript, Tailwind CSS"
+      "description": "Crafting beautiful, responsive user interfaces with React, Next.js, and TypeScript. I focus on performance, accessibility, and creating delightful user experiences."
     },
     "animations": {
       "title": "Interactive Animations",
-      "description": "Bringing designs to life with GSAP and Three.js. From scroll-triggered animations to 3D scenes, I create engaging interactions that make websites stand out.",
-      "skills": "GSAP, Three.js, Framer Motion"
+      "description": "Bringing designs to life with GSAP and Three.js. From scroll-triggered animations to 3D scenes, I create engaging interactions that make websites stand out."
     },
     "fullstack": {
       "title": "Full-Stack Solutions",
-      "description": "Building complete applications from database to deployment. I handle both frontend and backend, API integrations, authentication, and deployment workflows.",
-      "skills": "Node.js, PostgreSQL, Firebase, Supabase"
+      "description": "Building complete applications from database to deployment. I handle both frontend and backend, API integrations, authentication, and deployment workflows."
+    },
+    "mobile_apps": {
+      "title": "Mobile Applications",
+      "description": "Building cross-platform mobile apps with React Native and Expo. From development to publishing on App Store and Google Play, I handle the entire mobile development lifecycle."
+    },
+    "seo": {
+      "title": "SEO & Performance",
+      "description": "Optimizing websites for search engines and performance. I implement technical SEO, improve Core Web Vitals, and ensure your site ranks well and loads fast."
     },
     "multilingual": {
       "title": "Multilingual Projects",
-      "description": "With fluency in French, English, and Spanish, I can develop multilingual applications and communicate effectively with international teams and clients.",
-      "skills": "French, English, Spanish"
+      "description": "With fluency in French, English, and Spanish, I can develop multilingual applications and communicate effectively with international teams and clients."
     }
   },
   "timeline": {
-    "title": "Experience & Education",
+    "title_1": "My Journey",
+    "title_2": "as a Developer",
+    "now": "NOW",
+    "work": "Work",
+    "education": "Education",
+    "technologies": "Technologies",
+    "view_details": "View details",
     "items": [
       {
         "type": "work",
@@ -117,5 +135,15 @@
         "description": "Intensive bootcamp focused on full-stack JavaScript development with React, Node.js, Express, and MongoDB."
       }
     ]
+  },
+  "cta": {
+    "title": "Find Out More",
+    "subtitle": "Learn more about my profile and work",
+    "portfolio_title": "See My Work",
+    "portfolio_description": "Browse through my recent projects and see the kind of work I deliver for clients and personal ventures.",
+    "view_portfolio": "View Portfolio",
+    "contact_title": "Get in Touch",
+    "contact_description": "Interested in working together? Drop me a message and let's discuss your project.",
+    "get_in_touch": "Contact Me"
   }
 }
