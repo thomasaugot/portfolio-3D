@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import "../globals.css";
 import { TranslationProvider } from "@/lib/providers/TranslationProvider";
 import { ThemeProvider } from "@/lib/providers/ThemeProvider";
@@ -16,6 +15,24 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale}>
+      <head>
+        {/* Preload critical assets for faster hero load */}
+        <link
+          rel="preload"
+          href="/assets/models/laptop-logo.glb"
+          as="fetch"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preconnect"
+          href="https://fonts.googleapis.com"
+        />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+      </head>
       <body className="antialiased">
         <ThemeProvider>
           <TranslationProvider>

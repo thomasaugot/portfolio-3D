@@ -61,9 +61,9 @@ export function initTechConstellation() {
     ease: "none",
   }, 0);
 
-  // Set initial states for all logos - completely hidden
+  // Set initial states for all logos - scaled down
   allLogos.forEach((logo) => {
-    gsap.set(logo, { opacity: 0, scale: 0.5 });
+    gsap.set(logo, { opacity: 1, scale: 0 });
   });
 
   // Animate each layer - title first, then logos with random pop-in
@@ -89,16 +89,15 @@ export function initTechConstellation() {
       );
     }
 
-    // Logos fade in with random delays, slightly after label
+    // Logos scale in with random delays, slightly after label
     if (logos.length) {
       logos.forEach((logo) => {
-        const randomDelay = Math.random() * dur * 0.3;
+        const randomDelay = Math.random() * dur * 0.15;
         tl.to(logo, {
-          opacity: 1,
           scale: 1,
           duration: dur * 0.12,
-          ease: "power2.out",
-        }, fadeInStart + labelDur * 0.5 + randomDelay);
+          ease: "back.out(1.7)",
+        }, fadeInStart + labelDur * 0.2 + randomDelay);
       });
     }
 

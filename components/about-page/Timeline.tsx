@@ -60,7 +60,7 @@ export default function Timeline() {
         <div ref={containerRef} className="h-screen overflow-visible relative">
           {/* Mobile title - top center */}
           <div className="lg:hidden absolute top-8 sm:top-12 left-0 right-0 z-10 text-center px-4 sm:px-6">
-            <h2 className="title-section">
+            <h2 className="title-section inline-block bg-bg/40 backdrop-blur-sm px-6 py-4 rounded-xl">
               <span className="block text-text">{t("about.timeline.title_1")}</span>
               <span className="block gradient-text font-fun">{t("about.timeline.title_2")}</span>
             </h2>
@@ -69,7 +69,7 @@ export default function Timeline() {
           {/* Desktop title - vertical on left, centered in viewport */}
           <div className="hidden lg:flex absolute left-16 top-0 bottom-0 z-20 items-center pointer-events-none px-4">
             <h2
-              className="title-section py-4"
+              className="title-section py-6 px-4 bg-bg/40 backdrop-blur-sm rounded-xl"
               style={{
                 writingMode: "vertical-rl",
                 transform: "rotate(180deg)",

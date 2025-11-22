@@ -25,8 +25,7 @@ export default function Specialties() {
         "Next.js",
         "TypeScript",
         "Tailwind CSS",
-        "Three.js",
-        "GSAP",
+        "Sass",
       ],
     },
     {
@@ -36,8 +35,6 @@ export default function Specialties() {
         "GSAP",
         "Framer Motion",
         "Three.js",
-        "WebGL",
-        "Canvas API",
         "CSS Animations",
       ],
     },
@@ -50,7 +47,7 @@ export default function Specialties() {
         "PostgreSQL",
         "MongoDB",
         "REST APIs",
-        "GraphQL",
+        "Docker"
       ],
     },
     {
@@ -62,7 +59,6 @@ export default function Specialties() {
         "WebViews",
         "iOS Publishing",
         "Android Publishing",
-        "App Store Optimization",
       ],
     },
     {

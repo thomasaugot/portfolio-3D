@@ -52,7 +52,16 @@ export default function TechStack() {
           <h2 className="title-section text-text">
             {t("about.tech_stack.title")}
           </h2>
-          <p className="subtitle gradient-text mt-1 md:mt-2">
+          <p
+            className="text-lg md:text-xl mt-1 md:mt-2"
+            style={{
+              backgroundImage: 'linear-gradient(90deg, var(--primary-color) 0%, var(--secondary-color) 100%)',
+              backgroundClip: 'text',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              color: 'transparent'
+            }}
+          >
             {t("about.tech_stack.description")}
           </p>
         </div>

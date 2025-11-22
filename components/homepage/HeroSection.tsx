@@ -20,7 +20,7 @@ export default function HeroSection() {
 
         <div className="relative z-10 w-full px-6 md:px-12 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-16 items-center max-w-7xl mx-auto">
-            <div data-animate="slide-up" className="space-y-6 md:space-y-10">
+            <div data-animate="slide-up">
               <div
                 data-hero-badge
                 className="glass inline-flex items-center gap-3 px-6 md:px-8 py-3 md:py-4 rounded-2xl border border-border bg-bg/80 backdrop-blur-md"
@@ -32,7 +32,7 @@ export default function HeroSection() {
                 </span>
               </div>
 
-              <h1 className="space-y-0 md:-space-y-6 lg:-space-y-8 relative pb-2">
+              <h1 className="space-y-0 md:-space-y-6 lg:-space-y-8 relative mt-4 md:mt-6">
                 <span
                   data-hero-line
                   className="block title-hero pb-1 text-shadow-soft"
@@ -63,7 +63,7 @@ export default function HeroSection() {
 
               <p
                 data-hero-subtitle
-                className="subtitle max-w-xl md:max-w-2xl bg-bg/40 backdrop-blur-sm p-4 md:p-6 rounded-xl"
+                className="subtitle max-w-xl md:max-w-2xl bg-bg/40 backdrop-blur-sm pt-2 pb-3 px-5 rounded-xl mt-2 md:mt-3"
                 style={{ willChange: 'opacity, transform' }}
               >
                 {t("homepage.hero_subtitle")}
@@ -71,7 +71,7 @@ export default function HeroSection() {
 
               <div
                 data-hero-buttons
-                className="flex flex-col md:flex-row gap-4 md:gap-6 lg:w-3/4"
+                className="flex flex-col md:flex-row gap-4 md:gap-6 lg:w-3/4 mt-6 md:mt-10"
                 style={{ willChange: 'opacity, transform' }}
               >
                 <Button variant="filled" size="lg" className="w-auto">

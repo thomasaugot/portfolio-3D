@@ -36,7 +36,6 @@ export default function AboutPage() {
     <>
       <Menu />
       <section className="relative bg-bg overflow-x-clip min-h-screen">
-        {/* Fixed 3D Background */}
         <div className="fixed inset-0 z-0 pointer-events-none">
           <div
             ref={containerRef}
@@ -45,7 +44,6 @@ export default function AboutPage() {
           />
         </div>
 
-        {/* Scrollable Content */}
         <div className="relative z-10 overflow-x-hidden">
           <AboutHero />
           <TechStack />

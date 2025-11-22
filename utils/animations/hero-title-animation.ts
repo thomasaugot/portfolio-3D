@@ -15,7 +15,7 @@ export function initHeroTitleAnimation() {
     gsap.set(dot, { opacity: 0, y: -50, scale: 0, borderRadius: '0%' });
   }
 
-  const tl = gsap.timeline({ delay: 0.3 });
+  const tl = gsap.timeline({ delay: 0.1 });
 
   tl.to(badge, {
     opacity: 1,
@@ -104,13 +104,13 @@ export function initHeroTitleAnimation() {
     opacity: 1,
     duration: 0.6,
     ease: "power2.out",
-  }, 1.6);
+  }, 1.2);
 
   tl.to(buttons, {
     opacity: 1,
     duration: 0.6,
     ease: "power2.out",
-  }, 1.8);
+  }, 1.4);
 
   if (dot) {
     tl.to(dot, {
@@ -120,7 +120,7 @@ export function initHeroTitleAnimation() {
       borderRadius: '50%',
       duration: 0.6,
       ease: "back.out(1.7)",
-    }, 2.0);
+    }, 1.6);
   }
 
   return tl;
