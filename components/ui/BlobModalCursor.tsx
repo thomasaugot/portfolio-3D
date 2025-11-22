@@ -303,6 +303,10 @@ export default function BlobModalCursor({ projects }: BlobModalCursorProps) {
       if (isOverButton || isOverCTA) {
         targetOpacity = 0;
         currentVisibleProject = null;
+        // Immediately disable pointer events when over buttons
+        if (container) {
+          container.style.pointerEvents = 'none';
+        }
         return;
       }
 
@@ -524,12 +528,11 @@ export default function BlobModalCursor({ projects }: BlobModalCursorProps) {
           overflow: 'visible'
         }}
       >
-        {/* Gradient glow - stays behind */}
+        {/* Gradient glow - matches skills section cards */}
         <div
           ref={glowRef}
-          className="absolute -inset-1 blur-[2px] -z-10"
+          className="absolute -inset-[1px] bg-gradient-to-br from-primary via-secondary to-primary opacity-50 -z-10"
           style={{
-            background: 'linear-gradient(135deg, #02bccc, #ccff02, #02bccc)',
             borderRadius: '30% 70% 70% 30% / 30% 30% 70% 70%',
             animation: 'blobMorph 6s ease-in-out infinite'
           }}

@@ -7,6 +7,7 @@ type SceneInitFunction = () =>
 
 const sceneStates = new Map<string, boolean>();
 const readyCallbacks = new Set<() => void>();
+const progressCallbacks = new Set<(loaded: number, total: number) => void>();
 
 let loadQueue: Array<{
   sceneId: string;
@@ -16,45 +17,49 @@ let loadQueue: Array<{
 let isProcessing = false;
 let registrationCounter = 0;
 
+// Load all queued scenes in parallel
 async function processQueue() {
   if (isProcessing || loadQueue.length === 0) return;
 
   isProcessing = true;
 
-  loadQueue.sort((a, b) => a.registrationOrder - b.registrationOrder);
+  const itemsToLoad = [...loadQueue];
+  loadQueue = [];
 
-  const item = loadQueue.shift();
-  if (!item) {
-    isProcessing = false;
-    return;
-  }
+  const total = itemsToLoad.length;
+  let loaded = 0;
 
-  console.log(`🎬 Loading ${item.sceneId} (order ${item.registrationOrder})`);
+  console.log(`🎬 Loading ${total} scenes in parallel`);
 
-  try {
-    const result = await item.initFunction();
+  await Promise.all(
+    itemsToLoad.map(async (item) => {
+      try {
+        console.log(`🎬 Starting ${item.sceneId}`);
+        await item.initFunction();
 
-    // Add a small delay after scene initialization to ensure everything is ready
-    await new Promise(resolve => setTimeout(resolve, 100));
+        sceneStates.set(item.sceneId, true);
+        loaded++;
+        console.log(`✅ ${item.sceneId} ready (${loaded}/${total})`);
 
-    sceneStates.set(item.sceneId, true);
-    console.log(`✅ ${item.sceneId} scene marked as ready`);
-    readyCallbacks.forEach(callback => callback());
+        progressCallbacks.forEach(cb => cb(loaded, total));
+        readyCallbacks.forEach(cb => cb());
+      } catch (error) {
+        console.error(`❌ Failed to load ${item.sceneId}:`, error);
+        sceneStates.set(item.sceneId, true);
+        loaded++;
+        progressCallbacks.forEach(cb => cb(loaded, total));
+        readyCallbacks.forEach(cb => cb());
+      }
+    })
+  );
 
-    return result;
-  } catch (error) {
-    console.error(`❌ Failed to load ${item.sceneId}:`, error);
-    // Still mark as complete to avoid blocking other scenes
-    sceneStates.set(item.sceneId, true);
-    readyCallbacks.forEach(callback => callback());
-  } finally {
-    const delay = item.registrationOrder === 0 ? 0 : 200;
-    if (delay > 0) {
-      await new Promise(resolve => setTimeout(resolve, delay));
-    }
-    isProcessing = false;
-    processQueue();
-  }
+  isProcessing = false;
+  if (loadQueue.length > 0) processQueue();
+}
+
+export function onSceneProgress(callback: (loaded: number, total: number) => void) {
+  progressCallbacks.add(callback);
+  return () => progressCallbacks.delete(callback);
 }
 
 export function useThreeScene(

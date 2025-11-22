@@ -1,10 +1,15 @@
 {
   "hero": {
-    "title": "Código, Surf y Atardeceres",
-    "subtitle": "Desarrollador Full-Stack | 3+ Años de Experiencia | Trilingüe"
+    "title": "Creando Experiencias Digitales",
+    "subtitle": "Desarrollador Full-Stack | 3+ Años de Experiencia | Trilingüe",
+    "stats": {
+      "years": "Años",
+      "projects": "Proyectos",
+      "languages": "Idiomas"
+    }
   },
   "intro": {
-    "paragraph_1": "¡Hola! Soy Thomas, desarrollador full-stack basado en Gran Canaria. Antes de establecerme para programar frente al océano, pasé años viajando por el mundo—Nueva Zelanda, Australia, Alemania y más allá. Ese estilo de vida nómada me enseñó a adaptarme rápidamente y abrazar nuevos desafíos, exactamente como abordo el desarrollo.",
+    "paragraph_1": "¡Hola! Soy Thomas, desarrollador full-stack originario de Nantes, Francia, ahora basado en Gran Canaria. Antes de establecerme para programar frente al océano, pasé años viajando por el mundo—Nueva Zelanda, Australia, Asia, Estados Unidos y más allá. Ese estilo de vida nómada me enseñó a adaptarme rápidamente y abrazar nuevos desafíos, exactamente como abordo el desarrollo.",
     "paragraph_2": "Construyo aplicaciones web modernas de principio a fin. Ya sea crear interfaces fluidas, configurar servidores o gestionar bases de datos, disfruto trabajar en toda la stack. La mayor parte de mi tiempo va al frontend, creando experiencias interactivas que se sienten pulidas y responsive.",
     "paragraph_3": "Fluido en francés, inglés y español, trabajo con equipos y clientes internacionales. Cuando no estoy programando, me encontrarás surfeando o disfrutando de la vida isleña."
   },

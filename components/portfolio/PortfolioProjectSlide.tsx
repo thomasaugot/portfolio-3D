@@ -21,7 +21,7 @@ export default function PortfolioProjectSlide({
     <div
       key={project.id}
       data-project-panel={index}
-      className="absolute w-full h-full pointer-events-auto opacity-0"
+      className="absolute w-full h-full pointer-events-none opacity-0"
     >
       {/* Mobile & Tablet Layout: Content at bottom, 3D visible at top */}
       <div className="lg:hidden flex flex-col justify-end h-full px-4 md:px-12 pb-8 md:pb-16 pointer-events-none">
@@ -129,29 +129,17 @@ export default function PortfolioProjectSlide({
             </div>
           )}
 
-          {/* CTA Button */}
-          <div data-project-button className="pointer-events-auto">
-            <button
-              onClick={(e) => {
-                // Store click position globally for modal animation
-                (window as any).__modalClickPosition = {
-                  x: e.clientX,
-                  y: e.clientY
-                };
-                onViewDetails(project);
-              }}
-              className="group relative text-body font-mono text-text/70 hover:text-primary transition-colors duration-300 pointer-events-auto cursor-pointer"
+          {/* Hint text - clicking on 3D area opens modal via blob cursor */}
+          <div data-project-button className="flex items-center gap-2 text-text/40 font-mono text-sm">
+            <span>{t("portfolio.common.ui.view_details")}</span>
+            <svg
+              className="w-4 h-4 animate-pulse"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
             >
-              {t(project.preview.cta)}
-              <svg
-                className="inline-block w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-              </svg>
-            </button>
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+            </svg>
           </div>
         </div>
       </div>

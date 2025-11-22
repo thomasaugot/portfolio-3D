@@ -12,7 +12,7 @@ export default function AboutHero() {
       className="relative min-h-screen flex items-center py-20 pt-28 px-4 sm:px-6 md:px-8 lg:px-12 lg:py-16 overflow-hidden"
     >
       <div className="w-full max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-6 md:gap-8 lg:gap-12 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-[0.5fr_1fr] gap-6 md:gap-8 lg:gap-12 items-center">
           {/* Photo */}
           <div
             className="relative order-2 lg:order-1"
@@ -55,21 +55,21 @@ export default function AboutHero() {
             </div>
           </div>
 
-          {/* Text Content - wider column */}
-          <div className="space-y-4 sm:space-y-5 md:space-y-6 order-1 lg:order-2" data-text-content>
+          {/* Text Content */}
+          <div className="space-y-4 sm:space-y-5 md:space-y-6 order-1 lg:order-2 min-w-0" data-text-content>
             {/* Title - no glass background */}
             <h1
               data-hero-title
-              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-fun font-extralight gradient-text tracking-tighter xl:whitespace-nowrap"
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-fun font-extralight gradient-text tracking-tighter"
             >
               {t("about.hero.title")}
             </h1>
 
             {/* Subtitle - separate glass block */}
-            <div className="bg-bg/50 backdrop-blur-md p-3 sm:p-4 md:p-5 rounded-xl border border-border/20 overflow-hidden">
+            <div className="bg-bg/50 backdrop-blur-md p-3 sm:p-4 md:p-5 rounded-xl border border-border/20">
               <p
                 data-hero-subtitle
-                className="text-sm sm:text-base md:text-lg lg:text-xl text-text/70 font-mono lg:whitespace-nowrap"
+                className="text-sm sm:text-base md:text-lg lg:text-xl text-text/70 font-mono"
               >
                 {t("about.hero.subtitle")}
               </p>
@@ -79,19 +79,19 @@ export default function AboutHero() {
             <div className="bg-bg/50 backdrop-blur-md p-4 sm:p-5 md:p-6 rounded-xl border border-border/20 space-y-2.5 sm:space-y-3 md:space-y-4" data-intro-paragraphs>
               <p
                 data-intro-paragraph
-                className="text-sm sm:text-base md:text-base lg:text-lg text-text/85 leading-relaxed"
+                className="text-xs sm:text-sm md:text-sm lg:text-base text-text/85 leading-relaxed"
               >
                 {t("about.intro.paragraph_1")}
               </p>
               <p
                 data-intro-paragraph
-                className="text-sm sm:text-base md:text-base lg:text-lg text-text/85 leading-relaxed"
+                className="text-xs sm:text-sm md:text-sm lg:text-base text-text/85 leading-relaxed"
               >
                 {t("about.intro.paragraph_2")}
               </p>
               <p
                 data-intro-paragraph
-                className="text-sm sm:text-base md:text-base lg:text-lg text-text/85 leading-relaxed"
+                className="text-xs sm:text-sm md:text-sm lg:text-base text-text/85 leading-relaxed"
               >
                 {t("about.intro.paragraph_3")}
               </p>
@@ -105,7 +105,7 @@ export default function AboutHero() {
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg md:rounded-xl" />
                 <div className="relative">
                   <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold gradient-text">3+</div>
-                  <div className="text-[10px] sm:text-xs text-text/60 mt-0.5">Years</div>
+                  <div className="text-[10px] sm:text-xs text-text/60 mt-0.5">{t("about.hero.stats.years")}</div>
                 </div>
               </div>
               <div
@@ -115,7 +115,7 @@ export default function AboutHero() {
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg md:rounded-xl" />
                 <div className="relative">
                   <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold gradient-text">20+</div>
-                  <div className="text-[10px] sm:text-xs text-text/60 mt-0.5">Projects</div>
+                  <div className="text-[10px] sm:text-xs text-text/60 mt-0.5">{t("about.hero.stats.projects")}</div>
                 </div>
               </div>
               <div
@@ -125,7 +125,7 @@ export default function AboutHero() {
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg md:rounded-xl" />
                 <div className="relative">
                   <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold gradient-text">3</div>
-                  <div className="text-[10px] sm:text-xs text-text/60 mt-0.5">Languages</div>
+                  <div className="text-[10px] sm:text-xs text-text/60 mt-0.5">{t("about.hero.stats.languages")}</div>
                 </div>
               </div>
             </div>

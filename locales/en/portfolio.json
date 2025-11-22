@@ -51,7 +51,7 @@
   "dosxdos_web": {
     "title": "Corporate Website 2.0 + Admin Panel",
     "preview": {
-      "tagline": "Transforming digital presence for a luxury design studio",
+      "tagline": "A luxury design studio needed a website matching their creative work. I built an animated Next.js site with GSAP and a custom CMS for independent content management.",
       "description": "Complete redesign of the corporate website with integrated content management system. Delivered a modern, SEO-optimized platform that reflects the brand's creative excellence.",
       "key_points": {
         "modern_experience": "Animated, interactive experience built with Next.js 15 and GSAP",
@@ -67,7 +67,7 @@
   "dosxdos_app": {
     "title": "Internal Management Platform - Mobile Redesign",
     "preview": {
-      "tagline": "Rebuilding operational tools for field teams",
+      "tagline": "Field teams struggled with an outdated web tool. I redesigned their CRM as a mobile-first app with interactive maps and offline capability for iOS and Android.",
       "description": "Complete redesign of internal CRM/project management platform. Transformed an outdated web tool into a mobile-optimized application deployed as native iOS and Android apps.",
       "key_points": {
         "mobile_optimization": "Mobile-first redesign for installers and route managers working in the field",
@@ -83,7 +83,7 @@
   "energia_solar": {
     "title": "Solar Plant Monitoring Platform - CRM",
     "preview": {
-      "tagline": "Centralizing solar energy data for clients and operations",
+      "tagline": "Solar clients were juggling three different provider apps. I built a unified platform consolidating all data into one dashboard, plus an admin CRM for client management.",
       "description": "Full-stack platform unifying multiple solar providers into a single interface. Built dual role system: client monitoring dashboard and internal CRM for plant management.",
       "key_points": {
         "data_unification": "Single access point consolidating Victron, SolarEdge, and GoodWe data",
@@ -99,7 +99,7 @@
   "charpente_durand": {
     "title": "Business Website for Carpentry Company",
     "preview": {
-      "tagline": "Building online presence for local carpentry expertise",
+      "tagline": "A French carpentry business had no online presence. I built them an SEO-optimized website that ranks locally and generates leads through contact forms.",
       "description": "Professional website built to establish online presence and compete effectively in the local market. Focused on SEO optimization and lead generation.",
       "key_points": {
         "seo_boost": "SEO-optimized structure to outrank local competition",
@@ -115,7 +115,7 @@
   "galaga_agency": {
     "title": "Galaga Agency Website 2.0",
     "preview": {
-      "tagline": "A new digital era for Galaga Agency.",
+      "tagline": "Galaga's old Webflow site didn't reflect their creative caliber. I built an immersive 3D experience with Three.js environments and cinematic GSAP animations.",
       "description": "I built Galaga Agency’s new website from the ground up — a bold, immersive experience that merges creativity, technology, and identity. The platform captures Galaga’s forward-thinking vision through dynamic 3D visuals, motion design, and high-end performance.",
       "key_points": {
         "brand_reinvention": "Complete reinvention of Galaga’s online presence",
@@ -132,7 +132,7 @@
   "reloj_laboral": {
     "title": "Reloj Laboral — Digital Time Tracking System",
     "preview": {
-      "tagline": "Building a complete digital time tracking ecosystem for Galaga Agency.",
+      "tagline": "Spanish companies needed compliant digital time tracking by law. I built a full-stack system with separate interfaces for employees, admins, and inspectors.",
       "description": "I designed and developed Reloj Laboral, a full-stack platform that enables companies to comply with Spain’s 2025 labor regulations. The system includes distinct interfaces for employees, administrators, and official inspectors — all connected through a secure and auditable infrastructure.",
       "key_points": {
         "digital_compliance": "Compliant with the 2025 Spanish digital labor law",

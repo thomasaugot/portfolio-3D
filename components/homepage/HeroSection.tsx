@@ -26,7 +26,7 @@ export default function HeroSection() {
                 className="glass inline-flex items-center gap-3 px-6 md:px-8 py-3 md:py-4 rounded-2xl border border-border bg-bg/80 backdrop-blur-md"
                 style={{ willChange: 'opacity, transform' }}
               >
-                <div className="w-3 h-3 md:w-3.5 md:h-3.5 rounded-full bg-text animate-pulse" />
+                <div className="w-3 h-3 md:w-3.5 md:h-3.5 rounded-full bg-gradient-to-br from-primary to-secondary animate-pulse" />
                 <span className="text-xs md:text-sm font-mono uppercase tracking-wider text-text/60">
                   {t("homepage.hero_title")}
                 </span>

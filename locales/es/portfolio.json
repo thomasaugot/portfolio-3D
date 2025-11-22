@@ -50,7 +50,7 @@
   "dosxdos_web": {
     "title": "Sitio Web Corporativo 2.0 + Panel de Administración",
     "preview": {
-      "tagline": "Transformación digital para un estudio de diseño de lujo",
+      "tagline": "Un estudio de diseño de lujo necesitaba una web a la altura de su trabajo creativo. Construí un sitio Next.js animado con GSAP y un CMS a medida para gestión de contenido autónoma.",
       "description": "Rediseño completo del sitio corporativo con sistema de gestión de contenido integrado. Entrega de una plataforma moderna y optimizada para SEO que refleja la excelencia creativa de la marca.",
       "key_points": {
         "modern_experience": "Experiencia animada e interactiva desarrollada con Next.js 15 y GSAP",
@@ -75,7 +75,7 @@
   "dosxdos_app": {
     "title": "Plataforma de Gestión Interna - Rediseño Móvil",
     "preview": {
-      "tagline": "Reconstrucción de herramientas operacionales para equipos de campo",
+      "tagline": "Los equipos de campo luchaban con una herramienta web obsoleta. Rediseñé su CRM como app mobile-first con mapas interactivos y modo offline para iOS y Android.",
       "description": "Rediseño completo de la plataforma interna CRM/gestión de proyectos. Transformación de una herramienta web obsoleta en aplicación optimizada para móvil desplegada como apps nativas iOS y Android.",
       "key_points": {
         "mobile_optimization": "Rediseño mobile-first para instaladores y responsables de rutas trabajando en campo",
@@ -99,7 +99,7 @@
   "energia_solar": {
     "title": "Plataforma de Monitoreo de Plantas Solares - CRM",
     "preview": {
-      "tagline": "Centralización de datos de energía solar para clientes y operaciones",
+      "tagline": "Los clientes solares navegaban entre tres apps de proveedores diferentes. Construí una plataforma unificada centralizando todos los datos, más un CRM admin para gestión de clientes.",
       "description": "Plataforma full-stack que unifica múltiples proveedores solares en una interfaz única. Sistema de doble rol: panel de monitoreo para clientes y CRM interno para gestión de plantas.",
       "key_points": {
         "data_unification": "Punto de acceso único consolidando datos de Victron, SolarEdge y GoodWe",
@@ -123,7 +123,7 @@
   "charpente_durand": {
     "title": "Sitio Profesional para Empresa de Carpintería",
     "preview": {
-      "tagline": "Construcción de presencia online para experiencia local en carpintería",
+      "tagline": "Una empresa de carpintería francesa no tenía presencia online. Les construí un sitio optimizado SEO que rankea localmente y genera leads mediante formularios de contacto.",
       "description": "Sitio web profesional desarrollado para establecer presencia online y competir efectivamente en el mercado local. Enfoque en optimización SEO y generación de leads.",
       "key_points": {
         "seo_boost": "Estructura optimizada SEO para superar competencia local",
@@ -146,7 +146,7 @@
   "galaga_agency": {
     "title": "Sitio Web 2.0 para Galaga Agency",
     "preview": {
-      "tagline": "Una nueva era digital para Galaga Agency.",
+      "tagline": "El antiguo sitio Webflow de Galaga no reflejaba su calibre creativo. Construí una experiencia 3D inmersiva con entornos Three.js y animaciones GSAP cinemáticas.",
       "description": "Diseñé y desarrollé el nuevo sitio de Galaga Agency desde cero: una experiencia inmersiva y audaz que fusiona creatividad, tecnología e identidad. La plataforma traduce la visión vanguardista de Galaga a través de visuales 3D dinámicos, motion design y rendimiento de alta gama.",
       "key_points": {
         "brand_reinvention": "Reinvención completa de la presencia digital de Galaga",
@@ -171,7 +171,7 @@
   "reloj_laboral": {
     "title": "Reloj Laboral — Sistema de fichaje digital",
     "preview": {
-      "tagline": "Creé un ecosistema completo de fichaje digital para Galaga Agency.",
+      "tagline": "Las empresas españolas necesitaban fichaje digital conforme por ley. Construí un sistema full-stack con interfaces separadas para empleados, admins e inspectores.",
       "description": "Diseñé y desarrollé Reloj Laboral, plataforma full-stack conforme a la regulación española 2025 sobre control horario. El sistema incluye interfaces dedicadas para empleados, administradores e inspectores oficiales, todas conectadas a infraestructura segura y trazable.",
       "key_points": {
         "digital_compliance": "Conforme a legislación española 2025 sobre control horario digital",

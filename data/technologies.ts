@@ -61,7 +61,7 @@ export const technologies: Technology[] = [
   {
     id: "javascript",
     name: "JavaScript",
-    logo: "/assets/images/technologies/javascript-logo.svg",
+    logo: "/assets/images/technologies/javascript-logo.png",
     category: "development",
     descriptionKey: "technologies.javascript.description",
   },
@@ -133,7 +133,7 @@ export const technologies: Technology[] = [
   {
     id: "mongodb",
     name: "MongoDB",
-    logo: "/assets/images/technologies/mongodb-logo.svg",
+    logo: "/assets/images/technologies/mongodb-logo.png",
     category: "development",
     descriptionKey: "technologies.mongodb.description",
   },

@@ -1,10 +1,15 @@
 {
   "hero": {
-    "title": "Full-Stack Developer",
-    "subtitle": "3+ Years Experience | React & Node.js | Trilingual"
+    "title": "Crafting Digital Experiences",
+    "subtitle": "3+ Years Experience | React & Node.js | Trilingual",
+    "stats": {
+      "years": "Years",
+      "projects": "Projects",
+      "languages": "Languages"
+    }
   },
   "intro": {
-    "paragraph_1": "Hi! I'm Thomas, a full-stack developer based in Gran Canaria. Before settling down to code by the ocean, I spent years backpacking around the world—New Zealand, Australia, Germany, and beyond. That nomadic lifestyle taught me to adapt quickly and embrace new challenges, which is exactly how I approach development.",
+    "paragraph_1": "Hi! I'm Thomas, a full-stack developer originally from Nantes, France, now based in Gran Canaria. Before settling down to code by the ocean, I spent years backpacking around the world—New Zealand, Australia, Asia, the USA, and beyond. That nomadic lifestyle taught me to adapt quickly and embrace new challenges, which is exactly how I approach development.",
     "paragraph_2": "I build modern web applications from end to end. Whether it's crafting smooth user interfaces, setting up servers, or handling databases, I enjoy working across the entire stack. Most of my time goes into frontend work, creating interactive experiences that feel polished and responsive.",
     "paragraph_3": "Fluent in French, English, and Spanish, I work with international teams and clients worldwide."
   },

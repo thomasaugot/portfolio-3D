@@ -15,7 +15,7 @@ export function initHeroTitleAnimation() {
     gsap.set(dot, { opacity: 0, y: -50, scale: 0, borderRadius: '0%' });
   }
 
-  const tl = gsap.timeline({ delay: 0.8 });
+  const tl = gsap.timeline({ delay: 0.3 });
 
   tl.to(badge, {
     opacity: 1,

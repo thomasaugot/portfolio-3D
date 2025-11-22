@@ -5,6 +5,8 @@ export function openProjectModal(onComplete?: () => void) {
   const overlayRef = document.querySelector('[data-modal-overlay]') as HTMLElement;
   const morphRef = document.querySelector('[data-modal-morph]') as HTMLElement;
   const contentRef = document.querySelector('[data-modal-content]') as HTMLElement;
+  const glowRef = document.querySelector('[data-modal-glow]') as HTMLElement;
+  const bgRef = morphRef?.querySelector('.bg-bg') as HTMLElement;
   const portfolioScene = (window as any).__portfolioScene;
 
   if (!morphRef || !overlayRef || !contentRef) return;
@@ -57,6 +59,22 @@ export function openProjectModal(onComplete?: () => void) {
     },
     0.2
   );
+
+  // Animate glow and background border-radius
+  if (glowRef) {
+    tl.to(glowRef, {
+      borderRadius: isMobile ? "16px" : "24px",
+      duration: 0.7,
+      ease: "expo.out",
+    }, 0.2);
+  }
+  if (bgRef) {
+    tl.to(bgRef, {
+      borderRadius: isMobile ? "16px" : "24px",
+      duration: 0.7,
+      ease: "expo.out",
+    }, 0.2);
+  }
   tl.fromTo(
     contentRef,
     { opacity: 0 },
@@ -69,6 +87,8 @@ export function closeProjectModal(centerX: number, centerY: number, onComplete?:
   const overlayRef = document.querySelector('[data-modal-overlay]') as HTMLElement;
   const morphRef = document.querySelector('[data-modal-morph]') as HTMLElement;
   const contentRef = document.querySelector('[data-modal-content]') as HTMLElement;
+  const glowRef = document.querySelector('[data-modal-glow]') as HTMLElement;
+  const bgRef = morphRef?.querySelector('.bg-bg') as HTMLElement;
   const portfolioScene = (window as any).__portfolioScene;
 
   if (!morphRef || !overlayRef || !contentRef) return;
@@ -98,6 +118,23 @@ export function closeProjectModal(centerX: number, centerY: number, onComplete?:
     },
     0.15
   );
+
+  // Animate glow and background border-radius back
+  if (glowRef) {
+    tl.to(glowRef, {
+      borderRadius: "30% 70% 70% 30% / 30% 30% 70% 70%",
+      duration: 0.6,
+      ease: "expo.in",
+    }, 0.15);
+  }
+  if (bgRef) {
+    tl.to(bgRef, {
+      borderRadius: "30% 70% 70% 30% / 30% 30% 70% 70%",
+      duration: 0.6,
+      ease: "expo.in",
+    }, 0.15);
+  }
+
   tl.to(morphRef, { opacity: 0, duration: 0.2, ease: "power2.in" }, 0.7);
   tl.to(overlayRef, { opacity: 0, duration: 0.3, ease: "power2.in" }, 0.6);
 }

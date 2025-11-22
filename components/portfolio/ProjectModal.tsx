@@ -59,13 +59,28 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
     >
       <div
         data-modal-morph
-        className="fixed bg-bg backdrop-blur-xl overflow-hidden pointer-events-auto"
+        className="fixed overflow-visible pointer-events-auto"
         style={{
           borderRadius: "30% 70% 70% 30% / 30% 30% 70% 70%",
-          boxShadow: "0 0 0 1px rgba(204,255,2,0.2)",
         }}
         onClick={(e) => e.stopPropagation()}
       >
+        {/* Gradient glow effect - matches skills section cards */}
+        <div
+          data-modal-glow
+          className="absolute -inset-[1px] bg-gradient-to-br from-primary via-secondary to-primary opacity-50 -z-10"
+          style={{
+            borderRadius: '30% 70% 70% 30% / 30% 30% 70% 70%',
+          }}
+        />
+
+        {/* Main background */}
+        <div
+          className="absolute inset-0 bg-bg backdrop-blur-xl -z-5"
+          style={{
+            borderRadius: '30% 70% 70% 30% / 30% 30% 70% 70%',
+          }}
+        />
         <div data-modal-content className="relative w-full h-full flex flex-col pointer-events-auto">
           {/* Close Button */}
           <button

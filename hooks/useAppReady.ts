@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { waitForScenes } from "./useThreeScene";
+import { waitForScenes, onSceneProgress } from "./useThreeScene";
 
 interface UseAppReadyOptions {
   criticalScenes?: string[];
@@ -55,10 +55,16 @@ export function useAppReady(options: UseAppReadyOptions = {}) {
         setProgress(50);
 
         if (criticalScenes.length > 0) {
-          // console.log(`⏳ Waiting for scenes: ${criticalScenes.join(", ")}`);
+          // Subscribe to progress updates (50% to 90%)
+          const unsubscribe = onSceneProgress((loaded, total) => {
+            if (!mounted) return;
+            const sceneProgress = 50 + (loaded / total) * 40;
+            setProgress(Math.round(sceneProgress));
+          });
+
           await waitForScenes(criticalScenes);
+          unsubscribe();
           if (!mounted) return;
-          // console.log("✅ All critical scenes loaded");
         }
 
         setProgress(90);
