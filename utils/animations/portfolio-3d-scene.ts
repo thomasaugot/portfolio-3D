@@ -292,7 +292,7 @@ export async function initPortfolioScene() {
       const hex = new THREE.Line(geometry, material);
       const x = hexSize * 1.5 * q;
       const z = hexSize * Math.sqrt(3) * (r + q / 2);
-      const hexY = config.isMobile ? -80 : config.isTablet ? -120 : -140;
+      const hexY = config.isMobile ? -150 : config.isTablet ? -180 : -200;
       hex.position.set(x, hexY, z);
 
       (hex as any).baseOpacity = opacity * (config.isLight ? 0.6 : 0.4);

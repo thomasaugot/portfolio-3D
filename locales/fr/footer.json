@@ -6,15 +6,16 @@
   },
   "services": {
     "title": "Services",
-    "web_development": "Développement Web",
-    "ui_design": "Design UI/UX",
-    "interactive": "Expériences Interactives",
-    "consulting": "Conseil Technique"
+    "frontend": "Développement Frontend",
+    "fullstack": "Solutions Full-Stack",
+    "mobile": "Applications Mobiles",
+    "animations": "Animations Interactives"
   },
   "contact": {
     "title": "Contactez-moi",
     "location": "Las Palmas, Îles Canaries"
   },
+  "social_label": "Retrouvez-moi sur",
   "credits": "Codé avec",
   "by": "par",
   "copyright": "Tous droits réservés.",

@@ -27,16 +27,43 @@ export function initTechConstellation() {
     });
   });
 
-  // Floating logos
+  // Floating logos with depth-based parallax
   allLogos.forEach((logo) => {
+    // Extract logo index from data attribute (format: "categoryIndex-logoIndex")
+    const logoAttr = logo.getAttribute("data-tech-logo") || "0-0";
+    const logoIndex = parseInt(logoAttr.split("-")[1]) || 0;
+
+    // Calculate ring (8 items per ring) - higher ring = further from center
+    const ring = Math.floor(logoIndex / 8);
+
+    // Depth factor: closer logos (ring 0) move faster/more, distant ones slower/less
+    // Ring 0: factor 1.0, Ring 1: 0.6, Ring 2: 0.4, etc.
+    const depthFactor = 1 / (1 + ring * 0.7);
+
+    // Vertical float - closer logos float more (8-15px), distant ones less (3-6px)
+    const floatAmount = 5 + 10 * depthFactor;
+    const floatDuration = 2.5 + (1 - depthFactor) * 3; // Slower for distant logos
+
     gsap.to(logo, {
-      y: "+=10",
-      duration: 2 + Math.random() * 2,
+      y: `+=${floatAmount}`,
+      duration: floatDuration + Math.random() * 1.5,
       repeat: -1,
       yoyo: true,
       ease: "sine.inOut",
-      delay: Math.random(),
+      delay: Math.random() * 0.5,
     });
+
+    // Subtle horizontal drift only for inner rings (doesn't conflict with scroll)
+    if (ring === 0) {
+      gsap.to(logo, {
+        x: `+=4`,
+        duration: 5 + Math.random() * 2,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+        delay: Math.random() * 2,
+      });
+    }
   });
 
   // Main timeline
@@ -61,11 +88,6 @@ export function initTechConstellation() {
     ease: "none",
   }, 0);
 
-  // Set initial states for all logos - scaled down
-  allLogos.forEach((logo) => {
-    gsap.set(logo, { opacity: 1, scale: 0 });
-  });
-
   // Animate each layer - title first, then logos with random pop-in
   layers.forEach((layer, i) => {
     const label = layer.querySelector(`[data-category-label="${i}"]`);
@@ -74,8 +96,45 @@ export function initTechConstellation() {
     const start = i / layers.length;
     const dur = 1 / layers.length;
 
-    // Initially hide label and logos
+    // All start hidden
     gsap.set(label, { opacity: 0, scale: 0.8 });
+    logos.forEach((logo) => {
+      gsap.set(logo, { opacity: 1, scale: 0 });
+    });
+
+    // First category animates on viewport enter
+    if (i === 0) {
+      const sortedLogos = logos.slice().sort((a, b) => {
+        const aIndex = parseInt(a.getAttribute("data-tech-logo")?.split("-")[1] || "0");
+        const bIndex = parseInt(b.getAttribute("data-tech-logo")?.split("-")[1] || "0");
+        return aIndex - bIndex;
+      });
+
+      ScrollTrigger.create({
+        trigger: section,
+        start: "top 80%",
+        once: true,
+        onEnter: () => {
+          // Label first
+          gsap.to(label, {
+            opacity: 1,
+            scale: 1,
+            duration: 0.5,
+            ease: "power2.out"
+          });
+
+          // Then logos with stagger
+          sortedLogos.forEach((logo, logoIndex) => {
+            gsap.to(logo, {
+              scale: 1,
+              duration: 0.4,
+              delay: 0.2 + logoIndex * 0.02,
+              ease: "back.out(1.7)",
+            });
+          });
+        }
+      });
+    }
 
     // Fade in - label first
     const fadeInStart = start + dur * 0.05;
@@ -89,15 +148,22 @@ export function initTechConstellation() {
       );
     }
 
-    // Logos scale in with random delays, slightly after label
-    if (logos.length) {
-      logos.forEach((logo) => {
-        const randomDelay = Math.random() * dur * 0.15;
+    // Logos scale in - first category already visible, others animate in spiral pattern
+    if (logos.length && i > 0) {
+      // Sort logos by their ring position for spiral effect
+      const sortedLogos = logos.slice().sort((a, b) => {
+        const aIndex = parseInt(a.getAttribute("data-tech-logo")?.split("-")[1] || "0");
+        const bIndex = parseInt(b.getAttribute("data-tech-logo")?.split("-")[1] || "0");
+        return aIndex - bIndex;
+      });
+
+      sortedLogos.forEach((logo, logoIndex) => {
+        const delay = logoIndex * 0.008; // Fast sequential stagger
         tl.to(logo, {
           scale: 1,
-          duration: dur * 0.12,
+          duration: dur * 0.1,
           ease: "back.out(1.7)",
-        }, fadeInStart + labelDur * 0.2 + randomDelay);
+        }, fadeInStart + labelDur * 0.2 + delay);
       });
     }
 

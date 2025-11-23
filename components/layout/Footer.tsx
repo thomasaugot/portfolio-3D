@@ -58,8 +58,8 @@ export default function Footer() {
       {/* Background glow effect */}
       <div className="absolute top-32 left-1/2 -translate-x-1/2 w-[800px] h-[300px] gradient-primary-reverse opacity-[0.08] rounded-full blur-[120px] pointer-events-none" />
       
-      <div className="relative max-w-7xl mx-auto px-8">
-        <div className="grid lg:grid-cols-2 gap-20 mb-24">
+      <div className="relative max-w-7xl mx-auto px-8 overflow-visible">
+        <div className="grid lg:grid-cols-2 gap-20 mb-24 overflow-visible">
           {/* Logo & Socials Section */}
           <div data-animate="footer-logo">
             <Image
@@ -100,10 +100,10 @@ export default function Footer() {
           </div>
 
           {/* Links Section */}
-          <div className="grid grid-cols-2 gap-x-16 gap-y-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-16 gap-y-8 sm:gap-y-12 overflow-visible">
             {/* Navigation */}
-            <div data-animate="footer-section">
-              <h4 className="title-item gradient-text mb-8">
+            <div data-animate="footer-section" className="overflow-visible">
+              <h4 className="title-item gradient-text mb-8 overflow-visible">
                 {t("footer.navigation.title")}
               </h4>
               <nav className="flex flex-col gap-4">
@@ -122,26 +122,29 @@ export default function Footer() {
             </div>
 
             {/* Services */}
-            <div data-animate="footer-section">
-              <h4 className="title-item gradient-text mb-8">
+            <div data-animate="footer-section" className="overflow-visible">
+              <h4 className="title-item gradient-text mb-8 overflow-visible">
                 {t("footer.services.title")}
               </h4>
               <ul className="flex flex-col gap-4">
                 <li className="text-body hover:text-text hover:translate-x-1 transition-all duration-200 cursor-pointer">
-                  {t("footer.services.web_development")}
+                  {t("footer.services.frontend")}
                 </li>
                 <li className="text-body hover:text-text hover:translate-x-1 transition-all duration-200 cursor-pointer">
-                  {t("footer.services.ui_design")}
+                  {t("footer.services.fullstack")}
                 </li>
                 <li className="text-body hover:text-text hover:translate-x-1 transition-all duration-200 cursor-pointer">
-                  {t("footer.services.interactive")}
+                  {t("footer.services.mobile")}
+                </li>
+                <li className="text-body hover:text-text hover:translate-x-1 transition-all duration-200 cursor-pointer">
+                  {t("footer.services.animations")}
                 </li>
               </ul>
             </div>
 
             {/* Contact */}
-            <div data-animate="footer-section" className="col-span-2">
-              <h4 className="title-item gradient-text mb-8">
+            <div data-animate="footer-section" className="sm:col-span-2 overflow-visible">
+              <h4 className="title-item gradient-text mb-8 overflow-visible">
                 {t("footer.contact.title")}
               </h4>
               <div className="flex flex-wrap gap-8">
@@ -165,32 +168,15 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="pt-10 border-t border-border/20">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6 text-text/40 text-body">
-            <p className="flex items-center gap-2">
+            <p className="text-base md:text-lg text-text/60 flex items-center gap-2 normal-case">
               {t("footer.credits")}
-              <FaHeart className="w-4 h-4 text-red-500" />
-              {t("footer.by")}
-              <span className="gradient-text font-bold">
-                Thomas
+              <FaHeart className="w-5 h-5 text-primary animate-pulse" />
+              <span className="text-text">
+                {t("footer.brand")}
               </span>
             </p>
 
             <p>© {currentYear} {t("footer.copyright")}</p>
-
-            <div className="flex items-center gap-6">
-              <SafeLink
-                href={`/${language}/privacy`}
-                className="hover:text-primary transition-colors duration-200"
-              >
-                {t("footer.legal.privacy")}
-              </SafeLink>
-              <span>·</span>
-              <SafeLink
-                href={`/${language}/terms`}
-                className="hover:text-primary transition-colors duration-200"
-              >
-                {t("footer.legal.terms")}
-              </SafeLink>
-            </div>
           </div>
         </div>
       </div>

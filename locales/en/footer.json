@@ -6,15 +6,16 @@
   },
   "services": {
     "title": "Services",
-    "web_development": "Web Development",
-    "ui_design": "UI/UX Design",
-    "interactive": "Interactive Experiences",
-    "consulting": "Technical Consulting"
+    "frontend": "Frontend Development",
+    "fullstack": "Full-Stack Solutions",
+    "mobile": "Mobile Applications",
+    "animations": "Interactive Animations"
   },
   "contact": {
     "title": "Get in Touch",
     "location": "Las Palmas, Canary Islands"
   },
+  "social_label": "Find me on",
   "credits": "Coded with ",
   "by": "by",
   "copyright": "All rights reserved.",

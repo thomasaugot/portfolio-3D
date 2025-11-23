@@ -36,16 +36,10 @@ export function TranslationProvider({
 }) {
   const pathname = usePathname();
 
+  // Always initialize from URL to avoid hydration mismatch
   const [language, setLanguage] = useState<Language>(() => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("preferred-language") as Language;
-      if (saved && locales.includes(saved)) {
-        return saved;
-      }
-      return detectBrowserLanguage();
-    }
     const currentLocale = pathname.split("/")[1] as Language;
-    return currentLocale || defaultLocale;
+    return locales.includes(currentLocale) ? currentLocale : defaultLocale;
   });
 
   const [translations, setTranslations] = useState<any>({});

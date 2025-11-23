@@ -354,9 +354,9 @@ export default function ContactHero() {
             </div>
 
             {/* Social Links - Centered below */}
-            <div className="mt-16 lg:mt-20 text-center">
-              <p className="subtitle text-text/60 mb-8">{t("contact.social.title")}</p>
-              <div className="flex justify-center gap-6">
+            <div className="mt-16 lg:mt-20 flex flex-col md:flex-row items-center justify-center gap-6 md:gap-8">
+              <p className="subtitle text-text/60 mb-0">{t("contact.social.title")}</p>
+              <div className="flex gap-6">
                 <button
                   onClick={() => window.open("https://www.linkedin.com/in/thomas-augot/", "_blank")}
                   className="relative w-16 h-16 flex items-center justify-center rounded-2xl bg-surface/60 backdrop-blur-sm border border-border/30 hover:border-primary/60 transition-all duration-300 group overflow-hidden hover:scale-110"

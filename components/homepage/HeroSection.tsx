@@ -74,11 +74,11 @@ export default function HeroSection() {
                 className="flex flex-col md:flex-row gap-4 md:gap-6 lg:w-3/4 mt-6 md:mt-10"
                 style={{ willChange: 'opacity, transform' }}
               >
-                <Button variant="filled" size="lg" className="w-auto">
+                <Button variant="filled" size="lg" className="w-auto" href="/portfolio" asLink>
                   {t("homepage.hero_cta")}
                 </Button>
 
-                <Button variant="outlined" size="lg" className="w-auto">
+                <Button variant="outlined" size="lg" className="w-auto" href="/contact" asLink>
                   {t("nav.contact.menu-item")}
                 </Button>
               </div>

@@ -14,9 +14,11 @@ export default async function LocaleLayout({
   const { locale } = await params;
 
   return (
-    <html lang={locale}>
+    <html lang={locale} suppressHydrationWarning>
       <head>
-        {/* Preload critical assets for faster hero load */}
+        <script dangerouslySetInnerHTML={{ __html: `document.documentElement.style.background='#212121'` }} />
+        <meta name="theme-color" content="#212121" />
+        <meta name="color-scheme" content="dark" />
         <link
           rel="preload"
           href="/assets/models/laptop-logo.glb"
@@ -33,7 +35,7 @@ export default async function LocaleLayout({
           crossOrigin="anonymous"
         />
       </head>
-      <body className="antialiased">
+      <body className="antialiased" suppressHydrationWarning>
         <ThemeProvider>
           <TranslationProvider>
             <TabTitleAnimationProvider />
