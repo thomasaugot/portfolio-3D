@@ -14,6 +14,8 @@ export function useAppReady(options: UseAppReadyOptions = {}) {
 
   useEffect(() => {
     let mounted = true;
+    const startTime = Date.now();
+    const MIN_DURATION = 2500; // Minimum 2.5 seconds for scan + progress bar
 
     async function init() {
       try {
@@ -69,19 +71,30 @@ export function useAppReady(options: UseAppReadyOptions = {}) {
 
         setProgress(90);
 
-        // Add a delay to ensure all resources (fonts, scenes, etc.) are fully settled
-        // console.log("⏳ Final stabilization delay (500ms)...");
-        await new Promise((resolve) => setTimeout(resolve, 500));
+        // Wait for minimum duration to allow progress bar to fill smoothly
+        const elapsed = Date.now() - startTime;
+        const remainingTime = Math.max(0, MIN_DURATION - elapsed);
+
+        if (remainingTime > 0) {
+          // Animate progress from 90 to 100 over remaining time
+          const steps = 10;
+          const stepTime = remainingTime / steps;
+          for (let i = 0; i < steps; i++) {
+            await new Promise((resolve) => setTimeout(resolve, stepTime));
+            if (!mounted) return;
+            setProgress(90 + ((i + 1) / steps) * 10);
+          }
+        } else {
+          setProgress(100);
+        }
+
         if (!mounted) return;
 
-        setProgress(100);
-        // console.log("⏳ Setting isReady in 300ms...");
-        setTimeout(() => {
-          if (mounted) {
-            // console.log("✅ APP IS READY!");
-            setIsReady(true);
-          }
-        }, 300);
+        // Small delay before marking ready
+        await new Promise((resolve) => setTimeout(resolve, 200));
+        if (mounted) {
+          setIsReady(true);
+        }
       } catch (error) {
         console.error("❌ Init failed:", error);
         if (mounted) setIsReady(true);
