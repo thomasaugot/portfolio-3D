@@ -41,7 +41,7 @@ export default function BlogHero({ posts }: BlogHeroProps) {
                 style={{
                   wordSpacing: "normal",
                   letterSpacing: "inherit",
-                  whiteSpace: "normal"
+                  whiteSpace: "normal",
                 }}
               >
                 {t("blog.hero.title_1")}
@@ -52,16 +52,23 @@ export default function BlogHero({ posts }: BlogHeroProps) {
                 style={{
                   wordSpacing: "normal",
                   letterSpacing: "inherit",
-                  whiteSpace: "normal"
+                  whiteSpace: "normal",
                 }}
               >
                 {t("blog.hero.title_2")}
+              </span>
+              <span
+                data-hero-line
+                className="block title-hero text-nowrap text-shadow-soft"
+                style={{ willChange: "opacity, transform" }}
+              >
+                {t("blog.hero.title_3")}
               </span>
             </h1>
 
             <p
               data-blog-subtitle
-                className="subtitle max-w-xl md:max-w-2xl bg-bg/40 backdrop-blur-sm pt-2 pb-3 px-5 rounded-xl mt-2 md:mt-3"
+              className="subtitle max-w-xl md:max-w-2xl bg-bg/40 backdrop-blur-sm pt-2 pb-3 px-5 rounded-xl mt-2 md:mt-3"
             >
               {t("blog.hero.subtitle")}
             </p>

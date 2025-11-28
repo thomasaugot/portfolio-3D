@@ -1,8 +1,9 @@
 {
   "hero": {
     "badge": "Mi blog de desarrollo",
-    "title_1": "Movidas del",
-    "title_2": "Mundo Web",
+    "title_1": "Movidas",
+    "title_2": "del Mundo",
+    "title_3": "Web",
     "subtitle": "Explorando la intersección del código, la creatividad y la artesanía en el desarrollo web moderno"
   },
   "sections": {

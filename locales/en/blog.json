@@ -2,7 +2,8 @@
   "hero": {
     "badge": "My dev blog",
     "title_1": "Dev Things",
-    "title_2": "Worth Sharing",
+    "title_2": "Worth",
+    "title_3": "Sharing",
     "subtitle": "Exploring the intersection of code, creativity, and craftsmanship in modern web development"
   },
   "sections": {

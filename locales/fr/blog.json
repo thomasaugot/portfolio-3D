@@ -1,8 +1,9 @@
 {
   "hero": {
     "badge": "Mon blog sur le dev",
-    "title_1": "Le coin",
-    "title_2": "100% dev",
+    "title_1": "Le Coin",
+    "title_2": "100%",
+    "title_3": "Dév'...",
     "subtitle": "Explorer l'intersection du code, de la créativité et de l'artisanat dans le développement web moderne"
   },
   "sections": {
