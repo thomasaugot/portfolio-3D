@@ -1,0 +1,34 @@
+{
+  "hero": {
+    "badge": "My dev blog",
+    "title_1": "Dev Things",
+    "title_2": "Worth Sharing",
+    "subtitle": "Exploring the intersection of code, creativity, and craftsmanship in modern web development"
+  },
+  "sections": {
+    "featured": "Featured Chronicle",
+    "latest": "All my writings",
+    "all": "Archive",
+    "load_more": "Load More Stories"
+  },
+  "card": {
+    "read_more": "Read Article",
+    "read_full_article": "Read Full Article",
+    "min_read": "min read",
+    "latest": "Latest"
+  },
+  "categories": {
+    "all": "All",
+    "frontend": "Frontend",
+    "backend": "Backend",
+    "fullstack": "Full Stack",
+    "design": "Design",
+    "career": "Career",
+    "tutorial": "Tutorial"
+  },
+  "empty": {
+    "title": "No articles yet",
+    "description": "Check back soon for new content"
+  },
+  "scroll": "Scroll to explore"
+}

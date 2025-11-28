@@ -46,7 +46,7 @@ export function TranslationProvider({
 
   const loadTranslations = async (lang: Language) => {
     try {
-      const [nav, homepage, portfolio, common, footer, contact, about] = await Promise.all([
+      const [nav, homepage, portfolio, common, footer, contact, about, blog] = await Promise.all([
         import(`@/locales/${lang}/nav.json`),
         import(`@/locales/${lang}/homepage.json`),
         import(`@/locales/${lang}/portfolio.json`),
@@ -54,6 +54,7 @@ export function TranslationProvider({
         import(`@/locales/${lang}/footer.json`),
         import(`@/locales/${lang}/contact.json`),
         import(`@/locales/${lang}/about.json`),
+        import(`@/locales/${lang}/blog.json`),
       ]);
 
       const merged = {
@@ -64,6 +65,7 @@ export function TranslationProvider({
         footer: footer.default,
         contact: contact.default,
         about: about.default,
+        blog: blog.default,
       };
 
       setTranslations(merged);

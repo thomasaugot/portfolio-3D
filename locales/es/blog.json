@@ -1,0 +1,34 @@
+{
+  "hero": {
+    "badge": "Mi blog de desarrollo",
+    "title_1": "Movidas del",
+    "title_2": "Mundo Web",
+    "subtitle": "Explorando la intersección del código, la creatividad y la artesanía en el desarrollo web moderno"
+  },
+  "sections": {
+    "featured": "Crónica Destacada",
+    "latest": "Todos mi escritos",
+    "all": "Archivo",
+    "load_more": "Cargar Más Historias"
+  },
+  "card": {
+    "read_more": "Leer Artículo",
+    "read_full_article": "Leer Artículo Completo",
+    "min_read": "min de lectura",
+    "latest": "Nuevo"
+  },
+  "categories": {
+    "all": "Todos",
+    "frontend": "Frontend",
+    "backend": "Backend",
+    "fullstack": "Full Stack",
+    "design": "Diseño",
+    "career": "Carrera",
+    "tutorial": "Tutorial"
+  },
+  "empty": {
+    "title": "Aún no hay artículos",
+    "description": "Vuelve pronto para nuevo contenido"
+  },
+  "scroll": "Desplázate para explorar"
+}

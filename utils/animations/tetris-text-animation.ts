@@ -8,13 +8,13 @@ export function initTetrisTextAnimation() {
     tetrisScrollTrigger = null;
   }
 
-  const header = document.querySelector("[data-projects-header]");
+  const header = document.querySelector("[data-projects-header]") || document.querySelector("[data-blog-header]");
   if (!header) return;
 
   const subtitle = header.querySelector(
     "[data-projects-subtitle]"
-  ) as HTMLElement;
-  const title = header.querySelector("[data-projects-title]") as HTMLElement;
+  ) as HTMLElement || header.querySelector("[data-blog-subtitle]") as HTMLElement;
+  const title = header.querySelector("[data-projects-title]") as HTMLElement || header.querySelector("[data-blog-title]") as HTMLElement;
 
   if (!title) return;
 

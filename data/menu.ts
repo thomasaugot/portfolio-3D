@@ -31,14 +31,13 @@ export const menuItems: MenuItem[] = [
     labelKey: 'nav.portfolio',
     descriptionKey: 'nav.portfolio_description'
   },
-  // Commented out until blog page is created - was causing 404 errors
-  // {
-  //   label: 'Blog',
-  //   href: '/blog',
-  //   description: 'Thoughts on development & design',
-  //   labelKey: 'nav.blog',
-  //   descriptionKey: 'nav.blog_description'
-  // },
+  {
+    label: 'Blog',
+    href: '/blog',
+    description: 'Thoughts on development & design',
+    labelKey: 'nav.blog',
+    descriptionKey: 'nav.blog_description'
+  },
   {
     label: 'Contact',
     href: '/contact',

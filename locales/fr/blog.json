@@ -1,0 +1,34 @@
+{
+  "hero": {
+    "badge": "Mon blog sur le dev",
+    "title_1": "Le coin",
+    "title_2": "100% dev",
+    "subtitle": "Explorer l'intersection du code, de la créativité et de l'artisanat dans le développement web moderne"
+  },
+  "sections": {
+    "featured": "Chronique en Vedette",
+    "latest": "Tous mes écrits",
+    "all": "Archives",
+    "load_more": "Charger Plus d'Histoires"
+  },
+  "card": {
+    "read_more": "Lire l'article",
+    "read_full_article": "Lire l'article complet",
+    "min_read": "min de lecture",
+    "latest": "Nouveau"
+  },
+  "categories": {
+    "all": "Tous",
+    "frontend": "Frontend",
+    "backend": "Backend",
+    "fullstack": "Full Stack",
+    "design": "Design",
+    "career": "Carrière",
+    "tutorial": "Tutoriel"
+  },
+  "empty": {
+    "title": "Pas encore d'articles",
+    "description": "Revenez bientôt pour du nouveau contenu"
+  },
+  "scroll": "Défiler pour explorer"
+}

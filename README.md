@@ -11,6 +11,10 @@
 - [Project Data System](#project-data-system)
   - [Adding New Projects](#adding-new-projects)
   - [Using Projects in Components](#using-projects-in-components)
+- [Blog System](#blog-system)
+  - [How It Works](#how-it-works-blog)
+  - [Auto-Updates](#auto-updates)
+  - [Updating Articles](#updating-articles)
 - [Common Tasks](#common-tasks)
 - [Adding a New Translation File](#adding-a-new-translation-file)
 - [Important Notes](#important-notes)
@@ -226,6 +230,91 @@ export default function HomePage() {
 
 ---
 
+## Blog System
+
+### How It Works (Blog)
+
+The blog displays your Medium articles with a **hybrid auto-updating system**:
+
+**Architecture:**
+```
+Blog Page → API Route → Hybrid System:
+  1. RSS Feed (10 most recent articles) - Auto-updates every hour
+  2. Static TypeScript File (All articles with full content) - Manual updates
+```
+
+**Key Features:**
+- ✅ **Auto-updates**: 10 most recent articles fetch automatically from Medium RSS
+- ✅ **Full content**: All articles stored locally with complete text (300-1500 words each)
+- ✅ **Real metadata**: Categories, dates, read times, images
+- ✅ **No manual work**: New articles (1-10) appear automatically within 1 hour
+
+---
+
+### Auto-Updates
+
+**How it works:**
+1. API fetches Medium RSS feed every hour (`/app/api/blog/route.ts`)
+2. Gets 10 most recent articles with full content and categories
+3. Merges with static TypeScript file (`data/medium-articles.ts`) for older articles
+4. Returns combined list to blog page
+
+**Cache Settings:**
+- RSS feed: 1 hour cache (`revalidate: 3600`)
+- Static file: Read on every request, changes persist
+
+**What this means:**
+- Publish 1-10 new articles → **Shows up automatically** ✅
+- No manual intervention needed for day-to-day blogging ✅
+
+---
+
+### Updating Articles
+
+**When to run the scraper:**
+
+You ONLY need to update the static file when:
+1. You've published **MORE than 10 new articles** since last update
+2. You want to refresh full content for older articles
+3. **Typically: Once every 6-12 months**
+
+**How to update:**
+
+```bash
+# Run the article scraper
+node scripts/update-medium-articles.js
+```
+
+**What it does:**
+- Scrapes ALL your Medium articles with stealth browser
+- Extracts full content (not just excerpts)
+- Gets real categories, dates, read times, images
+- Saves to `data/medium-articles.ts`
+- Takes ~30-60 seconds for 20-30 articles
+
+**Output:**
+```
+✅ 22 articles with FULL CONTENT
+   Total: 22
+   With full content: 22
+   With categories: 21
+   Avg words: 628
+```
+
+**Technical details:**
+- Uses `puppeteer-extra` with stealth plugin
+- Bypasses Medium's Cloudflare protection
+- Extracts full article content from HTML
+- Rate-limited to avoid triggering blocks
+- 95%+ success rate
+
+**File locations:**
+- Script: `scripts/update-medium-articles.js`
+- Data: `data/medium-articles.ts`
+- API: `app/api/blog/route.ts`
+
+---
+
 ## Common Tasks
 
 | Task | Steps |
@@ -233,6 +322,8 @@ export default function HomePage() {
 | Add new section | Add keys → Use `t()` → Translate all languages |
 | Change text | Edit text in all language files |
 | Add new file | Create JSON files → Update `TranslationProvider.tsx` |
+| Publish new blog post | Write on Medium → Wait 1 hour → Auto-appears on blog ✅ |
+| Update blog articles | `node scripts/update-medium-articles.js` (rarely needed) |
 
 ---
 

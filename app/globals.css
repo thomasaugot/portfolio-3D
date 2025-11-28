@@ -74,7 +74,7 @@ body {
 .font-fun {
   font-family: var(--font-fun);
   font-weight: 400;
-  line-height: 1.2 !important;
+  line-height: 1.2;
 }
 
 button {
@@ -305,4 +305,32 @@ button.outlined:hover {
   @apply bg-primary/10 text-primary;
   @apply border border-primary/20 rounded-lg;
   @apply px-3 py-1.5;
+}
+
+/* ==========================
+   UTILITIES
+   ========================= */
+
+/* Hide scrollbar but keep functionality */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Scanline animation */
+@keyframes scan {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+.animate-scan {
+  animation: scan 3s linear infinite;
 }
