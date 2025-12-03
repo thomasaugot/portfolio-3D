@@ -2,148 +2,258 @@
 
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "@/lib/animations";
-import { initLoaderAnimations } from "@/utils/animations/loader-animations";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
 import { useTranslationReady } from "@/hooks/useTranslationReady";
 
 interface AppLoaderProps {
   progress: number;
+  phase: 'entering' | 'loading' | 'exiting';
+  onEntranceComplete?: () => void;
+  onExitComplete?: () => void;
+  clickPosition: { x: number; y: number } | null;
 }
 
-export default function AppLoader({ progress }: AppLoaderProps) {
+export default function AppLoader({
+  progress,
+  phase,
+  onEntranceComplete,
+  onExitComplete,
+  clickPosition
+}: AppLoaderProps) {
   const loaderRef = useRef<HTMLDivElement>(null!);
-  const scrambleRef = useRef<HTMLDivElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const textRef = useRef<HTMLDivElement>(null);
+  const progressBarRef = useRef<HTMLDivElement>(null);
+  const percentRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
   const translationsReady = useTranslationReady();
-  const [introComplete, setIntroComplete] = useState(false);
+  const [displayProgress, setDisplayProgress] = useState(0);
+  const entranceTimelineRef = useRef<gsap.core.Timeline>();
+  const exitTimelineRef = useRef<gsap.core.Timeline>();
+  const [clickPos, setClickPos] = useState({ x: 0, y: 0 });
 
-  // Tetris animation - word split in two halves
+  // Set click position on mount to avoid hydration mismatch
   useEffect(() => {
-    if (!scrambleRef.current || !translationsReady) return;
+    setClickPos(clickPosition || { x: window.innerWidth / 2, y: window.innerHeight / 2 });
+  }, [clickPosition]);
 
-    const finalText = t("common.status.loading");
-    const element = scrambleRef.current;
-    const midPoint = Math.ceil(finalText.length / 2);
-    const firstHalf = finalText.slice(0, midPoint);
-    const secondHalf = finalText.slice(midPoint);
+  // INITIAL LOAD - Make loader visible immediately when starting in 'loading' phase
+  useEffect(() => {
+    if (phase === 'loading' && overlayRef.current && contentRef.current) {
+      // Check if this is initial load (no previous entrance animation)
+      const isInitialLoad = !entranceTimelineRef.current;
 
-    // Create two spans for each half
-    element.innerHTML = `<span data-half="first" style="display:inline-block">${firstHalf}</span><span data-half="second" style="display:inline-block">${secondHalf}</span>`;
+      if (isInitialLoad) {
+        console.log('[AppLoader] Initial load detected, showing loader immediately');
+        gsap.set(overlayRef.current, {
+          clipPath: 'circle(150% at 50% 50%)',
+        });
+        gsap.set(contentRef.current, {
+          opacity: 1,
+        });
+      }
+    }
+  }, [phase]);
 
-    const firstSpan = element.querySelector('[data-half="first"]');
-    const secondSpan = element.querySelector('[data-half="second"]');
+  // Update progress
+  useEffect(() => {
+    if (phase === 'loading' && progressBarRef.current && percentRef.current) {
+      gsap.to({ val: displayProgress }, {
+        val: progress,
+        duration: 0.3,
+        ease: "power2.out",
+        onUpdate: function() {
+          const p = Math.round(this.targets()[0].val);
+          setDisplayProgress(p);
+          if (progressBarRef.current) {
+            progressBarRef.current.style.width = `${p}%`;
+          }
+          if (percentRef.current) {
+            percentRef.current.textContent = `${p}`;
+          }
+        }
+      });
+    }
+  }, [progress, phase, displayProgress]);
 
-    // Set initial state - first half from left, second from right
-    gsap.set(firstSpan, {
-      opacity: 0,
-      x: -200,
-      y: -80,
-      rotationZ: -45,
-      scale: 0.5,
-    });
+  // ENTRANCE - Fast explosive wipe
+  useEffect(() => {
+    if (phase !== 'entering' || !overlayRef.current || !contentRef.current) return;
+    if (!translationsReady) return;
 
-    gsap.set(secondSpan, {
-      opacity: 0,
-      x: 200,
-      y: -80,
-      rotationZ: 45,
-      scale: 0.5,
-    });
+    entranceTimelineRef.current?.kill();
 
-    // Animate both halves
+    // Reset progress display to 0
+    if (progressBarRef.current && percentRef.current) {
+      progressBarRef.current.style.width = '0%';
+      percentRef.current.textContent = '0';
+    }
+
     const tl = gsap.timeline({
       onComplete: () => {
-        setTimeout(() => setIntroComplete(true), 300);
+        console.log('[AppLoader] Entrance animation done');
+        if (onEntranceComplete) {
+          onEntranceComplete();
+        }
       },
     });
 
-    // First half
-    tl.to(
-      firstSpan,
+    entranceTimelineRef.current = tl;
+
+    if (textRef.current) {
+      textRef.current.textContent = t("common.status.loading");
+    }
+
+    // Explosive radial burst
+    tl.fromTo(
+      overlayRef.current,
       {
-        opacity: 1,
-        x: 0,
-        y: 0,
-        duration: 0.5,
-        ease: "power2.out",
+        clipPath: `circle(0% at ${clickPos.x}px ${clickPos.y}px)`,
+      },
+      {
+        clipPath: `circle(150% at ${clickPos.x}px ${clickPos.y}px)`,
+        duration: 0.35,
+        ease: "expo.out",
       },
       0
     );
 
-    tl.to(
-      firstSpan,
+    // Content fades in
+    tl.fromTo(
+      contentRef.current,
       {
-        rotationZ: 0,
-        scale: 1,
-        duration: 0.4,
-        ease: "back.out(1.7)",
+        opacity: 0,
       },
-      0.2
-    );
-
-    // Second half - slightly delayed
-    tl.to(
-      secondSpan,
       {
         opacity: 1,
-        x: 0,
-        y: 0,
-        duration: 0.5,
+        duration: 0.25,
         ease: "power2.out",
       },
-      0.1
+      0.15
     );
 
-    tl.to(
-      secondSpan,
-      {
-        rotationZ: 0,
-        scale: 1,
-        duration: 0.4,
-        ease: "back.out(1.7)",
-      },
-      0.3
-    );
-  }, [translationsReady, t]);
+    return () => {
+      tl.kill();
+    };
+  }, [phase, translationsReady, t, onEntranceComplete, clickPos.x, clickPos.y]);
 
+  // EXIT - Aggressive implosion with scale
   useEffect(() => {
-    if (introComplete) {
-      const cleanup = initLoaderAnimations(loaderRef, progress);
-      return cleanup;
+    if (phase !== 'exiting' || !overlayRef.current || !contentRef.current) return;
+
+    console.log('[AppLoader] Starting exit animation');
+    exitTimelineRef.current?.kill();
+
+    // Ensure 100% is displayed
+    if (progressBarRef.current && percentRef.current) {
+      progressBarRef.current.style.width = '100%';
+      percentRef.current.textContent = '100';
     }
-  }, [progress, introComplete]);
+
+    const centerX = window.innerWidth / 2;
+    const centerY = window.innerHeight / 2;
+
+    const tl = gsap.timeline({
+      onComplete: () => {
+        console.log('[AppLoader] Exit complete');
+        if (onExitComplete) {
+          onExitComplete();
+        }
+      },
+    });
+
+    exitTimelineRef.current = tl;
+
+    // Content fades fast
+    tl.to(
+      contentRef.current,
+      {
+        opacity: 0,
+        duration: 0.25,
+        ease: "power2.in",
+      },
+      0
+    );
+
+    // Overlay implodes aggressively
+    tl.to(
+      overlayRef.current,
+      {
+        clipPath: `circle(0% at ${centerX}px ${centerY}px)`,
+        duration: 0.45,
+        ease: "expo.in",
+      },
+      0.15
+    );
+
+    return () => {
+      tl.kill();
+    };
+  }, [phase, progress, onExitComplete]);
 
   return (
     <div
       ref={loaderRef}
-      className="fixed inset-0 z-[99999] h-screen w-screen flex flex-col items-center justify-center bg-black"
+      className="fixed inset-0 z-[9999] h-screen w-screen"
+      style={{ pointerEvents: "none" }}
     >
+      {/* Solid overlay */}
       <div
-        data-animate="loading-text"
-        className="title-section mb-8 text-text h-12"
-        style={{ fontFamily: "var(--font-display)" }}
-      >
-        <span ref={scrambleRef} className="inline-block min-w-[200px]">
-          {translationsReady ? "" : ""}
-        </span>
-      </div>
+        ref={overlayRef}
+        className="absolute inset-0 w-full h-full bg-bg"
+        style={{
+          clipPath: `circle(0% at ${clickPos.x}px ${clickPos.y}px)`,
+        }}
+      />
 
+      {/* Loading UI */}
       <div
-        className="w-60 md:w-80 h-1 overflow-hidden rounded-full bg-border"
-        style={{ opacity: introComplete ? 1 : 0, transition: "opacity 0.3s" }}
-      >
-        <div
-          data-animate="progress-bar"
-          className="h-full gradient-primary rounded-full w-0"
-        />
-      </div>
-
-      <div
-        className="mt-6 subtitle text-text"
-        data-animate="percentage"
+        ref={contentRef}
+        className="absolute inset-0 flex flex-col items-center justify-center gap-12"
         style={{ opacity: 0 }}
       >
-        0%
+        {/* Progress percentage - Large and bold */}
+        <div className="flex items-baseline gap-2">
+          <span
+            ref={percentRef}
+            className="font-fun text-[120px] font-bold leading-none tabular-nums"
+            style={{
+              background: 'linear-gradient(135deg, var(--primary-color), var(--secondary-color))',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+            }}
+          >
+            0
+          </span>
+          <span
+            className="font-fun text-[80px] font-bold leading-none text-white opacity-50"
+          >
+            %
+          </span>
+        </div>
+
+        {/* Progress bar - Clean and wide */}
+        <div className="w-[600px] max-w-[80vw]">
+          <div className="h-1 bg-white/10 rounded-full overflow-hidden">
+            <div
+              ref={progressBarRef}
+              className="h-full w-0 rounded-full transition-all duration-300"
+              style={{
+                background: 'linear-gradient(90deg, var(--primary-color), var(--secondary-color))',
+              }}
+            />
+          </div>
+        </div>
+
+        {/* Loading text - Subtle */}
+        <span
+          ref={textRef}
+          className="font-fun text-sm font-medium tracking-[0.3em] uppercase opacity-30"
+        >
+          {translationsReady ? "" : ""}
+        </span>
       </div>
     </div>
   );

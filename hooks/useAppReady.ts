@@ -5,94 +5,64 @@ import { waitForScenes, onSceneProgress } from "./useThreeScene";
 
 interface UseAppReadyOptions {
   criticalScenes?: string[];
+  resetKey?: number; // When this changes, restart the loading process
 }
 
 export function useAppReady(options: UseAppReadyOptions = {}) {
-  const { criticalScenes = [] } = options;
+  const { criticalScenes = [], resetKey = 0 } = options;
   const [isReady, setIsReady] = useState(false);
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
     let mounted = true;
     const startTime = Date.now();
-    const MIN_DURATION = 2500; // Minimum 2.5 seconds for scan + progress bar
+    const MIN_DURATION = 2000; // Minimum 2.8 seconds for progressive loading
 
     async function init() {
       try {
-        // console.log("🚀 useAppReady: Starting init");
-        setProgress(20);
+        console.log("🚀 useAppReady: Starting init, resetKey:", resetKey);
 
-        // Wait for fonts to be loaded
-        // console.log("⏳ Waiting for fonts...");
-        await document.fonts.ready;
-        if (!mounted) return;
-        // console.log("✅ Fonts ready");
-        setProgress(40);
-
-        // Wait for all stylesheets to be loaded
-        // console.log("⏳ Waiting for stylesheets...");
-        const styleSheets = Array.from(document.styleSheets);
-        await Promise.all(
-          styleSheets.map(async (sheet) => {
-            if (sheet.href && !sheet.href.startsWith(window.location.origin)) {
-              // External stylesheet, wait for it to load
-              return new Promise<void>((resolve) => {
-                const link = document.querySelector(`link[href="${sheet.href}"]`);
-                if (link) {
-                  if ((link as HTMLLinkElement).sheet) {
-                    resolve();
-                  } else {
+        // Start background tasks (don't wait for them)
+        Promise.all([
+          document.fonts.ready,
+          Promise.all(
+            Array.from(document.styleSheets).map(async (sheet) => {
+              if (sheet.href && !sheet.href.startsWith(window.location.origin)) {
+                return new Promise<void>((resolve) => {
+                  const link = document.querySelector(`link[href="${sheet.href}"]`);
+                  if (link && !(link as HTMLLinkElement).sheet) {
                     link.addEventListener('load', () => resolve());
                     link.addEventListener('error', () => resolve());
+                  } else {
+                    resolve();
                   }
-                } else {
-                  resolve();
-                }
-              });
-            }
-          })
-        );
-        if (!mounted) return;
-        // console.log("✅ Stylesheets ready");
-        setProgress(50);
+                });
+              }
+            })
+          )
+        ]);
 
         if (criticalScenes.length > 0) {
-          // Subscribe to progress updates (50% to 90%)
-          const unsubscribe = onSceneProgress((loaded, total) => {
-            if (!mounted) return;
-            const sceneProgress = 50 + (loaded / total) * 40;
-            setProgress(Math.round(sceneProgress));
-          });
-
-          await waitForScenes(criticalScenes);
-          unsubscribe();
-          if (!mounted) return;
+          waitForScenes(criticalScenes);
         }
 
-        setProgress(90);
+        // Animate progress smoothly from 0 to 100 over MIN_DURATION
+        const steps = 50;
+        const stepTime = MIN_DURATION / steps;
 
-        // Wait for minimum duration to allow progress bar to fill smoothly
-        const elapsed = Date.now() - startTime;
-        const remainingTime = Math.max(0, MIN_DURATION - elapsed);
-
-        if (remainingTime > 0) {
-          // Animate progress from 90 to 100 over remaining time
-          const steps = 10;
-          const stepTime = remainingTime / steps;
-          for (let i = 0; i < steps; i++) {
-            await new Promise((resolve) => setTimeout(resolve, stepTime));
-            if (!mounted) return;
-            setProgress(90 + ((i + 1) / steps) * 10);
-          }
-        } else {
-          setProgress(100);
+        for (let i = 0; i < steps; i++) {
+          await new Promise((resolve) => setTimeout(resolve, stepTime));
+          if (!mounted) return;
+          const newProgress = Math.round(((i + 1) / steps) * 100);
+          setProgress(newProgress);
         }
 
         if (!mounted) return;
 
-        // Small delay before marking ready
-        await new Promise((resolve) => setTimeout(resolve, 200));
+        // Small delay at 100% before marking ready
+        await new Promise((resolve) => setTimeout(resolve, 150));
         if (mounted) {
+          console.log("✅ useAppReady: Complete");
           setIsReady(true);
         }
       } catch (error) {
@@ -107,7 +77,7 @@ export function useAppReady(options: UseAppReadyOptions = {}) {
       // console.log("🧹 useAppReady cleanup");
       mounted = false;
     };
-  }, [criticalScenes]);
+  }, [criticalScenes, resetKey]);
 
   return { isReady, progress };
 }

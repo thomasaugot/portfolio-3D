@@ -195,8 +195,16 @@ export function initMenuAnimations() {
   };
 }
 
-export function closeMenuWithAnimation() {
-  if (closeMenuFn) {
-    closeMenuFn();
-  }
+export function closeMenuWithAnimation(): Promise<void> {
+  return new Promise((resolve) => {
+    if (closeMenuFn) {
+      closeMenuFn();
+      // Wait for the close animation to complete (600ms based on timeline)
+      setTimeout(() => {
+        resolve();
+      }, 600);
+    } else {
+      resolve();
+    }
+  });
 }

@@ -8,19 +8,21 @@ import Link from "next/link";
 import { closeMenuWithAnimation } from "@/utils/animations/menu-animations";
 import { FaHeart } from "react-icons/fa";
 import { useEffect, useState } from "react";
+import { useTransition } from "@/lib/providers/LoadingProvider";
 
 export default function Menu() {
   const { t, language } = useTranslation();
   const { isDark, isLight } = useTheme();
   const [mounted, setMounted] = useState(false);
-  
+  const { startTransition } = useTransition();
+
   // Wait for client-side hydration to complete
   useEffect(() => {
     setMounted(true);
   }, []);
 
   // Use a stable value during SSR, then switch to client value after mount
-  const localizedMenuItems = mounted 
+  const localizedMenuItems = mounted
     ? getLocalizedMenuItems(language)
     : [];
 
@@ -80,12 +82,20 @@ export default function Menu() {
                   >
                     <Link
                       href={item.localizedHref}
-                      onClick={(e) => {
+                      onClick={async (e) => {
                         e.preventDefault();
-                        closeMenuWithAnimation();
-                        setTimeout(() => {
-                          window.location.href = item.localizedHref;
-                        }, 600);
+
+                        // Get click position for morphing animation
+                        const clickPosition = {
+                          x: e.clientX,
+                          y: e.clientY,
+                        };
+
+                        // Close menu and wait for animation
+                        await closeMenuWithAnimation();
+
+                        // Start page transition
+                        await startTransition(item.localizedHref, clickPosition);
                       }}
                       className="block"
                     >
