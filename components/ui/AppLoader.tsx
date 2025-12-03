@@ -28,9 +28,8 @@ export default function AppLoader({
   const percentRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
   const translationsReady = useTranslationReady();
-  const [displayProgress, setDisplayProgress] = useState(0);
-  const entranceTimelineRef = useRef<gsap.core.Timeline>();
-  const exitTimelineRef = useRef<gsap.core.Timeline>();
+  const entranceTimelineRef = useRef<gsap.core.Timeline | null>(null);
+  const exitTimelineRef = useRef<gsap.core.Timeline | null>(null);
   const [clickPos, setClickPos] = useState({ x: 0, y: 0 });
 
   // Set click position on mount to avoid hydration mismatch
@@ -45,7 +44,22 @@ export default function AppLoader({
       const isInitialLoad = !entranceTimelineRef.current;
 
       if (isInitialLoad) {
-        console.log('[AppLoader] Initial load detected, showing loader immediately');
+
+        // Kill any running animations
+        if (exitTimelineRef.current) {
+          exitTimelineRef.current.kill();
+          exitTimelineRef.current = null;
+        }
+
+        // Reset progress to 0
+        if (progressBarRef.current) {
+          progressBarRef.current.style.width = '0%';
+        }
+        if (percentRef.current) {
+          percentRef.current.textContent = '0';
+        }
+
+        // Show loader overlay and content
         gsap.set(overlayRef.current, {
           clipPath: 'circle(150% at 50% 50%)',
         });
@@ -56,43 +70,62 @@ export default function AppLoader({
     }
   }, [phase]);
 
-  // Update progress
+  // Update progress - direct updates for 3% jumps
+  const lastProgressRef = useRef<number>(0);
+
   useEffect(() => {
-    if (phase === 'loading' && progressBarRef.current && percentRef.current) {
-      gsap.to({ val: displayProgress }, {
-        val: progress,
-        duration: 0.3,
-        ease: "power2.out",
-        onUpdate: function() {
-          const p = Math.round(this.targets()[0].val);
-          setDisplayProgress(p);
-          if (progressBarRef.current) {
-            progressBarRef.current.style.width = `${p}%`;
-          }
-          if (percentRef.current) {
-            percentRef.current.textContent = `${p}`;
-          }
-        }
-      });
+    if (phase === 'loading') {
+      // Only update if progress is actually increasing (not a stale high value)
+      if (progress === 0 || progress > lastProgressRef.current) {
+        if (progressBarRef.current) progressBarRef.current.style.width = `${progress}%`;
+        if (percentRef.current) percentRef.current.textContent = `${progress}`;
+        lastProgressRef.current = progress;
+      } else {
+        console.log('[AppLoader] Ignoring stale progress:', progress, 'last was:', lastProgressRef.current);
+      }
     }
-  }, [progress, phase, displayProgress]);
+
+    // Reset on phase change to entering (new transition starting)
+    if (phase === 'entering') {
+      lastProgressRef.current = 0;
+    }
+  }, [progress, phase]);
 
   // ENTRANCE - Fast explosive wipe
   useEffect(() => {
     if (phase !== 'entering' || !overlayRef.current || !contentRef.current) return;
     if (!translationsReady) return;
 
-    entranceTimelineRef.current?.kill();
+    // Kill any existing animations FIRST
+    if (entranceTimelineRef.current) {
+      entranceTimelineRef.current.kill();
+      entranceTimelineRef.current = null;
+    }
+    if (exitTimelineRef.current) {
+      exitTimelineRef.current.kill();
+      exitTimelineRef.current = null;
+    }
 
-    // Reset progress display to 0
-    if (progressBarRef.current && percentRef.current) {
+    // Force immediate reset of all elements BEFORE animation
+    gsap.set(overlayRef.current, {
+      clipPath: `circle(0% at ${clickPos.x}px ${clickPos.y}px)`,
+      clearProps: 'all',
+    });
+    gsap.set(contentRef.current, {
+      opacity: 0,
+      clearProps: 'all',
+    });
+
+    // Reset progress to 0
+    if (progressBarRef.current) {
       progressBarRef.current.style.width = '0%';
+    }
+    if (percentRef.current) {
       percentRef.current.textContent = '0';
     }
 
     const tl = gsap.timeline({
       onComplete: () => {
-        console.log('[AppLoader] Entrance animation done');
         if (onEntranceComplete) {
           onEntranceComplete();
         }
@@ -105,7 +138,7 @@ export default function AppLoader({
       textRef.current.textContent = t("common.status.loading");
     }
 
-    // Explosive radial burst
+    // Explosive radial burst - FASTER
     tl.fromTo(
       overlayRef.current,
       {
@@ -113,13 +146,13 @@ export default function AppLoader({
       },
       {
         clipPath: `circle(150% at ${clickPos.x}px ${clickPos.y}px)`,
-        duration: 0.35,
+        duration: 0.2,
         ease: "expo.out",
       },
       0
     );
 
-    // Content fades in
+    // Content fades in - FASTER
     tl.fromTo(
       contentRef.current,
       {
@@ -127,10 +160,10 @@ export default function AppLoader({
       },
       {
         opacity: 1,
-        duration: 0.25,
+        duration: 0.15,
         ease: "power2.out",
       },
-      0.15
+      0.1
     );
 
     return () => {
@@ -142,26 +175,30 @@ export default function AppLoader({
   useEffect(() => {
     if (phase !== 'exiting' || !overlayRef.current || !contentRef.current) return;
 
-    console.log('[AppLoader] Starting exit animation');
-    exitTimelineRef.current?.kill();
+    console.log('[AppLoader] EXIT starting');
+
+    // Kill any existing animations
+    if (entranceTimelineRef.current) {
+      entranceTimelineRef.current.kill();
+      entranceTimelineRef.current = null;
+    }
+    if (exitTimelineRef.current) {
+      exitTimelineRef.current.kill();
+      exitTimelineRef.current = null;
+    }
 
     // Ensure 100% is displayed
-    if (progressBarRef.current && percentRef.current) {
+    if (progressBarRef.current) {
       progressBarRef.current.style.width = '100%';
+    }
+    if (percentRef.current) {
       percentRef.current.textContent = '100';
     }
 
     const centerX = window.innerWidth / 2;
     const centerY = window.innerHeight / 2;
 
-    const tl = gsap.timeline({
-      onComplete: () => {
-        console.log('[AppLoader] Exit complete');
-        if (onExitComplete) {
-          onExitComplete();
-        }
-      },
-    });
+    const tl = gsap.timeline();
 
     exitTimelineRef.current = tl;
 
@@ -170,21 +207,29 @@ export default function AppLoader({
       contentRef.current,
       {
         opacity: 0,
-        duration: 0.25,
+        duration: 0.15,
         ease: "power2.in",
       },
       0
     );
 
-    // Overlay implodes aggressively
+    // Trigger content show early (before overlay finishes imploding)
+    tl.call(() => {
+      console.log('[AppLoader] Triggering content show early');
+      if (onExitComplete) {
+        onExitComplete();
+      }
+    }, [], 0.1);
+
+    // Overlay implodes aggressively - FASTER
     tl.to(
       overlayRef.current,
       {
         clipPath: `circle(0% at ${centerX}px ${centerY}px)`,
-        duration: 0.45,
+        duration: 0.3,
         ease: "expo.in",
       },
-      0.15
+      0.1
     );
 
     return () => {

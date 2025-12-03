@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { waitForScenes, onSceneProgress } from "./useThreeScene";
+import { useEffect, useState, useRef } from "react";
+import { waitForScenes } from "./useThreeScene";
 
 interface UseAppReadyOptions {
   criticalScenes?: string[];
@@ -12,15 +12,29 @@ export function useAppReady(options: UseAppReadyOptions = {}) {
   const { criticalScenes = [], resetKey = 0 } = options;
   const [isReady, setIsReady] = useState(false);
   const [progress, setProgress] = useState(0);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
-    let mounted = true;
-    const startTime = Date.now();
-    const MIN_DURATION = 2000; // Minimum 2.8 seconds for progressive loading
+    // Cancel any previous running animation
+    if (abortControllerRef.current) {
+      console.log("🛑 useAppReady: Aborting previous animation");
+      abortControllerRef.current.abort();
+    }
+
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
+
+    const MIN_DURATION = 3400;
+
+    console.log("🚀 useAppReady: Starting new animation, resetKey:", resetKey);
+
+    // Reset state IMMEDIATELY
+    setIsReady(false);
+    setProgress(0);
 
     async function init() {
       try {
-        console.log("🚀 useAppReady: Starting init, resetKey:", resetKey);
+        console.log("🚀 useAppReady: Starting init loop");
 
         // Start background tasks (don't wait for them)
         Promise.all([
@@ -46,36 +60,43 @@ export function useAppReady(options: UseAppReadyOptions = {}) {
           waitForScenes(criticalScenes);
         }
 
-        // Animate progress smoothly from 0 to 100 over MIN_DURATION
-        const steps = 50;
+        // Animate progress in 3% increments from 0 to 100 over MIN_DURATION
+        const steps = 34; // 3% increments (3, 6, 9... 99, 100)
         const stepTime = MIN_DURATION / steps;
 
         for (let i = 0; i < steps; i++) {
+          if (abortController.signal.aborted) {
+            console.log("⚠️ useAppReady: Animation aborted at", (i + 1) * 3, "%");
+            return;
+          }
           await new Promise((resolve) => setTimeout(resolve, stepTime));
-          if (!mounted) return;
-          const newProgress = Math.round(((i + 1) / steps) * 100);
+          const newProgress = Math.min((i + 1) * 3, 100);
           setProgress(newProgress);
         }
 
-        if (!mounted) return;
+        if (abortController.signal.aborted) return;
 
-        // Small delay at 100% before marking ready
-        await new Promise((resolve) => setTimeout(resolve, 150));
-        if (mounted) {
-          console.log("✅ useAppReady: Complete");
+        // Wait at 100% to ensure new page content is rendered
+        await new Promise((resolve) => setTimeout(resolve, 300));
+        if (!abortController.signal.aborted) {
+          console.log("✅ useAppReady: Complete - marking ready");
           setIsReady(true);
         }
       } catch (error) {
+        if (error instanceof Error && error.name === 'AbortError') {
+          console.log("⚠️ useAppReady: Aborted");
+          return;
+        }
         console.error("❌ Init failed:", error);
-        if (mounted) setIsReady(true);
+        setIsReady(true);
       }
     }
 
     init();
 
     return () => {
-      // console.log("🧹 useAppReady cleanup");
-      mounted = false;
+      console.log("🧹 useAppReady cleanup");
+      abortController.abort();
     };
   }, [criticalScenes, resetKey]);
 

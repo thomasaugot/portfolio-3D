@@ -35,7 +35,12 @@ export default function LoadingProvider({
 }: LoadingProviderProps) {
   const router = useRouter();
   const [resetKey, setResetKey] = useState(0);
-  const { isReady, progress } = useAppReady({ criticalScenes, resetKey });
+  const [ignoreReadyState, setIgnoreReadyState] = useState(false);
+  const [overrideProgress, setOverrideProgress] = useState<number | null>(null);
+  const { isReady, progress: actualProgress } = useAppReady({ criticalScenes, resetKey });
+
+  // Use override if set, otherwise use actual progress
+  const progress = overrideProgress !== null ? overrideProgress : actualProgress;
 
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [clickPosition, setClickPosition] = useState<{ x: number; y: number } | null>(null);
@@ -58,13 +63,35 @@ export default function LoadingProvider({
     sessionStorage.removeItem(TRANSITION_STORAGE_KEY);
   }, []);
 
+  // Clear ignore flag once we see progress has reset
+  useEffect(() => {
+    if (ignoreReadyState && actualProgress > 0 && actualProgress < 10) {
+      console.log('[LoadingProvider] Progress reset detected, re-enabling exit condition');
+      setIgnoreReadyState(false);
+    }
+  }, [ignoreReadyState, actualProgress]);
+
+  // Clear override once actual progress starts
+  useEffect(() => {
+    if (overrideProgress !== null && actualProgress > 0) {
+      console.log('[LoadingProvider] Clearing progress override, actual progress:', actualProgress);
+      setOverrideProgress(null);
+    }
+  }, [overrideProgress, actualProgress]);
+
   // When progress hits 100% AND page is ready, start exiting (for navigation transitions)
   useEffect(() => {
-    if (hasInitiallyLoaded && progress >= 100 && isReady && loaderPhase === 'loading' && !showContent) {
-      console.log('[LoadingProvider] Navigation complete, starting exit phase');
+    // Ignore stale state from previous navigation
+    if (ignoreReadyState) {
+      console.log('[LoadingProvider] Ignoring stale ready state - progress:', progress, 'isReady:', isReady);
+      return;
+    }
+
+    if (hasInitiallyLoaded && progress === 100 && isReady && loaderPhase === 'loading' && !showContent) {
+      console.log('[LoadingProvider] Navigation complete (progress:', progress, 'isReady:', isReady, '), starting exit phase');
       setLoaderPhase('exiting');
     }
-  }, [progress, isReady, loaderPhase, showContent, hasInitiallyLoaded]);
+  }, [progress, isReady, loaderPhase, showContent, hasInitiallyLoaded, ignoreReadyState]);
 
   const startTransition = useCallback((url: string, clickPos?: { x: number; y: number }) => {
     return new Promise<void>((resolve) => {
@@ -72,7 +99,10 @@ export default function LoadingProvider({
 
       console.log('[LoadingProvider] Starting transition to:', url);
 
-      // Reset state and hide content
+      // FORCE progress to 0 immediately to prevent flash of old progress
+      setOverrideProgress(0);
+
+      // Reset ALL state and hide content
       setShowContent(false);
       setIsTransitioning(true);
       setClickPosition(position);
@@ -90,9 +120,17 @@ export default function LoadingProvider({
       const url = pendingUrl.current;
       pendingUrl.current = null;
 
+      // CRITICAL: Keep progress at 0 during phase transition
+      console.log('[LoadingProvider] Forcing progress override to 0 before loading phase');
+      setOverrideProgress(0);
+
+      // CRITICAL: Ignore stale isReady/progress state until reset
+      console.log('[LoadingProvider] Setting ignoreReadyState = true to prevent premature exit');
+      setIgnoreReadyState(true);
+
       // Change to loading phase and restart useAppReady
       setLoaderPhase('loading');
-      setResetKey(prev => prev + 1); // This triggers useAppReady to restart
+      setResetKey(prev => prev + 1);
 
       // Navigate using Next.js router (client-side, no page reload)
       router.push(url);
@@ -100,13 +138,11 @@ export default function LoadingProvider({
   }, [router]);
 
   const handleExitComplete = useCallback(() => {
-    console.log('[LoadingProvider] Exit animation complete, showing content NOW');
+    console.log('[LoadingProvider] Exit complete, showing content');
     setShowContent(true);
     setIsTransitioning(false);
     setLoaderPhase(null);
   }, []);
-
-  console.log('[LoadingProvider] Render - showContent:', showContent, 'isTransitioning:', isTransitioning, 'isReady:', isReady, 'loaderPhase:', loaderPhase, 'progress:', progress);
 
   return (
     <LoadingContext.Provider value={{
@@ -129,7 +165,7 @@ export default function LoadingProvider({
       <div
         style={{
           opacity: showContent ? 1 : 0,
-          transition: showContent ? 'opacity 0.4s ease' : 'none',
+          transition: showContent ? 'opacity 0.3s ease' : 'none',
           pointerEvents: showContent ? 'auto' : 'none',
         }}
       >
