@@ -24,21 +24,48 @@ export function useAppReady(options: UseAppReadyOptions = {}) {
     const abortController = new AbortController();
     abortControllerRef.current = abortController;
 
-    const MIN_DURATION = 3400;
-
-    console.log("🚀 useAppReady: Starting new animation, resetKey:", resetKey);
-
     // Reset state IMMEDIATELY
     setIsReady(false);
     setProgress(0);
 
     async function init() {
       try {
-        console.log("🚀 useAppReady: Starting init loop");
+        const animateToProgress = async (target: number, duration: number) => {
+          const current = await new Promise<number>((resolve) => {
+            let val = 0;
+            setProgress((prev) => {
+              val = prev;
+              return prev;
+            });
+            setTimeout(() => resolve(val), 0);
+          });
 
-        // Start background tasks (don't wait for them)
-        Promise.all([
+          const steps = 5;
+          const increment = (target - current) / steps;
+          const stepTime = duration / steps;
+
+          for (let i = 0; i < steps; i++) {
+            if (abortController.signal.aborted) return;
+            await new Promise((resolve) => setTimeout(resolve, stepTime));
+            setProgress(Math.round(current + increment * (i + 1)));
+          }
+        };
+
+        // STAGE 1: Fonts (0% → 30%)
+        console.log("📝 Stage 1: Loading fonts...");
+        setProgress(5);
+        await Promise.race([
           document.fonts.ready,
+          new Promise((resolve) => setTimeout(resolve, 500)) // Quick animation even if fonts load fast
+        ]);
+        await animateToProgress(30, 300);
+        console.log("✅ Fonts ready");
+
+        if (abortController.signal.aborted) return;
+
+        // STAGE 2: Stylesheets (30% → 55%)
+        console.log("🎨 Stage 2: Loading stylesheets...");
+        await Promise.race([
           Promise.all(
             Array.from(document.styleSheets).map(async (sheet) => {
               if (sheet.href && !sheet.href.startsWith(window.location.origin)) {
@@ -53,38 +80,38 @@ export function useAppReady(options: UseAppReadyOptions = {}) {
                 });
               }
             })
-          )
+          ),
+          new Promise((resolve) => setTimeout(resolve, 400))
         ]);
+        await animateToProgress(55, 300);
+        if (abortController.signal.aborted) return;
 
+        // STAGE 3: 3D Scenes (55% → 90%)
         if (criticalScenes.length > 0) {
-          waitForScenes(criticalScenes);
-        }
-
-        // Animate progress in 3% increments from 0 to 100 over MIN_DURATION
-        const steps = 34; // 3% increments (3, 6, 9... 99, 100)
-        const stepTime = MIN_DURATION / steps;
-
-        for (let i = 0; i < steps; i++) {
-          if (abortController.signal.aborted) {
-            console.log("⚠️ useAppReady: Animation aborted at", (i + 1) * 3, "%");
-            return;
-          }
-          await new Promise((resolve) => setTimeout(resolve, stepTime));
-          const newProgress = Math.min((i + 1) * 3, 100);
-          setProgress(newProgress);
+          console.log("🎬 Stage 3: Loading 3D scenes...");
+          await Promise.race([
+            waitForScenes(criticalScenes),
+            new Promise((resolve) => setTimeout(resolve, 600))
+          ]);
+          await animateToProgress(90, 400);
+        } else {
+          await animateToProgress(90, 500);
         }
 
         if (abortController.signal.aborted) return;
 
-        // Wait at 100% to ensure new page content is rendered
-        await new Promise((resolve) => setTimeout(resolve, 300));
+        // STAGE 4: Final preparation (90% → 100%)
+        await animateToProgress(100, 300);
+
+        if (abortController.signal.aborted) return;
+
+        // Brief moment at 100%
+        await new Promise((resolve) => setTimeout(resolve, 150));
         if (!abortController.signal.aborted) {
-          console.log("✅ useAppReady: Complete - marking ready");
           setIsReady(true);
         }
       } catch (error) {
         if (error instanceof Error && error.name === 'AbortError') {
-          console.log("⚠️ useAppReady: Aborted");
           return;
         }
         console.error("❌ Init failed:", error);
@@ -95,7 +122,6 @@ export function useAppReady(options: UseAppReadyOptions = {}) {
     init();
 
     return () => {
-      console.log("🧹 useAppReady cleanup");
       abortController.abort();
     };
   }, [criticalScenes, resetKey]);
