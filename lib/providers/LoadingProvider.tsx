@@ -4,6 +4,7 @@ import { ReactNode, createContext, useContext, useState, useCallback, useRef, us
 import { useRouter } from "next/navigation";
 import AppLoader from "@/components/ui/AppLoader";
 import { useAppReady } from "@/hooks/useAppReady";
+import { debug } from "@/utils/debug";
 
 interface LoadingContextType {
   isReady: boolean;
@@ -52,7 +53,7 @@ export default function LoadingProvider({
   // Initial page load - show loader until ready
   useEffect(() => {
     if (!hasInitiallyLoaded && isReady && progress >= 100) {
-      console.log('[LoadingProvider] Initial load complete');
+      debug.log('[LoadingProvider] Initial load complete');
       setLoaderPhase('exiting');
       setHasInitiallyLoaded(true);
     }
@@ -66,7 +67,7 @@ export default function LoadingProvider({
   // Clear ignore flag once we see progress has reset
   useEffect(() => {
     if (ignoreReadyState && actualProgress > 0 && actualProgress < 10) {
-      console.log('[LoadingProvider] Progress reset detected, re-enabling exit condition');
+      debug.log('[LoadingProvider] Progress reset detected, re-enabling exit condition');
       setIgnoreReadyState(false);
     }
   }, [ignoreReadyState, actualProgress]);
@@ -74,7 +75,7 @@ export default function LoadingProvider({
   // Clear override once actual progress starts
   useEffect(() => {
     if (overrideProgress !== null && actualProgress > 0) {
-      console.log('[LoadingProvider] Clearing progress override, actual progress:', actualProgress);
+      debug.log('[LoadingProvider] Clearing progress override, actual progress:', actualProgress);
       setOverrideProgress(null);
     }
   }, [overrideProgress, actualProgress]);
@@ -83,12 +84,12 @@ export default function LoadingProvider({
   useEffect(() => {
     // Ignore stale state from previous navigation
     if (ignoreReadyState) {
-      console.log('[LoadingProvider] Ignoring stale ready state - progress:', progress, 'isReady:', isReady);
+      debug.log('[LoadingProvider] Ignoring stale ready state - progress:', progress, 'isReady:', isReady);
       return;
     }
 
     if (hasInitiallyLoaded && progress === 100 && isReady && loaderPhase === 'loading' && !showContent) {
-      console.log('[LoadingProvider] Navigation complete (progress:', progress, 'isReady:', isReady, '), starting exit phase');
+      debug.log('[LoadingProvider] Navigation complete (progress:', progress, 'isReady:', isReady, '), starting exit phase');
       setLoaderPhase('exiting');
     }
   }, [progress, isReady, loaderPhase, showContent, hasInitiallyLoaded, ignoreReadyState]);
@@ -97,7 +98,7 @@ export default function LoadingProvider({
     return new Promise<void>((resolve) => {
       const position = clickPos || { x: window.innerWidth / 2, y: window.innerHeight / 2 };
 
-      console.log('[LoadingProvider] Starting transition to:', url);
+      debug.log('[LoadingProvider] Starting transition to:', url);
 
       // FORCE progress to 0 immediately to prevent flash of old progress
       setOverrideProgress(0);
@@ -114,18 +115,18 @@ export default function LoadingProvider({
   }, []);
 
   const handleEntranceComplete = useCallback(() => {
-    console.log('[LoadingProvider] Entrance complete, navigating to:', pendingUrl.current);
+    debug.log('[LoadingProvider] Entrance complete, navigating to:', pendingUrl.current);
 
     if (pendingUrl.current) {
       const url = pendingUrl.current;
       pendingUrl.current = null;
 
       // CRITICAL: Keep progress at 0 during phase transition
-      console.log('[LoadingProvider] Forcing progress override to 0 before loading phase');
+      debug.log('[LoadingProvider] Forcing progress override to 0 before loading phase');
       setOverrideProgress(0);
 
       // CRITICAL: Ignore stale isReady/progress state until reset
-      console.log('[LoadingProvider] Setting ignoreReadyState = true to prevent premature exit');
+      debug.log('[LoadingProvider] Setting ignoreReadyState = true to prevent premature exit');
       setIgnoreReadyState(true);
 
       // Change to loading phase and restart useAppReady
@@ -138,7 +139,7 @@ export default function LoadingProvider({
   }, [router]);
 
   const handleExitComplete = useCallback(() => {
-    console.log('[LoadingProvider] Exit complete, showing content');
+    debug.log('[LoadingProvider] Exit complete, showing content');
     setShowContent(true);
     setIsTransitioning(false);
     setLoaderPhase(null);

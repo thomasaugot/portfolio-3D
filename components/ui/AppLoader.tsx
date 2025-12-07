@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { gsap } from "@/lib/animations";
-import { useTranslation } from "@/lib/providers/TranslationProvider";
 import { useTranslationReady } from "@/hooks/useTranslationReady";
+import { debug } from "@/utils/debug";
 
 interface AppLoaderProps {
   progress: number;
@@ -21,37 +21,30 @@ export default function AppLoader({
   clickPosition
 }: AppLoaderProps) {
   const loaderRef = useRef<HTMLDivElement>(null!);
-  const overlayRef = useRef<HTMLDivElement>(null);
+  const strip1Ref = useRef<HTMLDivElement>(null);
+  const strip2Ref = useRef<HTMLDivElement>(null);
+  const strip3Ref = useRef<HTMLDivElement>(null);
+  const strip4Ref = useRef<HTMLDivElement>(null);
+  const strip5Ref = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
   const percentRef = useRef<HTMLDivElement>(null);
-  const { t } = useTranslation();
   const translationsReady = useTranslationReady();
   const entranceTimelineRef = useRef<gsap.core.Timeline | null>(null);
   const exitTimelineRef = useRef<gsap.core.Timeline | null>(null);
-  const [clickPos, setClickPos] = useState({ x: 0, y: 0 });
 
-  // Set click position on mount to avoid hydration mismatch
+  // INITIAL LOAD
   useEffect(() => {
-    setClickPos(clickPosition || { x: window.innerWidth / 2, y: window.innerHeight / 2 });
-  }, [clickPosition]);
-
-  // INITIAL LOAD - Make loader visible immediately when starting in 'loading' phase
-  useEffect(() => {
-    if (phase === 'loading' && overlayRef.current && contentRef.current) {
-      // Check if this is initial load (no previous entrance animation)
+    if (phase === 'loading' && strip1Ref.current && contentRef.current) {
       const isInitialLoad = !entranceTimelineRef.current;
 
       if (isInitialLoad) {
-
-        // Kill any running animations
         if (exitTimelineRef.current) {
           exitTimelineRef.current.kill();
           exitTimelineRef.current = null;
         }
 
-        // Reset progress to 0
         if (progressBarRef.current) {
           progressBarRef.current.style.width = '0%';
         }
@@ -59,9 +52,10 @@ export default function AppLoader({
           percentRef.current.textContent = '0';
         }
 
-        // Show loader overlay and content
-        gsap.set(overlayRef.current, {
-          clipPath: 'circle(150% at 50% 50%)',
+        gsap.set([strip1Ref.current, strip2Ref.current, strip3Ref.current, strip4Ref.current, strip5Ref.current], {
+          x: 0,
+          y: 0,
+          rotation: 0,
         });
         gsap.set(contentRef.current, {
           opacity: 1,
@@ -81,7 +75,7 @@ export default function AppLoader({
         if (percentRef.current) percentRef.current.textContent = `${progress}`;
         lastProgressRef.current = progress;
       } else {
-        console.log('[AppLoader] Ignoring stale progress:', progress, 'last was:', lastProgressRef.current);
+        debug.log('[AppLoader] Ignoring stale progress:', progress, 'last was:', lastProgressRef.current);
       }
     }
 
@@ -91,12 +85,10 @@ export default function AppLoader({
     }
   }, [progress, phase]);
 
-  // ENTRANCE - Fast explosive wipe
+  // ENTRANCE - SMOOTH CASCADING WATERFALL
   useEffect(() => {
-    if (phase !== 'entering' || !overlayRef.current || !contentRef.current) return;
-    if (!translationsReady) return;
+    if (phase !== 'entering' || !strip1Ref.current || !contentRef.current) return;
 
-    // Kill any existing animations FIRST
     if (entranceTimelineRef.current) {
       entranceTimelineRef.current.kill();
       entranceTimelineRef.current = null;
@@ -106,17 +98,17 @@ export default function AppLoader({
       exitTimelineRef.current = null;
     }
 
-    // Force immediate reset of all elements BEFORE animation
-    gsap.set(overlayRef.current, {
-      clipPath: `circle(0% at ${clickPos.x}px ${clickPos.y}px)`,
-      clearProps: 'all',
-    });
+    // Position strips OFF-SCREEN - cascading from top
+    gsap.set(strip1Ref.current, { y: '-100%' });
+    gsap.set(strip2Ref.current, { y: '-100%' });
+    gsap.set(strip3Ref.current, { y: '-100%' });
+    gsap.set(strip4Ref.current, { y: '-100%' });
+    gsap.set(strip5Ref.current, { y: '-100%' });
+
     gsap.set(contentRef.current, {
       opacity: 0,
-      clearProps: 'all',
     });
 
-    // Reset progress to 0
     if (progressBarRef.current) {
       progressBarRef.current.style.width = '0%';
     }
@@ -134,50 +126,33 @@ export default function AppLoader({
 
     entranceTimelineRef.current = tl;
 
-    if (textRef.current) {
-      textRef.current.textContent = t("common.status.loading");
-    }
-
-    // Explosive radial burst - FASTER
-    tl.fromTo(
-      overlayRef.current,
-      {
-        clipPath: `circle(0% at ${clickPos.x}px ${clickPos.y}px)`,
-      },
-      {
-        clipPath: `circle(150% at ${clickPos.x}px ${clickPos.y}px)`,
-        duration: 0.2,
-        ease: "expo.out",
-      },
-      0
-    );
-
-    // Content fades in - FASTER
-    tl.fromTo(
-      contentRef.current,
-      {
-        opacity: 0,
-      },
-      {
-        opacity: 1,
-        duration: 0.15,
-        ease: "power2.out",
-      },
-      0.1
-    );
+    // SMOOTH CASCADING WATERFALL
+    tl.to(strip1Ref.current, { y: '0%', duration: 0.8, ease: "power3.out" }, 0)
+      .to(strip2Ref.current, { y: '0%', duration: 0.8, ease: "power3.out" }, 0.08)
+      .to(strip3Ref.current, { y: '0%', duration: 0.8, ease: "power3.out" }, 0.16)
+      .to(strip4Ref.current, { y: '0%', duration: 0.8, ease: "power3.out" }, 0.24)
+      .to(strip5Ref.current, { y: '0%', duration: 0.8, ease: "power3.out" }, 0.32)
+      .to(contentRef.current, { opacity: 1, duration: 0.6, ease: "power2.out" }, 0.6);
 
     return () => {
       tl.kill();
     };
-  }, [phase, translationsReady, t, onEntranceComplete, clickPos.x, clickPos.y]);
+  }, [phase, onEntranceComplete]);
 
-  // EXIT - Aggressive implosion with scale
+  // EXIT - SMOOTH CASCADE UP
   useEffect(() => {
-    if (phase !== 'exiting' || !overlayRef.current || !contentRef.current) return;
+    if (phase !== 'exiting') return;
 
-    console.log('[AppLoader] EXIT starting');
+    // Capture refs at effect time
+    const content = contentRef.current;
+    const strip1 = strip1Ref.current;
+    const strip2 = strip2Ref.current;
+    const strip3 = strip3Ref.current;
+    const strip4 = strip4Ref.current;
+    const strip5 = strip5Ref.current;
 
-    // Kill any existing animations
+    if (!strip1 || !content) return;
+
     if (entranceTimelineRef.current) {
       entranceTimelineRef.current.kill();
       entranceTimelineRef.current = null;
@@ -187,7 +162,6 @@ export default function AppLoader({
       exitTimelineRef.current = null;
     }
 
-    // Ensure 100% is displayed
     if (progressBarRef.current) {
       progressBarRef.current.style.width = '100%';
     }
@@ -195,42 +169,25 @@ export default function AppLoader({
       percentRef.current.textContent = '100';
     }
 
-    const centerX = window.innerWidth / 2;
-    const centerY = window.innerHeight / 2;
-
     const tl = gsap.timeline();
-
     exitTimelineRef.current = tl;
 
-    // Content fades fast
-    tl.to(
-      contentRef.current,
-      {
-        opacity: 0,
-        duration: 0.15,
-        ease: "power2.in",
-      },
-      0
-    );
+    // Content fades out - use captured ref
+    tl.to(content, { opacity: 0, duration: 0.3, ease: "power2.in" }, 0);
 
-    // Trigger content show early (before overlay finishes imploding)
+    // Trigger content show early
     tl.call(() => {
-      console.log('[AppLoader] Triggering content show early');
       if (onExitComplete) {
         onExitComplete();
       }
-    }, [], 0.1);
+    }, [], 0.2);
 
-    // Overlay implodes aggressively - FASTER
-    tl.to(
-      overlayRef.current,
-      {
-        clipPath: `circle(0% at ${centerX}px ${centerY}px)`,
-        duration: 0.3,
-        ease: "expo.in",
-      },
-      0.1
-    );
+    // CASCADING UP - REVERSE WATERFALL - use captured refs
+    if (strip5) tl.to(strip5, { y: '-100%', duration: 0.6, ease: "power3.in" }, 0.2);
+    if (strip4) tl.to(strip4, { y: '-100%', duration: 0.6, ease: "power3.in" }, 0.26);
+    if (strip3) tl.to(strip3, { y: '-100%', duration: 0.6, ease: "power3.in" }, 0.32);
+    if (strip2) tl.to(strip2, { y: '-100%', duration: 0.6, ease: "power3.in" }, 0.38);
+    if (strip1) tl.to(strip1, { y: '-100%', duration: 0.6, ease: "power3.in" }, 0.44);
 
     return () => {
       tl.kill();
@@ -240,29 +197,31 @@ export default function AppLoader({
   return (
     <div
       ref={loaderRef}
-      className="fixed inset-0 z-[9999] h-screen w-screen"
+      className="fixed inset-0 z-[9999] h-screen w-screen overflow-hidden"
       style={{ pointerEvents: "none" }}
     >
-      {/* Solid overlay */}
-      <div
-        ref={overlayRef}
-        className="absolute inset-0 w-full h-full bg-bg"
-        style={{
-          clipPath: `circle(0% at ${clickPos.x}px ${clickPos.y}px)`,
-        }}
-      />
+      {/* 5 VERTICAL STRIPS */}
+      <div ref={strip1Ref} className="absolute top-0 left-0 w-[20%] h-full bg-bg" />
+      <div ref={strip2Ref} className="absolute top-0 left-[20%] w-[20%] h-full bg-bg" />
+      <div ref={strip3Ref} className="absolute top-0 left-[40%] w-[20%] h-full bg-bg" />
+      <div ref={strip4Ref} className="absolute top-0 left-[60%] w-[20%] h-full bg-bg" />
+      <div ref={strip5Ref} className="absolute top-0 left-[80%] w-[20%] h-full bg-bg" />
 
       {/* Loading UI */}
       <div
         ref={contentRef}
         className="absolute inset-0 flex flex-col items-center justify-center gap-12"
-        style={{ opacity: 0 }}
+        style={{
+          opacity: 0,
+          transformStyle: 'preserve-3d',
+          perspective: '1000px',
+        }}
       >
         {/* Progress percentage - Large and bold */}
         <div className="flex items-baseline gap-2">
           <span
             ref={percentRef}
-            className="font-fun text-[120px] font-bold leading-none tabular-nums"
+            className="font-fun text-[80px] md:text-[120px] font-bold leading-none tabular-nums"
             style={{
               background: 'linear-gradient(135deg, var(--primary-color), var(--secondary-color))',
               WebkitBackgroundClip: 'text',
@@ -273,7 +232,7 @@ export default function AppLoader({
             0
           </span>
           <span
-            className="font-fun text-[80px] font-bold leading-none text-white opacity-50"
+            className="font-fun text-[50px] md:text-[80px] font-bold leading-none text-white opacity-50"
           >
             %
           </span>

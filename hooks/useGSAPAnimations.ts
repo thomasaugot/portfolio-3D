@@ -1,20 +1,18 @@
 "use client";
 
+import { useEffect } from "react";
 import { useGSAP } from "@/lib/animations";
 import { useIsAppReady } from "@/lib/providers/LoadingProvider";
 
 export function useGSAPAnimations(initFunction: () => void) {
   const { isReady } = useIsAppReady();
 
-  // console.log("🎯 useGSAPAnimations hook - isReady:", isReady);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   useGSAP(() => {
-    if (!isReady) {
-      // console.log("⏸️ Not ready yet, skipping GSAP init");
-      return;
-    }
-
-    // console.log("▶️ App is READY - Initializing GSAP animations");
+    if (!isReady) return;
     initFunction();
   }, [isReady]);
 }

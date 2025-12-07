@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { waitForScenes } from "./useThreeScene";
+import { debug } from "@/utils/debug";
 
 interface UseAppReadyOptions {
   criticalScenes?: string[];
@@ -17,7 +18,7 @@ export function useAppReady(options: UseAppReadyOptions = {}) {
   useEffect(() => {
     // Cancel any previous running animation
     if (abortControllerRef.current) {
-      console.log("🛑 useAppReady: Aborting previous animation");
+      debug.log("🛑 useAppReady: Aborting previous animation");
       abortControllerRef.current.abort();
     }
 
@@ -52,19 +53,19 @@ export function useAppReady(options: UseAppReadyOptions = {}) {
         };
 
         // STAGE 1: Fonts (0% → 30%)
-        console.log("📝 Stage 1: Loading fonts...");
+        debug.log("📝 Stage 1: Loading fonts...");
         setProgress(5);
         await Promise.race([
           document.fonts.ready,
           new Promise((resolve) => setTimeout(resolve, 500)) // Quick animation even if fonts load fast
         ]);
         await animateToProgress(30, 300);
-        console.log("✅ Fonts ready");
+        debug.log("✅ Fonts ready");
 
         if (abortController.signal.aborted) return;
 
         // STAGE 2: Stylesheets (30% → 55%)
-        console.log("🎨 Stage 2: Loading stylesheets...");
+        debug.log("🎨 Stage 2: Loading stylesheets...");
         await Promise.race([
           Promise.all(
             Array.from(document.styleSheets).map(async (sheet) => {
@@ -88,7 +89,7 @@ export function useAppReady(options: UseAppReadyOptions = {}) {
 
         // STAGE 3: 3D Scenes (55% → 90%)
         if (criticalScenes.length > 0) {
-          console.log("🎬 Stage 3: Loading 3D scenes...");
+          debug.log("🎬 Stage 3: Loading 3D scenes...");
           await Promise.race([
             waitForScenes(criticalScenes),
             new Promise((resolve) => setTimeout(resolve, 600))
@@ -114,7 +115,7 @@ export function useAppReady(options: UseAppReadyOptions = {}) {
         if (error instanceof Error && error.name === 'AbortError') {
           return;
         }
-        console.error("❌ Init failed:", error);
+        debug.error("❌ Init failed:", error);
         setIsReady(true);
       }
     }

@@ -4,7 +4,9 @@ export class PerformanceMonitor {
   private frameCount = 0;
   private lastFPSUpdate = performance.now();
   private fps = 0;
-  
+  private startTime = performance.now();
+  private warmupComplete = false;
+
   static getInstance() {
     if (!this.instance) {
       this.instance = new PerformanceMonitor();
@@ -14,18 +16,19 @@ export class PerformanceMonitor {
 
   startMeasure(label: string): () => void {
     const startTime = performance.now();
-    
+
     return () => {
       const endTime = performance.now();
       const duration = endTime - startTime;
-      
+
       const metric = this.metrics.get(label) || { count: 0, totalTime: 0, lastTime: 0 };
       metric.count++;
       metric.totalTime += duration;
       metric.lastTime = duration;
       this.metrics.set(label, metric);
 
-      if (duration > 16.67 && metric.count > 2) {
+      // Only warn after warmup period and for significant slowdowns
+      if (this.warmupComplete && duration > 16.67 && metric.count > 10) {
         console.warn(`⚠️ SLOW: ${label} took ${duration.toFixed(2)}ms`);
       }
     };
@@ -36,14 +39,18 @@ export class PerformanceMonitor {
     const now = performance.now();
     const delta = now - this.lastFPSUpdate;
 
+    // Skip FPS warnings during first 3 seconds (warmup period)
+    if (!this.warmupComplete && now - this.startTime > 3000) {
+      this.warmupComplete = true;
+    }
+
     if (delta >= 1000) {
       this.fps = Math.round((this.frameCount * 1000) / delta);
 
-      // Only warn for critically low FPS (< 24 fps) to avoid spam
-      if (this.fps < 24) {
+      // Only warn for critically low FPS after warmup period
+      if (this.warmupComplete && this.fps < 20) {
         console.warn(`❌ LOW FPS: ${this.fps} fps`);
       }
-      // Removed medium FPS warning - 30-60 fps is acceptable for 3D scenes
 
       this.frameCount = 0;
       this.lastFPSUpdate = now;

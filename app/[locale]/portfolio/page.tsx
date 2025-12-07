@@ -1,9 +1,9 @@
 "use client";
 
-import { getAllProjects } from "@/data/projects";
-import { useEffect } from "react";
 import { useThreeScene } from "@/hooks/useThreeScene";
 import { useGSAPAnimations } from "@/hooks/useGSAPAnimations";
+import { usePortfolioScrollHeight } from "@/hooks/usePortfolioScrollHeight";
+import { getAllProjects } from "@/data/projects";
 import { initMenuAnimations } from "@/utils/animations/menu-animations";
 import { initPortfolioScene } from "@/utils/animations/portfolio-3d-scene";
 import { initPortfolioScroll } from "@/utils/animations/portfolio-scroll-animation";
@@ -11,36 +11,15 @@ import { initTetrisTextAnimation } from "@/utils/animations/tetris-text-animatio
 import Menu from "@/components/layout/Menu";
 import Footer from "@/components/layout/Footer";
 import BlobModalCursor from "@/components/ui/BlobModalCursor";
-import ProjectCounter from "@/components/portfolio/ProjectCounter";
 import PortfolioHero from "@/components/portfolio/PortfolioHero";
+import ProjectCounter from "@/components/portfolio/ProjectCounter";
 import PortfolioProjectSlide from "@/components/portfolio/PortfolioProjectSlide";
 import PortfolioCTA from "@/components/portfolio/PortfolioCTA";
 
 export default function PortfolioPage() {
   const projects = getAllProjects();
   const containerRef = useThreeScene(initPortfolioScene, "portfolio");
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-
-    const updateScrollHeight = () => {
-      const multiplier = window.innerWidth < 768 ? 100 : 300;
-      const section = document.querySelector(
-        "[data-portfolio-section]"
-      ) as HTMLElement;
-      if (section) {
-        section.style.setProperty(
-          "--portfolio-height",
-          `${(projects.length + 1) * multiplier}vh`
-        );
-      }
-    };
-
-    updateScrollHeight();
-    window.addEventListener("resize", updateScrollHeight);
-
-    return () => window.removeEventListener("resize", updateScrollHeight);
-  }, [projects.length]);
+  usePortfolioScrollHeight(projects.length);
 
   useGSAPAnimations(() => {
     initMenuAnimations();

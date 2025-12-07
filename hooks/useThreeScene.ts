@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { debug } from "@/utils/debug";
 
 type SceneInitFunction = () =>
   | Promise<(() => void) | void>
@@ -29,22 +30,22 @@ async function processQueue() {
   const total = itemsToLoad.length;
   let loaded = 0;
 
-  console.log(`🎬 Loading ${total} scenes in parallel`);
+  debug.log(`🎬 Loading ${total} scenes in parallel`);
 
   await Promise.all(
     itemsToLoad.map(async (item) => {
       try {
-        console.log(`🎬 Starting ${item.sceneId}`);
+        debug.log(`🎬 Starting ${item.sceneId}`);
         await item.initFunction();
 
         sceneStates.set(item.sceneId, true);
         loaded++;
-        console.log(`✅ ${item.sceneId} ready (${loaded}/${total})`);
+        debug.log(`✅ ${item.sceneId} ready (${loaded}/${total})`);
 
         progressCallbacks.forEach(cb => cb(loaded, total));
         readyCallbacks.forEach(cb => cb());
       } catch (error) {
-        console.error(`❌ Failed to load ${item.sceneId}:`, error);
+        debug.error(`❌ Failed to load ${item.sceneId}:`, error);
         sceneStates.set(item.sceneId, true);
         loaded++;
         progressCallbacks.forEach(cb => cb(loaded, total));
@@ -132,6 +133,6 @@ export function waitForScenes(sceneIds: string[]): Promise<void> {
 // Useful for scenes that don't use the useThreeScene hook
 export function markSceneReady(sceneId: string) {
   sceneStates.set(sceneId, true);
-  console.log(`✅ ${sceneId} scene marked as ready`);
+  debug.log(`✅ ${sceneId} scene marked as ready`);
   readyCallbacks.forEach(callback => callback());
 }

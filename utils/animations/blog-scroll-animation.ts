@@ -192,33 +192,8 @@ export function initBlogScrollAnimation() {
     timelines.push(headerTl);
   }
 
-  // Horizontal carousel - subtle entrance animation only
-  if (articleCarousel && carouselCards.length > 0) {
-    carouselCards.forEach((card, index) => {
-      // Set subtle initial state - just slightly faded
-      gsap.set(card, {
-        opacity: 0.8,
-      });
-
-      const cardTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: card,
-          start: "left 95%",
-          end: "left 50%",
-          scrub: 1,
-          id: `carousel-card-${index}`,
-        },
-      });
-
-      cardTl.to(card, {
-        opacity: 1,
-        duration: 1,
-        ease: "power2.out",
-      });
-
-      timelines.push(cardTl);
-    });
-  }
+  // Note: Carousel 3D animation is handled in BlogArticleGrid component
+  // to ensure it runs after posts are loaded asynchronously
 
   // Hex floor reaction to articles scroll
   if (blogScene && articlesSection) {

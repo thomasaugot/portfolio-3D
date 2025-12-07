@@ -2,19 +2,23 @@
 
 import { useRef, useEffect, useState } from "react";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
+import { gsap, ScrollTrigger } from "@/lib/animations";
 import { BlogPost } from "@/types/blog";
 import BlogCard from "./BlogCard";
 
 export default function BlogArticleGrid({ posts }: { posts: BlogPost[] }) {
   const { t } = useTranslation();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
+  const animationInitialized = useRef(false);
 
   // Skip the first post (it's featured)
   const gridPosts = posts.slice(1);
 
+  // Horizontal scroll with mouse wheel
   useEffect(() => {
     const container = scrollContainerRef.current;
     if (!container) return;
@@ -29,6 +33,72 @@ export default function BlogArticleGrid({ posts }: { posts: BlogPost[] }) {
     container.addEventListener("wheel", handleWheel, { passive: false });
     return () => container.removeEventListener("wheel", handleWheel);
   }, []);
+
+  // 3D Train entrance animation - runs when posts are loaded
+  useEffect(() => {
+    if (gridPosts.length === 0 || animationInitialized.current) return;
+
+    const section = sectionRef.current;
+    const cards = document.querySelectorAll("[data-carousel-card]");
+
+    if (!section || cards.length === 0) return;
+
+    // Small delay to ensure DOM is ready
+    const initTimeout = setTimeout(() => {
+      animationInitialized.current = true;
+
+      // Initial state - cards start way back on the Z axis, staggered like train cars
+      cards.forEach((card, index) => {
+        gsap.set(card, {
+          opacity: 0,
+          scale: 0.3,
+          x: -200 - (index * 50),
+          rotateY: -45,
+          transformOrigin: "left center",
+        });
+      });
+
+      // Create scroll-triggered animation
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: "top 85%",
+          end: "center center",
+          scrub: 0.5,
+          onEnter: () => {
+            ScrollTrigger.refresh();
+          },
+        },
+      });
+
+      // Animate each card - they come in one after another like train cars
+      cards.forEach((card, index) => {
+        tl.to(
+          card,
+          {
+            opacity: 1,
+            scale: 1,
+            x: 0,
+            rotateY: 0,
+            duration: 1,
+            ease: "power3.out",
+          },
+          index * 0.1
+        );
+      });
+
+      ScrollTrigger.refresh();
+    }, 100);
+
+    return () => {
+      clearTimeout(initTimeout);
+      ScrollTrigger.getAll().forEach(st => {
+        if (st.vars.trigger === section) {
+          st.kill();
+        }
+      });
+    };
+  }, [gridPosts.length]);
 
   const handleMouseDown = (e: React.MouseEvent) => {
     setIsDragging(true);
@@ -70,7 +140,7 @@ export default function BlogArticleGrid({ posts }: { posts: BlogPost[] }) {
   }
 
   return (
-    <section data-articles-section className="relative py-12 overflow-visible">
+    <section ref={sectionRef} data-articles-section className="relative py-12" style={{ perspective: "1000px" }}>
       {/* Section Header */}
       <div className="px-6 md:px-12 lg:px-20 mb-12">
         <div className="w-full max-w-7xl mx-auto">
@@ -119,7 +189,7 @@ export default function BlogArticleGrid({ posts }: { posts: BlogPost[] }) {
       <div
         ref={scrollContainerRef}
         data-article-carousel
-        className={`flex gap-6 px-6 md:px-12 lg:px-20 overflow-visible py-6 scrollbar-hide ${
+        className={`flex gap-6 px-6 md:px-12 lg:px-20 overflow-x-auto py-12 scrollbar-hide ${
           isDragging ? "cursor-grabbing" : "cursor-grab"
         }`}
         style={{
@@ -136,9 +206,6 @@ export default function BlogArticleGrid({ posts }: { posts: BlogPost[] }) {
             key={post.id}
             data-carousel-card={index}
             className="flex-shrink-0 w-[75vw] sm:w-[60vw] md:w-[40vw] lg:w-[350px]"
-            style={{
-              transform: "translateZ(0)",
-            }}
           >
             <BlogCard post={post} index={index} />
           </div>
@@ -149,8 +216,8 @@ export default function BlogArticleGrid({ posts }: { posts: BlogPost[] }) {
       </div>
 
       {/* Scroll indicators */}
-      <div className="absolute left-0 top-1/2 -translate-y-1/2 w-32 h-full bg-gradient-to-r from-bg to-transparent pointer-events-none"></div>
-      <div className="absolute right-0 top-1/2 -translate-y-1/2 w-32 h-full bg-gradient-to-l from-bg to-transparent pointer-events-none"></div>
+      <div className="absolute left-0 top-1/2 -translate-y-1/2 w-32 h-full bg-gradient-to-r from-bg to-transparent pointer-events-none z-10"></div>
+      <div className="absolute right-0 top-1/2 -translate-y-1/2 w-32 h-full bg-gradient-to-l from-bg to-transparent pointer-events-none z-10"></div>
     </section>
   );
 }

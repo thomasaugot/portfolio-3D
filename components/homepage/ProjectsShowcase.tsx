@@ -5,6 +5,7 @@ import { getFeaturedProjects } from "@/data/projects";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
 import { initProjects3DScene } from "@/utils/animations/projects-3d-scene";
 import { markSceneReady } from "@/hooks/useThreeScene";
+import { debug } from "@/utils/debug";
 import ProjectModal from "@/components/portfolio/ProjectModal";
 import type { Project } from "@/types/project";
 
@@ -21,12 +22,12 @@ export default function ProjectsShowcase() {
     let cleanupFn: (() => void) | undefined;
 
     const timer = setTimeout(async () => {
-      console.log("🎬 ProjectsShowcase: Initializing 3D scenes...");
+      debug.log("🎬 ProjectsShowcase: Initializing 3D scenes...");
       try {
         cleanupFn = await initProjects3DScene();
         markSceneReady("projects");
       } catch (error) {
-        console.error("Failed to init projects scene:", error);
+        debug.error("Failed to init projects scene:", error);
         markSceneReady("projects");
       }
     }, 100);
