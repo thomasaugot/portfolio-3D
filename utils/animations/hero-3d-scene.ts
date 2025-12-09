@@ -2,6 +2,7 @@ import { THREE } from "@/lib/animations";
 import { getThemeState } from "@/utils/theme-helpers";
 import type { SceneConfig } from "@/types/three";
 import { perfMonitor } from "@/utils/performance-monitor";
+import { loadCachedGLTF } from "@/utils/model-cache";
 
 const isLowPerformanceDevice = () => {
   if (typeof navigator === 'undefined') return false;
@@ -192,50 +193,53 @@ const loadCodeModel = async (
   config: SceneConfig
 ): Promise<THREE.Group | null> => {
   const measure = perfMonitor.startMeasure('hero:loadCodeModel');
-  
+
   const { GLTFLoader } = await import(
     "three/examples/jsm/loaders/GLTFLoader.js"
   );
   const loader = new GLTFLoader();
 
-  return new Promise((resolve) => {
-    loader.load("/assets/models/code-3D.glb", (gltf) => {
-      const model = gltf.scene;
+  try {
+    const gltf = await loadCachedGLTF(loader, "/assets/models/code-3D.glb");
+    const model = gltf.scene;
 
-      model.traverse((child: any) => {
-        if (child.isMesh) {
-          // Use MeshStandardMaterial instead of MeshPhysicalMaterial for better performance
-          child.material = new THREE.MeshStandardMaterial({
-            color: config.isLight ? 0xf0f0f0 : 0xffffff,
-            roughness: config.isLight ? 0.3 : 0.7,
-            metalness: config.isLight ? 0.1 : 0.5,
-            transparent: config.isLight,
-            opacity: config.isLight ? 0.8 : 1,
-            emissive: config.isLight ? 0x000000 : 0x1a1a1a,
-            emissiveIntensity: config.isLight ? 0 : 0.2,
-          });
-        }
-      });
-
-      const scale = config.isMobile ? 35 : 50;
-      model.scale.set(scale, scale, scale);
-
-      const wrapper = new THREE.Group();
-      wrapper.add(model);
-
-      if (config.isMobile) {
-        wrapper.position.set(-50, 50, 250);
-      } else if (config.isTablet) {
-        wrapper.position.set(150, 70, 220);
-      } else {
-        wrapper.position.set(300, 80, 200);
+    model.traverse((child: any) => {
+      if (child.isMesh) {
+        // Use MeshStandardMaterial instead of MeshPhysicalMaterial for better performance
+        child.material = new THREE.MeshStandardMaterial({
+          color: config.isLight ? 0xf0f0f0 : 0xffffff,
+          roughness: config.isLight ? 0.3 : 0.7,
+          metalness: config.isLight ? 0.1 : 0.5,
+          transparent: config.isLight,
+          opacity: config.isLight ? 0.8 : 1,
+          emissive: config.isLight ? 0x000000 : 0x1a1a1a,
+          emissiveIntensity: config.isLight ? 0 : 0.2,
+        });
       }
-
-      scene.add(wrapper);
-      measure();
-      resolve(wrapper);
     });
-  });
+
+    const scale = config.isMobile ? 35 : 50;
+    model.scale.set(scale, scale, scale);
+
+    const wrapper = new THREE.Group();
+    wrapper.add(model);
+
+    if (config.isMobile) {
+      wrapper.position.set(-50, 50, 250);
+    } else if (config.isTablet) {
+      wrapper.position.set(150, 70, 220);
+    } else {
+      wrapper.position.set(300, 80, 200);
+    }
+
+    scene.add(wrapper);
+    measure();
+    return wrapper;
+  } catch (error) {
+    console.error("Failed to load code model:", error);
+    measure();
+    return null;
+  }
 };
 
 const loadLaptopModel = async (
@@ -244,65 +248,68 @@ const loadLaptopModel = async (
   vscodeTexture: THREE.Texture | null
 ): Promise<THREE.Group | null> => {
   const measure = perfMonitor.startMeasure('hero:loadLaptopModel');
-  
+
   const { GLTFLoader } = await import(
     "three/examples/jsm/loaders/GLTFLoader.js"
   );
   const loader = new GLTFLoader();
 
-  return new Promise((resolve) => {
-    loader.load("/assets/models/laptop-logo.glb", (gltf) => {
-      const model = gltf.scene;
+  try {
+    const gltf = await loadCachedGLTF(loader, "/assets/models/laptop-logo.glb");
+    const model = gltf.scene;
 
-      model.traverse((child: any) => {
-        if (child.isMesh) {
-          if (child.name === "Screen_Screen_0" && vscodeTexture) {
-            child.material = new THREE.MeshBasicMaterial({
-              map: vscodeTexture,
-              transparent: false,
-              opacity: 1.0,
-              toneMapped: false,
-            });
-            child.material.needsUpdate = true;
-            child.receiveShadow = false;
-            child.castShadow = false;
-          } else if (child.name === "Keyboard_Keyboard_0") {
-            child.material.color = new THREE.Color(
-              config.isLight ? 0x282828 : 0x181818
-            );
-            child.material.emissive = new THREE.Color(0x000000);
-            child.material.emissiveIntensity = 0;
-          } else if (child.material) {
-            child.material.emissive = new THREE.Color(
-              config.isLight ? 0x4e4e4e : 0x2a2a2a
-            );
-            child.material.emissiveIntensity = config.isLight ? 0.3 : 0.6;
-            child.material.transparent = false;
-            child.material.opacity = 1.0;
-            child.material.needsUpdate = true;
-          }
+    model.traverse((child: any) => {
+      if (child.isMesh) {
+        if (child.name === "Screen_Screen_0" && vscodeTexture) {
+          child.material = new THREE.MeshBasicMaterial({
+            map: vscodeTexture,
+            transparent: false,
+            opacity: 1.0,
+            toneMapped: false,
+          });
+          child.material.needsUpdate = true;
+          child.receiveShadow = false;
+          child.castShadow = false;
+        } else if (child.name === "Keyboard_Keyboard_0") {
+          child.material.color = new THREE.Color(
+            config.isLight ? 0x282828 : 0x181818
+          );
+          child.material.emissive = new THREE.Color(0x000000);
+          child.material.emissiveIntensity = 0;
+        } else if (child.material) {
+          child.material.emissive = new THREE.Color(
+            config.isLight ? 0x4e4e4e : 0x2a2a2a
+          );
+          child.material.emissiveIntensity = config.isLight ? 0.3 : 0.6;
+          child.material.transparent = false;
+          child.material.opacity = 1.0;
+          child.material.needsUpdate = true;
         }
-      });
-
-      const scale = config.isMobile ? 45 : 60;
-      model.scale.set(scale, scale, scale);
-
-      const wrapper = new THREE.Group();
-      wrapper.add(model);
-
-      if (config.isMobile) {
-        wrapper.position.set(50, -30, 200);
-      } else if (config.isTablet) {
-        wrapper.position.set(100, -40, 180);
-      } else {
-        wrapper.position.set(200, -50, 150);
       }
-
-      scene.add(wrapper);
-      measure();
-      resolve(wrapper);
     });
-  });
+
+    const scale = config.isMobile ? 45 : 60;
+    model.scale.set(scale, scale, scale);
+
+    const wrapper = new THREE.Group();
+    wrapper.add(model);
+
+    if (config.isMobile) {
+      wrapper.position.set(50, -30, 200);
+    } else if (config.isTablet) {
+      wrapper.position.set(100, -40, 180);
+    } else {
+      wrapper.position.set(200, -50, 150);
+    }
+
+    scene.add(wrapper);
+    measure();
+    return wrapper;
+  } catch (error) {
+    console.error("Failed to load laptop model:", error);
+    measure();
+    return null;
+  }
 };
 
 const setupInteractions = (

@@ -3,6 +3,7 @@ import { getThemeState } from "@/utils/theme-helpers";
 import { getFeaturedProjects } from "@/data/projects";
 import type { SceneConfig } from "@/types/three";
 import { perfMonitor } from "@/utils/performance-monitor";
+import { loadCachedGLTF } from "@/utils/model-cache";
 
 const MODEL_PATHS = [
   "/assets/models/iphone-laptop-scene-1.glb",
@@ -136,97 +137,91 @@ const loadModel = async (
   );
   const loader = new GLTFLoader();
 
-  return new Promise((resolve) => {
-    loader.load(
-      modelPath,
-      (gltf) => {
-        const model = gltf.scene;
-        let laptopGroup: THREE.Object3D | null = null;
-        let iphoneGroup: THREE.Object3D | null = null;
+  try {
+    const gltf = await loadCachedGLTF(loader, modelPath);
+    const model = gltf.scene;
+    let laptopGroup: THREE.Object3D | null = null;
+    let iphoneGroup: THREE.Object3D | null = null;
 
-        model.traverse((child: any) => {
-          if (child.isMesh) {
-            const meshName = child.name.toLowerCase();
+    model.traverse((child: any) => {
+      if (child.isMesh) {
+        const meshName = child.name.toLowerCase();
 
-            if (meshName === "screen_screen_0" && laptopTexture) {
-              const geometry = child.geometry;
-              const uvAttribute = geometry.attributes.uv;
+        if (meshName === "screen_screen_0" && laptopTexture) {
+          const geometry = child.geometry;
+          const uvAttribute = geometry.attributes.uv;
 
-              if (uvAttribute) {
-                const uvArray = uvAttribute.array;
-                for (let i = 0; i < uvArray.length; i += 2) {
-                  const u = uvArray[i];
-                  const v = uvArray[i + 1];
-                  uvArray[i] = (u - 0.5) * 1.5 + 0.6;
-                  uvArray[i + 1] = v;
-                }
-                uvAttribute.needsUpdate = true;
-              }
-
-              laptopTexture.repeat.set(1, 1);
-              laptopTexture.offset.set(0, 0);
-              laptopTexture.wrapS = THREE.ClampToEdgeWrapping;
-              laptopTexture.wrapT = THREE.ClampToEdgeWrapping;
-
-              child.material = new THREE.MeshBasicMaterial({
-                map: laptopTexture,
-                side: THREE.DoubleSide,
-              });
-              child.material.needsUpdate = true;
-
-              let current = child.parent;
-              while (current && !laptopGroup) {
-                if (current.name === "Modern_Slim_Laptop") {
-                  laptopGroup = current;
-                  break;
-                }
-                current = current.parent;
-              }
-            } else if (meshName === "tppzcqmnlkchipp" && iphoneTexture) {
-              child.material = new THREE.MeshBasicMaterial({
-                map: iphoneTexture,
-                side: THREE.DoubleSide,
-              });
-              child.material.needsUpdate = true;
-
-              let current = child.parent;
-              while (current && !iphoneGroup) {
-                if (current.name === "CfdQrXYnljwmMLk") {
-                  iphoneGroup = current;
-                  break;
-                }
-                current = current.parent;
-              }
-            } else if (child.material) {
-              child.material.emissive = new THREE.Color(
-                config.isLight ? 0x404040 : 0x2a2a2a
-              );
-              child.material.emissiveIntensity = config.isLight ? 0.2 : 0.3;
-              child.material.needsUpdate = true;
+          if (uvAttribute) {
+            const uvArray = uvAttribute.array;
+            for (let i = 0; i < uvArray.length; i += 2) {
+              const u = uvArray[i];
+              const v = uvArray[i + 1];
+              uvArray[i] = (u - 0.5) * 1.5 + 0.6;
+              uvArray[i + 1] = v;
             }
+            uvAttribute.needsUpdate = true;
           }
-        });
 
-        const scale = config.isMobile ? 120 : config.isTablet ? 110 : 75;
-        model.scale.set(scale, scale, scale);
-        model.rotation.y = -0.3;
+          laptopTexture.repeat.set(1, 1);
+          laptopTexture.offset.set(0, 0);
+          laptopTexture.wrapS = THREE.ClampToEdgeWrapping;
+          laptopTexture.wrapT = THREE.ClampToEdgeWrapping;
 
-        const modelY = config.isMobile ? 20 : config.isTablet ? 10 : -35;
-        model.position.set(-20, modelY, 0);
+          child.material = new THREE.MeshBasicMaterial({
+            map: laptopTexture,
+            side: THREE.DoubleSide,
+          });
+          child.material.needsUpdate = true;
 
-        const wrapper = new THREE.Group();
-        wrapper.add(model);
-        scene.add(wrapper);
+          let current = child.parent;
+          while (current && !laptopGroup) {
+            if (current.name === "Modern_Slim_Laptop") {
+              laptopGroup = current;
+              break;
+            }
+            current = current.parent;
+          }
+        } else if (meshName === "tppzcqmnlkchipp" && iphoneTexture) {
+          child.material = new THREE.MeshBasicMaterial({
+            map: iphoneTexture,
+            side: THREE.DoubleSide,
+          });
+          child.material.needsUpdate = true;
 
-        resolve({ wrapper, laptopGroup, iphoneGroup });
-      },
-      undefined,
-      (error) => {
-        console.error(`❌ Error loading model:`, error);
-        resolve(null);
+          let current = child.parent;
+          while (current && !iphoneGroup) {
+            if (current.name === "CfdQrXYnljwmMLk") {
+              iphoneGroup = current;
+              break;
+            }
+            current = current.parent;
+          }
+        } else if (child.material) {
+          child.material.emissive = new THREE.Color(
+            config.isLight ? 0x404040 : 0x2a2a2a
+          );
+          child.material.emissiveIntensity = config.isLight ? 0.2 : 0.3;
+          child.material.needsUpdate = true;
+        }
       }
-    );
-  });
+    });
+
+    const scale = config.isMobile ? 120 : config.isTablet ? 110 : 75;
+    model.scale.set(scale, scale, scale);
+    model.rotation.y = -0.3;
+
+    const modelY = config.isMobile ? 20 : config.isTablet ? 10 : -35;
+    model.position.set(-20, modelY, 0);
+
+    const wrapper = new THREE.Group();
+    wrapper.add(model);
+    scene.add(wrapper);
+
+    return { wrapper, laptopGroup, iphoneGroup };
+  } catch (error) {
+    console.error(`❌ Error loading model:`, error);
+    return null;
+  }
 };
 
 export async function initProjects3DScene() {

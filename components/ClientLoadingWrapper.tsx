@@ -18,7 +18,8 @@ export default function ClientLoadingWrapper({ children }: ClientLoadingWrapperP
     if (route === '/portfolio') {
       return ['portfolio'];
     } else if (route === '/' || route === '') {
-      return ['hero'];
+      // Both hero and projects scenes must be ready before showing homepage
+      return ['hero', 'projects'];
     }
 
     // For other pages, no critical 3D scenes

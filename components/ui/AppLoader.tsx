@@ -2,7 +2,6 @@
 
 import { useEffect, useRef } from "react";
 import { gsap } from "@/lib/animations";
-import { useTranslationReady } from "@/hooks/useTranslationReady";
 import { debug } from "@/utils/debug";
 
 interface AppLoaderProps {
@@ -10,7 +9,6 @@ interface AppLoaderProps {
   phase: 'entering' | 'loading' | 'exiting';
   onEntranceComplete?: () => void;
   onExitComplete?: () => void;
-  clickPosition: { x: number; y: number } | null;
 }
 
 export default function AppLoader({
@@ -18,7 +16,6 @@ export default function AppLoader({
   phase,
   onEntranceComplete,
   onExitComplete,
-  clickPosition
 }: AppLoaderProps) {
   const loaderRef = useRef<HTMLDivElement>(null!);
   const strip1Ref = useRef<HTMLDivElement>(null);
@@ -27,10 +24,8 @@ export default function AppLoader({
   const strip4Ref = useRef<HTMLDivElement>(null);
   const strip5Ref = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
-  const textRef = useRef<HTMLDivElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
   const percentRef = useRef<HTMLDivElement>(null);
-  const translationsReady = useTranslationReady();
   const entranceTimelineRef = useRef<gsap.core.Timeline | null>(null);
   const exitTimelineRef = useRef<gsap.core.Timeline | null>(null);
 
@@ -64,12 +59,11 @@ export default function AppLoader({
     }
   }, [phase]);
 
-  // Update progress - direct updates for 3% jumps
+  // Update progress
   const lastProgressRef = useRef<number>(0);
 
   useEffect(() => {
     if (phase === 'loading') {
-      // Only update if progress is actually increasing (not a stale high value)
       if (progress === 0 || progress > lastProgressRef.current) {
         if (progressBarRef.current) progressBarRef.current.style.width = `${progress}%`;
         if (percentRef.current) percentRef.current.textContent = `${progress}`;
@@ -79,7 +73,6 @@ export default function AppLoader({
       }
     }
 
-    // Reset on phase change to entering (new transition starting)
     if (phase === 'entering') {
       lastProgressRef.current = 0;
     }
@@ -98,16 +91,13 @@ export default function AppLoader({
       exitTimelineRef.current = null;
     }
 
-    // Position strips OFF-SCREEN - cascading from top
     gsap.set(strip1Ref.current, { y: '-100%' });
     gsap.set(strip2Ref.current, { y: '-100%' });
     gsap.set(strip3Ref.current, { y: '-100%' });
     gsap.set(strip4Ref.current, { y: '-100%' });
     gsap.set(strip5Ref.current, { y: '-100%' });
 
-    gsap.set(contentRef.current, {
-      opacity: 0,
-    });
+    gsap.set(contentRef.current, { opacity: 0 });
 
     if (progressBarRef.current) {
       progressBarRef.current.style.width = '0%';
@@ -117,16 +107,11 @@ export default function AppLoader({
     }
 
     const tl = gsap.timeline({
-      onComplete: () => {
-        if (onEntranceComplete) {
-          onEntranceComplete();
-        }
-      },
+      onComplete: () => onEntranceComplete?.(),
     });
 
     entranceTimelineRef.current = tl;
 
-    // SMOOTH CASCADING WATERFALL
     tl.to(strip1Ref.current, { y: '0%', duration: 0.8, ease: "power3.out" }, 0)
       .to(strip2Ref.current, { y: '0%', duration: 0.8, ease: "power3.out" }, 0.08)
       .to(strip3Ref.current, { y: '0%', duration: 0.8, ease: "power3.out" }, 0.16)
@@ -143,7 +128,6 @@ export default function AppLoader({
   useEffect(() => {
     if (phase !== 'exiting') return;
 
-    // Capture refs at effect time
     const content = contentRef.current;
     const strip1 = strip1Ref.current;
     const strip2 = strip2Ref.current;
@@ -172,17 +156,10 @@ export default function AppLoader({
     const tl = gsap.timeline();
     exitTimelineRef.current = tl;
 
-    // Content fades out - use captured ref
     tl.to(content, { opacity: 0, duration: 0.3, ease: "power2.in" }, 0);
 
-    // Trigger content show early
-    tl.call(() => {
-      if (onExitComplete) {
-        onExitComplete();
-      }
-    }, [], 0.2);
+    tl.call(() => onExitComplete?.(), [], 0.2);
 
-    // CASCADING UP - REVERSE WATERFALL - use captured refs
     if (strip5) tl.to(strip5, { y: '-100%', duration: 0.6, ease: "power3.in" }, 0.2);
     if (strip4) tl.to(strip4, { y: '-100%', duration: 0.6, ease: "power3.in" }, 0.26);
     if (strip3) tl.to(strip3, { y: '-100%', duration: 0.6, ease: "power3.in" }, 0.32);
@@ -210,18 +187,14 @@ export default function AppLoader({
       {/* Loading UI */}
       <div
         ref={contentRef}
-        className="absolute inset-0 flex flex-col items-center justify-center gap-12"
-        style={{
-          opacity: 0,
-          transformStyle: 'preserve-3d',
-          perspective: '1000px',
-        }}
+        className="absolute inset-0 flex flex-col items-center justify-center gap-6"
+        style={{ opacity: 0 }}
       >
-        {/* Progress percentage - Large and bold */}
-        <div className="flex items-baseline gap-2">
+        {/* Progress percentage */}
+        <div className="flex items-baseline gap-1">
           <span
             ref={percentRef}
-            className="font-fun text-[80px] md:text-[120px] font-bold leading-none tabular-nums"
+            className="font-fun title-hero tabular-nums"
             style={{
               background: 'linear-gradient(135deg, var(--primary-color), var(--secondary-color))',
               WebkitBackgroundClip: 'text',
@@ -231,16 +204,14 @@ export default function AppLoader({
           >
             0
           </span>
-          <span
-            className="font-fun text-[50px] md:text-[80px] font-bold leading-none text-white opacity-50"
-          >
+          <span className="font-fun text-xl md:text-2xl font-bold leading-none text-white opacity-50">
             %
           </span>
         </div>
 
-        {/* Progress bar - Clean and wide */}
-        <div className="w-[600px] max-w-[80vw]">
-          <div className="h-1 bg-white/10 rounded-full overflow-hidden">
+        {/* Progress bar */}
+        <div className="w-[300px] max-w-[60vw]">
+          <div className="h-[2px] bg-white/10 rounded-full overflow-hidden">
             <div
               ref={progressBarRef}
               className="h-full w-0 rounded-full transition-all duration-300"
@@ -250,14 +221,6 @@ export default function AppLoader({
             />
           </div>
         </div>
-
-        {/* Loading text - Subtle */}
-        <span
-          ref={textRef}
-          className="font-fun text-sm font-medium tracking-[0.3em] uppercase opacity-30"
-        >
-          {translationsReady ? "" : ""}
-        </span>
       </div>
     </div>
   );

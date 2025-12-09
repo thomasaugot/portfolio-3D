@@ -21,7 +21,8 @@ export default function ProjectsShowcase() {
 
     let cleanupFn: (() => void) | undefined;
 
-    const timer = setTimeout(async () => {
+    // Initialize immediately without delay
+    const initScene = async () => {
       debug.log("🎬 ProjectsShowcase: Initializing 3D scenes...");
       try {
         cleanupFn = await initProjects3DScene();
@@ -30,10 +31,11 @@ export default function ProjectsShowcase() {
         debug.error("Failed to init projects scene:", error);
         markSceneReady("projects");
       }
-    }, 100);
+    };
+
+    initScene();
 
     return () => {
-      clearTimeout(timer);
       if (cleanupFn) cleanupFn();
     };
   }, []);
