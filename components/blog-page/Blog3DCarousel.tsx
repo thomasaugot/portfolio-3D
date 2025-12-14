@@ -182,13 +182,18 @@ export default function Blog3DCarousel({ posts }: Blog3DCarouselProps) {
                 ...getCardStyle(index),
                 transformStyle: "preserve-3d",
               }}
-              onClick={() => {
+              onClick={async () => {
                 if (!isFeatured) {
                   setCurrentIndex(index);
+                } else {
+                  // Navigate to article when clicking featured card
+                  const slug = createSlugFromTitle(post.originalTitle || post.titleKey);
+                  const internalUrl = `/${language}/blog/${slug}`;
+                  await startTransition(internalUrl, { x: window.innerWidth / 2, y: window.innerHeight / 2 });
                 }
               }}
             >
-              <div className="group relative h-full cursor-grab active:cursor-grabbing">
+              <div className={`group relative h-full ${isFeatured ? 'cursor-pointer' : 'cursor-grab active:cursor-grabbing'}`}>
                 {/* Glow effect */}
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/40 to-secondary/40 rounded-3xl blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
@@ -260,7 +265,7 @@ export default function Blog3DCarousel({ posts }: Blog3DCarouselProps) {
                           <button
                             onClick={async (e) => {
                               e.stopPropagation();
-                              const slug = createSlugFromTitle(post.titleKey);
+                              const slug = createSlugFromTitle(post.originalTitle || post.titleKey);
                               const internalUrl = `/${language}/blog/${slug}`;
                               const clickPosition = {
                                 x: e.clientX,

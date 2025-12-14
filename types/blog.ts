@@ -11,6 +11,7 @@ export interface BlogPost {
   id: string;            // post.link
   slug: string;          // post.link
   titleKey: string;      // post.title
+  originalTitle?: string; // original English title for slug generation
   excerptKey: string;    // post.contentSnippet
   fullContent?: string;  // full article content
   date: string;          // post.pubDate
@@ -25,6 +26,7 @@ export interface BlogPost {
 
 export interface MediumArticle {
   title: string;
+  originalTitle?: string;
   link: string;
   pubDate: string;
   content: string;        // excerpt (first ~400 chars)

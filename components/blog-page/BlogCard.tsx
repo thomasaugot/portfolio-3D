@@ -15,7 +15,7 @@ export default function BlogCard({ post, index }: BlogCardProps) {
   const { t, language } = useTranslation();
   const { startTransition } = useTransition();
 
-  const slug = createSlugFromTitle(post.titleKey);
+  const slug = createSlugFromTitle(post.originalTitle || post.titleKey);
   const internalUrl = `/${language}/blog/${slug}`;
 
   const formatDate = (dateString: string) => {

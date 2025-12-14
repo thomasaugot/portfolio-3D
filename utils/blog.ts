@@ -28,6 +28,7 @@ function mapCategory(categories: string[] = []): BlogCategory {
 interface RawBlogPost {
   link: string;
   title: string;
+  originalTitle?: string;
   content?: string;
   fullContent?: string;
   pubDate: string;
@@ -58,6 +59,7 @@ export function normalizeBlogPosts(data: RawBlogPost[]): BlogPost[] {
       id: post.link,
       slug: post.link,
       titleKey: post.title,
+      originalTitle: post.originalTitle,
       excerptKey: excerpt || "Click to read more...",
       fullContent: post.fullContent || post.content || "",
       date: post.pubDate,

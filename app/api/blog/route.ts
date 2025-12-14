@@ -74,18 +74,40 @@ export async function GET(request: NextRequest) {
     try {
       const feed = await parser.parseURL('https://medium.com/feed/@thomasaugot');
 
-      let articles = feed.items.map((item: any) => ({
-        title: item.title || '',
-        link: item.link || '',
-        pubDate: item.pubDate || item.isoDate || '',
-        content: item.contentSnippet?.substring(0, 400) || '',
-        fullContent: item.contentHtml || item['content:encoded'] || '',
-        image: item.mediaContent?.$?.url ||
-               extractFirstImage(item.contentHtml || item['content:encoded'] || '') ||
-               'https://miro.medium.com/v2/resize:fit:1200/1*default.png',
-        categories: item.categories || [],
-        readTime: calculateReadTime(item.contentHtml || item['content:encoded'] || ''),
-      }));
+      let articles = feed.items.map((item: any) => {
+        // Extract image from content or use Medium's CDN URL
+        let imageUrl = '';
+        const contentHtml = item.contentHtml || item['content:encoded'] || '';
+
+        // Try to get image from Medium's media content
+        if (item.mediaContent?.$?.url) {
+          imageUrl = item.mediaContent.$.url;
+        }
+        // Extract from HTML content
+        else if (contentHtml) {
+          const extractedImage = extractFirstImage(contentHtml);
+          if (extractedImage && extractedImage.startsWith('http')) {
+            imageUrl = extractedImage;
+          }
+        }
+
+        // Fallback to a working placeholder
+        if (!imageUrl) {
+          imageUrl = 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=1200&h=630&fit=crop';
+        }
+
+        return {
+          title: item.title || '',
+          originalTitle: item.title || '',
+          link: item.link || '',
+          pubDate: item.pubDate || item.isoDate || '',
+          content: item.contentSnippet?.substring(0, 400) || '',
+          fullContent: contentHtml,
+          image: imageUrl,
+          categories: item.categories || [],
+          readTime: calculateReadTime(contentHtml),
+        };
+      });
 
       // Translate if not English
       if (lang !== 'en') {

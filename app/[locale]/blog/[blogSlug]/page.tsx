@@ -51,9 +51,9 @@ export default function BlogArticlePage() {
 
         const normalizedPosts = normalizeBlogPosts(articles);
 
-        // Find article by matching slug created from title
+        // Find article by matching slug (use originalTitle for consistent slugs)
         const foundPost = normalizedPosts.find(p => {
-          const postSlug = createSlugFromTitle(p.titleKey);
+          const postSlug = createSlugFromTitle(p.originalTitle || p.titleKey);
           return postSlug === blogSlug;
         });
 
@@ -103,6 +103,9 @@ export default function BlogArticlePage() {
     return null;
   }
 
+  // Generate consistent slug from originalTitle for comments
+  const commentSlug = createSlugFromTitle(post.originalTitle || post.titleKey);
+
   return (
     <main className="text-text bg-bg overflow-x-hidden">
       <Menu />
@@ -120,7 +123,7 @@ export default function BlogArticlePage() {
 
       <BlogArticleHero post={post} />
       <BlogArticleContent post={post} />
-      <CommentSection articleSlug={blogSlug} />
+      <CommentSection articleSlug={commentSlug} />
       <Footer />
     </main>
   );
