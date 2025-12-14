@@ -1,4 +1,3 @@
-// utils/theme-helpers.ts
 export function getThemeState() {
   if (typeof window === "undefined") return { isLight: true, isDark: false };
 

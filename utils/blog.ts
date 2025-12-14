@@ -29,9 +29,11 @@ interface RawBlogPost {
   link: string;
   title: string;
   content?: string;
+  fullContent?: string;
   pubDate: string;
   categories?: string[];
   image?: string;
+  readTime?: number;
 }
 
 export function normalizeBlogPosts(data: RawBlogPost[]): BlogPost[] {
@@ -47,15 +49,17 @@ export function normalizeBlogPosts(data: RawBlogPost[]): BlogPost[] {
       if (excerpt.length > 0) excerpt += "...";
     }
 
-    // Calculate read time
-    const wordCount = post.content ? post.content.split(/\s+/).length : 0;
-    const readTime = Math.max(1, Math.ceil(wordCount / 200));
+    // Calculate read time from fullContent or content
+    const contentForReadTime = post.fullContent || post.content || "";
+    const wordCount = contentForReadTime.split(/\s+/).length;
+    const readTime = post.readTime || Math.max(1, Math.ceil(wordCount / 200));
 
     return {
       id: post.link,
       slug: post.link,
       titleKey: post.title,
       excerptKey: excerpt || "Click to read more...",
+      fullContent: post.fullContent || post.content || "",
       date: post.pubDate,
       author: "Thomas Augot",
       categoryKey: mapCategory(post.categories),

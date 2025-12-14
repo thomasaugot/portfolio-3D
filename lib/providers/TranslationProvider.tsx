@@ -76,6 +76,8 @@ export function TranslationProvider({
 
   useEffect(() => {
     const urlLocale = pathname.split("/")[1] as Language;
+
+    // If URL has a valid locale, use it
     if (urlLocale && locales.includes(urlLocale)) {
       if (urlLocale !== language) {
         setLanguage(urlLocale);
@@ -83,7 +85,10 @@ export function TranslationProvider({
           localStorage.setItem("preferred-language", urlLocale);
         }
       }
-    } else if (typeof window !== "undefined") {
+    }
+    // Only auto-detect language on initial load (when pathname is root or empty)
+    // Don't auto-switch during navigation between pages
+    else if (typeof window !== "undefined" && (pathname === "/" || pathname === "")) {
       const browserLang = detectBrowserLanguage();
       const savedLang = localStorage.getItem("preferred-language") as Language;
       const targetLang = savedLang || browserLang;

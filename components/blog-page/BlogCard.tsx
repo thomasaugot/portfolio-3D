@@ -1,7 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { BlogPost } from "@/types/blog";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
+import { useTransition } from "@/lib/providers/LoadingProvider";
+import { createSlugFromTitle } from "@/utils/slugify";
 
 interface BlogCardProps {
   post: BlogPost;
@@ -9,7 +12,11 @@ interface BlogCardProps {
 }
 
 export default function BlogCard({ post, index }: BlogCardProps) {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
+  const { startTransition } = useTransition();
+
+  const slug = createSlugFromTitle(post.titleKey);
+  const internalUrl = `/${language}/blog/${slug}`;
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -20,11 +27,19 @@ export default function BlogCard({ post, index }: BlogCardProps) {
     });
   };
 
+  const handleClick = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    const clickPosition = {
+      x: e.clientX,
+      y: e.clientY,
+    };
+    await startTransition(internalUrl, clickPosition);
+  };
+
   return (
-    <a
-      href={post.link}
-      target="_blank"
-      rel="noopener noreferrer"
+    <Link
+      href={internalUrl}
+      onClick={handleClick}
       data-blog-card={index}
       className="group block relative w-full h-[440px]"
     >
@@ -116,6 +131,6 @@ export default function BlogCard({ post, index }: BlogCardProps) {
           </div>
         </div>
       </div>
-    </a>
+    </Link>
   );
 }

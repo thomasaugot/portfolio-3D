@@ -12,6 +12,7 @@ export interface BlogPost {
   slug: string;          // post.link
   titleKey: string;      // post.title
   excerptKey: string;    // post.contentSnippet
+  fullContent?: string;  // full article content
   date: string;          // post.pubDate
   author: string;        // "Thomas Augot"
   categoryKey: BlogCategory | "all";
@@ -29,6 +30,6 @@ export interface MediumArticle {
   content: string;        // excerpt (first ~400 chars)
   fullContent: string;    // full article content (300-1500 words)
   image: string;
-  categories: string[];
+  categories: string[] | null;
   readTime: number;
 }

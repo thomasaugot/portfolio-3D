@@ -1,15 +1,20 @@
 "use client";
 
 import { useTranslation } from "@/lib/providers/TranslationProvider";
+import { useTransition } from "@/lib/providers/LoadingProvider";
 import { BlogPost } from "@/types/blog";
+import { createSlugFromTitle } from "@/utils/slugify";
 import { useState, useRef, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 
 interface Blog3DCarouselProps {
   posts: BlogPost[];
 }
 
 export default function Blog3DCarousel({ posts }: Blog3DCarouselProps) {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
+  const { startTransition } = useTransition();
+  const router = useRouter();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [dragStartX, setDragStartX] = useState(0);
@@ -252,11 +257,17 @@ export default function Blog3DCarousel({ posts }: Blog3DCarouselProps) {
                             <span>{formatDate(post.date)}</span>
                           </div>
 
-                          <a
-                            href={post.link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            onClick={(e) => e.stopPropagation()}
+                          <button
+                            onClick={async (e) => {
+                              e.stopPropagation();
+                              const slug = createSlugFromTitle(post.titleKey);
+                              const internalUrl = `/${language}/blog/${slug}`;
+                              const clickPosition = {
+                                x: e.clientX,
+                                y: e.clientY,
+                              };
+                              await startTransition(internalUrl, clickPosition);
+                            }}
                             className="flex items-center gap-2 text-primary font-bold hover:gap-3 transition-all duration-300 cursor-pointer z-10 relative"
                           >
                             <span>{t("blog.card.read_more")}</span>
@@ -273,7 +284,7 @@ export default function Blog3DCarousel({ posts }: Blog3DCarouselProps) {
                                 d="M17 8l4 4m0 0l-4 4m4-4H3"
                               />
                             </svg>
-                          </a>
+                          </button>
                         </div>
                       </div>
                     </div>

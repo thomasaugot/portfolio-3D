@@ -25,6 +25,20 @@ const nextConfig: NextConfig = {
   // Image optimization
   images: {
     formats: ["image/avif", "image/webp"],
+    // Temporarily keep Medium domains for downloading images
+    // Remove after images are downloaded and paths updated in DB
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "miro.medium.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "cdn-images-1.medium.com",
+        pathname: "/**",
+      },
+    ],
   },
 
   // Headers for caching static assets
