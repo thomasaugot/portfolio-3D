@@ -1,7 +1,7 @@
 import { sql } from '@vercel/postgres';
 import { NextRequest } from 'next/server';
 import Parser from 'rss-parser';
-import translate from '@vitalets/google-translate-api';
+import { translate } from '@vitalets/google-translate-api';
 
 const parser = new Parser({
   customFields: {
