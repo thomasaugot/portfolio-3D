@@ -46,6 +46,8 @@
     "loading": "Cargando comentarios...",
     "reply": "Responder",
     "cancel_reply": "Cancelar",
+    "delete": "Eliminar",
+    "confirm_delete": "¿Estás seguro de que quieres eliminar este comentario?",
     "hours_ago": "hace horas",
     "yesterday": "Ayer",
     "form": {

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Comment } from "@/types/comment";
 import CommentForm from "./CommentForm";
-import { FaComment, FaUser, FaClock } from "react-icons/fa";
+import { FaComment, FaUser, FaClock, FaTrash } from "react-icons/fa";
 import { Button } from "@/components/ui/Button";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
 
@@ -16,6 +16,7 @@ export default function CommentSection({ articleSlug }: CommentSectionProps) {
   const [comments, setComments] = useState<Comment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [replyingTo, setReplyingTo] = useState<number | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const fetchComments = async () => {
     try {
@@ -33,7 +34,35 @@ export default function CommentSection({ articleSlug }: CommentSectionProps) {
 
   useEffect(() => {
     fetchComments();
+    // Check if admin is logged in
+    const adminStatus = localStorage.getItem('adminAuthenticated');
+    setIsAdmin(adminStatus === 'true');
   }, [articleSlug]);
+
+  const handleDelete = async (commentId: number) => {
+    if (!confirm(t('blog.comments.confirm_delete'))) return;
+
+    const password = localStorage.getItem('adminPassword');
+    if (!password) return;
+
+    try {
+      const response = await fetch(`/api/comments/delete/${commentId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${password}`,
+        },
+      });
+
+      if (response.ok) {
+        fetchComments();
+      } else {
+        alert('Failed to delete comment');
+      }
+    } catch (error) {
+      console.error('Error deleting comment:', error);
+      alert('Error deleting comment');
+    }
+  };
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -79,17 +108,31 @@ export default function CommentSection({ articleSlug }: CommentSectionProps) {
         {/* Comment Content */}
         <p className="text-text/80 leading-relaxed mb-4">{comment.content}</p>
 
-        {/* Reply Button */}
-        {!isReply && (
-          <Button
-            onClick={() => setReplyingTo(replyingTo === comment.id ? null : comment.id)}
-            variant="ghost"
-            size="sm"
-            className="!px-0"
-          >
-            {replyingTo === comment.id ? t('blog.comments.cancel_reply') : t('blog.comments.reply')}
-          </Button>
-        )}
+        {/* Reply Button & Admin Controls */}
+        <div className="flex items-center gap-4">
+          {!isReply && (
+            <Button
+              onClick={() => setReplyingTo(replyingTo === comment.id ? null : comment.id)}
+              variant="ghost"
+              size="sm"
+              className="!px-0"
+            >
+              {replyingTo === comment.id ? t('blog.comments.cancel_reply') : t('blog.comments.reply')}
+            </Button>
+          )}
+
+          {isAdmin && (
+            <Button
+              onClick={() => handleDelete(comment.id)}
+              variant="ghost"
+              size="sm"
+              className="!px-0 text-red-500 hover:text-red-600"
+            >
+              <FaTrash className="mr-1" />
+              {t('blog.comments.delete')}
+            </Button>
+          )}
+        </div>
 
         {/* Reply Form */}
         {replyingTo === comment.id && (
