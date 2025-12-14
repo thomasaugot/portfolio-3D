@@ -31,6 +31,15 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     root.classList.remove('light', 'dark')
     root.classList.add(theme)
     localStorage.setItem('theme', theme)
+
+    // Update meta theme-color
+    const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+    if (metaThemeColor) {
+      metaThemeColor.setAttribute('content', theme === 'dark' ? '#212121' : '#ffffff')
+    }
+
+    // Update document background
+    root.style.background = theme === 'dark' ? '#212121' : '#e8e4de'
   }, [theme])
 
   const handleThemeChange = (newTheme: Theme) => {

@@ -47,15 +47,15 @@ export default function Menu() {
           <div className="flex flex-col items-center justify-center gap-1 md:gap-1.5">
             <div
               data-animate="burger-line-1"
-              className="w-5 md:w-8 h-0.5 rounded-full bg-black"
+              className="w-5 md:w-8 h-[3px] rounded-full bg-bg"
             />
             <div
               data-animate="burger-line-2"
-              className="w-5 md:w-8 h-0.5 rounded-full bg-black"
+              className="w-5 md:w-8 h-[3px] rounded-full bg-bg"
             />
             <div
               data-animate="burger-line-3"
-              className="w-5 md:w-8 h-0.5 rounded-full bg-black"
+              className="w-5 md:w-8 h-[3px] rounded-full bg-bg"
             />
           </div>
         </div>

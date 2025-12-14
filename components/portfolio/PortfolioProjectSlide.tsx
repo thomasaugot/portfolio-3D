@@ -25,7 +25,7 @@ export default function PortfolioProjectSlide({
     >
       {/* Mobile & Tablet Layout: Content at bottom, 3D visible at top */}
       <div className="lg:hidden flex flex-col justify-end h-full px-4 md:px-12 pb-8 md:pb-16 pointer-events-none">
-        <div className="space-y-4 md:space-y-8 relative z-10 bg-bg/95 p-5 md:p-10 rounded-2xl backdrop-blur-md border border-border/50 shadow-2xl max-w-md md:max-w-3xl mx-auto w-full pointer-events-auto">
+        <div className="space-y-4 md:space-y-8 relative z-10 bg-surface p-5 md:p-10 rounded-2xl backdrop-blur-md border border-border/50 shadow-2xl max-w-md md:max-w-3xl mx-auto w-full pointer-events-auto">
           {/* Badge */}
           <div
             data-project-badge

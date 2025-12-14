@@ -189,7 +189,7 @@ export default function Blog3DCarousel({ posts }: Blog3DCarouselProps) {
                 <div className="absolute -inset-[1px] bg-gradient-to-br from-primary via-secondary to-primary rounded-2xl md:rounded-3xl opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
 
                 {/* Card content */}
-                <div className="relative bg-bg rounded-2xl md:rounded-3xl overflow-hidden h-full">
+                <div className="relative bg-surface rounded-2xl md:rounded-3xl overflow-hidden h-full border border-border/30">
                   {/* Image with gradient fade - takes 60% height */}
                   {post.image && (
                     <div className="absolute top-0 left-0 right-0 h-[60%] overflow-hidden">

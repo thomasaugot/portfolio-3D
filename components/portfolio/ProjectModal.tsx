@@ -50,11 +50,7 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
   return (
     <div
       data-modal-overlay
-      className="fixed inset-0 z-[999999]"
-      style={{
-        background: "rgba(0, 0, 0, 0.95)",
-        backdropFilter: "blur(20px)",
-      }}
+      className="fixed inset-0 z-[999999] bg-black/95 dark:bg-black/95 backdrop-blur-xl"
       onClick={handleClose}
     >
       <div

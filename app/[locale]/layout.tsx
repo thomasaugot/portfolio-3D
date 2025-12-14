@@ -16,9 +16,15 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} suppressHydrationWarning>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: `document.documentElement.style.background='#212121'` }} />
-        <meta name="theme-color" content="#212121" />
-        <meta name="color-scheme" content="dark" />
+        <script dangerouslySetInnerHTML={{ __html: `
+          (function() {
+            var theme = localStorage.getItem('theme') || 'dark';
+            document.documentElement.classList.add(theme);
+            document.documentElement.style.background = theme === 'dark' ? '#212121' : '#e8e4de';
+          })();
+        ` }} />
+        <meta name="theme-color" content="#ffffff" id="theme-color-meta" />
+        <meta name="color-scheme" content="light dark" />
         <link
           rel="preload"
           href="/assets/models/laptop-logo.glb"

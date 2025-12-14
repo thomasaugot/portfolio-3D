@@ -135,15 +135,9 @@ export default function ExperienceModal({
           <div className="space-y-4 md:space-y-6">
             <div className="flex items-center gap-2 md:gap-3 flex-wrap">
               <span
-                className="px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-mono flex items-center gap-2"
-                style={{
-                  backgroundColor: isWork
-                    ? "rgba(204, 255, 2, 0.15)"
-                    : "rgba(2, 188, 204, 0.15)",
-                  color: isWork
-                    ? "var(--primary-color)"
-                    : "var(--secondary-color)",
-                }}
+                className={`px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-mono flex items-center gap-2 ${
+                  isWork ? "bg-primary/15 text-primary" : "bg-secondary/15 text-secondary"
+                }`}
               >
                 {isWork ? (
                   <>

@@ -194,30 +194,21 @@ export default function AppLoader({
         <div className="flex items-baseline gap-1">
           <span
             ref={percentRef}
-            className="font-fun title-hero tabular-nums"
-            style={{
-              background: 'linear-gradient(135deg, var(--primary-color), var(--secondary-color))',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-            }}
+            className="font-fun title-hero tabular-nums gradient-text"
           >
             0
           </span>
-          <span className="font-fun text-xl md:text-2xl font-bold leading-none text-white opacity-50">
+          <span className="font-fun text-xl md:text-2xl font-bold leading-none text-text/50">
             %
           </span>
         </div>
 
         {/* Progress bar */}
         <div className="w-[300px] max-w-[60vw]">
-          <div className="h-[2px] bg-white/10 rounded-full overflow-hidden">
+          <div className="h-[2px] bg-text/10 rounded-full overflow-hidden">
             <div
               ref={progressBarRef}
-              className="h-full w-0 rounded-full transition-all duration-300"
-              style={{
-                background: 'linear-gradient(90deg, var(--primary-color), var(--secondary-color))',
-              }}
+              className="h-full w-0 rounded-full transition-all duration-300 gradient-primary"
             />
           </div>
         </div>

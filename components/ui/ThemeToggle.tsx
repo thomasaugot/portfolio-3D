@@ -2,12 +2,12 @@
 
 import { useEffect, useRef, useCallback } from "react";
 import { IoSunny, IoMoon } from "react-icons/io5";
-import { useTheme } from "./ThemeProvider";
 import { 
   initThemeToggleIdle, 
   snapThemeTogglePosition, 
   animateThemeToggleFlip 
 } from "@/utils/animations/theme-toggle-animations";
+import { useTheme } from "@/lib/providers/ThemeProvider";
 
 type Props = {
   size?: number;
@@ -58,6 +58,7 @@ export function ThemeToggle({ size = 50 }: Props) {
             transformStyle: "preserve-3d",
           }}
         >
+          {/* Front face - Moon (Dark mode) */}
           <div
             style={{
               position: "absolute",
@@ -66,26 +67,27 @@ export function ThemeToggle({ size = 50 }: Props) {
               transform: `translateZ(${size / 2}px)`,
               padding: "4px",
               background:
-                "linear-gradient(222deg, var(--secondary-color-1) 67.22%, var(--primary-color-1) 93.57%)",
+                "linear-gradient(222deg, var(--theme-secondary) 67.22%, var(--theme-primary) 93.57%)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
             <div
+              className="bg-bg"
               style={{
                 width: "100%",
                 height: "100%",
-                backgroundColor: "var(--color-black)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
               }}
             >
-              <IoMoon size={size * 0.6} className="text-white drop-shadow-lg" />
+              <IoMoon size={size * 0.6} className="text-text drop-shadow-lg" />
             </div>
           </div>
 
+          {/* Top face - Sun (Light mode) */}
           <div
             style={{
               position: "absolute",
@@ -94,17 +96,17 @@ export function ThemeToggle({ size = 50 }: Props) {
               transform: `rotateX(90deg) translateZ(${size / 2}px)`,
               padding: "4px",
               background:
-                "linear-gradient(222deg, var(--primary-color-1) 67.22%, var(--secondary-color-1) 93.57%)",
+                "linear-gradient(222deg, var(--theme-primary) 67.22%, var(--theme-secondary) 93.57%)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
             <div
+              className="bg-bg"
               style={{
                 width: "100%",
                 height: "100%",
-                backgroundColor: "var(--color-black)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -112,11 +114,12 @@ export function ThemeToggle({ size = 50 }: Props) {
             >
               <IoSunny
                 size={size * 0.6}
-                className="text-white drop-shadow-lg"
+                className="text-text drop-shadow-lg"
               />
             </div>
           </div>
 
+          {/* Right face */}
           <div
             style={{
               position: "absolute",
@@ -125,18 +128,13 @@ export function ThemeToggle({ size = 50 }: Props) {
               transform: `rotateY(90deg) translateZ(${size / 2}px)`,
               padding: "3px",
               background:
-                "linear-gradient(45deg, var(--primary-color-1) 30%, var(--secondary-color-1) 70%)",
+                "linear-gradient(45deg, var(--theme-primary) 30%, var(--theme-secondary) 70%)",
             }}
           >
-            <div
-              style={{
-                width: "100%",
-                height: "100%",
-                backgroundColor: "var(--color-black)",
-              }}
-            />
+            <div className="w-full h-full bg-bg" />
           </div>
 
+          {/* Left face */}
           <div
             style={{
               position: "absolute",
@@ -145,18 +143,13 @@ export function ThemeToggle({ size = 50 }: Props) {
               transform: `rotateY(-90deg) translateZ(${size / 2}px)`,
               padding: "3px",
               background:
-                "linear-gradient(135deg, var(--secondary-color-1) 40%, var(--primary-color-1) 60%)",
+                "linear-gradient(135deg, var(--theme-secondary) 40%, var(--theme-primary) 60%)",
             }}
           >
-            <div
-              style={{
-                width: "100%",
-                height: "100%",
-                backgroundColor: "var(--color-black)",
-              }}
-            />
+            <div className="w-full h-full bg-bg" />
           </div>
 
+          {/* Back face */}
           <div
             style={{
               position: "absolute",
@@ -165,18 +158,13 @@ export function ThemeToggle({ size = 50 }: Props) {
               transform: `rotateY(180deg) translateZ(${size / 2}px)`,
               padding: "3px",
               background:
-                "linear-gradient(42deg, var(--secondary-color-1) 6.43%, var(--primary-color-1) 22.78%)",
+                "linear-gradient(42deg, var(--theme-secondary) 6.43%, var(--theme-primary) 22.78%)",
             }}
           >
-            <div
-              style={{
-                width: "100%",
-                height: "100%",
-                backgroundColor: "var(--color-black)",
-              }}
-            />
+            <div className="w-full h-full bg-bg" />
           </div>
 
+          {/* Bottom face */}
           <div
             style={{
               position: "absolute",
@@ -185,16 +173,10 @@ export function ThemeToggle({ size = 50 }: Props) {
               transform: `rotateX(-90deg) translateZ(${size / 2}px)`,
               padding: "3px",
               background:
-                "linear-gradient(315deg, var(--primary-color-1) 50%, var(--secondary-color-1) 50%)",
+                "linear-gradient(315deg, var(--theme-primary) 50%, var(--theme-secondary) 50%)",
             }}
           >
-            <div
-              style={{
-                width: "100%",
-                height: "100%",
-                backgroundColor: "var(--color-black)",
-              }}
-            />
+            <div className="w-full h-full bg-bg" />
           </div>
         </div>
       </button>

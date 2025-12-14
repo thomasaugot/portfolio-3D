@@ -41,19 +41,19 @@ export const Button = ({
       shadow-lg hover:shadow-xl
       transition-all duration-500 ease-in-out
       overflow-hidden
-      before:content-[''] before:absolute before:inset-0 before:bg-[linear-gradient(120deg,transparent,rgba(255,255,255,0.4),transparent)] 
+      before:content-[''] before:absolute before:inset-0 before:bg-[linear-gradient(120deg,transparent,rgba(255,255,255,0.4),transparent)]
       before:translate-x-[-100%] hover:before:translate-x-[100%]
       before:transition-transform before:duration-700 before:ease-in-out
     `,
     outlined: `
       relative overflow-hidden
-      bg-[var(--color-bg)] text-[var(--color-text)] font-semibold
+      bg-bg text-text font-semibold
       border-2 border-transparent
-      [background-image:linear-gradient(var(--color-bg),var(--color-bg)),linear-gradient(222deg,var(--primary-color)_67.22%,var(--secondary-color)_93.57%)]
+      [background-image:linear-gradient(var(--theme-bg),var(--theme-bg)),linear-gradient(222deg,var(--theme-primary)_67.22%,var(--theme-secondary)_93.57%)]
       [background-origin:border-box,border-box]
       [background-clip:padding-box,border-box]
       before:content-[''] before:absolute before:inset-0 before:-z-10
-      before:bg-[radial-gradient(circle_at_center,var(--primary-color)_0%,var(--secondary-color)_100%)]
+      before:bg-[radial-gradient(circle_at_center,var(--theme-primary)_0%,var(--theme-secondary)_100%)]
       before:scale-[0.3] before:opacity-0 before:blur-xl
       hover:before:scale-[1.5] hover:before:opacity-100 hover:before:blur-0
       before:transition-all before:duration-1000 before:ease-[cubic-bezier(0.19,1,0.22,1)]

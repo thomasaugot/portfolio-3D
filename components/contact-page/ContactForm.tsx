@@ -97,7 +97,7 @@ export default function ContactForm() {
 
             <div className="absolute -inset-[1px] bg-gradient-to-br from-primary via-secondary to-primary rounded-3xl opacity-50" />
 
-            <div className="relative bg-bg/95 backdrop-blur-xl rounded-3xl p-8 md:p-12">
+            <div className="relative bg-surface backdrop-blur-xl rounded-3xl p-8 md:p-12 border border-border/30">
               <form onSubmit={handleSubmit} className="space-y-6">
                 
                 <div data-form-field>

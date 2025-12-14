@@ -76,7 +76,7 @@ export default function AboutCTA() {
               {/* Gradient border */}
               <div className="absolute -inset-[1px] bg-gradient-to-br from-primary via-secondary to-primary rounded-2xl md:rounded-3xl opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
 
-              <div className="relative bg-bg/95 backdrop-blur-xl rounded-2xl md:rounded-3xl p-6 md:p-8 transition-all duration-500 h-full overflow-hidden shadow-xl">
+              <div className="relative bg-surface backdrop-blur-xl rounded-2xl md:rounded-3xl p-6 md:p-8 transition-all duration-500 h-full overflow-hidden shadow-xl border border-border/30">
                 {/* Corner accent */}
                 <div className="absolute top-0 right-0 w-24 h-24 md:w-32 md:h-32 bg-gradient-to-br from-primary/5 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 

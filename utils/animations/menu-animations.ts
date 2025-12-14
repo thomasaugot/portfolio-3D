@@ -73,7 +73,10 @@ export function initMenuAnimations() {
     const screenWidth = window.innerWidth;
     const isMobile = screenWidth < 768;
     const blobScale = isMobile ? 12 : 18;
-    const yOffset = isMobile ? 6 : 8;
+    // Line height is 3px, gap is 4px (mobile) or 6px (desktop)
+    // Line 1 needs to move down by: gap + lineHeight = 7px (mobile) or 9px (desktop)
+    // Line 3 needs to move up by the same amount
+    const yOffset = isMobile ? 7 : 9;
 
     currentTimeline = gsap.timeline({
       onComplete: () => {
@@ -83,21 +86,25 @@ export function initMenuAnimations() {
     });
 
     currentTimeline
-      .to([line1, line3], { 
-        y: yOffset, 
-        duration: 0.2, 
-        ease: "power2.out" 
+      .to(line1, {
+        y: yOffset,
+        duration: 0.2,
+        ease: "power2.out"
       }, 0)
-      .to(line1, { 
-        rotation: 45, 
-        duration: 0.2, 
-        ease: "power2.out" 
+      .to(line3, {
+        y: -yOffset,
+        duration: 0.2,
+        ease: "power2.out"
+      }, 0)
+      .to(line1, {
+        rotation: 45,
+        duration: 0.2,
+        ease: "power2.out"
       }, 0.2)
-      .to(line3, { 
-        rotation: -45, 
-        y: -yOffset, 
-        duration: 0.2, 
-        ease: "power2.out" 
+      .to(line3, {
+        rotation: -45,
+        duration: 0.2,
+        ease: "power2.out"
       }, 0.2)
       .to(line2, { 
         opacity: 0, 
@@ -168,22 +175,36 @@ export function initMenuAnimations() {
         duration: 0.4, 
         ease: "power2.in" 
       }, 0.2)
-      .to(menuBlob, { 
-        scale: 1, 
-        duration: 0.5, 
-        rotate: 0, 
-        ease: "power3.out" 
+      .to(menuBlob, {
+        scale: 1,
+        duration: 0.5,
+        rotate: 0,
+        ease: "power3.out"
       }, 0.2)
-      .to([line1, line3], { 
-        rotation: 0, 
-        y: 0, 
-        duration: 0.2, 
-        ease: "power2.inOut" 
+      .to(line1, {
+        rotation: 0,
+        duration: 0.2,
+        ease: "power2.inOut"
       }, 0.3)
-      .to(line2, { 
-        opacity: 1, 
-        duration: 0.15 
-      }, 0.4);
+      .to(line3, {
+        rotation: 0,
+        duration: 0.2,
+        ease: "power2.inOut"
+      }, 0.3)
+      .to(line1, {
+        y: 0,
+        duration: 0.2,
+        ease: "power2.inOut"
+      }, 0.4)
+      .to(line3, {
+        y: 0,
+        duration: 0.2,
+        ease: "power2.inOut"
+      }, 0.4)
+      .to(line2, {
+        opacity: 1,
+        duration: 0.15
+      }, 0.5);
   }
 
   closeMenuFn = closeMenu;

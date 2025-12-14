@@ -89,7 +89,7 @@ export default function Timeline() {
           >
             <path
               d={pathD}
-              stroke="rgba(255, 255, 255, 0.8)"
+              className="stroke-text/80"
               strokeWidth="3"
               fill="none"
               strokeLinecap="round"

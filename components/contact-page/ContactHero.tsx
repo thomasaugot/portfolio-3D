@@ -230,7 +230,7 @@ export default function ContactHero() {
                   <div className="absolute -inset-[1px] bg-gradient-to-br from-primary/40 via-secondary/40 to-primary/40 rounded-2xl opacity-50" />
 
                   {/* Form container */}
-                  <div className="relative bg-bg/95 backdrop-blur-xl rounded-2xl p-6 md:p-8 lg:p-10">
+                  <div className="relative bg-surface backdrop-blur-xl rounded-2xl p-6 md:p-8 lg:p-10 border border-border/30">
                     <form onSubmit={handleSubmit} className="space-y-5">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div data-form-field>
@@ -248,7 +248,7 @@ export default function ContactHero() {
                             onChange={handleChange}
                             onFocus={() => handleFieldFocus("name")}
                             onBlur={handleFieldBlur}
-                            className={`w-full px-4 py-3 bg-bg/60 border rounded-xl text-text placeholder-text-muted/50 focus:outline-none transition-all duration-300 ${
+                            className={`w-full px-4 py-3 bg-bg/30 border rounded-xl text-text placeholder-text-muted/50 focus:outline-none transition-all duration-300 ${
                               focusedField === "name"
                                 ? "border-primary shadow-[0_0_20px_rgba(2,188,204,0.3)]"
                                 : "border-border/50"
@@ -273,7 +273,7 @@ export default function ContactHero() {
                             onChange={handleChange}
                             onFocus={() => handleFieldFocus("email")}
                             onBlur={handleFieldBlur}
-                            className={`w-full px-4 py-3 bg-bg/60 border rounded-xl text-text placeholder-text-muted/50 focus:outline-none transition-all duration-300 ${
+                            className={`w-full px-4 py-3 bg-bg/30 border rounded-xl text-text placeholder-text-muted/50 focus:outline-none transition-all duration-300 ${
                               focusedField === "email"
                                 ? "border-primary shadow-[0_0_20px_rgba(2,188,204,0.3)]"
                                 : "border-border/50"
@@ -299,7 +299,7 @@ export default function ContactHero() {
                           onChange={handleChange}
                           onFocus={() => handleFieldFocus("subject")}
                           onBlur={handleFieldBlur}
-                          className={`w-full px-4 py-3 bg-bg/60 border rounded-xl text-text placeholder-text-muted/50 focus:outline-none transition-all duration-300 ${
+                          className={`w-full px-4 py-3 bg-bg/30 border rounded-xl text-text placeholder-text-muted/50 focus:outline-none transition-all duration-300 ${
                             focusedField === "subject"
                               ? "border-primary shadow-[0_0_20px_rgba(2,188,204,0.3)]"
                               : "border-border/50"
@@ -324,7 +324,7 @@ export default function ContactHero() {
                           onFocus={() => handleFieldFocus("message")}
                           onBlur={handleFieldBlur}
                           rows={6}
-                          className={`w-full px-4 py-3 bg-bg/60 border rounded-xl text-text placeholder-text-muted/50 focus:outline-none transition-all duration-300 resize-none ${
+                          className={`w-full px-4 py-3 bg-bg/30 border rounded-xl text-text placeholder-text-muted/50 focus:outline-none transition-all duration-300 resize-none ${
                             focusedField === "message"
                               ? "border-primary shadow-[0_0_20px_rgba(2,188,204,0.3)]"
                               : "border-border/50"
