@@ -9,27 +9,22 @@
   --color-secondary: var(--theme-secondary);
   --color-accent: var(--theme-accent);
   --color-bg: var(--theme-bg);
-  --color-surface: var(--theme-surface);
+  --color-bg: var(--theme-bg);
   --color-border: var(--theme-border);
   --color-text: var(--theme-text);
   --color-text-muted: var(--theme-text-muted);
 }
 
 :root {
-  /* Brand Colors - Vibrant */
   --theme-primary: #4f46e5;
   --theme-secondary: #c026d3;
   --theme-accent: #7c3aed;
 
-  /* Background Colors - Cream page, WHITE cards for contrast */
   --theme-bg: #e8e4de;
-  --theme-surface: #ffffff;
   --theme-border: #c9c3ba;
 
-  /* Text Colors - Strong contrast */
   --theme-text: #1c1917;
   --theme-text-muted: #57534e;
-
 }
 
 .dark {
@@ -37,15 +32,11 @@
   --theme-secondary: #02bccc;
   --theme-accent: #22d3ee;
 
-  /* Background Colors */
   --theme-bg: #212121;
-  --theme-surface: #1a1a1a;
   --theme-border: #334155;
 
-  /* Text Colors */
   --theme-text: #f1f5f9;
   --theme-text-muted: #94a3b8;
-
 }
 
 html,
@@ -76,14 +67,6 @@ button.filled::before {
   pointer-events: none;
 }
 
-.perspective-1000 {
-  perspective: 1000px;
-}
-
-/* ==========================
-   GRADIENT UTILITIES
-   ========================= */
-
 @utility gradient-primary {
   background-image: linear-gradient(
     222deg,
@@ -112,7 +95,6 @@ button.filled::before {
   background-size: 200% auto;
 }
 
-/* Gradient Text Utilities */
 .gradient-text {
   background-image: linear-gradient(
     222deg,
@@ -139,20 +121,6 @@ button.filled::before {
   background-size: 200% auto;
 }
 
-.gradient-text-animated {
-  background-image: linear-gradient(
-    222deg,
-    var(--theme-primary) 67.22%,
-    var(--theme-secondary) 93.57%
-  );
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-  background-size: 200% auto;
-  animation: gradientShift 3s ease infinite;
-}
-
 @keyframes gradientShift {
   0%,
   100% {
@@ -163,35 +131,12 @@ button.filled::before {
   }
 }
 
-/* ==========================
-   ANIMATIONS
-   ========================= */
-
 @keyframes orbit {
   from {
     transform: rotate(0deg);
   }
   to {
     transform: rotate(360deg);
-  }
-}
-
-@keyframes particleFloat {
-  to {
-    transform: translateY(-10px) scale(1.2);
-    opacity: 0.8;
-  }
-}
-
-@keyframes pulseGlow {
-  0% {
-    box-shadow: 0 0 0px var(--theme-primary);
-  }
-  50% {
-    box-shadow: 0 0 20px var(--theme-primary);
-  }
-  100% {
-    box-shadow: 0 0 0px var(--theme-primary);
   }
 }
 
@@ -248,10 +193,6 @@ button.outlined:hover {
   animation: pulseGlow 1.5s infinite;
 }
 
-/* ==========================
-   TYPOGRAPHY
-   ========================= */
-
 .title-hero {
   @apply text-5xl md:text-6xl lg:text-7xl xl:text-8xl;
   @apply font-normal tracking-tighter leading-tight;
@@ -285,20 +226,12 @@ button.outlined:hover {
   @apply font-mono uppercase tracking-wider text-text/60;
 }
 
-/* ==========================
-   COMPONENTS
-   ========================= */
-
 .tag {
   @apply text-xs font-mono;
   @apply bg-primary/10 text-primary;
   @apply border border-primary/20 rounded-lg;
   @apply px-3 py-1.5;
 }
-
-/* ==========================
-   UTILITIES
-   ========================= */
 
 .scrollbar-hide {
   -ms-overflow-style: none;
@@ -307,19 +240,6 @@ button.outlined:hover {
 
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
-}
-
-@keyframes scan {
-  0% {
-    transform: translateY(-100%);
-  }
-  100% {
-    transform: translateY(100%);
-  }
-}
-
-.animate-scan {
-  animation: scan 3s linear infinite;
 }
 
 [data-portfolio-section] {

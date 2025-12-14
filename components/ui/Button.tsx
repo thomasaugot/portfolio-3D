@@ -61,7 +61,7 @@ export const Button = ({
       transition-colors duration-500
     `,
     ghost: `
-      bg-transparent text-muted hover:text-text hover:bg-surface
+      bg-transparent text-muted hover:text-text hover:bg-bg
       transition-all duration-300
     `,
   };

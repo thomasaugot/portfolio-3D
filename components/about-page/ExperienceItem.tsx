@@ -53,7 +53,9 @@ export default function ExperienceItem({
         ref={dotRef}
         data-timeline-dot={index}
         className={`absolute left-1/2 w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 rounded-full z-20 transition-all duration-300 group-hover:scale-150 ${
-          isWork ? "bg-primary shadow-primary/50" : "bg-secondary shadow-secondary/50"
+          isWork
+            ? "bg-primary shadow-primary/50"
+            : "bg-secondary shadow-secondary/50"
         }`}
         style={{
           boxShadow: `0 0 30px currentColor`,
@@ -63,7 +65,7 @@ export default function ExperienceItem({
       />
 
       <div
-        className={`relative rounded-2xl md:rounded-3xl p-4 sm:p-5 md:p-6 transition-all duration-300 group-hover:scale-105 bg-surface/90 backdrop-blur-xl border-2 ${
+        className={`relative rounded-2xl md:rounded-3xl p-4 sm:p-5 md:p-6 transition-all duration-300 group-hover:scale-105 bg-bg/90 backdrop-blur-xl border-2 ${
           isWork ? "border-primary/40" : "border-secondary/40"
         }`}
         style={{

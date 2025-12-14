@@ -54,10 +54,10 @@ export default function Footer() {
     <footer className="relative overflow-visible pt-16 md:pt-32 pb-12 bg-bg">
       {/* Top gradient line */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
-      
+
       {/* Background glow effect */}
       <div className="absolute top-32 left-1/2 -translate-x-1/2 w-[800px] h-[300px] gradient-primary-reverse opacity-[0.08] rounded-full blur-[120px] pointer-events-none" />
-      
+
       <div className="relative max-w-7xl mx-auto px-8 overflow-visible">
         <div className="grid lg:grid-cols-2 gap-20 mb-24 overflow-visible">
           {/* Logo & Socials Section */}
@@ -69,15 +69,13 @@ export default function Footer() {
               height={120}
               className="hover:scale-105 transition-transform duration-300 h-auto w-auto max-w-[180px] md:max-w-[280px] mb-8"
             />
-            <p className="subtitle mb-10 max-w-md">
-              {t("footer.tagline")}
-            </p>
+            <p className="subtitle mb-10 max-w-md">{t("footer.tagline")}</p>
             <div className="flex gap-4" data-animate="footer-socials">
               {socialLinks.map((social) => (
                 <button
                   key={social.name}
                   onClick={social.onClick}
-                  className="relative w-16 h-16 flex items-center justify-center rounded-2xl bg-surface/40 backdrop-blur-sm border border-border/20 hover:border-primary/60 transition-all duration-300 group overflow-hidden"
+                  className="relative w-16 h-16 flex items-center justify-center rounded-2xl bg-bg/40 backdrop-blur-sm border border-border/20 hover:border-primary/60 transition-all duration-300 group overflow-hidden"
                   aria-label={social.name}
                 >
                   <div className="absolute inset-0 gradient-primary opacity-0 group-hover:opacity-10 transition-opacity duration-300" />
@@ -143,18 +141,21 @@ export default function Footer() {
             </div>
 
             {/* Contact */}
-            <div data-animate="footer-section" className="sm:col-span-2 overflow-visible">
+            <div
+              data-animate="footer-section"
+              className="sm:col-span-2 overflow-visible"
+            >
               <h4 className="title-item gradient-text mb-8 overflow-visible">
                 {t("footer.contact.title")}
               </h4>
               <div className="flex flex-wrap gap-8">
-                <a 
+                <a
                   href="mailto:thomas.augot@gmail.com"
                   className="text-body hover:text-primary hover:translate-x-1 transition-all duration-200"
                 >
                   thomas.augot@gmail.com
                 </a>
-                <a  
+                <a
                   href="tel:+34684736469"
                   className="text-body hover:text-primary hover:translate-x-1 transition-all duration-200"
                 >
@@ -171,12 +172,12 @@ export default function Footer() {
             <p className="text-base md:text-lg text-text/60 flex items-center gap-2 normal-case">
               {t("footer.credits")}
               <FaHeart className="w-5 h-5 text-primary animate-pulse" />
-              <span className="text-text">
-                {t("footer.brand")}
-              </span>
+              <span className="text-text">{t("footer.brand")}</span>
             </p>
 
-            <p>© {currentYear} {t("footer.copyright")}</p>
+            <p>
+              © {currentYear} {t("footer.copyright")}
+            </p>
           </div>
         </div>
       </div>

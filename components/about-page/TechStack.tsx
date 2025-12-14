@@ -13,7 +13,10 @@ export default function TechStack() {
     }))
     .filter((category) => category.items.length > 0);
 
-  const generatePositions = (items: typeof technologies, categoryIndex: number) => {
+  const generatePositions = (
+    items: typeof technologies,
+    categoryIndex: number
+  ) => {
     return items.map((_, i) => {
       const ring = Math.floor(i / 8);
       const indexInRing = i % 8;
@@ -28,11 +31,7 @@ export default function TechStack() {
   };
 
   return (
-    <section
-      data-tech-section
-      className="relative"
-      style={{ height: "600vh" }}
-    >
+    <section data-tech-section className="relative" style={{ height: "600vh" }}>
       <div
         data-tech-viewport
         className="h-screen w-full overflow-hidden"
@@ -59,7 +58,7 @@ export default function TechStack() {
               style={{
                 left: `${10 + ((i * 17) % 80)}%`,
                 top: `${10 + ((i * 23) % 80)}%`,
-                opacity: 0.2 + ((i % 10) * 0.03),
+                opacity: 0.2 + (i % 10) * 0.03,
               }}
             />
           ))}
@@ -84,7 +83,9 @@ export default function TechStack() {
                   data-category-label={categoryIndex}
                   className="absolute left-1/2 top-1/2"
                   style={{
-                    transform: `translate3d(-50%, -50%, ${-(categoryIndex * 1000)}px)`,
+                    transform: `translate3d(-50%, -50%, ${-(
+                      categoryIndex * 1000
+                    )}px)`,
                   }}
                 >
                   <h3 className="title-section font-fun whitespace-nowrap gradient-text drop-shadow-[0_0_60px_var(--theme-primary)]">
@@ -103,7 +104,7 @@ export default function TechStack() {
                         transform: `translate3d(calc(-50% + ${pos.x}vw), calc(-50% + ${pos.y}vh), ${pos.z}px)`,
                       }}
                     >
-                      <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 flex items-center justify-center rounded-lg md:rounded-xl transition-transform duration-300 group-hover:scale-110 bg-surface/95 border border-primary/40 shadow-lg shadow-primary/30">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 flex items-center justify-center rounded-lg md:rounded-xl transition-transform duration-300 group-hover:scale-110 bg-bg/95 border border-primary/40 shadow-lg shadow-primary/30">
                         <div
                           className="w-6 h-6 sm:w-7 sm:h-7 md:w-10 md:h-10 lg:w-12 lg:h-12 bg-text"
                           style={{

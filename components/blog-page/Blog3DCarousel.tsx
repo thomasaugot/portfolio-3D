@@ -32,7 +32,9 @@ export default function Blog3DCarousel({ posts }: Blog3DCarouselProps) {
   }, [latestPosts.length]);
 
   const prevSlide = useCallback(() => {
-    setCurrentIndex((prev) => (prev - 1 + latestPosts.length) % latestPosts.length);
+    setCurrentIndex(
+      (prev) => (prev - 1 + latestPosts.length) % latestPosts.length
+    );
   }, [latestPosts.length]);
 
   // Auto-rotate every 4 seconds
@@ -100,7 +102,7 @@ export default function Blog3DCarousel({ posts }: Blog3DCarouselProps) {
   const handleDragEnd = (e: React.MouseEvent | React.TouchEvent) => {
     if (!isDragging) return;
 
-    const endX = 'clientX' in e ? e.clientX : e.changedTouches[0].clientX;
+    const endX = "clientX" in e ? e.clientX : e.changedTouches[0].clientX;
     const diff = endX - dragStartX;
 
     // Lower threshold for more sensitive drag (30px instead of 50px)
@@ -131,7 +133,8 @@ export default function Blog3DCarousel({ posts }: Blog3DCarouselProps) {
     } else if (position === 1) {
       // Right background - slightly behind the main card
       return {
-        transform: "translateX(55%) translateZ(-500px) scale(0.45) rotateY(-30deg)",
+        transform:
+          "translateX(55%) translateZ(-500px) scale(0.45) rotateY(-30deg)",
         opacity: 1,
         zIndex: 10,
         pointerEvents: "auto" as const,
@@ -139,7 +142,8 @@ export default function Blog3DCarousel({ posts }: Blog3DCarouselProps) {
     } else {
       // Left background - slightly behind the main card
       return {
-        transform: "translateX(-55%) translateZ(-500px) scale(0.45) rotateY(30deg)",
+        transform:
+          "translateX(-55%) translateZ(-500px) scale(0.45) rotateY(30deg)",
         opacity: 1,
         zIndex: 10,
         pointerEvents: "auto" as const,
@@ -181,15 +185,13 @@ export default function Blog3DCarousel({ posts }: Blog3DCarouselProps) {
             >
               <div className="group relative h-full cursor-grab active:cursor-grabbing">
                 {/* Glow effect */}
-                <div
-                  className="absolute inset-0 bg-gradient-to-br from-primary/40 to-secondary/40 rounded-3xl blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                />
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/40 to-secondary/40 rounded-3xl blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
                 {/* Gradient border */}
                 <div className="absolute -inset-[1px] bg-gradient-to-br from-primary via-secondary to-primary rounded-2xl md:rounded-3xl opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
 
                 {/* Card content */}
-                <div className="relative bg-surface rounded-2xl md:rounded-3xl overflow-hidden h-full border border-border/30">
+                <div className="relative bg-bg rounded-2xl md:rounded-3xl overflow-hidden h-full border border-border/30">
                   {/* Image with gradient fade - takes 60% height */}
                   {post.image && (
                     <div className="absolute top-0 left-0 right-0 h-[60%] overflow-hidden">
@@ -198,8 +200,10 @@ export default function Blog3DCarousel({ posts }: Blog3DCarouselProps) {
                         alt={post.titleKey}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                         style={{
-                          maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%)',
-                          WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%)',
+                          maskImage:
+                            "linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%)",
+                          WebkitMaskImage:
+                            "linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%)",
                         }}
                       />
                     </div>
@@ -224,7 +228,13 @@ export default function Blog3DCarousel({ posts }: Blog3DCarouselProps) {
 
                     {/* Title & Meta - starts at 45% to overlap image fade */}
                     <div className="absolute bottom-0 left-0 right-0 p-8 md:p-10 space-y-4">
-                      <h2 className={`font-bold text-text leading-[1.1] group-hover:text-primary transition-colors duration-300 drop-shadow-lg ${isFeatured ? "text-3xl md:text-4xl" : "text-2xl md:text-3xl"}`}>
+                      <h2
+                        className={`font-bold text-text leading-[1.1] group-hover:text-primary transition-colors duration-300 drop-shadow-lg ${
+                          isFeatured
+                            ? "text-3xl md:text-4xl"
+                            : "text-2xl md:text-3xl"
+                        }`}
+                      >
                         {post.titleKey}
                       </h2>
 
@@ -250,8 +260,18 @@ export default function Blog3DCarousel({ posts }: Blog3DCarouselProps) {
                             className="flex items-center gap-2 text-primary font-bold hover:gap-3 transition-all duration-300 cursor-pointer z-10 relative"
                           >
                             <span>{t("blog.card.read_more")}</span>
-                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                            <svg
+                              className="w-6 h-6"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2.5}
+                                d="M17 8l4 4m0 0l-4 4m4-4H3"
+                              />
                             </svg>
                           </a>
                         </div>

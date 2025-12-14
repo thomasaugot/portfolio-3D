@@ -100,7 +100,10 @@ export default function CTASection() {
           </p>
         </div>
 
-        <div className="relative grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8" style={{ transformStyle: "preserve-3d" }}>
+        <div
+          className="relative grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8"
+          style={{ transformStyle: "preserve-3d" }}
+        >
           {ctaCards.map((card, index) => (
             <SafeLink
               key={card.href}
@@ -117,7 +120,7 @@ export default function CTASection() {
 
               <div className="absolute -inset-[1px] bg-gradient-to-br from-primary via-secondary to-primary rounded-2xl md:rounded-3xl opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
 
-              <div className="relative bg-surface backdrop-blur-xl rounded-2xl md:rounded-3xl p-6 md:p-8 transition-all duration-500 h-full overflow-hidden shadow-2xl border border-border/30">
+              <div className="relative bg-bg backdrop-blur-xl rounded-2xl md:rounded-3xl p-6 md:p-8 transition-all duration-500 h-full overflow-hidden shadow-2xl border border-border/30">
                 <div className="absolute top-0 right-0 w-32 h-32 md:w-40 md:h-40 bg-gradient-to-br from-primary/5 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
                 <div className="relative z-10 flex flex-col h-full">

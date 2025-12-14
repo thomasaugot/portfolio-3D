@@ -10,12 +10,9 @@ export default function ProjectCounter({ total }: ProjectCounterProps) {
       data-project-counter
       className="fixed left-8 top-1/2 -translate-y-1/2 z-30 opacity-0 hidden lg:block"
     >
-      <div className="flex flex-col items-center gap-3 py-8 px-4 bg-surface/50 backdrop-blur-sm rounded-full border border-border/50">
+      <div className="flex flex-col items-center gap-3 py-8 px-4 bg-bg/50 backdrop-blur-sm rounded-full border border-border/50">
         {/* Current project number */}
-        <div
-          data-counter-number
-          className="title-project"
-        >
+        <div data-counter-number className="title-project">
           01
         </div>
 
@@ -26,7 +23,7 @@ export default function ProjectCounter({ total }: ProjectCounterProps) {
         <div
           data-counter-name
           className="text-label text-text/60"
-          style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}
+          style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
         >
           Client
         </div>
@@ -35,11 +32,8 @@ export default function ProjectCounter({ total }: ProjectCounterProps) {
         <div className="w-px h-16 bg-gradient-to-b from-primary via-secondary to-primary opacity-50" />
 
         {/* Total projects */}
-        <div
-          data-counter-total
-          className="text-label text-text/40"
-        >
-          {total.toString().padStart(2, '0')}
+        <div data-counter-total className="text-label text-text/40">
+          {total.toString().padStart(2, "0")}
         </div>
       </div>
     </div>

@@ -70,10 +70,7 @@ export default function ProjectsShowcase() {
               >
                 {t("homepage.projects_section.title")}
               </h3>
-              <h2
-                data-projects-subtitle
-                className="subtitle gradient-text"
-              >
+              <h2 data-projects-subtitle className="subtitle gradient-text">
                 {t("homepage.projects_section.subtitle")}
               </h2>
             </div>
@@ -115,7 +112,7 @@ export default function ProjectsShowcase() {
                       willChange: "transform, opacity",
                     }}
                   >
-                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-surface/50 backdrop-blur-sm rounded-full border border-border/50">
+                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-bg/50 backdrop-blur-sm rounded-full border border-border/50">
                       <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
                       <span className="text-label">
                         {project.year} • {project.client}
@@ -126,10 +123,8 @@ export default function ProjectsShowcase() {
                       {t(project.title)}
                     </h2>
 
-                    <div className="lg:bg-surface/30 lg:backdrop-blur-sm lg:p-6 lg:rounded-xl lg:border lg:border-border/30">
-                      <p className="text-body">
-                        {t(project.preview.tagline)}
-                      </p>
+                    <div className="lg:bg-bg/30 lg:backdrop-blur-sm lg:p-6 lg:rounded-xl lg:border lg:border-border/30">
+                      <p className="text-body">{t(project.preview.tagline)}</p>
                     </div>
 
                     <div className="flex flex-wrap gap-2">
@@ -144,7 +139,7 @@ export default function ProjectsShowcase() {
                       onClick={(e) => {
                         (window as any).__modalClickPosition = {
                           x: e.clientX,
-                          y: e.clientY
+                          y: e.clientY,
                         };
                         setSelectedProject(project);
                       }}
@@ -208,16 +203,14 @@ export default function ProjectsShowcase() {
               data-project-content
               className="relative pt-[280px] md:pt-[380px] space-y-6 md:space-y-8 z-10"
             >
-              <div className="inline-flex items-center gap-2 px-4 md:px-5 py-2 md:py-2.5 bg-surface/50 backdrop-blur-sm rounded-full border border-border/50">
+              <div className="inline-flex items-center gap-2 px-4 md:px-5 py-2 md:py-2.5 bg-bg/50 backdrop-blur-sm rounded-full border border-border/50">
                 <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
                 <span className="text-xs md:text-sm font-mono uppercase tracking-wider text-text/60">
                   {project.year} • {project.client}
                 </span>
               </div>
 
-              <h2 className="title-item gradient-text">
-                {t(project.title)}
-              </h2>
+              <h2 className="title-item gradient-text">{t(project.title)}</h2>
 
               <div>
                 <p className="text-base md:text-xl text-text/80">
@@ -227,7 +220,10 @@ export default function ProjectsShowcase() {
 
               <div className="flex flex-wrap gap-2 md:gap-3">
                 {project.technologies.map((tech) => (
-                  <span key={tech} className="text-xs md:text-sm px-3 md:px-4 py-1.5 md:py-2 rounded-lg bg-primary/10 text-primary border border-primary/20">
+                  <span
+                    key={tech}
+                    className="text-xs md:text-sm px-3 md:px-4 py-1.5 md:py-2 rounded-lg bg-primary/10 text-primary border border-primary/20"
+                  >
                     {tech}
                   </span>
                 ))}
@@ -237,7 +233,7 @@ export default function ProjectsShowcase() {
                 onClick={(e) => {
                   (window as any).__modalClickPosition = {
                     x: e.clientX,
-                    y: e.clientY
+                    y: e.clientY,
                   };
                   setSelectedProject(project);
                 }}

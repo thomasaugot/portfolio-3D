@@ -24,7 +24,9 @@ export function LanguageDiscovery() {
   };
 
   const handlePrev = () => {
-    setSelectedIndex((prev) => (prev - 1 + languages.length) % languages.length);
+    setSelectedIndex(
+      (prev) => (prev - 1 + languages.length) % languages.length
+    );
   };
 
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -56,7 +58,10 @@ export function LanguageDiscovery() {
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-bg/95 backdrop-blur-md">
       <div className="text-center w-full max-w-2xl px-4">
-        <div className="relative h-[250px] flex items-center justify-center mb-12" style={{ perspective: "1000px" }}>
+        <div
+          className="relative h-[250px] flex items-center justify-center mb-12"
+          style={{ perspective: "1000px" }}
+        >
           <button
             onClick={handlePrev}
             className="absolute left-0 z-20 w-10 h-10 rounded-full border border-border hover:border-primary flex items-center justify-center transition-colors"
@@ -99,13 +104,21 @@ export function LanguageDiscovery() {
                     className={`w-[150px] h-[160px] rounded-2xl flex flex-col items-center justify-center transition-all ${
                       isSelected
                         ? "gradient-primary shadow-xl scale-105"
-                        : "bg-surface border border-border shadow-md scale-90 opacity-50"
+                        : "bg-bg border border-border shadow-md scale-90 opacity-50"
                     }`}
                   >
-                    <div className={`title-project font-bold mb-2 ${isSelected ? "text-black" : "text-primary"}`}>
+                    <div
+                      className={`title-project font-bold mb-2 ${
+                        isSelected ? "text-black" : "text-primary"
+                      }`}
+                    >
                       {lang.toUpperCase()}
                     </div>
-                    <div className={`text-body font-medium ${isSelected ? "text-black" : "text-text-muted"}`}>
+                    <div
+                      className={`text-body font-medium ${
+                        isSelected ? "text-black" : "text-text-muted"
+                      }`}
+                    >
                       {languageNames[lang]}
                     </div>
                   </div>

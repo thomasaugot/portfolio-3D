@@ -207,9 +207,7 @@ export default function ContactHero() {
                       {t("contact.info.response_value")}
                     </span>
                   </div>
-
                 </div>
-
               </div>
 
               {/* Right Side - Form */}
@@ -230,7 +228,7 @@ export default function ContactHero() {
                   <div className="absolute -inset-[1px] bg-gradient-to-br from-primary/40 via-secondary/40 to-primary/40 rounded-2xl opacity-50" />
 
                   {/* Form container */}
-                  <div className="relative bg-surface backdrop-blur-xl rounded-2xl p-6 md:p-8 lg:p-10 border border-border/30">
+                  <div className="relative bg-bg backdrop-blur-xl rounded-2xl p-6 md:p-8 lg:p-10 border border-border/30">
                     <form onSubmit={handleSubmit} className="space-y-5">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div data-form-field>
@@ -355,35 +353,48 @@ export default function ContactHero() {
 
             {/* Social Links - Centered below */}
             <div className="mt-16 lg:mt-20 flex flex-col md:flex-row items-center justify-center gap-6 md:gap-8">
-              <p className="subtitle text-text/60 mb-0">{t("contact.social.title")}</p>
+              <p className="subtitle text-text/60 mb-0">
+                {t("contact.social.title")}
+              </p>
               <div className="flex gap-6">
                 <button
-                  onClick={() => window.open("https://www.linkedin.com/in/thomas-augot/", "_blank")}
-                  className="relative w-16 h-16 flex items-center justify-center rounded-2xl bg-surface/60 backdrop-blur-sm border border-border/30 hover:border-primary/60 transition-all duration-300 group overflow-hidden hover:scale-110"
+                  onClick={() =>
+                    window.open(
+                      "https://www.linkedin.com/in/thomas-augot/",
+                      "_blank"
+                    )
+                  }
+                  className="relative w-16 h-16 flex items-center justify-center rounded-2xl bg-bg/60 backdrop-blur-sm border border-border/30 hover:border-primary/60 transition-all duration-300 group overflow-hidden hover:scale-110"
                   aria-label="LinkedIn"
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   <FaLinkedin className="w-7 h-7 text-text/70 group-hover:text-primary transition-all duration-300 relative z-10" />
                 </button>
                 <button
-                  onClick={() => window.open("https://github.com/thomasaugot", "_blank")}
-                  className="relative w-16 h-16 flex items-center justify-center rounded-2xl bg-surface/60 backdrop-blur-sm border border-border/30 hover:border-primary/60 transition-all duration-300 group overflow-hidden hover:scale-110"
+                  onClick={() =>
+                    window.open("https://github.com/thomasaugot", "_blank")
+                  }
+                  className="relative w-16 h-16 flex items-center justify-center rounded-2xl bg-bg/60 backdrop-blur-sm border border-border/30 hover:border-primary/60 transition-all duration-300 group overflow-hidden hover:scale-110"
                   aria-label="GitHub"
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   <FaGithub className="w-7 h-7 text-text/70 group-hover:text-primary transition-all duration-300 relative z-10" />
                 </button>
                 <button
-                  onClick={() => window.open("https://medium.com/@music.music", "_blank")}
-                  className="relative w-16 h-16 flex items-center justify-center rounded-2xl bg-surface/60 backdrop-blur-sm border border-border/30 hover:border-primary/60 transition-all duration-300 group overflow-hidden hover:scale-110"
+                  onClick={() =>
+                    window.open("https://medium.com/@music.music", "_blank")
+                  }
+                  className="relative w-16 h-16 flex items-center justify-center rounded-2xl bg-bg/60 backdrop-blur-sm border border-border/30 hover:border-primary/60 transition-all duration-300 group overflow-hidden hover:scale-110"
                   aria-label="Medium"
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   <FaMedium className="w-7 h-7 text-text/70 group-hover:text-primary transition-all duration-300 relative z-10" />
                 </button>
                 <button
-                  onClick={() => window.open("https://wa.me/34684736469", "_blank")}
-                  className="relative w-16 h-16 flex items-center justify-center rounded-2xl bg-surface/60 backdrop-blur-sm border border-border/30 hover:border-primary/60 transition-all duration-300 group overflow-hidden hover:scale-110"
+                  onClick={() =>
+                    window.open("https://wa.me/34684736469", "_blank")
+                  }
+                  className="relative w-16 h-16 flex items-center justify-center rounded-2xl bg-bg/60 backdrop-blur-sm border border-border/30 hover:border-primary/60 transition-all duration-300 group overflow-hidden hover:scale-110"
                   aria-label="WhatsApp"
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />

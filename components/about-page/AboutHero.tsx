@@ -56,7 +56,10 @@ export default function AboutHero() {
           </div>
 
           {/* Text Content */}
-          <div className="space-y-4 sm:space-y-5 md:space-y-6 order-1 lg:order-2 min-w-0" data-text-content>
+          <div
+            className="space-y-4 sm:space-y-5 md:space-y-6 order-1 lg:order-2 min-w-0"
+            data-text-content
+          >
             {/* Title */}
             <h1 data-hero-title className="space-y-0 md:-space-y-2">
               <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-normal text-text">
@@ -69,16 +72,16 @@ export default function AboutHero() {
 
             {/* Subtitle - separate glass block */}
             <div className="bg-bg/50 backdrop-blur-md p-3 sm:p-4 md:p-5 rounded-xl border border-border/20">
-              <p
-                data-hero-subtitle
-                className="subtitle font-mono"
-              >
+              <p data-hero-subtitle className="subtitle font-mono">
                 {t("about.hero.subtitle")}
               </p>
             </div>
 
             {/* Paragraphs - separate glass block */}
-            <div className="bg-bg/50 backdrop-blur-md p-4 sm:p-5 md:p-6 rounded-xl border border-border/20 space-y-2.5 sm:space-y-3 md:space-y-4" data-intro-paragraphs>
+            <div
+              className="bg-bg/50 backdrop-blur-md p-4 sm:p-5 md:p-6 rounded-xl border border-border/20 space-y-2.5 sm:space-y-3 md:space-y-4"
+              data-intro-paragraphs
+            >
               <p
                 data-intro-paragraph
                 className="text-xs sm:text-sm md:text-sm lg:text-base text-text/85 leading-relaxed"
@@ -99,35 +102,50 @@ export default function AboutHero() {
               </p>
             </div>
 
-            <div className="grid grid-cols-3 gap-2 sm:gap-3 md:gap-4" data-quick-stats>
+            <div
+              className="grid grid-cols-3 gap-2 sm:gap-3 md:gap-4"
+              data-quick-stats
+            >
               <div
                 data-stat-card
-                className="group relative text-center p-2 sm:p-2.5 md:p-3 lg:p-4 bg-surface/40 backdrop-blur-sm rounded-lg md:rounded-xl border border-border/30 hover:border-primary/50 transition-colors duration-300"
+                className="group relative text-center p-2 sm:p-2.5 md:p-3 lg:p-4 bg-bg/40 backdrop-blur-sm rounded-lg md:rounded-xl border border-border/30 hover:border-primary/50 transition-colors duration-300"
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg md:rounded-xl" />
                 <div className="relative">
-                  <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold gradient-text">3+</div>
-                  <div className="text-[10px] sm:text-xs text-text/60 mt-0.5">{t("about.hero.stats.years")}</div>
+                  <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold gradient-text">
+                    3+
+                  </div>
+                  <div className="text-[10px] sm:text-xs text-text/60 mt-0.5">
+                    {t("about.hero.stats.years")}
+                  </div>
                 </div>
               </div>
               <div
                 data-stat-card
-                className="group relative text-center p-2 sm:p-2.5 md:p-3 lg:p-4 bg-surface/40 backdrop-blur-sm rounded-lg md:rounded-xl border border-border/30 hover:border-primary/50 transition-colors duration-300"
+                className="group relative text-center p-2 sm:p-2.5 md:p-3 lg:p-4 bg-bg/40 backdrop-blur-sm rounded-lg md:rounded-xl border border-border/30 hover:border-primary/50 transition-colors duration-300"
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg md:rounded-xl" />
                 <div className="relative">
-                  <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold gradient-text">20+</div>
-                  <div className="text-[10px] sm:text-xs text-text/60 mt-0.5">{t("about.hero.stats.projects")}</div>
+                  <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold gradient-text">
+                    20+
+                  </div>
+                  <div className="text-[10px] sm:text-xs text-text/60 mt-0.5">
+                    {t("about.hero.stats.projects")}
+                  </div>
                 </div>
               </div>
               <div
                 data-stat-card
-                className="group relative text-center p-2 sm:p-2.5 md:p-3 lg:p-4 bg-surface/40 backdrop-blur-sm rounded-lg md:rounded-xl border border-border/30 hover:border-primary/50 transition-colors duration-300"
+                className="group relative text-center p-2 sm:p-2.5 md:p-3 lg:p-4 bg-bg/40 backdrop-blur-sm rounded-lg md:rounded-xl border border-border/30 hover:border-primary/50 transition-colors duration-300"
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg md:rounded-xl" />
                 <div className="relative">
-                  <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold gradient-text">3</div>
-                  <div className="text-[10px] sm:text-xs text-text/60 mt-0.5">{t("about.hero.stats.languages")}</div>
+                  <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold gradient-text">
+                    3
+                  </div>
+                  <div className="text-[10px] sm:text-xs text-text/60 mt-0.5">
+                    {t("about.hero.stats.languages")}
+                  </div>
                 </div>
               </div>
             </div>

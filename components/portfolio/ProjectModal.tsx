@@ -1,6 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
-import { openProjectModal, closeProjectModal, animateMockupChange } from "@/utils/animations/project-modal-animation";
+import {
+  openProjectModal,
+  closeProjectModal,
+  animateMockupChange,
+} from "@/utils/animations/project-modal-animation";
 import { Mockup } from "@/components/ui/Mockup";
 import type { Project } from "@/types/project";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
@@ -33,7 +37,7 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
 
   const handlePrevious = () => {
     const nextIndex = (currentIndex - 1 + totalImages) % totalImages;
-    animateMockupChange('prev', nextIndex);
+    animateMockupChange("prev", nextIndex);
     setTimeout(() => {
       setCurrentIndex(nextIndex);
     }, 300);
@@ -41,7 +45,7 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
 
   const handleNext = () => {
     const nextIndex = (currentIndex + 1) % totalImages;
-    animateMockupChange('next', nextIndex);
+    animateMockupChange("next", nextIndex);
     setTimeout(() => {
       setCurrentIndex(nextIndex);
     }, 300);
@@ -66,7 +70,7 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
           data-modal-glow
           className="absolute -inset-[1px] bg-gradient-to-br from-primary via-secondary to-primary opacity-50 -z-10"
           style={{
-            borderRadius: '30% 70% 70% 30% / 30% 30% 70% 70%',
+            borderRadius: "30% 70% 70% 30% / 30% 30% 70% 70%",
           }}
         />
 
@@ -74,10 +78,13 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
         <div
           className="absolute inset-0 bg-bg backdrop-blur-xl -z-5"
           style={{
-            borderRadius: '30% 70% 70% 30% / 30% 30% 70% 70%',
+            borderRadius: "30% 70% 70% 30% / 30% 30% 70% 70%",
           }}
         />
-        <div data-modal-content className="relative w-full h-full flex flex-col pointer-events-auto">
+        <div
+          data-modal-content
+          className="relative w-full h-full flex flex-col pointer-events-auto"
+        >
           {/* Close Button */}
           <button
             onClick={(e) => {
@@ -165,7 +172,7 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
                       <div className="flex items-center gap-3">
                         <button
                           onClick={handlePrevious}
-                          className="w-9 h-9 rounded-xl bg-surface hover:bg-primary/10 transition-colors flex items-center justify-center"
+                          className="w-9 h-9 rounded-xl bg-bg hover:bg-primary/10 transition-colors flex items-center justify-center"
                           aria-label="Previous"
                         >
                           <svg
@@ -189,7 +196,7 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
 
                         <button
                           onClick={handleNext}
-                          className="w-9 h-9 rounded-xl bg-surface hover:bg-primary/10 transition-colors flex items-center justify-center"
+                          className="w-9 h-9 rounded-xl bg-bg hover:bg-primary/10 transition-colors flex items-center justify-center"
                           aria-label="Next"
                         >
                           <svg
@@ -218,19 +225,26 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
                           key={`desktop-${currentIndex}`}
                           variant="laptop"
                           src={desktopSkins[currentIndex]}
-                          alt={`${t(project.title)} - Desktop ${currentIndex + 1}`}
+                          alt={`${t(project.title)} - Desktop ${
+                            currentIndex + 1
+                          }`}
                         />
                       </div>
                     )}
 
                     {/* Mobile Overlay */}
                     {mobileSkins[currentIndex] && (
-                      <div className="absolute -bottom-4 -right-4 w-20 sm:w-24 md:w-36 md:-bottom-6 md:-right-6 lg:-bottom-8 lg:-right-8 lg:w-40 drop-shadow-2xl" data-mockup="mobile">
+                      <div
+                        className="absolute -bottom-4 -right-4 w-20 sm:w-24 md:w-36 md:-bottom-6 md:-right-6 lg:-bottom-8 lg:-right-8 lg:w-40 drop-shadow-2xl"
+                        data-mockup="mobile"
+                      >
                         <Mockup
                           key={`mobile-${currentIndex}`}
                           variant="mobile"
                           src={mobileSkins[currentIndex]}
-                          alt={`${t(project.title)} - Mobile ${currentIndex + 1}`}
+                          alt={`${t(project.title)} - Mobile ${
+                            currentIndex + 1
+                          }`}
                         />
                       </div>
                     )}

@@ -25,7 +25,16 @@ export default function BlobModalCursor({ projects }: BlobModalCursorProps) {
   const overlayRef = useRef<HTMLDivElement>(null);
 
   const openModal = useCallback((startX: number, startY: number) => {
-    if (!containerRef.current || !glowRef.current || !bgRef.current || !modalContentRef.current || !blobBgRef.current || !blobContentRef.current || !overlayRef.current) return;
+    if (
+      !containerRef.current ||
+      !glowRef.current ||
+      !bgRef.current ||
+      !modalContentRef.current ||
+      !blobBgRef.current ||
+      !blobContentRef.current ||
+      !overlayRef.current
+    )
+      return;
 
     setIsModalOpen(true);
     document.body.style.overflow = "hidden";
@@ -49,25 +58,33 @@ export default function BlobModalCursor({ projects }: BlobModalCursorProps) {
       width: 140,
       height: 140,
       opacity: 1,
-      pointerEvents: 'auto'
+      pointerEvents: "auto",
     });
-    gsap.set(overlay, { opacity: 0, pointerEvents: 'none' });
+    gsap.set(overlay, { opacity: 0, pointerEvents: "none" });
     gsap.set(modalContent, { opacity: 0 });
     gsap.set([blobBg, blobContent], { opacity: 1 });
 
     // Fade out blob layers smoothly and hide them completely
-    tl.to([blobContent, blobBg], {
-      opacity: 0,
-      display: 'none',
-      duration: 0.25,
-      ease: "power2.inOut"
-    }, 0);
+    tl.to(
+      [blobContent, blobBg],
+      {
+        opacity: 0,
+        display: "none",
+        duration: 0.25,
+        ease: "power2.inOut",
+      },
+      0
+    );
 
     // Pulse scale
     tl.to(container, { scale: 1.15, duration: 0.2, ease: "power2.out" }, 0);
 
     // Fade in overlay
-    tl.to(overlay, { opacity: 1, pointerEvents: 'auto', duration: 0.5, ease: "power2.out" }, 0.15);
+    tl.to(
+      overlay,
+      { opacity: 1, pointerEvents: "auto", duration: 0.5, ease: "power2.out" },
+      0.15
+    );
 
     // Morph everything together
     tl.to(
@@ -96,8 +113,8 @@ export default function BlobModalCursor({ projects }: BlobModalCursorProps) {
         duration: 0.8,
         ease: "expo.out",
         onStart: () => {
-          glow.style.animation = 'none';
-        }
+          glow.style.animation = "none";
+        },
       },
       0.25
     );
@@ -108,8 +125,8 @@ export default function BlobModalCursor({ projects }: BlobModalCursorProps) {
         duration: 0.8,
         ease: "expo.out",
         onStart: () => {
-          bg.style.animation = 'none';
-        }
+          bg.style.animation = "none";
+        },
       },
       0.25
     );
@@ -119,16 +136,25 @@ export default function BlobModalCursor({ projects }: BlobModalCursorProps) {
       modalContent,
       {
         opacity: 1,
-        pointerEvents: 'auto',
+        pointerEvents: "auto",
         duration: 0.5,
-        ease: "power2.out"
+        ease: "power2.out",
       },
       0.7
     );
   }, []);
 
   const closeModal = useCallback(() => {
-    if (!containerRef.current || !glowRef.current || !bgRef.current || !modalContentRef.current || !blobBgRef.current || !blobContentRef.current || !overlayRef.current) return;
+    if (
+      !containerRef.current ||
+      !glowRef.current ||
+      !bgRef.current ||
+      !modalContentRef.current ||
+      !blobBgRef.current ||
+      !blobContentRef.current ||
+      !overlayRef.current
+    )
+      return;
 
     const container = containerRef.current;
     const glow = glowRef.current;
@@ -153,12 +179,16 @@ export default function BlobModalCursor({ projects }: BlobModalCursorProps) {
     });
 
     // Fade out modal content quickly
-    tl.to(modalContent, {
-      opacity: 0,
-      pointerEvents: 'none',
-      duration: 0.2,
-      ease: "power2.in"
-    }, 0);
+    tl.to(
+      modalContent,
+      {
+        opacity: 0,
+        pointerEvents: "none",
+        duration: 0.2,
+        ease: "power2.in",
+      },
+      0
+    );
 
     // Morph back to blob
     tl.to(
@@ -190,23 +220,35 @@ export default function BlobModalCursor({ projects }: BlobModalCursorProps) {
     );
 
     // Restart animations
-    tl.call(() => {
-      glow.style.animation = 'blobMorph 6s ease-in-out infinite';
-      bg.style.animation = 'blobMorph 6s ease-in-out infinite';
-    }, null, 0.4);
+    tl.call(
+      () => {
+        glow.style.animation = "blobMorph 6s ease-in-out infinite";
+        bg.style.animation = "blobMorph 6s ease-in-out infinite";
+      },
+      null,
+      0.4
+    );
 
     // Show blob content
-    tl.set(blobBg, { display: 'block' }, 0.3);
-    tl.set(blobContent, { display: 'flex' }, 0.3);
-    tl.to([blobBg, blobContent], {
-      opacity: 1,
-      duration: 0.2,
-      ease: "power2.out"
-    }, 0.3);
+    tl.set(blobBg, { display: "block" }, 0.3);
+    tl.set(blobContent, { display: "flex" }, 0.3);
+    tl.to(
+      [blobBg, blobContent],
+      {
+        opacity: 1,
+        duration: 0.2,
+        ease: "power2.out",
+      },
+      0.3
+    );
 
     // Fade out everything
     tl.to(container, { opacity: 0, duration: 0.25, ease: "power2.in" }, 0.6);
-    tl.to(overlay, { opacity: 0, pointerEvents: 'none', duration: 0.3, ease: "power2.in" }, 0.5);
+    tl.to(
+      overlay,
+      { opacity: 0, pointerEvents: "none", duration: 0.3, ease: "power2.in" },
+      0.5
+    );
   }, []);
 
   // Listen for button click events to open modal
@@ -224,23 +266,33 @@ export default function BlobModalCursor({ projects }: BlobModalCursorProps) {
           (window as any).__blobCursorPosition = clickPos;
           openModal(clickPos.x, clickPos.y);
         } else {
-          const centerPos = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+          const centerPos = {
+            x: window.innerWidth / 2,
+            y: window.innerHeight / 2,
+          };
           (window as any).__blobCursorPosition = centerPos;
           openModal(centerPos.x, centerPos.y);
         }
       }
     };
 
-    window.addEventListener("openProjectModal", handleOpenModal as EventListener);
+    window.addEventListener(
+      "openProjectModal",
+      handleOpenModal as EventListener
+    );
 
     return () => {
-      window.removeEventListener("openProjectModal", handleOpenModal as EventListener);
+      window.removeEventListener(
+        "openProjectModal",
+        handleOpenModal as EventListener
+      );
     };
   }, [openModal]);
 
   // Blob cursor tracking logic
   useEffect(() => {
-    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    const isTouchDevice =
+      "ontouchstart" in window || navigator.maxTouchPoints > 0;
     if (isTouchDevice || !containerRef.current) return;
 
     let targetX = window.innerWidth / 2;
@@ -253,7 +305,9 @@ export default function BlobModalCursor({ projects }: BlobModalCursorProps) {
     let currentVisibleProject: number | null = null;
 
     const container = containerRef.current;
-    const projectPanels = Array.from(document.querySelectorAll('[data-project-panel]'));
+    const projectPanels = Array.from(
+      document.querySelectorAll("[data-project-panel]")
+    );
 
     // Store current position globally for close animation
     const updateGlobalPosition = () => {
@@ -276,7 +330,8 @@ export default function BlobModalCursor({ projects }: BlobModalCursorProps) {
       const centralTop = viewportHeight * 0.25;
       const centralBottom = viewportHeight * 0.75;
 
-      const inCentralZone = e.clientY >= centralTop && e.clientY <= centralBottom;
+      const inCentralZone =
+        e.clientY >= centralTop && e.clientY <= centralBottom;
 
       if (!inCentralZone) {
         targetOpacity = 0;
@@ -285,10 +340,12 @@ export default function BlobModalCursor({ projects }: BlobModalCursorProps) {
       }
 
       // Check if menu is open
-      const menuOverlay = document.querySelector('[data-animate="menu-overlay"]');
+      const menuOverlay = document.querySelector(
+        '[data-animate="menu-overlay"]'
+      );
       if (menuOverlay) {
         const overlayStyle = window.getComputedStyle(menuOverlay);
-        if (overlayStyle.pointerEvents === 'auto') {
+        if (overlayStyle.pointerEvents === "auto") {
           targetOpacity = 0;
           currentVisibleProject = null;
           return;
@@ -297,21 +354,26 @@ export default function BlobModalCursor({ projects }: BlobModalCursorProps) {
 
       // Check if hovering over buttons
       const target = e.target as HTMLElement;
-      const isOverButton = target.closest('button') || target.closest('a[href]');
-      const isOverCTA = target.closest('[data-cta-buttons]') || target.closest('[data-project-button]');
+      const isOverButton =
+        target.closest("button") || target.closest("a[href]");
+      const isOverCTA =
+        target.closest("[data-cta-buttons]") ||
+        target.closest("[data-project-button]");
 
       if (isOverButton || isOverCTA) {
         targetOpacity = 0;
         currentVisibleProject = null;
         // Immediately disable pointer events when over buttons
         if (container) {
-          container.style.pointerEvents = 'none';
+          container.style.pointerEvents = "none";
         }
         return;
       }
 
       // Check 3D container
-      const container3D = document.querySelector('[data-3d-container="portfolio-hex"]');
+      const container3D = document.querySelector(
+        '[data-3d-container="portfolio-hex"]'
+      );
       if (container3D) {
         const rect3D = container3D.getBoundingClientRect();
 
@@ -336,7 +398,7 @@ export default function BlobModalCursor({ projects }: BlobModalCursorProps) {
 
       // Check header visibility
       if (isOverProject) {
-        const header = document.querySelector('[data-projects-header]');
+        const header = document.querySelector("[data-projects-header]");
         if (header) {
           const headerStyle = window.getComputedStyle(header as HTMLElement);
           if (parseFloat(headerStyle.opacity) > 0.5) {
@@ -361,7 +423,7 @@ export default function BlobModalCursor({ projects }: BlobModalCursorProps) {
         container.style.left = `${currentX}px`;
         container.style.top = `${currentY}px`;
         container.style.opacity = String(currentOpacity);
-        container.style.pointerEvents = currentOpacity > 0.1 ? 'auto' : 'none';
+        container.style.pointerEvents = currentOpacity > 0.1 ? "auto" : "none";
         updateGlobalPosition();
       }
 
@@ -369,7 +431,11 @@ export default function BlobModalCursor({ projects }: BlobModalCursorProps) {
     };
 
     const handleBlobClick = () => {
-      if (currentOpacity > 0.5 && currentVisibleProject !== null && projects[currentVisibleProject]) {
+      if (
+        currentOpacity > 0.5 &&
+        currentVisibleProject !== null &&
+        projects[currentVisibleProject]
+      ) {
         const project = projects[currentVisibleProject];
         updateGlobalPosition(); // Store position before opening
         setSelectedProject(project);
@@ -378,13 +444,13 @@ export default function BlobModalCursor({ projects }: BlobModalCursorProps) {
       }
     };
 
-    container.addEventListener('click', handleBlobClick);
-    window.addEventListener('mousemove', handleMouseMove);
+    container.addEventListener("click", handleBlobClick);
+    window.addEventListener("mousemove", handleMouseMove);
     rafId = requestAnimationFrame(animate);
 
     return () => {
-      container.removeEventListener('click', handleBlobClick);
-      window.removeEventListener('mousemove', handleMouseMove);
+      container.removeEventListener("click", handleBlobClick);
+      window.removeEventListener("mousemove", handleMouseMove);
       if (rafId) cancelAnimationFrame(rafId);
     };
   }, [isModalOpen, projects, openModal]);
@@ -395,7 +461,7 @@ export default function BlobModalCursor({ projects }: BlobModalCursorProps) {
     const mobileSkins = selectedProject.media?.mobileSkins || [];
     const totalImages = Math.max(desktopSkins.length, mobileSkins.length);
     const nextIndex = (currentImageIndex - 1 + totalImages) % totalImages;
-    animateMockupChange('prev', nextIndex);
+    animateMockupChange("prev", nextIndex);
     setTimeout(() => setCurrentImageIndex(nextIndex), 300);
   };
 
@@ -405,58 +471,88 @@ export default function BlobModalCursor({ projects }: BlobModalCursorProps) {
     const mobileSkins = selectedProject.media?.mobileSkins || [];
     const totalImages = Math.max(desktopSkins.length, mobileSkins.length);
     const nextIndex = (currentImageIndex + 1) % totalImages;
-    animateMockupChange('next', nextIndex);
+    animateMockupChange("next", nextIndex);
     setTimeout(() => setCurrentImageIndex(nextIndex), 300);
   };
 
-  const animateMockupChange = (direction: 'next' | 'prev', nextIndex: number) => {
-    const desktopMockup = document.querySelector('[data-mockup="desktop"]') as HTMLElement;
-    const mobileMockup = document.querySelector('[data-mockup="mobile"]') as HTMLElement;
+  const animateMockupChange = (
+    direction: "next" | "prev",
+    nextIndex: number
+  ) => {
+    const desktopMockup = document.querySelector(
+      '[data-mockup="desktop"]'
+    ) as HTMLElement;
+    const mobileMockup = document.querySelector(
+      '[data-mockup="mobile"]'
+    ) as HTMLElement;
 
     if (!desktopMockup) return;
 
     const tl = gsap.timeline();
 
     const animationPatterns = [
-      { desktop: { x: -60, rotation: -5 }, mobile: { x: 60, rotation: 5, scale: 0.9 } },
-      { desktop: { x: 60, rotation: 5 }, mobile: { x: -60, rotation: -5, scale: 0.9 } },
-      { desktop: { y: 40, x: -20, rotation: 3 }, mobile: { y: -40, x: 20, rotation: -3, scale: 0.92 } },
-      { desktop: { scale: 0.85, rotation: -3 }, mobile: { scale: 1.15, rotation: 3, x: 20 } },
-      { desktop: { y: -40, x: 20, rotation: -3 }, mobile: { y: 40, x: -20, rotation: 3, scale: 0.9 } },
+      {
+        desktop: { x: -60, rotation: -5 },
+        mobile: { x: 60, rotation: 5, scale: 0.9 },
+      },
+      {
+        desktop: { x: 60, rotation: 5 },
+        mobile: { x: -60, rotation: -5, scale: 0.9 },
+      },
+      {
+        desktop: { y: 40, x: -20, rotation: 3 },
+        mobile: { y: -40, x: 20, rotation: -3, scale: 0.92 },
+      },
+      {
+        desktop: { scale: 0.85, rotation: -3 },
+        mobile: { scale: 1.15, rotation: 3, x: 20 },
+      },
+      {
+        desktop: { y: -40, x: 20, rotation: -3 },
+        mobile: { y: 40, x: -20, rotation: 3, scale: 0.9 },
+      },
     ];
 
     const pattern = animationPatterns[nextIndex % animationPatterns.length];
-    const isNext = direction === 'next';
+    const isNext = direction === "next";
 
-    tl.to(desktopMockup, {
-      opacity: 0,
-      x: isNext ? (pattern.desktop.x || 0) * -1 : (pattern.desktop.x || 0),
-      y: isNext ? (pattern.desktop.y || 0) * -1 : (pattern.desktop.y || 0),
-      rotation: (pattern.desktop.rotation || 0) * -1,
-      scale: pattern.desktop.scale || 0.95,
-      duration: 0.3,
-      ease: "power2.in",
-    }, 0);
-
-    if (mobileMockup) {
-      tl.to(mobileMockup, {
+    tl.to(
+      desktopMockup,
+      {
         opacity: 0,
-        x: isNext ? (pattern.mobile.x || 0) * -1 : (pattern.mobile.x || 0),
-        y: isNext ? (pattern.mobile.y || 0) * -1 : (pattern.mobile.y || 0),
-        rotation: (pattern.mobile.rotation || 0) * -1,
-        scale: pattern.mobile.scale || 0.9,
+        x: isNext ? (pattern.desktop.x || 0) * -1 : pattern.desktop.x || 0,
+        y: isNext ? (pattern.desktop.y || 0) * -1 : pattern.desktop.y || 0,
+        rotation: (pattern.desktop.rotation || 0) * -1,
+        scale: pattern.desktop.scale || 0.95,
         duration: 0.3,
         ease: "power2.in",
-      }, 0.05);
+      },
+      0
+    );
+
+    if (mobileMockup) {
+      tl.to(
+        mobileMockup,
+        {
+          opacity: 0,
+          x: isNext ? (pattern.mobile.x || 0) * -1 : pattern.mobile.x || 0,
+          y: isNext ? (pattern.mobile.y || 0) * -1 : pattern.mobile.y || 0,
+          rotation: (pattern.mobile.rotation || 0) * -1,
+          scale: pattern.mobile.scale || 0.9,
+          duration: 0.3,
+          ease: "power2.in",
+        },
+        0.05
+      );
     }
 
     tl.fromTo(
       desktopMockup,
       {
         opacity: 0,
-        x: isNext ? (pattern.desktop.x || 0) : (pattern.desktop.x || 0) * -1,
-        y: isNext ? (pattern.desktop.y || 0) : (pattern.desktop.y || 0) * -1,
-        rotation: (pattern.desktop.rotation || 0),
+        x: isNext ? pattern.desktop.x || 0 : (pattern.desktop.x || 0) * -1,
+        y: isNext ? pattern.desktop.y || 0 : (pattern.desktop.y || 0) * -1,
+        rotation: pattern.desktop.rotation || 0,
         scale: pattern.desktop.scale || 0.95,
       },
       {
@@ -476,9 +572,9 @@ export default function BlobModalCursor({ projects }: BlobModalCursorProps) {
         mobileMockup,
         {
           opacity: 0,
-          x: isNext ? (pattern.mobile.x || 0) : (pattern.mobile.x || 0) * -1,
-          y: isNext ? (pattern.mobile.y || 0) : (pattern.mobile.y || 0) * -1,
-          rotation: (pattern.mobile.rotation || 0),
+          x: isNext ? pattern.mobile.x || 0 : (pattern.mobile.x || 0) * -1,
+          y: isNext ? pattern.mobile.y || 0 : (pattern.mobile.y || 0) * -1,
+          rotation: pattern.mobile.rotation || 0,
           scale: pattern.mobile.scale || 0.9,
         },
         {
@@ -509,7 +605,7 @@ export default function BlobModalCursor({ projects }: BlobModalCursorProps) {
           background: "rgba(0, 0, 0, 0.95)",
           backdropFilter: "blur(20px)",
           opacity: 0,
-          pointerEvents: 'none'
+          pointerEvents: "none",
         }}
         onClick={closeModal}
       />
@@ -520,12 +616,12 @@ export default function BlobModalCursor({ projects }: BlobModalCursorProps) {
         className="fixed z-[999999] cursor-pointer"
         style={{
           opacity: 0,
-          transform: 'translate(-50%, -50%)',
-          pointerEvents: 'none',
-          borderRadius: '30% 70% 70% 30% / 30% 30% 70% 70%',
+          transform: "translate(-50%, -50%)",
+          pointerEvents: "none",
+          borderRadius: "30% 70% 70% 30% / 30% 30% 70% 70%",
           width: 140,
           height: 140,
-          overflow: 'visible'
+          overflow: "visible",
         }}
       >
         {/* Gradient glow - matches skills section cards */}
@@ -533,8 +629,8 @@ export default function BlobModalCursor({ projects }: BlobModalCursorProps) {
           ref={glowRef}
           className="absolute -inset-[1px] bg-gradient-to-br from-primary via-secondary to-primary opacity-50 -z-10"
           style={{
-            borderRadius: '30% 70% 70% 30% / 30% 30% 70% 70%',
-            animation: 'blobMorph 6s ease-in-out infinite'
+            borderRadius: "30% 70% 70% 30% / 30% 30% 70% 70%",
+            animation: "blobMorph 6s ease-in-out infinite",
           }}
         />
 
@@ -543,8 +639,8 @@ export default function BlobModalCursor({ projects }: BlobModalCursorProps) {
           ref={bgRef}
           className="absolute inset-0 bg-bg backdrop-blur-xl z-0 overflow-hidden"
           style={{
-            borderRadius: '30% 70% 70% 30% / 30% 30% 70% 70%',
-            animation: 'blobMorph 6s ease-in-out infinite'
+            borderRadius: "30% 70% 70% 30% / 30% 30% 70% 70%",
+            animation: "blobMorph 6s ease-in-out infinite",
           }}
         />
 
@@ -553,7 +649,7 @@ export default function BlobModalCursor({ projects }: BlobModalCursorProps) {
           ref={blobBgRef}
           className="absolute inset-0 z-[1]"
           style={{
-            pointerEvents: 'none'
+            pointerEvents: "none",
           }}
         />
 
@@ -564,9 +660,9 @@ export default function BlobModalCursor({ projects }: BlobModalCursorProps) {
           style={{
             width: 140,
             height: 140,
-            left: '50%',
-            top: '50%',
-            transform: 'translate(-50%, -50%)'
+            left: "50%",
+            top: "50%",
+            transform: "translate(-50%, -50%)",
           }}
         >
           <span className="font-mono text-[12px] font-bold uppercase tracking-wider bg-gradient-to-br from-primary to-secondary bg-clip-text text-transparent">
@@ -575,14 +671,19 @@ export default function BlobModalCursor({ projects }: BlobModalCursorProps) {
           <svg
             className="w-[18px] h-[18px] stroke-primary"
             style={{
-              animation: 'arrowBounce 1.5s ease-in-out infinite',
-              filter: 'drop-shadow(0 0 4px rgba(2, 188, 204, 0.5))'
+              animation: "arrowBounce 1.5s ease-in-out infinite",
+              filter: "drop-shadow(0 0 4px rgba(2, 188, 204, 0.5))",
             }}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M13 7l5 5m0 0l-5 5m5-5H6"
+            />
           </svg>
         </div>
 
@@ -592,221 +693,234 @@ export default function BlobModalCursor({ projects }: BlobModalCursorProps) {
           className="absolute inset-0 flex flex-col overflow-hidden z-20"
           style={{
             opacity: 0,
-            pointerEvents: 'none'
+            pointerEvents: "none",
           }}
           onClick={(e) => e.stopPropagation()}
         >
           {selectedProject && (
             <>
-            {/* Close Button */}
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                closeModal();
-              }}
-              className="absolute top-6 right-6 z-50 w-12 h-12 flex items-center justify-center rounded-xl bg-bg/80 backdrop-blur-sm hover:bg-primary/20 transition-all duration-300 group cursor-pointer border border-border/30"
-              aria-label="Close modal"
-            >
-              <svg
-                className="w-6 h-6 text-primary group-hover:rotate-90 transition-transform duration-300"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+              {/* Close Button */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  closeModal();
+                }}
+                className="absolute top-6 right-6 z-50 w-12 h-12 flex items-center justify-center rounded-xl bg-bg/80 backdrop-blur-sm hover:bg-primary/20 transition-all duration-300 group cursor-pointer border border-border/30"
+                aria-label="Close modal"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
+                <svg
+                  className="w-6 h-6 text-primary group-hover:rotate-90 transition-transform duration-300"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
 
-            {/* Scrollable Content */}
-            <div className="flex-1 overflow-y-auto overflow-x-hidden">
-              <div className="mx-auto px-8 lg:px-16 py-12 lg:py-16">
-              {/* Header */}
-              <div className="mb-12">
-                <div className="flex flex-wrap items-center gap-3 mb-4">
-                  <span className="tag">{selectedProject.client}</span>
-                  <span className="text-text/40">•</span>
-                  <span className="text-label">{selectedProject.year}</span>
-                  <span className="text-text/40">•</span>
-                  <span className="text-label">{t(selectedProject.category)}</span>
-                </div>
-
-                <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
-                  <h2 className="title-section gradient-text">
-                    {t(selectedProject.title)}
-                  </h2>
-
-                  {selectedProject.media?.link && (
-                    <a
-                      href={selectedProject.media.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group relative inline-flex items-center justify-center w-12 h-12 rounded-xl gradient-primary overflow-hidden hover:shadow-xl hover:shadow-primary/30 transition-all duration-300 hover:scale-110 active:scale-95 flex-shrink-0"
-                      aria-label="View live project"
-                    >
-                      <div className="absolute inset-0 gradient-primary-hover opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                      <svg
-                        className="relative z-10 w-5 h-5 text-bg group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2.5}
-                          d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                        />
-                      </svg>
-                    </a>
-                  )}
-                </div>
-              </div>
-
-              {/* Main Grid */}
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
-                {/* LEFT: Mockups */}
-                <div className="lg:col-span-6 space-y-6">
-                  {totalImages > 1 && (
-                    <div className="flex items-center justify-between">
-                      <h3 className="text-label">
-                        {t("portfolio.modal.gallery")}
-                      </h3>
-
-                      <div className="flex items-center gap-3">
-                        <button
-                          onClick={handlePrevious}
-                          className="w-9 h-9 rounded-xl bg-surface hover:bg-primary/10 transition-colors flex items-center justify-center"
-                          aria-label="Previous"
-                        >
-                          <svg
-                            className="w-4 h-4 text-primary"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M15 19l-7-7 7-7"
-                            />
-                          </svg>
-                        </button>
-
-                        <span className="text-xs font-mono text-text/60">
-                          {currentImageIndex + 1} / {totalImages}
-                        </span>
-
-                        <button
-                          onClick={handleNext}
-                          className="w-9 h-9 rounded-xl bg-surface hover:bg-primary/10 transition-colors flex items-center justify-center"
-                          aria-label="Next"
-                        >
-                          <svg
-                            className="w-4 h-4 text-primary"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M9 5l7 7-7 7"
-                            />
-                          </svg>
-                        </button>
-                      </div>
+              {/* Scrollable Content */}
+              <div className="flex-1 overflow-y-auto overflow-x-hidden">
+                <div className="mx-auto px-8 lg:px-16 py-12 lg:py-16">
+                  {/* Header */}
+                  <div className="mb-12">
+                    <div className="flex flex-wrap items-center gap-3 mb-4">
+                      <span className="tag">{selectedProject.client}</span>
+                      <span className="text-text/40">•</span>
+                      <span className="text-label">{selectedProject.year}</span>
+                      <span className="text-text/40">•</span>
+                      <span className="text-label">
+                        {t(selectedProject.category)}
+                      </span>
                     </div>
-                  )}
 
-                  <div className="relative mx-auto">
-                    {desktopSkins[currentImageIndex] && (
-                      <div className="w-full" data-mockup="desktop">
-                        <Mockup
-                          key={`desktop-${currentImageIndex}`}
-                          variant="laptop"
-                          src={desktopSkins[currentImageIndex]}
-                          alt={`${t(selectedProject.title)} - Desktop ${currentImageIndex + 1}`}
-                        />
-                      </div>
-                    )}
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
+                      <h2 className="title-section gradient-text">
+                        {t(selectedProject.title)}
+                      </h2>
 
-                    {mobileSkins[currentImageIndex] && (
-                      <div className="absolute -bottom-4 -right-4 w-20 sm:w-24 md:w-36 md:-bottom-6 md:-right-6 lg:-bottom-8 lg:-right-8 lg:w-40 drop-shadow-2xl" data-mockup="mobile">
-                        <Mockup
-                          key={`mobile-${currentImageIndex}`}
-                          variant="mobile"
-                          src={mobileSkins[currentImageIndex]}
-                          alt={`${t(selectedProject.title)} - Mobile ${currentImageIndex + 1}`}
-                        />
-                      </div>
-                    )}
+                      {selectedProject.media?.link && (
+                        <a
+                          href={selectedProject.media.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="group relative inline-flex items-center justify-center w-12 h-12 rounded-xl gradient-primary overflow-hidden hover:shadow-xl hover:shadow-primary/30 transition-all duration-300 hover:scale-110 active:scale-95 flex-shrink-0"
+                          aria-label="View live project"
+                        >
+                          <div className="absolute inset-0 gradient-primary-hover opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                          <svg
+                            className="relative z-10 w-5 h-5 text-bg group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2.5}
+                              d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                            />
+                          </svg>
+                        </a>
+                      )}
+                    </div>
                   </div>
 
-                  {totalImages > 1 && (
-                    <div className="flex items-center justify-center gap-2 pt-4">
-                      {Array.from({ length: totalImages }).map((_, index) => (
-                        <button
-                          key={index}
-                          onClick={() => setCurrentImageIndex(index)}
-                          className={`h-1.5 rounded-full transition-all duration-300 ${
-                            index === currentImageIndex
-                              ? "w-8 bg-primary"
-                              : "w-1.5 bg-text/20 hover:bg-text/40"
-                          }`}
-                          aria-label={`Image ${index + 1}`}
-                        />
-                      ))}
-                    </div>
-                  )}
-                </div>
+                  {/* Main Grid */}
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
+                    {/* LEFT: Mockups */}
+                    <div className="lg:col-span-6 space-y-6">
+                      {totalImages > 1 && (
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-label">
+                            {t("portfolio.modal.gallery")}
+                          </h3>
 
-                {/* RIGHT: Content */}
-                <div className="lg:col-span-6 space-y-10">
-                  {selectedProject.technologies && (
-                    <div className="space-y-4">
-                      <div className="flex flex-wrap gap-2">
-                        {selectedProject.technologies.map((tech, index) => (
-                          <span
-                            key={index}
-                            className="px-4 py-2 text-xs font-mono bg-primary/5 text-primary/80 rounded-full hover:bg-primary/10 transition-colors"
+                          <div className="flex items-center gap-3">
+                            <button
+                              onClick={handlePrevious}
+                              className="w-9 h-9 rounded-xl bg-bg hover:bg-primary/10 transition-colors flex items-center justify-center"
+                              aria-label="Previous"
+                            >
+                              <svg
+                                className="w-4 h-4 text-primary"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M15 19l-7-7 7-7"
+                                />
+                              </svg>
+                            </button>
+
+                            <span className="text-xs font-mono text-text/60">
+                              {currentImageIndex + 1} / {totalImages}
+                            </span>
+
+                            <button
+                              onClick={handleNext}
+                              className="w-9 h-9 rounded-xl bg-bg hover:bg-primary/10 transition-colors flex items-center justify-center"
+                              aria-label="Next"
+                            >
+                              <svg
+                                className="w-4 h-4 text-primary"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M9 5l7 7-7 7"
+                                />
+                              </svg>
+                            </button>
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="relative mx-auto">
+                        {desktopSkins[currentImageIndex] && (
+                          <div className="w-full" data-mockup="desktop">
+                            <Mockup
+                              key={`desktop-${currentImageIndex}`}
+                              variant="laptop"
+                              src={desktopSkins[currentImageIndex]}
+                              alt={`${t(selectedProject.title)} - Desktop ${
+                                currentImageIndex + 1
+                              }`}
+                            />
+                          </div>
+                        )}
+
+                        {mobileSkins[currentImageIndex] && (
+                          <div
+                            className="absolute -bottom-4 -right-4 w-20 sm:w-24 md:w-36 md:-bottom-6 md:-right-6 lg:-bottom-8 lg:-right-8 lg:w-40 drop-shadow-2xl"
+                            data-mockup="mobile"
                           >
-                            {tech}
-                          </span>
-                        ))}
+                            <Mockup
+                              key={`mobile-${currentImageIndex}`}
+                              variant="mobile"
+                              src={mobileSkins[currentImageIndex]}
+                              alt={`${t(selectedProject.title)} - Mobile ${
+                                currentImageIndex + 1
+                              }`}
+                            />
+                          </div>
+                        )}
                       </div>
-                    </div>
-                  )}
 
-                  {selectedProject.details?.challenge && (
-                    <div className="space-y-4">
-                      <h3 className="title-item">
-                        {t("portfolio.modal.challenge")}
-                      </h3>
-                      <p className="text-body">
-                        {t(selectedProject.details.challenge)}
-                      </p>
+                      {totalImages > 1 && (
+                        <div className="flex items-center justify-center gap-2 pt-4">
+                          {Array.from({ length: totalImages }).map(
+                            (_, index) => (
+                              <button
+                                key={index}
+                                onClick={() => setCurrentImageIndex(index)}
+                                className={`h-1.5 rounded-full transition-all duration-300 ${
+                                  index === currentImageIndex
+                                    ? "w-8 bg-primary"
+                                    : "w-1.5 bg-text/20 hover:bg-text/40"
+                                }`}
+                                aria-label={`Image ${index + 1}`}
+                              />
+                            )
+                          )}
+                        </div>
+                      )}
                     </div>
-                  )}
 
-                  {selectedProject.details?.solution && (
-                    <div className="space-y-4">
-                      <h3 className="title-item">
-                        {t("portfolio.modal.solution")}
-                      </h3>
-                      <p className="text-body">{t(selectedProject.details.solution)}</p>
+                    {/* RIGHT: Content */}
+                    <div className="lg:col-span-6 space-y-10">
+                      {selectedProject.technologies && (
+                        <div className="space-y-4">
+                          <div className="flex flex-wrap gap-2">
+                            {selectedProject.technologies.map((tech, index) => (
+                              <span
+                                key={index}
+                                className="px-4 py-2 text-xs font-mono bg-primary/5 text-primary/80 rounded-full hover:bg-primary/10 transition-colors"
+                              >
+                                {tech}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {selectedProject.details?.challenge && (
+                        <div className="space-y-4">
+                          <h3 className="title-item">
+                            {t("portfolio.modal.challenge")}
+                          </h3>
+                          <p className="text-body">
+                            {t(selectedProject.details.challenge)}
+                          </p>
+                        </div>
+                      )}
+
+                      {selectedProject.details?.solution && (
+                        <div className="space-y-4">
+                          <h3 className="title-item">
+                            {t("portfolio.modal.solution")}
+                          </h3>
+                          <p className="text-body">
+                            {t(selectedProject.details.solution)}
+                          </p>
+                        </div>
+                      )}
                     </div>
-                  )}
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
             </>
           )}
         </div>

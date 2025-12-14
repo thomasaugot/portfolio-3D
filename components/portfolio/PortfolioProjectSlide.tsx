@@ -25,11 +25,11 @@ export default function PortfolioProjectSlide({
     >
       {/* Mobile & Tablet Layout: Content at bottom, 3D visible at top */}
       <div className="lg:hidden flex flex-col justify-end h-full px-4 md:px-12 pb-8 md:pb-16 pointer-events-none">
-        <div className="space-y-4 md:space-y-8 relative z-10 bg-surface p-5 md:p-10 rounded-2xl backdrop-blur-md border border-border/50 shadow-2xl max-w-md md:max-w-3xl mx-auto w-full pointer-events-auto">
+        <div className="space-y-4 md:space-y-8 relative z-10 bg-bg p-5 md:p-10 rounded-2xl backdrop-blur-md border border-border/50 shadow-2xl max-w-md md:max-w-3xl mx-auto w-full pointer-events-auto">
           {/* Badge */}
           <div
             data-project-badge
-            className="inline-flex items-center gap-2 px-3 md:px-4 py-1.5 md:py-2 bg-surface/50 backdrop-blur-sm rounded-full border border-border/50 opacity-0"
+            className="inline-flex items-center gap-2 px-3 md:px-4 py-1.5 md:py-2 bg-bg/50 backdrop-blur-sm rounded-full border border-border/50 opacity-0"
           >
             <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
             <span className="text-xs md:text-sm font-mono">
@@ -54,12 +54,20 @@ export default function PortfolioProjectSlide({
 
           {/* Technologies */}
           {project.technologies && (
-            <div data-project-techs className="flex flex-wrap gap-1.5 md:gap-3 opacity-0">
-              {project.technologies.slice(0, 6).map((tech: string, techIndex: number) => (
-                <span key={techIndex} className="text-xs md:text-base px-2 md:px-4 py-1 md:py-2 rounded-md bg-surface/50 border border-border/30 font-mono">
-                  {tech}
-                </span>
-              ))}
+            <div
+              data-project-techs
+              className="flex flex-wrap gap-1.5 md:gap-3 opacity-0"
+            >
+              {project.technologies
+                .slice(0, 6)
+                .map((tech: string, techIndex: number) => (
+                  <span
+                    key={techIndex}
+                    className="text-xs md:text-base px-2 md:px-4 py-1 md:py-2 rounded-md bg-bg/50 border border-border/30 font-mono"
+                  >
+                    {tech}
+                  </span>
+                ))}
             </div>
           )}
 
@@ -70,15 +78,25 @@ export default function PortfolioProjectSlide({
                 // Store click position globally for modal animation
                 (window as any).__modalClickPosition = {
                   x: e.clientX,
-                  y: e.clientY
+                  y: e.clientY,
                 };
                 onViewDetails(project);
               }}
               className="w-full px-5 md:px-8 py-3 md:py-5 gradient-primary text-bg font-mono text-xs md:text-base rounded-xl hover:shadow-xl hover:shadow-primary/20 hover:scale-105 active:scale-95 transition-all duration-300 flex items-center justify-center gap-2 uppercase tracking-wider pointer-events-auto cursor-pointer"
             >
               {t(project.preview.cta)}
-              <svg className="w-4 md:w-6 h-4 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              <svg
+                className="w-4 md:w-6 h-4 md:h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M13 7l5 5m0 0l-5 5m5-5H6"
+                />
               </svg>
             </button>
           </div>
@@ -92,7 +110,7 @@ export default function PortfolioProjectSlide({
           {/* Badge */}
           <div
             data-project-badge
-            className="inline-flex items-center gap-2 px-4 py-2 bg-surface/50 backdrop-blur-sm rounded-full border border-border/50"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-bg/50 backdrop-blur-sm rounded-full border border-border/50"
           >
             <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
             <span className="text-label">
@@ -101,21 +119,16 @@ export default function PortfolioProjectSlide({
           </div>
 
           {/* Title */}
-          <h2
-            data-project-title
-            className="title-section gradient-text"
-          >
+          <h2 data-project-title className="title-section gradient-text">
             {t(project.title)}
           </h2>
 
           {/* Description */}
           <div
             data-project-description
-            className="bg-surface/30 backdrop-blur-sm p-6 rounded-xl border border-border/30"
+            className="bg-bg/30 backdrop-blur-sm p-6 rounded-xl border border-border/30"
           >
-            <p className="text-body">
-              {t(project.preview.tagline)}
-            </p>
+            <p className="text-body">{t(project.preview.tagline)}</p>
           </div>
 
           {/* Technologies */}
@@ -130,7 +143,10 @@ export default function PortfolioProjectSlide({
           )}
 
           {/* Hint text - clicking on 3D area opens modal via blob cursor */}
-          <div data-project-button className="flex items-center gap-2 text-text/40 font-mono text-sm">
+          <div
+            data-project-button
+            className="flex items-center gap-2 text-text/40 font-mono text-sm"
+          >
             <span>{t("portfolio.common.ui.view_details")}</span>
             <svg
               className="w-4 h-4 animate-pulse"
@@ -138,7 +154,12 @@ export default function PortfolioProjectSlide({
               stroke="currentColor"
               viewBox="0 0 24 24"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"
+              />
             </svg>
           </div>
         </div>

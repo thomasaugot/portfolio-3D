@@ -8,7 +8,7 @@ import { initContact3DScene } from "@/utils/animations/contact-3d-scene";
 export default function ContactForm() {
   const { t } = useTranslation();
   const containerRef = useThreeScene(initContact3DScene, "contact");
-  
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -46,13 +46,10 @@ export default function ContactForm() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-8 w-full">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
-          
           <div data-contact-header className="space-y-8">
             <div className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl border border-border bg-bg/80 backdrop-blur-md">
               <div className="w-3 h-3 rounded-full bg-primary animate-pulse" />
-              <span className="text-label">
-                {t("contact.badge")}
-              </span>
+              <span className="text-label">{t("contact.badge")}</span>
             </div>
 
             <h1 className="title-hero leading-[0.95]">
@@ -63,22 +60,45 @@ export default function ContactForm() {
               </span>
             </h1>
 
-            <p className="subtitle max-w-xl">
-              {t("contact.subtitle")}
-            </p>
+            <p className="subtitle max-w-xl">{t("contact.subtitle")}</p>
 
             <div className="space-y-4">
               <div className="flex items-center gap-4 text-text-muted">
-                <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                <svg
+                  className="w-6 h-6 text-primary"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                  />
                 </svg>
                 <span className="font-mono">contact@example.com</span>
               </div>
-              
+
               <div className="flex items-center gap-4 text-text-muted">
-                <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                <svg
+                  className="w-6 h-6 text-primary"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
                 </svg>
                 <span className="font-mono">{t("contact.location")}</span>
               </div>
@@ -97,9 +117,8 @@ export default function ContactForm() {
 
             <div className="absolute -inset-[1px] bg-gradient-to-br from-primary via-secondary to-primary rounded-3xl opacity-50" />
 
-            <div className="relative bg-surface backdrop-blur-xl rounded-3xl p-8 md:p-12 border border-border/30">
+            <div className="relative bg-bg backdrop-blur-xl rounded-3xl p-8 md:p-12 border border-border/30">
               <form onSubmit={handleSubmit} className="space-y-6">
-                
                 <div data-form-field>
                   <label htmlFor="name" className="block text-label mb-2">
                     {t("contact.form.name")}
@@ -145,7 +164,10 @@ export default function ContactForm() {
                 </div>
 
                 <div data-form-field>
-                  <label htmlFor="subject" className="block text-sm font-mono text-text-muted mb-2">
+                  <label
+                    htmlFor="subject"
+                    className="block text-sm font-mono text-text-muted mb-2"
+                  >
                     {t("contact.form.subject")}
                   </label>
                   <input
@@ -167,7 +189,10 @@ export default function ContactForm() {
                 </div>
 
                 <div data-form-field>
-                  <label htmlFor="message" className="block text-sm font-mono text-text-muted mb-2">
+                  <label
+                    htmlFor="message"
+                    className="block text-sm font-mono text-text-muted mb-2"
+                  >
                     {t("contact.form.message")}
                   </label>
                   <textarea
@@ -195,11 +220,9 @@ export default function ContactForm() {
                 >
                   {t("contact.form.submit")}
                 </button>
-
               </form>
             </div>
           </div>
-
         </div>
       </div>
     </section>

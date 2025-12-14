@@ -20,23 +20,12 @@ export default function Specialties() {
     {
       key: "frontend_dev",
       Icon: Code2,
-      skills: [
-        "React",
-        "Next.js",
-        "TypeScript",
-        "Tailwind CSS",
-        "Sass",
-      ],
+      skills: ["React", "Next.js", "TypeScript", "Tailwind CSS", "Sass"],
     },
     {
       key: "animations",
       Icon: Sparkles,
-      skills: [
-        "GSAP",
-        "Framer Motion",
-        "Three.js",
-        "CSS Animations",
-      ],
+      skills: ["GSAP", "Framer Motion", "Three.js", "CSS Animations"],
     },
     {
       key: "fullstack",
@@ -47,7 +36,7 @@ export default function Specialties() {
         "PostgreSQL",
         "MongoDB",
         "REST APIs",
-        "Docker"
+        "Docker",
       ],
     },
     {
@@ -120,9 +109,13 @@ export default function Specialties() {
                 />
 
                 {/* Main container */}
-                <div className={`relative bg-surface rounded-2xl overflow-hidden border transition-all duration-300 ${
-                  isOpen ? "border-transparent" : "border-border/50 hover:border-primary/30"
-                }`}>
+                <div
+                  className={`relative bg-bg rounded-2xl overflow-hidden border transition-all duration-300 ${
+                    isOpen
+                      ? "border-transparent"
+                      : "border-border/50 hover:border-primary/30"
+                  }`}
+                >
                   {/* Header */}
                   <button
                     onClick={() => toggleAccordion(index)}
@@ -133,7 +126,7 @@ export default function Specialties() {
                         className={`p-3 rounded-xl transition-all duration-300 ${
                           isOpen
                             ? "bg-primary/20"
-                            : "bg-surface group-hover:bg-primary/10"
+                            : "bg-bg group-hover:bg-primary/10"
                         }`}
                       >
                         <specialty.Icon
@@ -187,7 +180,7 @@ export default function Specialties() {
                           {specialty.skills.map((skill, skillIndex) => (
                             <span
                               key={skillIndex}
-                              className="px-3 py-1.5 text-xs font-mono bg-surface text-text/70 rounded-lg border border-border/50"
+                              className="px-3 py-1.5 text-xs font-mono bg-bg text-text/70 rounded-lg border border-border/50"
                             >
                               {skill}
                             </span>
