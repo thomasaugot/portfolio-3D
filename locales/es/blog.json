@@ -18,6 +18,12 @@
     "min_read": "min de lectura",
     "latest": "Nuevo"
   },
+  "article": {
+    "table_of_contents": "Tabla de Contenidos",
+    "similar_articles": "Artículos Similares",
+    "loading": "Cargando artículo...",
+    "back_to_blog": "Volver al Blog"
+  },
   "categories": {
     "all": "Todos",
     "frontend": "Frontend",
@@ -30,6 +36,33 @@
   "empty": {
     "title": "Aún no hay artículos",
     "description": "Vuelve pronto para nuevo contenido"
+  },
+  "comments": {
+    "title": "Comentarios",
+    "count_one": "comentario",
+    "count_other": "comentarios",
+    "leave_comment": "Dejar un Comentario",
+    "no_comments": "Aún no hay comentarios. ¡Sé el primero en compartir tus pensamientos!",
+    "loading": "Cargando comentarios...",
+    "reply": "Responder",
+    "cancel_reply": "Cancelar",
+    "hours_ago": "hace horas",
+    "yesterday": "Ayer",
+    "form": {
+      "name": "Nombre",
+      "email": "Email",
+      "comment": "Comentario",
+      "required": "*",
+      "name_placeholder": "Tu nombre",
+      "email_placeholder": "tu.email@ejemplo.com",
+      "comment_placeholder": "Comparte tus pensamientos...",
+      "characters": "caracteres",
+      "submit": "Publicar Comentario",
+      "submitting": "Enviando...",
+      "success": "¡Comentario enviado con éxito! Aparecerá después de la aprobación.",
+      "error": "Error al enviar el comentario",
+      "error_generic": "Ocurrió un error. Por favor, inténtalo de nuevo."
+    }
   },
   "scroll": "Desplázate para explorar"
 }

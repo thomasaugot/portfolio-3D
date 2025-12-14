@@ -1,0 +1,13 @@
+{
+  "title": "Admin Login",
+  "password_label": "Password",
+  "password_placeholder": "Enter password",
+  "login_button": "Login",
+  "update_button": "Update Articles",
+  "updating": "Updating...",
+  "messages": {
+    "success": "Updated",
+    "error": "Error. Try again.",
+    "invalid_password": "Invalid password"
+  }
+}

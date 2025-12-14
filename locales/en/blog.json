@@ -18,6 +18,12 @@
     "min_read": "min read",
     "latest": "Latest"
   },
+  "article": {
+    "table_of_contents": "Table of Contents",
+    "similar_articles": "Similar Articles",
+    "loading": "Loading article...",
+    "back_to_blog": "Back to Blog"
+  },
   "categories": {
     "all": "All",
     "frontend": "Frontend",
@@ -30,6 +36,33 @@
   "empty": {
     "title": "No articles yet",
     "description": "Check back soon for new content"
+  },
+  "comments": {
+    "title": "Comments",
+    "count_one": "comment",
+    "count_other": "comments",
+    "leave_comment": "Leave a Comment",
+    "no_comments": "No comments yet. Be the first to share your thoughts!",
+    "loading": "Loading comments...",
+    "reply": "Reply",
+    "cancel_reply": "Cancel Reply",
+    "hours_ago": "hours ago",
+    "yesterday": "Yesterday",
+    "form": {
+      "name": "Name",
+      "email": "Email",
+      "comment": "Comment",
+      "required": "*",
+      "name_placeholder": "Your name",
+      "email_placeholder": "your.email@example.com",
+      "comment_placeholder": "Share your thoughts...",
+      "characters": "characters",
+      "submit": "Post Comment",
+      "submitting": "Submitting...",
+      "success": "Comment submitted successfully! It will appear after approval.",
+      "error": "Failed to submit comment",
+      "error_generic": "An error occurred. Please try again."
+    }
   },
   "scroll": "Scroll to explore"
 }

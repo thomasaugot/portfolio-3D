@@ -4,7 +4,6 @@ import { BlogPost } from "@/types/blog";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
 import { useThreeScene } from "@/hooks/useThreeScene";
 import { initHero3DScene } from "@/utils/animations/hero-3d-scene";
-import { FaClock, FaCalendar, FaUser } from "react-icons/fa";
 
 interface BlogArticleHeroProps {
   post: BlogPost;
@@ -78,19 +77,14 @@ export default function BlogArticleHero({ post }: BlogArticleHeroProps) {
 
         {/* Metadata */}
         <div className="flex flex-wrap items-center gap-6 text-text drop-shadow-lg">
-          <div data-article-meta className="flex items-center gap-2 bg-bg/60 backdrop-blur-sm px-4 py-2 rounded-full">
-            <FaUser className="text-primary" />
-            <span className="text-sm md:text-base font-medium">{post.author}</span>
+          <div data-article-meta className="flex items-center gap-3 bg-bg/60 backdrop-blur-sm px-4 py-2 rounded-full">
+            <div className="w-2 h-2 rounded-full bg-gradient-to-br from-primary to-secondary" />
+            <span className="text-sm md:text-base gradient-primary bg-clip-text text-transparent">{formatDate(post.date)}</span>
           </div>
 
-          <div data-article-meta className="flex items-center gap-2 bg-bg/60 backdrop-blur-sm px-4 py-2 rounded-full">
-            <FaCalendar className="text-primary" />
-            <span className="text-sm md:text-base">{formatDate(post.date)}</span>
-          </div>
-
-          <div data-article-meta className="flex items-center gap-2 bg-bg/60 backdrop-blur-sm px-4 py-2 rounded-full">
-            <FaClock className="text-primary" />
-            <span className="text-sm md:text-base">{post.readTime} min read</span>
+          <div data-article-meta className="flex items-center gap-3 bg-bg/60 backdrop-blur-sm px-4 py-2 rounded-full">
+            <div className="w-2 h-2 rounded-full bg-gradient-to-br from-primary to-secondary" />
+            <span className="text-sm md:text-base gradient-primary bg-clip-text text-transparent">{post.readTime} {t('blog.card.min_read')}</span>
           </div>
         </div>
       </div>

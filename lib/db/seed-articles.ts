@@ -1,5 +1,6 @@
 import { sql } from '@vercel/postgres';
 import { mediumArticles } from '@/data/medium-articles';
+import { translateText, translateHTML } from '@/lib/translate';
 
 // Helper function to extract slug from Medium URL
 function extractSlugFromUrl(url: string): string {
@@ -53,16 +54,28 @@ export async function seedBlogArticles() {
 
     for (const article of mediumArticles) {
       const slug = extractSlugFromUrl(article.link);
-      const category = mapCategory(article.categories);
+      const category = mapCategory(article.categories || []);
 
       try {
+        // Translate title, excerpt, and content
+        console.log(`Translating: ${article.title}...`);
+        const titleTranslations = await translateText(article.title);
+        const excerptTranslations = await translateText(article.content);
+        const contentTranslations = await translateHTML(article.fullContent);
+
         // Try to insert, or update if exists
         const result = await sql`
           INSERT INTO blog_articles (
             slug,
             title,
+            title_fr,
+            title_es,
             excerpt,
+            excerpt_fr,
+            excerpt_es,
             full_content,
+            content_fr,
+            content_es,
             image_url,
             pub_date,
             read_time,
@@ -73,21 +86,33 @@ export async function seedBlogArticles() {
           ) VALUES (
             ${slug},
             ${article.title},
+            ${titleTranslations.fr},
+            ${titleTranslations.es},
             ${article.content},
+            ${excerptTranslations.fr},
+            ${excerptTranslations.es},
             ${article.fullContent},
+            ${contentTranslations.fr},
+            ${contentTranslations.es},
             ${article.image},
             ${article.pubDate},
             ${article.readTime},
             ${category},
-            ${article.categories},
+            ${JSON.stringify(article.categories || [])},
             ${article.link},
             ${false}
           )
           ON CONFLICT (slug)
           DO UPDATE SET
             title = EXCLUDED.title,
+            title_fr = EXCLUDED.title_fr,
+            title_es = EXCLUDED.title_es,
             excerpt = EXCLUDED.excerpt,
+            excerpt_fr = EXCLUDED.excerpt_fr,
+            excerpt_es = EXCLUDED.excerpt_es,
             full_content = EXCLUDED.full_content,
+            content_fr = EXCLUDED.content_fr,
+            content_es = EXCLUDED.content_es,
             image_url = EXCLUDED.image_url,
             pub_date = EXCLUDED.pub_date,
             read_time = EXCLUDED.read_time,
@@ -100,8 +125,10 @@ export async function seedBlogArticles() {
 
         if (result.rows[0].inserted) {
           inserted++;
+          console.log(`✓ Inserted: ${article.title}`);
         } else {
           updated++;
+          console.log(`✓ Updated: ${article.title}`);
         }
       } catch (error: any) {
         console.error(`Failed to seed article: ${article.title}`, error.message);

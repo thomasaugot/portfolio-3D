@@ -6,9 +6,33 @@ import { seedBlogArticles } from '@/lib/db/seed-articles';
  * Access via: /api/blog/seed
  *
  * This will populate the blog_articles table with all articles from medium-articles.ts
+ * Requires ADMIN_PASSWORD in request body for authentication
  */
-export async function POST() {
+export async function POST(request: Request) {
   try {
+    // Get password from request body
+    const body = await request.json();
+    const { password } = body;
+
+    // Check if admin password is set in environment
+    const adminPassword = process.env.ADMIN_PASSWORD;
+
+    if (!adminPassword) {
+      return NextResponse.json({
+        success: false,
+        error: 'Admin password not configured'
+      }, { status: 500 });
+    }
+
+    // Verify password
+    if (password !== adminPassword) {
+      return NextResponse.json({
+        success: false,
+        error: 'Unauthorized: Invalid password'
+      }, { status: 401 });
+    }
+
+    // Run the seed function
     const result = await seedBlogArticles();
 
     return NextResponse.json({

@@ -4,12 +4,14 @@ import { useState, useEffect } from "react";
 import { BlogPost } from "@/types/blog";
 import { normalizeBlogPosts } from "@/utils/blog";
 import BlogCard from "@/components/blog-page/BlogCard";
+import { useTranslation } from "@/lib/providers/TranslationProvider";
 
 interface BlogArticleContentProps {
   post: BlogPost;
 }
 
 export default function BlogArticleContent({ post }: BlogArticleContentProps) {
+  const { t } = useTranslation();
   const [tableOfContents, setTableOfContents] = useState<{ id: string; text: string }[]>([]);
   const [similarArticles, setSimilarArticles] = useState<BlogPost[]>([]);
 
@@ -93,23 +95,33 @@ export default function BlogArticleContent({ post }: BlogArticleContentProps) {
           {tableOfContents.length > 0 && (
             <aside className="hidden lg:block lg:col-span-3">
               <div className="sticky top-24">
-                <h3 className="text-lg font-bold mb-4 text-primary">Table of Contents</h3>
-                <nav>
-                  <ul className="space-y-2">
-                    {tableOfContents.map((heading, index) => (
-                      <li key={index}>
-                        <a
-                          href={`#${heading.id}`}
-                          data-toc-link
-                          className="text-sm text-text/70 hover:text-primary transition-colors block py-1"
-                        >
-                          {heading.text.substring(0, 60)}
-                          {heading.text.length > 60 ? '...' : ''}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </nav>
+                <div className="glass bg-bg/60 backdrop-blur-md border border-border/50 rounded-2xl p-6 hover:border-primary/30 transition-all duration-300">
+                  <div className="flex items-center gap-3 mb-6 pb-4 border-b border-border/30">
+                    <div className="w-2 h-2 rounded-full bg-gradient-to-br from-primary to-secondary" />
+                    <h3 className="text-base font-bold gradient-primary bg-clip-text text-transparent">
+                      {t('blog.article.table_of_contents')}
+                    </h3>
+                  </div>
+                  <nav>
+                    <ul className="space-y-1">
+                      {tableOfContents.map((heading, index) => (
+                        <li key={index}>
+                          <a
+                            href={`#${heading.id}`}
+                            data-toc-link
+                            className="group relative flex items-start gap-3 text-sm text-text/60 hover:text-text transition-all py-2 px-3 rounded-lg hover:bg-primary/5"
+                          >
+                            <span className="absolute left-0 top-1/2 -translate-y-1/2 w-0 h-0.5 bg-gradient-to-r from-primary to-secondary group-hover:w-2 transition-all duration-300" />
+                            <span className="flex-1 leading-snug">
+                              {heading.text.substring(0, 60)}
+                              {heading.text.length > 60 ? '...' : ''}
+                            </span>
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </nav>
+                </div>
               </div>
             </aside>
           )}
@@ -132,7 +144,7 @@ export default function BlogArticleContent({ post }: BlogArticleContentProps) {
         {similarArticles.length > 0 && (
           <div className="mt-24 pt-16 border-t border-border/30">
             <h2 className="text-3xl md:text-4xl font-bold gradient-primary bg-clip-text text-transparent mb-12">
-              Similar Articles
+              {t('blog.article.similar_articles')}
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

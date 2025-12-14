@@ -1,0 +1,13 @@
+{
+  "title": "Connexion Admin",
+  "password_label": "Mot de passe",
+  "password_placeholder": "Entrez le mot de passe",
+  "login_button": "Connexion",
+  "update_button": "Mettre à jour",
+  "updating": "Mise à jour...",
+  "messages": {
+    "success": "Mis à jour",
+    "error": "Erreur. Réessayez.",
+    "invalid_password": "Mot de passe invalide"
+  }
+}

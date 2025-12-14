@@ -1,0 +1,13 @@
+{
+  "title": "Login Admin",
+  "password_label": "Contraseña",
+  "password_placeholder": "Ingrese la contraseña",
+  "login_button": "Entrar",
+  "update_button": "Actualizar",
+  "updating": "Actualizando...",
+  "messages": {
+    "success": "Actualizado",
+    "error": "Error. Intente de nuevo.",
+    "invalid_password": "Contraseña inválida"
+  }
+}

@@ -18,6 +18,12 @@
     "min_read": "min de lecture",
     "latest": "Nouveau"
   },
+  "article": {
+    "table_of_contents": "Table des Matières",
+    "similar_articles": "Articles Similaires",
+    "loading": "Chargement de l'article...",
+    "back_to_blog": "Retour au Blog"
+  },
   "categories": {
     "all": "Tous",
     "frontend": "Frontend",
@@ -30,6 +36,33 @@
   "empty": {
     "title": "Pas encore d'articles",
     "description": "Revenez bientôt pour du nouveau contenu"
+  },
+  "comments": {
+    "title": "Commentaires",
+    "count_one": "commentaire",
+    "count_other": "commentaires",
+    "leave_comment": "Laisser un Commentaire",
+    "no_comments": "Pas encore de commentaires. Soyez le premier à partager vos réflexions!",
+    "loading": "Chargement des commentaires...",
+    "reply": "Répondre",
+    "cancel_reply": "Annuler",
+    "hours_ago": "il y a heures",
+    "yesterday": "Hier",
+    "form": {
+      "name": "Nom",
+      "email": "Email",
+      "comment": "Commentaire",
+      "required": "*",
+      "name_placeholder": "Votre nom",
+      "email_placeholder": "votre.email@exemple.com",
+      "comment_placeholder": "Partagez vos réflexions...",
+      "characters": "caractères",
+      "submit": "Publier le Commentaire",
+      "submitting": "Envoi en cours...",
+      "success": "Commentaire soumis avec succès! Il apparaîtra après approbation.",
+      "error": "Échec de la soumission du commentaire",
+      "error_generic": "Une erreur s'est produite. Veuillez réessayer."
+    }
   },
   "scroll": "Défiler pour explorer"
 }

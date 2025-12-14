@@ -4,12 +4,15 @@ import { useState, useEffect } from "react";
 import { Comment } from "@/types/comment";
 import CommentForm from "./CommentForm";
 import { FaComment, FaUser, FaClock } from "react-icons/fa";
+import { Button } from "@/components/ui/Button";
+import { useTranslation } from "@/lib/providers/TranslationProvider";
 
 interface CommentSectionProps {
   articleSlug: string;
 }
 
 export default function CommentSection({ articleSlug }: CommentSectionProps) {
+  const { t } = useTranslation();
   const [comments, setComments] = useState<Comment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [replyingTo, setReplyingTo] = useState<number | null>(null);
@@ -38,9 +41,9 @@ export default function CommentSection({ articleSlug }: CommentSectionProps) {
     const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
 
     if (diffInHours < 24) {
-      return `${diffInHours} hours ago`;
+      return `${diffInHours} ${t('blog.comments.hours_ago')}`;
     } else if (diffInHours < 48) {
-      return 'Yesterday';
+      return t('blog.comments.yesterday');
     } else {
       return date.toLocaleDateString('en-US', {
         year: 'numeric',
@@ -56,17 +59,17 @@ export default function CommentSection({ articleSlug }: CommentSectionProps) {
       data-comment-item
       className={`${isReply ? 'ml-8 md:ml-12' : ''} mb-6`}
     >
-      <div className="bg-primary/5 border border-primary/10 rounded-xl p-6 hover:border-primary/30 transition-colors">
+      <div className="glass bg-bg/60 backdrop-blur-md border border-border/50 rounded-2xl p-6 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300">
         {/* Comment Header */}
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-primary rounded-full flex items-center justify-center">
+            <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-primary rounded-full flex items-center justify-center shadow-lg shadow-primary/20">
               <FaUser className="text-white text-sm" />
             </div>
             <div>
-              <h4 className="font-semibold text-text">{comment.author_name}</h4>
+              <h4 className="font-semibold gradient-primary bg-clip-text text-transparent">{comment.author_name}</h4>
               <div className="flex items-center gap-2 text-xs text-text/50">
-                <FaClock className="text-primary" />
+                <FaClock className="w-3 h-3" />
                 <span>{formatDate(comment.created_at)}</span>
               </div>
             </div>
@@ -78,12 +81,14 @@ export default function CommentSection({ articleSlug }: CommentSectionProps) {
 
         {/* Reply Button */}
         {!isReply && (
-          <button
+          <Button
             onClick={() => setReplyingTo(replyingTo === comment.id ? null : comment.id)}
-            className="text-sm text-primary hover:text-primary/80 transition-colors font-semibold"
+            variant="ghost"
+            size="sm"
+            className="!px-0"
           >
-            {replyingTo === comment.id ? 'Cancel Reply' : 'Reply'}
-          </button>
+            {replyingTo === comment.id ? t('blog.comments.cancel_reply') : t('blog.comments.reply')}
+          </Button>
         )}
 
         {/* Reply Form */}
@@ -146,24 +151,24 @@ export default function CommentSection({ articleSlug }: CommentSectionProps) {
     >
       {/* Section Header */}
       <div className="mb-12">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-12 h-12 bg-gradient-to-br from-cyan-500 to-primary rounded-xl flex items-center justify-center">
-            <FaComment className="text-white text-xl" />
+        <div className="flex items-center gap-4 mb-4">
+          <div className="w-14 h-14 bg-gradient-to-br from-cyan-500 to-primary rounded-2xl flex items-center justify-center shadow-lg shadow-primary/20">
+            <FaComment className="text-bg text-xl" />
           </div>
           <div>
             <h2 className="text-3xl md:text-4xl font-bold gradient-primary bg-clip-text text-transparent">
-              Comments
+              {t('blog.comments.title')}
             </h2>
-            <p className="text-text/60 text-sm">
-              {comments.length} {comments.length === 1 ? 'comment' : 'comments'}
+            <p className="text-text/60 text-sm font-medium">
+              {comments.length} {comments.length === 1 ? t('blog.comments.count_one') : t('blog.comments.count_other')}
             </p>
           </div>
         </div>
       </div>
 
       {/* Comment Form */}
-      <div className="mb-12 p-6 md:p-8 bg-bg border border-gradient rounded-2xl">
-        <h3 className="text-xl font-bold mb-6 text-text">Leave a Comment</h3>
+      <div className="mb-12 p-6 md:p-8 glass bg-bg/60 backdrop-blur-md border border-border/50 rounded-2xl hover:border-primary/30 transition-all duration-300">
+        <h3 className="text-xl font-bold mb-6 gradient-primary bg-clip-text text-transparent">{t('blog.comments.leave_comment')}</h3>
         <CommentForm
           articleSlug={articleSlug}
           onCommentSubmitted={fetchComments}
@@ -179,7 +184,7 @@ export default function CommentSection({ articleSlug }: CommentSectionProps) {
         ) : threadedComments.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-text/60 text-lg">
-              No comments yet. Be the first to share your thoughts!
+              {t('blog.comments.no_comments')}
             </p>
           </div>
         ) : (
