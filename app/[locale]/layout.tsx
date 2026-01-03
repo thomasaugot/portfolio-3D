@@ -3,6 +3,7 @@ import { TranslationProvider } from "@/lib/providers/TranslationProvider";
 import { ThemeProvider } from "@/lib/providers/ThemeProvider";
 import { TabTitleAnimationProvider } from "@/lib/providers/TabTitleAnimationProvider";
 import ClientLoadingWrapper from "@/components/ClientLoadingWrapper";
+import AdminKeySequenceListener from "@/components/AdminKeySequenceListener";
 
 export default async function LocaleLayout({
   children,
@@ -45,6 +46,7 @@ export default async function LocaleLayout({
         <ThemeProvider>
           <TranslationProvider>
             <TabTitleAnimationProvider />
+            <AdminKeySequenceListener />
             <ClientLoadingWrapper>
               <main>{children}</main>
             </ClientLoadingWrapper>

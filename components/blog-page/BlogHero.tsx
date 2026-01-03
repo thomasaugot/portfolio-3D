@@ -20,14 +20,17 @@ export default function BlogHero({ posts }: BlogHeroProps) {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Left Side - Title Section */}
           <div className="space-y-6 md:space-y-8">
-            <div
-              data-animate="slide-up"
-              className="glass inline-flex items-center gap-3 px-6 md:px-8 py-3 md:py-4 rounded-2xl border border-border bg-bg/80 backdrop-blur-md"
-            >
-              <div className="w-3 h-3 md:w-3.5 md:h-3.5 rounded-full bg-gradient-to-br from-primary to-secondary animate-pulse" />
-              <span className="text-xs md:text-sm font-mono uppercase tracking-wider text-text/60">
-                {t("blog.hero.badge")}
-              </span>
+            <div data-animate="slide-up" className="relative inline-flex">
+              {/* Gradient border */}
+              <div className="absolute -inset-[1px] bg-gradient-to-r from-primary via-secondary to-primary rounded-full opacity-50" />
+
+              {/* Badge content */}
+              <div className="relative flex items-center gap-3 px-6 md:px-8 py-3 md:py-4 bg-bg rounded-full">
+                <div className="w-3 h-3 md:w-3.5 md:h-3.5 rounded-full bg-gradient-to-br from-primary to-secondary animate-pulse" />
+                <span className="text-xs md:text-sm font-mono uppercase tracking-wider text-text/60">
+                  {t("blog.hero.badge")}
+                </span>
+              </div>
             </div>
 
             <h1
@@ -80,20 +83,6 @@ export default function BlogHero({ posts }: BlogHeroProps) {
               <Blog3DCarousel posts={posts} />
             </div>
           )}
-        </div>
-      </div>
-
-      {/* Scroll hint */}
-      <div
-        data-scroll-hint
-        className="absolute bottom-12 left-0 right-0 mx-auto flex flex-col items-center gap-3 opacity-70 w-fit z-20"
-      >
-        <span className="text-label">{t("blog.scroll")}</span>
-        <div className="w-6 h-10 border-2 border-border rounded-full flex justify-center">
-          <div
-            className="w-1 h-3 bg-primary rounded-full mt-2 animate-bounce"
-            style={{ animationDelay: "0.5s" }}
-          />
         </div>
       </div>
     </section>

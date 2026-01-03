@@ -39,15 +39,14 @@ interface RawBlogPost {
 
 export function normalizeBlogPosts(data: RawBlogPost[]): BlogPost[] {
   return data.map((post) => {
-    // Strip HTML and get a clean excerpt
-    let excerpt = "";
-    if (post.content && post.content.length > 0) {
-      excerpt = post.content
+    // Use existing content field as excerpt, or create from fullContent
+    let excerpt = post.content || "";
+    if (!excerpt && post.fullContent) {
+      excerpt = (post.fullContent || "")
         .replace(/<[^>]+>/g, " ")
         .replace(/\s+/g, " ")
         .trim()
-        .slice(0, 200);
-      if (excerpt.length > 0) excerpt += "...";
+        .slice(0, 300);
     }
 
     // Calculate read time from fullContent or content
@@ -60,7 +59,7 @@ export function normalizeBlogPosts(data: RawBlogPost[]): BlogPost[] {
       slug: post.link,
       titleKey: post.title,
       originalTitle: post.originalTitle,
-      excerptKey: excerpt || "Click to read more...",
+      excerptKey: excerpt,
       fullContent: post.fullContent || post.content || "",
       date: post.pubDate,
       author: "Thomas Augot",

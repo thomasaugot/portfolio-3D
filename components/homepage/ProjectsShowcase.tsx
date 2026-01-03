@@ -112,11 +112,17 @@ export default function ProjectsShowcase() {
                       willChange: "transform, opacity",
                     }}
                   >
-                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-bg/50 backdrop-blur-sm rounded-full border border-border/50">
-                      <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                      <span className="text-label">
-                        {project.year} • {project.client}
-                      </span>
+                    <div className="relative inline-flex">
+                      {/* Gradient border */}
+                      <div className="absolute -inset-[1px] bg-gradient-to-r from-primary via-secondary to-primary rounded-full opacity-50" />
+
+                      {/* Badge content */}
+                      <div className="relative flex items-center gap-2 px-4 py-2 bg-bg rounded-full">
+                        <div className="w-1.5 h-1.5 rounded-full bg-gradient-to-br from-primary to-secondary animate-pulse" />
+                        <span className="text-label">
+                          {project.year} • {project.client}
+                        </span>
+                      </div>
                     </div>
 
                     <h2 className="title-section gradient-text">
@@ -203,11 +209,17 @@ export default function ProjectsShowcase() {
               data-project-content
               className="relative pt-[280px] md:pt-[380px] space-y-6 md:space-y-8 z-10"
             >
-              <div className="inline-flex items-center gap-2 px-4 md:px-5 py-2 md:py-2.5 bg-bg/50 backdrop-blur-sm rounded-full border border-border/50">
-                <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                <span className="text-xs md:text-sm font-mono uppercase tracking-wider text-text/60">
-                  {project.year} • {project.client}
-                </span>
+              <div className="relative inline-flex">
+                {/* Gradient border */}
+                <div className="absolute -inset-[1px] bg-gradient-to-r from-primary via-secondary to-primary rounded-full opacity-50" />
+
+                {/* Badge content */}
+                <div className="relative flex items-center gap-2 px-4 md:px-5 py-2 md:py-2.5 bg-bg rounded-full">
+                  <div className="w-1.5 h-1.5 rounded-full bg-gradient-to-br from-primary to-secondary animate-pulse" />
+                  <span className="text-xs md:text-sm font-mono uppercase tracking-wider text-text/60">
+                    {project.year} • {project.client}
+                  </span>
+                </div>
               </div>
 
               <h2 className="title-item gradient-text">{t(project.title)}</h2>

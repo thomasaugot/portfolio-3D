@@ -1,10 +1,25 @@
 {
   "title": "Connexion Admin",
+  "dashboard_title": "Tableau de Bord Admin",
   "password_label": "Mot de passe",
   "password_placeholder": "Entrez le mot de passe",
   "login_button": "Connexion",
   "update_button": "Mettre à jour",
   "updating": "Mise à jour...",
+  "comments": {
+    "pending_title": "Commentaires en Attente",
+    "no_pending": "Aucun commentaire en attente",
+    "loading": "Chargement des commentaires...",
+    "approve": "Approuver",
+    "delete": "Supprimer",
+    "delete_confirm": "Êtes-vous sûr de vouloir supprimer ce commentaire?",
+    "approved_success": "Commentaire approuvé!",
+    "deleted_success": "Commentaire supprimé!",
+    "approve_error": "Échec de l'approbation",
+    "delete_error": "Échec de la suppression",
+    "article": "Article",
+    "posted_on": "Posté le"
+  },
   "messages": {
     "success": "Mis à jour",
     "error": "Erreur. Réessayez.",

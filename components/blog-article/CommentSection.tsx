@@ -3,24 +3,32 @@
 import { useState, useEffect } from "react";
 import { Comment } from "@/types/comment";
 import CommentForm from "./CommentForm";
-import { FaComment, FaUser, FaClock, FaTrash } from "react-icons/fa";
+import { FaComment, FaClock, FaTrash } from "react-icons/fa";
 import { Button } from "@/components/ui/Button";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
+import ConfirmModal from "@/components/ui/ConfirmModal";
 
 interface CommentSectionProps {
   articleSlug: string;
 }
 
 export default function CommentSection({ articleSlug }: CommentSectionProps) {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const [comments, setComments] = useState<Comment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [replyingTo, setReplyingTo] = useState<number | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [commentToDelete, setCommentToDelete] = useState<number | null>(null);
 
   const fetchComments = async () => {
     try {
-      const response = await fetch(`/api/comments/${articleSlug}`);
+      const response = await fetch(`/api/comments/${articleSlug}`, {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache',
+        },
+      });
       if (response.ok) {
         const data = await response.json();
         setComments(data.comments || []);
@@ -35,22 +43,28 @@ export default function CommentSection({ articleSlug }: CommentSectionProps) {
   useEffect(() => {
     fetchComments();
     // Check if admin is logged in
-    const adminStatus = localStorage.getItem('adminAuthenticated');
-    setIsAdmin(adminStatus === 'true');
+    const adminAuth = sessionStorage.getItem('admin_auth');
+    setIsAdmin(!!adminAuth);
   }, [articleSlug]);
 
-  const handleDelete = async (commentId: number) => {
-    if (!confirm(t('blog.comments.confirm_delete'))) return;
+  const handleDeleteClick = (commentId: number) => {
+    setCommentToDelete(commentId);
+    setDeleteModalOpen(true);
+  };
 
-    const password = localStorage.getItem('adminPassword');
+  const handleDeleteConfirm = async () => {
+    if (!commentToDelete) return;
+
+    const password = sessionStorage.getItem('admin_auth');
     if (!password) return;
 
     try {
-      const response = await fetch(`/api/comments/delete/${commentId}`, {
+      const response = await fetch(`/api/comments/delete/${commentToDelete}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${password}`,
+          'Content-Type': 'application/json',
         },
+        body: JSON.stringify({ password }),
       });
 
       if (response.ok) {
@@ -61,6 +75,8 @@ export default function CommentSection({ articleSlug }: CommentSectionProps) {
     } catch (error) {
       console.error('Error deleting comment:', error);
       alert('Error deleting comment');
+    } finally {
+      setCommentToDelete(null);
     }
   };
 
@@ -74,7 +90,8 @@ export default function CommentSection({ articleSlug }: CommentSectionProps) {
     } else if (diffInHours < 48) {
       return t('blog.comments.yesterday');
     } else {
-      return date.toLocaleDateString('en-US', {
+      const locale = language === 'fr' ? 'fr-FR' : language === 'es' ? 'es-ES' : 'en-US';
+      return date.toLocaleDateString(locale, {
         year: 'numeric',
         month: 'short',
         day: 'numeric'
@@ -91,16 +108,11 @@ export default function CommentSection({ articleSlug }: CommentSectionProps) {
       <div className="glass bg-bg/60 backdrop-blur-md border border-border/50 rounded-2xl p-6 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300">
         {/* Comment Header */}
         <div className="flex items-start justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-primary rounded-full flex items-center justify-center shadow-lg shadow-primary/20">
-              <FaUser className="text-white text-sm" />
-            </div>
-            <div>
-              <h4 className="font-semibold gradient-primary bg-clip-text text-transparent">{comment.author_name}</h4>
-              <div className="flex items-center gap-2 text-xs text-text/50">
-                <FaClock className="w-3 h-3" />
-                <span>{formatDate(comment.created_at)}</span>
-              </div>
+          <div>
+            <h4 className="font-semibold text-text">{comment.author_name}</h4>
+            <div className="flex items-center gap-2 text-xs text-text/50">
+              <FaClock className="w-3 h-3" />
+              <span>{formatDate(comment.created_at)}</span>
             </div>
           </div>
         </div>
@@ -110,20 +122,18 @@ export default function CommentSection({ articleSlug }: CommentSectionProps) {
 
         {/* Reply Button & Admin Controls */}
         <div className="flex items-center gap-4">
-          {!isReply && (
-            <Button
-              onClick={() => setReplyingTo(replyingTo === comment.id ? null : comment.id)}
-              variant="ghost"
-              size="sm"
-              className="!px-0"
-            >
-              {replyingTo === comment.id ? t('blog.comments.cancel_reply') : t('blog.comments.reply')}
-            </Button>
-          )}
+          <Button
+            onClick={() => setReplyingTo(replyingTo === comment.id ? null : comment.id)}
+            variant="ghost"
+            size="sm"
+            className="!px-0"
+          >
+            {replyingTo === comment.id ? t('blog.comments.cancel_reply') : t('blog.comments.reply')}
+          </Button>
 
           {isAdmin && (
             <Button
-              onClick={() => handleDelete(comment.id)}
+              onClick={() => handleDeleteClick(comment.id)}
               variant="ghost"
               size="sm"
               className="!px-0 text-red-500 hover:text-red-600"
@@ -188,10 +198,21 @@ export default function CommentSection({ articleSlug }: CommentSectionProps) {
   const threadedComments = organizeComments(comments);
 
   return (
-    <section
-      data-comment-section
-      className="max-w-5xl mx-auto px-6 md:px-12 py-16 md:py-24"
-    >
+    <>
+      <ConfirmModal
+        isOpen={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        onConfirm={handleDeleteConfirm}
+        title={t('blog.comments.delete_title')}
+        message={t('blog.comments.delete_message')}
+        confirmText={t('blog.comments.delete_confirm')}
+        cancelText={t('blog.comments.delete_cancel')}
+      />
+
+      <section
+        data-comment-section
+        className="max-w-7xl mx-auto px-6 md:px-12 lg:px-24 py-16 md:py-24"
+      >
       {/* Section Header */}
       <div className="mb-12">
         <div className="flex items-center gap-4 mb-4">
@@ -234,6 +255,7 @@ export default function CommentSection({ articleSlug }: CommentSectionProps) {
           threadedComments.map(comment => renderComment(comment))
         )}
       </div>
-    </section>
+      </section>
+    </>
   );
 }

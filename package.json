@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "setup-db": "node scripts/setup-db.js"
   },
   "dependencies": {
     "@google-cloud/translate": "^9.3.0",

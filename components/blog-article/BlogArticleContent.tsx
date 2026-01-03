@@ -67,8 +67,9 @@ export default function BlogArticleContent({ post }: BlogArticleContentProps) {
 
   // Sanitize and prepare HTML content
   const prepareContent = (html: string): string => {
-    // Remove first figure/image (it's shown in hero)
-    let processedHtml = html.replace(/<figure[^>]*>.*?<\/figure>/i, '');
+    // Remove all figure/image tags
+    let processedHtml = html.replace(/<figure[^>]*>.*?<\/figure>/gi, '');
+    processedHtml = processedHtml.replace(/<img[^>]*>/gi, '');
 
     // Add IDs to headings for TOC navigation
     processedHtml = processedHtml.replace(/<(h[1-4])[^>]*>/gi, (match, tag, offset) => {

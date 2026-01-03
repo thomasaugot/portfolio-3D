@@ -55,7 +55,7 @@ export async function POST(
 ) {
   try {
     const { slug } = await params;
-    const body: CommentFormData = await request.json();
+    const body: CommentFormData & { admin_password?: string } = await request.json();
 
     // Validation
     if (!body.author_name || !body.author_email || !body.content) {
@@ -81,6 +81,9 @@ export async function POST(
       );
     }
 
+    // Check if admin and auto-approve
+    const isAdmin = !!(body.admin_password && body.admin_password === process.env.ADMIN_PASSWORD);
+
     // Insert comment
     const { rows } = await sql<Comment>`
       INSERT INTO comments (
@@ -88,13 +91,15 @@ export async function POST(
         author_name,
         author_email,
         content,
-        parent_id
+        parent_id,
+        approved
       ) VALUES (
         ${slug},
         ${body.author_name},
         ${body.author_email},
         ${body.content},
-        ${body.parent_id || null}
+        ${body.parent_id || null},
+        ${isAdmin}
       )
       RETURNING *
     `;
@@ -102,7 +107,7 @@ export async function POST(
     return NextResponse.json(
       {
         comment: rows[0],
-        message: 'Comment submitted successfully'
+        message: isAdmin ? 'Comment posted successfully' : 'Comment submitted successfully'
       },
       { status: 201 }
     );

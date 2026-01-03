@@ -1,10 +1,25 @@
 {
   "title": "Login Admin",
+  "dashboard_title": "Panel de Administración",
   "password_label": "Contraseña",
   "password_placeholder": "Ingrese la contraseña",
   "login_button": "Entrar",
   "update_button": "Actualizar",
   "updating": "Actualizando...",
+  "comments": {
+    "pending_title": "Comentarios Pendientes",
+    "no_pending": "No hay comentarios pendientes",
+    "loading": "Cargando comentarios...",
+    "approve": "Aprobar",
+    "delete": "Eliminar",
+    "delete_confirm": "¿Estás seguro de que quieres eliminar este comentario?",
+    "approved_success": "¡Comentario aprobado!",
+    "deleted_success": "¡Comentario eliminado!",
+    "approve_error": "Error al aprobar",
+    "delete_error": "Error al eliminar",
+    "article": "Artículo",
+    "posted_on": "Publicado el"
+  },
   "messages": {
     "success": "Actualizado",
     "error": "Error. Intente de nuevo.",

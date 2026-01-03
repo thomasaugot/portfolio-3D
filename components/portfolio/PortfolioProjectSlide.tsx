@@ -27,14 +27,17 @@ export default function PortfolioProjectSlide({
       <div className="lg:hidden flex flex-col justify-end h-full px-4 md:px-12 pb-8 md:pb-16 pointer-events-none">
         <div className="space-y-4 md:space-y-8 relative z-10 bg-bg p-5 md:p-10 rounded-2xl backdrop-blur-md border border-border/50 shadow-2xl max-w-md md:max-w-3xl mx-auto w-full pointer-events-auto">
           {/* Badge */}
-          <div
-            data-project-badge
-            className="inline-flex items-center gap-2 px-3 md:px-4 py-1.5 md:py-2 bg-bg/50 backdrop-blur-sm rounded-full border border-border/50 opacity-0"
-          >
-            <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-            <span className="text-xs md:text-sm font-mono">
-              {project.year} • {project.client}
-            </span>
+          <div data-project-badge className="relative inline-flex opacity-0">
+            {/* Gradient border */}
+            <div className="absolute -inset-[1px] bg-gradient-to-r from-primary via-secondary to-primary rounded-full opacity-50" />
+
+            {/* Badge content */}
+            <div className="relative flex items-center gap-2 px-3 md:px-4 py-1.5 md:py-2 bg-bg rounded-full">
+              <div className="w-1.5 h-1.5 rounded-full bg-gradient-to-br from-primary to-secondary animate-pulse" />
+              <span className="text-xs md:text-sm font-mono">
+                {project.year} • {project.client}
+              </span>
+            </div>
           </div>
 
           {/* Title */}
@@ -108,14 +111,17 @@ export default function PortfolioProjectSlide({
         <div />
         <div className="space-y-8 pointer-events-auto">
           {/* Badge */}
-          <div
-            data-project-badge
-            className="inline-flex items-center gap-2 px-4 py-2 bg-bg/50 backdrop-blur-sm rounded-full border border-border/50"
-          >
-            <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-            <span className="text-label">
-              {project.year} • {project.client}
-            </span>
+          <div data-project-badge className="relative inline-flex">
+            {/* Gradient border */}
+            <div className="absolute -inset-[1px] bg-gradient-to-r from-primary via-secondary to-primary rounded-full opacity-50" />
+
+            {/* Badge content */}
+            <div className="relative flex items-center gap-2 px-4 py-2 bg-bg rounded-full">
+              <div className="w-1.5 h-1.5 rounded-full bg-gradient-to-br from-primary to-secondary animate-pulse" />
+              <span className="text-label">
+                {project.year} • {project.client}
+              </span>
+            </div>
           </div>
 
           {/* Title */}

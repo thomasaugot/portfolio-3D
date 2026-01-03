@@ -1,128 +1,75 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect } from "react";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
 import { gsap, ScrollTrigger } from "@/lib/animations";
 import { BlogPost } from "@/types/blog";
 import BlogCard from "./BlogCard";
+import SafeLink from "@/components/ui/SafeLink";
 
 export default function BlogArticleGrid({ posts }: { posts: BlogPost[] }) {
   const { t } = useTranslation();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [scrollLeft, setScrollLeft] = useState(0);
   const animationInitialized = useRef(false);
 
-  // Skip the first post (it's featured)
-  const gridPosts = posts.slice(1);
+  // Show all posts in carousel
+  const gridPosts = posts;
 
-  // Horizontal scroll with mouse wheel
-  useEffect(() => {
-    const container = scrollContainerRef.current;
-    if (!container) return;
-
-    const handleWheel = (e: WheelEvent) => {
-      if (Math.abs(e.deltaY) > 0) {
-        e.preventDefault();
-        container.scrollLeft += e.deltaY;
-      }
-    };
-
-    container.addEventListener("wheel", handleWheel, { passive: false });
-    return () => container.removeEventListener("wheel", handleWheel);
-  }, []);
-
-  // 3D Train entrance animation - runs when posts are loaded
+  // Horizontal slide on vertical scroll
   useEffect(() => {
     if (gridPosts.length === 0 || animationInitialized.current) return;
 
     const section = sectionRef.current;
+    const container = scrollContainerRef.current;
     const cards = document.querySelectorAll("[data-carousel-card]");
 
-    if (!section || cards.length === 0) return;
+    if (!section || !container || cards.length === 0) return;
 
-    // Small delay to ensure DOM is ready
     const initTimeout = setTimeout(() => {
       animationInitialized.current = true;
 
-      // Initial state - cards start way back on the Z axis, staggered like train cars
-      cards.forEach((card, index) => {
-        gsap.set(card, {
-          opacity: 0,
-          scale: 0.3,
-          x: -200 - (index * 50),
-          rotateY: -45,
-          transformOrigin: "left center",
-        });
-      });
+      // Calculate max scroll (spacers are now part of scrollable content)
+      const maxScroll = container.scrollWidth - container.clientWidth;
 
-      // Create scroll-triggered animation
-      const tl = gsap.timeline({
+      // Pin section and slide carousel horizontally on vertical scroll
+      gsap.to(container, {
+        scrollLeft: maxScroll,
+        ease: "none",
         scrollTrigger: {
           trigger: section,
-          start: "top 85%",
-          end: "center center",
-          scrub: 0.5,
-          onEnter: () => {
-            ScrollTrigger.refresh();
-          },
+          start: "top top",
+          end: () => `+=${maxScroll}`,
+          scrub: 1,
+          pin: true,
+          anticipatePin: 1,
         },
       });
 
-      // Animate each card - they come in one after another like train cars
-      cards.forEach((card, index) => {
-        tl.to(
-          card,
-          {
-            opacity: 1,
-            scale: 1,
-            x: 0,
-            rotateY: 0,
-            duration: 1,
-            ease: "power3.out",
+      // Entrance animation
+      gsap.fromTo(
+        cards,
+        { opacity: 0, y: 30 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          stagger: 0.1,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: section,
+            start: "top 70%",
+            toggleActions: "play none none none",
           },
-          index * 0.1
-        );
-      });
-
-      ScrollTrigger.refresh();
+        }
+      );
     }, 100);
 
     return () => {
       clearTimeout(initTimeout);
-      ScrollTrigger.getAll().forEach(st => {
-        if (st.vars.trigger === section) {
-          st.kill();
-        }
-      });
+      ScrollTrigger.getAll().forEach((st) => st.kill());
     };
   }, [gridPosts.length]);
-
-  const handleMouseDown = (e: React.MouseEvent) => {
-    setIsDragging(true);
-    setStartX(e.pageX - (scrollContainerRef.current?.offsetLeft || 0));
-    setScrollLeft(scrollContainerRef.current?.scrollLeft || 0);
-  };
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging) return;
-    e.preventDefault();
-    const x = e.pageX - (scrollContainerRef.current?.offsetLeft || 0);
-    const walk = (x - startX) * 2;
-    if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollLeft = scrollLeft - walk;
-    }
-  };
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
-
-  const handleMouseLeave = () => {
-    setIsDragging(false);
-  };
 
   if (gridPosts.length === 0) {
     return (
@@ -140,84 +87,53 @@ export default function BlogArticleGrid({ posts }: { posts: BlogPost[] }) {
   }
 
   return (
-    <section ref={sectionRef} data-articles-section className="relative py-12" style={{ perspective: "1000px" }}>
+    <section ref={sectionRef} data-articles-section className="relative py-12">
       {/* Section Header */}
-      <div className="px-6 md:px-12 lg:px-20 mb-12">
-        <div className="w-full max-w-7xl mx-auto">
-          <div
-            data-articles-header
-            className="flex items-center justify-between gap-3 mb-4"
-          >
-            <h2 className="title-section whitespace-nowrap">
-              {t("blog.sections.latest")}
-            </h2>
-            {/* Drag hint */}
-            <div className="hidden md:flex items-center gap-2 text-text/40 text-sm font-mono">
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M7 16l-4-4m0 0l4-4m-4 4h18"
-                />
-              </svg>
-              <span>Drag or scroll</span>
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M17 8l4 4m0 0l-4 4m4-4H3"
-                />
-              </svg>
+      <div className="px-6 md:px-12 lg:px-20 mb-8">
+        <h2 className="title-section">{t("blog.sections.recent")}</h2>
+      </div>
+
+      {/* Horizontal Scroll Container */}
+      <div className="relative">
+        <div
+          ref={scrollContainerRef}
+          data-article-carousel
+          className="flex gap-6 px-12 md:px-24 py-12 overflow-x-auto scrollbar-hide"
+        >
+          {gridPosts.map((post, index) => (
+            <div
+              key={post.id}
+              data-carousel-card={index}
+              className="flex-shrink-0 w-[320px] md:w-[380px] lg:w-[400px]"
+            >
+              <BlogCard post={post} index={index} />
             </div>
-          </div>
+          ))}
         </div>
       </div>
 
-      {/* Horizontal Scrolling Container */}
-      <div
-        ref={scrollContainerRef}
-        data-article-carousel
-        className={`flex gap-6 px-6 md:px-12 lg:px-20 overflow-x-auto py-12 scrollbar-hide ${
-          isDragging ? "cursor-grabbing" : "cursor-grab"
-        }`}
-        style={{
-          scrollbarWidth: "none",
-          msOverflowStyle: "none",
-        }}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseLeave}
-      >
-        {gridPosts.map((post, index) => (
-          <div
-            key={post.id}
-            data-carousel-card={index}
-            className="flex-shrink-0 w-[75vw] sm:w-[60vw] md:w-[40vw] lg:w-[350px]"
+      {/* Medium CTA */}
+      <div className="px-6 md:px-12 lg:px-20 my-16">
+        <div className="max-w-2xl mx-auto">
+          <SafeLink
+            href="https://medium.com/@thomasaugot"
+            className="group flex items-center justify-center gap-4 transition-all duration-300 hover:gap-6"
           >
-            <BlogCard post={post} index={index} />
-          </div>
-        ))}
-
-        {/* End spacer */}
-        <div className="flex-shrink-0" style={{ width: "1px" }} />
+            <div className="text-white group-hover:scale-110 transition-transform duration-300">
+              <svg className="w-12 h-12 md:w-16 md:h-16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M13.54 12a6.8 6.8 0 01-6.77 6.82A6.8 6.8 0 010 12a6.8 6.8 0 016.77-6.82A6.8 6.8 0 0113.54 12zM20.96 12c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42 3.38 2.88 3.38 6.42M24 12c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75C23.47 6.25 24 8.83 24 12z"/>
+              </svg>
+            </div>
+            <span className="text-white text-lg md:text-xl font-medium">
+              {t("blog.medium.cta")}
+            </span>
+          </SafeLink>
+        </div>
       </div>
 
-      {/* Scroll indicators */}
-      <div className="absolute left-0 top-1/2 -translate-y-1/2 w-32 h-full bg-gradient-to-r from-bg to-transparent pointer-events-none z-10"></div>
-      <div className="absolute right-0 top-1/2 -translate-y-1/2 w-32 h-full bg-gradient-to-l from-bg to-transparent pointer-events-none z-10"></div>
+      {/* Gradient overlays */}
+      <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-bg to-transparent pointer-events-none z-10"></div>
+      <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-bg to-transparent pointer-events-none z-10"></div>
     </section>
   );
 }

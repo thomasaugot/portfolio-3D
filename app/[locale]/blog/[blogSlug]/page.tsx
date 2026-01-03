@@ -113,12 +113,21 @@ export default function BlogArticlePage() {
       {/* Back to Blog Button */}
       <Link
         href="/blog"
-        className="fixed top-6 left-6 md:top-8 md:left-8 z-40 group flex items-center gap-2 px-3 md:px-4 py-2 md:py-3 bg-bg/80 backdrop-blur-md border border-border/50 rounded-lg md:rounded-xl hover:border-primary/50 transition-all duration-300 hover:scale-105"
+        className="fixed top-6 left-6 md:top-8 md:left-8 z-40 group cursor-pointer"
       >
-        <FaArrowLeft className="text-xs md:text-sm text-primary group-hover:scale-110 transition-transform" />
-        <span className="text-xs md:text-sm font-medium gradient-primary bg-clip-text text-transparent hidden sm:inline">
-          {t('blog.article.back_to_blog')}
-        </span>
+        {/* Gradient border */}
+        <div className="absolute -inset-[1px] bg-gradient-to-r from-primary via-secondary to-primary rounded-full opacity-50 group-hover:opacity-100 transition-opacity duration-300" />
+
+        {/* Glow effect on hover */}
+        <div className="absolute -inset-2 bg-gradient-to-r from-primary/30 via-secondary/30 to-primary/30 rounded-full blur-lg opacity-0 group-hover:opacity-60 transition-opacity duration-300" />
+
+        {/* Button content */}
+        <div className="relative flex items-center gap-3 px-4 md:px-5 py-2.5 md:py-3 bg-bg rounded-full">
+          <FaArrowLeft className="text-sm md:text-base text-text group-hover:text-primary transition-all duration-300 group-hover:-translate-x-0.5" />
+          <span className="text-sm md:text-base font-bold text-text group-hover:text-primary transition-colors duration-300 hidden sm:inline">
+            {t('blog.article.back_to_blog')}
+          </span>
+        </div>
       </Link>
 
       <BlogArticleHero post={post} />

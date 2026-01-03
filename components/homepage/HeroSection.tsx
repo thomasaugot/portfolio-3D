@@ -21,15 +21,17 @@ export default function HeroSection() {
         <div className="relative z-10 w-full px-6 md:px-12 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-16 items-center max-w-7xl mx-auto">
             <div data-animate="slide-up">
-              <div
-                data-hero-badge
-                className="glass inline-flex items-center gap-3 px-6 md:px-8 py-3 md:py-4 rounded-2xl border border-border bg-bg/80 backdrop-blur-md"
-                style={{ willChange: 'opacity, transform' }}
-              >
-                <div className="w-3 h-3 md:w-3.5 md:h-3.5 rounded-full bg-gradient-to-br from-primary to-secondary animate-pulse" />
-                <span className="text-xs md:text-sm font-mono uppercase tracking-wider text-text/60">
-                  {t("homepage.hero_title")}
-                </span>
+              <div data-hero-badge className="relative inline-flex" style={{ willChange: 'opacity, transform' }}>
+                {/* Gradient border */}
+                <div className="absolute -inset-[1px] bg-gradient-to-r from-primary via-secondary to-primary rounded-full opacity-50" />
+
+                {/* Badge content */}
+                <div className="relative flex items-center gap-3 px-6 md:px-8 py-3 md:py-4 bg-bg rounded-full">
+                  <div className="w-3 h-3 md:w-3.5 md:h-3.5 rounded-full bg-gradient-to-br from-primary to-secondary animate-pulse" />
+                  <span className="text-xs md:text-sm font-mono uppercase tracking-wider text-text/60">
+                    {t("homepage.hero_title")}
+                  </span>
+                </div>
               </div>
 
               <h1 className="space-y-0 md:-space-y-6 lg:-space-y-8 relative mt-4 md:mt-6">

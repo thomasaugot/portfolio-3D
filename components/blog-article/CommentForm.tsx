@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, FormEvent } from "react";
+import { useState, FormEvent, useEffect } from "react";
 import { CommentFormData } from "@/types/comment";
 import { FaPaperPlane } from "react-icons/fa";
 import { Button } from "@/components/ui/Button";
@@ -23,6 +23,20 @@ export default function CommentForm({ articleSlug, parentId, onCommentSubmitted 
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  // Auto-populate admin info if logged in
+  useEffect(() => {
+    const adminAuth = sessionStorage.getItem('admin_auth');
+    if (adminAuth) {
+      setIsAdmin(true);
+      setFormData(prev => ({
+        ...prev,
+        author_name: "Thomas A. (Admin)",
+        author_email: "admin@thomasaugot.com"
+      }));
+    }
+  }, []);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -30,24 +44,43 @@ export default function CommentForm({ articleSlug, parentId, onCommentSubmitted 
     setMessage(null);
 
     try {
+      const adminPassword = isAdmin ? sessionStorage.getItem('admin_auth') : null;
+
       const response = await fetch(`/api/comments/${articleSlug}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({
+          ...formData,
+          admin_password: adminPassword
+        })
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        setMessage({ type: 'success', text: t('blog.comments.form.success') });
-        setFormData({
-          author_name: "",
-          author_email: "",
-          content: "",
-          parent_id: parentId
-        });
+        const successMessage = isAdmin
+          ? t('blog.comments.form.success_admin') || t('blog.comments.form.success')
+          : t('blog.comments.form.success');
+        setMessage({ type: 'success', text: successMessage });
+
+        // Reset form but keep admin info if admin
+        if (isAdmin) {
+          setFormData({
+            author_name: "Thomas A. (Admin)",
+            author_email: "admin@thomasaugot.com",
+            content: "",
+            parent_id: parentId
+          });
+        } else {
+          setFormData({
+            author_name: "",
+            author_email: "",
+            content: "",
+            parent_id: parentId
+          });
+        }
         if (onCommentSubmitted) onCommentSubmitted();
       } else {
         setMessage({ type: 'error', text: data.error || t('blog.comments.form.error') });

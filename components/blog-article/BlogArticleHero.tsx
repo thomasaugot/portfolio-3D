@@ -10,11 +10,12 @@ interface BlogArticleHeroProps {
 }
 
 export default function BlogArticleHero({ post }: BlogArticleHeroProps) {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const containerRef = useThreeScene(initHero3DScene, "blog-article");
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+    const locale = language === 'fr' ? 'fr-FR' : language === 'es' ? 'es-ES' : 'en-US';
+    return new Date(dateString).toLocaleDateString(locale, {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
@@ -24,7 +25,7 @@ export default function BlogArticleHero({ post }: BlogArticleHeroProps) {
   return (
     <section
       data-blog-article-hero
-      className="relative min-h-screen flex items-end overflow-hidden bg-bg"
+      className="relative min-h-screen flex items-end overflow-hidden bg-bg pb-4"
     >
       {/* 3D Hex Grid Background */}
       <div
@@ -54,17 +55,20 @@ export default function BlogArticleHero({ post }: BlogArticleHeroProps) {
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-bg/20 to-bg" />
 
       {/* CONTENT - Positioned at bottom */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-24 pb-16 md:pb-20">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-24">
 
         {/* Glass Badge */}
-        <div
-          data-article-badge
-          className="glass inline-flex items-center gap-3 px-6 md:px-8 py-3 md:py-4 rounded-2xl border border-border bg-bg/80 backdrop-blur-md mb-6 w-fit"
-        >
-          <div className="w-3 h-3 rounded-full bg-gradient-to-br from-primary to-secondary animate-pulse" />
-          <span className="text-xs md:text-sm font-mono uppercase tracking-wider text-text/60">
-            {t(`blog.categories.${post.categoryKey}`)}
-          </span>
+        <div data-article-badge className="relative inline-flex mb-6 w-fit">
+          {/* Gradient border */}
+          <div className="absolute -inset-[1px] bg-gradient-to-r from-primary via-secondary to-primary rounded-full opacity-50" />
+
+          {/* Badge content */}
+          <div className="relative flex items-center gap-3 px-6 md:px-8 py-3 md:py-4 bg-bg rounded-full">
+            <div className="w-3 h-3 rounded-full bg-gradient-to-br from-primary to-secondary animate-pulse" />
+            <span className="text-xs md:text-sm font-mono uppercase tracking-wider text-text/60">
+              {t(`blog.categories.${post.categoryKey}`)}
+            </span>
+          </div>
         </div>
 
         {/* Title - Large and visible over fading image */}
@@ -77,14 +81,26 @@ export default function BlogArticleHero({ post }: BlogArticleHeroProps) {
 
         {/* Metadata */}
         <div className="flex flex-wrap items-center gap-6 text-text drop-shadow-lg">
-          <div data-article-meta className="flex items-center gap-3 bg-bg/60 backdrop-blur-sm px-4 py-2 rounded-full">
-            <div className="w-2 h-2 rounded-full bg-gradient-to-br from-primary to-secondary" />
-            <span className="text-sm md:text-base gradient-primary bg-clip-text text-transparent">{formatDate(post.date)}</span>
+          <div data-article-meta className="relative">
+            {/* Gradient border */}
+            <div className="absolute -inset-[1px] bg-gradient-to-r from-primary via-secondary to-primary rounded-full opacity-50" />
+
+            {/* Content */}
+            <div className="relative flex items-center gap-3 bg-bg px-4 py-2 rounded-full">
+              <div className="w-2 h-2 rounded-full bg-gradient-to-br from-primary to-secondary" />
+              <span className="text-sm md:text-base font-bold text-text">{formatDate(post.date)}</span>
+            </div>
           </div>
 
-          <div data-article-meta className="flex items-center gap-3 bg-bg/60 backdrop-blur-sm px-4 py-2 rounded-full">
-            <div className="w-2 h-2 rounded-full bg-gradient-to-br from-primary to-secondary" />
-            <span className="text-sm md:text-base gradient-primary bg-clip-text text-transparent">{post.readTime} {t('blog.card.min_read')}</span>
+          <div data-article-meta className="relative">
+            {/* Gradient border */}
+            <div className="absolute -inset-[1px] bg-gradient-to-r from-primary via-secondary to-primary rounded-full opacity-50" />
+
+            {/* Content */}
+            <div className="relative flex items-center gap-3 bg-bg px-4 py-2 rounded-full">
+              <div className="w-2 h-2 rounded-full bg-gradient-to-br from-primary to-secondary" />
+              <span className="text-sm md:text-base font-bold text-text">{post.readTime} {t('blog.card.min_read')}</span>
+            </div>
           </div>
         </div>
       </div>

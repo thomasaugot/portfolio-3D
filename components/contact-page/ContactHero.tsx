@@ -73,15 +73,17 @@ export default function ContactHero() {
               {/* Left Side - Title & Info */}
               <div className="lg:col-span-5 space-y-8 relative">
                 <div className="relative" data-contact-hero-content>
-                  <div
-                    data-hero-badge
-                    className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl border border-border bg-bg/80 backdrop-blur-md"
-                    style={{ willChange: "opacity, transform" }}
-                  >
-                    <div className="w-3 h-3 rounded-full bg-primary animate-pulse" />
-                    <span className="text-label">
-                      {t("contact.hero.badge")}
-                    </span>
+                  <div data-hero-badge className="relative inline-flex" style={{ willChange: "opacity, transform" }}>
+                    {/* Gradient border */}
+                    <div className="absolute -inset-[1px] bg-gradient-to-r from-primary via-secondary to-primary rounded-full opacity-50" />
+
+                    {/* Badge content */}
+                    <div className="relative flex items-center gap-3 px-6 py-3 bg-bg rounded-full">
+                      <div className="w-3 h-3 rounded-full bg-gradient-to-br from-primary to-secondary animate-pulse" />
+                      <span className="text-label">
+                        {t("contact.hero.badge")}
+                      </span>
+                    </div>
                   </div>
 
                   <h1 className="title-hero space-y-0 md:-space-y-2 lg:-space-y-4 relative pb-2 mt-8">

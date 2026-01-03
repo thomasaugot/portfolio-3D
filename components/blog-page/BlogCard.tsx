@@ -20,7 +20,8 @@ export default function BlogCard({ post, index }: BlogCardProps) {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
+    const locale = language === 'fr' ? 'fr-FR' : language === 'es' ? 'es-ES' : 'en-US';
+    return date.toLocaleDateString(locale, {
       month: "short",
       day: "numeric",
       year: "numeric",
@@ -41,7 +42,7 @@ export default function BlogCard({ post, index }: BlogCardProps) {
       href={internalUrl}
       onClick={handleClick}
       data-blog-card={index}
-      className="group block relative w-full h-[440px]"
+      className="group block relative w-full h-[520px]"
     >
       {/* Glow */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary/40 to-secondary/40 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -53,7 +54,7 @@ export default function BlogCard({ post, index }: BlogCardProps) {
       <div className="relative bg-bg rounded-2xl overflow-hidden h-full border border-border/30">
         {/* IMAGE */}
         {post.image && (
-          <div className="absolute top-0 left-0 right-0 h-[55%] overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-[50%] overflow-hidden">
             <img
               src={post.image}
               alt={post.titleKey}
@@ -80,7 +81,7 @@ export default function BlogCard({ post, index }: BlogCardProps) {
               drop-shadow-xl
               group-hover:text-primary transition-colors duration-300
               absolute left-6 right-6
-              -top-14
+              -top-16
               whitespace-normal
               break-words
             "
@@ -89,16 +90,16 @@ export default function BlogCard({ post, index }: BlogCardProps) {
           </h2>
 
           {/* SPACING SO TITLE DOESN'T TOUCH EXCERPT */}
-          <div className="pt-20 space-y-4">
+          <div className="pt-16 space-y-4">
             {/* EXCERPT — THIS is the ONLY thing CLAMPED */}
             <p
               className="
-                text-text/70 text-sm leading-relaxed
+                text-text/80 text-base font-normal leading-relaxed
                 line-clamp-2
-                overflow-hidden
+                min-h-[3.5rem]
               "
             >
-              {post.excerptKey}
+              {post.excerptKey || "Click to read this article..."}
             </p>
 
             {/* META + CTA */}

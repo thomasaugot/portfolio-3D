@@ -9,6 +9,7 @@
   "sections": {
     "featured": "Crónica Destacada",
     "latest": "Todos mi escritos",
+    "recent": "Artículos Recientes",
     "all": "Archivo",
     "load_more": "Cargar Más Historias"
   },
@@ -47,7 +48,10 @@
     "reply": "Responder",
     "cancel_reply": "Cancelar",
     "delete": "Eliminar",
-    "confirm_delete": "¿Estás seguro de que quieres eliminar este comentario?",
+    "delete_title": "Eliminar Comentario",
+    "delete_message": "¿Estás seguro de que quieres eliminar este comentario? Esta acción no se puede deshacer.",
+    "delete_confirm": "Eliminar",
+    "delete_cancel": "Cancelar",
     "hours_ago": "hace horas",
     "yesterday": "Ayer",
     "form": {
@@ -62,9 +66,13 @@
       "submit": "Publicar Comentario",
       "submitting": "Enviando...",
       "success": "¡Comentario enviado con éxito! Aparecerá después de la aprobación.",
+      "success_admin": "¡Comentario publicado con éxito!",
       "error": "Error al enviar el comentario",
       "error_generic": "Ocurrió un error. Por favor, inténtalo de nuevo."
     }
   },
-  "scroll": "Desplázate para explorar"
+  "scroll": "Desplázate para explorar",
+  "medium": {
+    "cta": "Lee más de mis artículos en Medium"
+  }
 }
