@@ -113,7 +113,7 @@ export default function BlogArticlePage() {
       {/* Back to Blog Button */}
       <Link
         href="/blog"
-        className="fixed top-6 left-6 md:top-8 md:left-8 z-40 group cursor-pointer"
+        className="fixed top-6 left-6 md:top-8 md:left-8 z-20 group cursor-pointer"
       >
         {/* Gradient border */}
         <div className="absolute -inset-[1px] bg-gradient-to-r from-primary via-secondary to-primary rounded-full opacity-50 group-hover:opacity-100 transition-opacity duration-300" />
