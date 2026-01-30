@@ -1,12 +1,11 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { gsap } from "@/lib/animations";
-import { debug } from "@/utils/debug";
+import { useEffect, useRef, useState } from "react";
+import { gsap } from "@/lib/gsap";
 
 interface AppLoaderProps {
   progress: number;
-  phase: 'entering' | 'loading' | 'exiting';
+  phase: "entering" | "loading" | "exiting";
   onEntranceComplete?: () => void;
   onExitComplete?: () => void;
 }
@@ -18,198 +17,150 @@ export default function AppLoader({
   onExitComplete,
 }: AppLoaderProps) {
   const loaderRef = useRef<HTMLDivElement>(null!);
-  const strip1Ref = useRef<HTMLDivElement>(null);
-  const strip2Ref = useRef<HTMLDivElement>(null);
-  const strip3Ref = useRef<HTMLDivElement>(null);
-  const strip4Ref = useRef<HTMLDivElement>(null);
-  const strip5Ref = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
   const percentRef = useRef<HTMLDivElement>(null);
-  const entranceTimelineRef = useRef<gsap.core.Timeline | null>(null);
-  const exitTimelineRef = useRef<gsap.core.Timeline | null>(null);
+  const [showCursor, setShowCursor] = useState(true);
 
-  // INITIAL LOAD
+  // Cursor blink
   useEffect(() => {
-    if (phase === 'loading' && strip1Ref.current && contentRef.current) {
-      const isInitialLoad = !entranceTimelineRef.current;
-
-      if (isInitialLoad) {
-        if (exitTimelineRef.current) {
-          exitTimelineRef.current.kill();
-          exitTimelineRef.current = null;
-        }
-
-        if (progressBarRef.current) {
-          progressBarRef.current.style.width = '0%';
-        }
-        if (percentRef.current) {
-          percentRef.current.textContent = '0';
-        }
-
-        gsap.set([strip1Ref.current, strip2Ref.current, strip3Ref.current, strip4Ref.current, strip5Ref.current], {
-          x: 0,
-          y: 0,
-          rotation: 0,
-        });
-        gsap.set(contentRef.current, {
-          opacity: 1,
-        });
-      }
-    }
-  }, [phase]);
+    const interval = setInterval(() => {
+      setShowCursor((prev) => !prev);
+    }, 530);
+    return () => clearInterval(interval);
+  }, []);
 
   // Update progress
-  const lastProgressRef = useRef<number>(0);
-
   useEffect(() => {
-    if (phase === 'loading') {
-      if (progress === 0 || progress > lastProgressRef.current) {
-        if (progressBarRef.current) progressBarRef.current.style.width = `${progress}%`;
-        if (percentRef.current) percentRef.current.textContent = `${progress}`;
-        lastProgressRef.current = progress;
-      } else {
-        debug.log('[AppLoader] Ignoring stale progress:', progress, 'last was:', lastProgressRef.current);
+    if (phase === "loading" || phase === "entering") {
+      if (progressBarRef.current) {
+        progressBarRef.current.style.width = `${progress}%`;
       }
-    }
-
-    if (phase === 'entering') {
-      lastProgressRef.current = 0;
+      if (percentRef.current) {
+        percentRef.current.textContent = `${progress}`;
+      }
     }
   }, [progress, phase]);
 
-  // ENTRANCE - SMOOTH CASCADING WATERFALL
+  // Entrance animation
   useEffect(() => {
-    if (phase !== 'entering' || !strip1Ref.current || !contentRef.current) return;
+    if (phase !== "entering" || !contentRef.current) return;
 
-    if (entranceTimelineRef.current) {
-      entranceTimelineRef.current.kill();
-      entranceTimelineRef.current = null;
-    }
-    if (exitTimelineRef.current) {
-      exitTimelineRef.current.kill();
-      exitTimelineRef.current = null;
-    }
-
-    gsap.set(strip1Ref.current, { y: '-100%' });
-    gsap.set(strip2Ref.current, { y: '-100%' });
-    gsap.set(strip3Ref.current, { y: '-100%' });
-    gsap.set(strip4Ref.current, { y: '-100%' });
-    gsap.set(strip5Ref.current, { y: '-100%' });
-
-    gsap.set(contentRef.current, { opacity: 0 });
-
-    if (progressBarRef.current) {
-      progressBarRef.current.style.width = '0%';
-    }
-    if (percentRef.current) {
-      percentRef.current.textContent = '0';
-    }
+    gsap.set(contentRef.current, { opacity: 0, y: 20 });
 
     const tl = gsap.timeline({
       onComplete: () => onEntranceComplete?.(),
     });
 
-    entranceTimelineRef.current = tl;
-
-    tl.to(strip1Ref.current, { y: '0%', duration: 0.8, ease: "power3.out" }, 0)
-      .to(strip2Ref.current, { y: '0%', duration: 0.8, ease: "power3.out" }, 0.08)
-      .to(strip3Ref.current, { y: '0%', duration: 0.8, ease: "power3.out" }, 0.16)
-      .to(strip4Ref.current, { y: '0%', duration: 0.8, ease: "power3.out" }, 0.24)
-      .to(strip5Ref.current, { y: '0%', duration: 0.8, ease: "power3.out" }, 0.32)
-      .to(contentRef.current, { opacity: 1, duration: 0.6, ease: "power2.out" }, 0.6);
+    tl.to(contentRef.current, {
+      opacity: 1,
+      y: 0,
+      duration: 0.6,
+      ease: "power2.out",
+    });
 
     return () => {
       tl.kill();
     };
   }, [phase, onEntranceComplete]);
 
-  // EXIT - SMOOTH CASCADE UP
+  // Exit animation
   useEffect(() => {
-    if (phase !== 'exiting') return;
-
-    const content = contentRef.current;
-    const strip1 = strip1Ref.current;
-    const strip2 = strip2Ref.current;
-    const strip3 = strip3Ref.current;
-    const strip4 = strip4Ref.current;
-    const strip5 = strip5Ref.current;
-
-    if (!strip1 || !content) return;
-
-    if (entranceTimelineRef.current) {
-      entranceTimelineRef.current.kill();
-      entranceTimelineRef.current = null;
-    }
-    if (exitTimelineRef.current) {
-      exitTimelineRef.current.kill();
-      exitTimelineRef.current = null;
-    }
+    if (phase !== "exiting" || !contentRef.current) return;
 
     if (progressBarRef.current) {
-      progressBarRef.current.style.width = '100%';
+      progressBarRef.current.style.width = "100%";
     }
     if (percentRef.current) {
-      percentRef.current.textContent = '100';
+      percentRef.current.textContent = "100";
     }
 
     const tl = gsap.timeline();
-    exitTimelineRef.current = tl;
 
-    tl.to(content, { opacity: 0, duration: 0.3, ease: "power2.in" }, 0);
+    tl.to(contentRef.current, {
+      opacity: 0,
+      y: -20,
+      duration: 0.4,
+      ease: "power2.in",
+    });
 
-    tl.call(() => onExitComplete?.(), [], 0.2);
-
-    if (strip5) tl.to(strip5, { y: '-100%', duration: 0.6, ease: "power3.in" }, 0.2);
-    if (strip4) tl.to(strip4, { y: '-100%', duration: 0.6, ease: "power3.in" }, 0.26);
-    if (strip3) tl.to(strip3, { y: '-100%', duration: 0.6, ease: "power3.in" }, 0.32);
-    if (strip2) tl.to(strip2, { y: '-100%', duration: 0.6, ease: "power3.in" }, 0.38);
-    if (strip1) tl.to(strip1, { y: '-100%', duration: 0.6, ease: "power3.in" }, 0.44);
+    tl.call(() => onExitComplete?.(), [], 0.3);
 
     return () => {
       tl.kill();
     };
-  }, [phase, progress, onExitComplete]);
+  }, [phase, onExitComplete]);
 
   return (
     <div
       ref={loaderRef}
-      className="fixed inset-0 z-[9999] h-screen w-screen overflow-hidden"
-      style={{ pointerEvents: "none" }}
+      className="fixed inset-0 z-[9999] h-screen w-screen overflow-hidden bg-bg"
+      style={{ pointerEvents: phase === "exiting" ? "none" : "auto" }}
     >
-      {/* 5 VERTICAL STRIPS */}
-      <div ref={strip1Ref} className="absolute top-0 left-0 w-[20%] h-full bg-bg" />
-      <div ref={strip2Ref} className="absolute top-0 left-[20%] w-[20%] h-full bg-bg" />
-      <div ref={strip3Ref} className="absolute top-0 left-[40%] w-[20%] h-full bg-bg" />
-      <div ref={strip4Ref} className="absolute top-0 left-[60%] w-[20%] h-full bg-bg" />
-      <div ref={strip5Ref} className="absolute top-0 left-[80%] w-[20%] h-full bg-bg" />
+      {/* Background grid */}
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:50px_50px] pointer-events-none" />
+
+      {/* Glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-primary/10 rounded-full blur-[120px] pointer-events-none" />
 
       {/* Loading UI */}
       <div
         ref={contentRef}
-        className="absolute inset-0 flex flex-col items-center justify-center gap-6"
-        style={{ opacity: 0 }}
+        className="absolute inset-0 flex items-center justify-center"
       >
-        {/* Progress percentage */}
-        <div className="flex items-baseline gap-1">
-          <span
-            ref={percentRef}
-            className="font-fun title-hero tabular-nums gradient-text"
-          >
-            0
-          </span>
-          <span className="font-fun text-xl md:text-2xl font-bold leading-none text-text/50">
-            %
-          </span>
-        </div>
+        <div className="w-full max-w-md px-6">
+          {/* Terminal window */}
+          <div className="bg-bg-surface rounded-xl border border-white/10 shadow-2xl overflow-hidden">
+            {/* Terminal header */}
+            <div className="flex items-center gap-2 px-4 py-3 bg-bg-panel border-b border-white/10">
+              <div className="flex gap-2">
+                <div className="w-3 h-3 rounded-full bg-[#ff5f56]" />
+                <div className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
+                <div className="w-3 h-3 rounded-full bg-[#27ca40]" />
+              </div>
+              <span className="ml-4 text-xs text-white/40 font-mono">
+                loading.sh
+              </span>
+            </div>
 
-        {/* Progress bar */}
-        <div className="w-[300px] max-w-[60vw]">
-          <div className="h-[2px] bg-text/10 rounded-full overflow-hidden">
-            <div
-              ref={progressBarRef}
-              className="h-full w-0 rounded-full transition-all duration-300 gradient-primary"
-            />
+            {/* Terminal content */}
+            <div className="p-6 font-mono text-sm">
+              <div className="mb-4">
+                <span className="text-primary">❯</span>
+                <span className="text-white ml-2">./init-portfolio.sh</span>
+              </div>
+
+              <div className="mb-4 text-white/60">
+                Loading assets...
+              </div>
+
+              {/* Progress */}
+              <div className="flex items-center gap-4 mb-4">
+                <div className="flex-1 h-2 bg-white/10 rounded-full overflow-hidden">
+                  <div
+                    ref={progressBarRef}
+                    className="h-full w-0 bg-gradient-to-r from-primary to-primary rounded-full transition-all duration-300"
+                  />
+                </div>
+                <div className="flex items-baseline gap-1 min-w-[60px] justify-end">
+                  <span
+                    ref={percentRef}
+                    className="text-primary font-bold tabular-nums"
+                  >
+                    0
+                  </span>
+                  <span className="text-white/40">%</span>
+                </div>
+              </div>
+
+              {/* Cursor */}
+              <div className="flex items-center gap-2">
+                <span className="text-primary">❯</span>
+                <span
+                  className={`w-2 h-5 bg-primary ${showCursor ? "opacity-100" : "opacity-0"}`}
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -2,9 +2,10 @@ import { useEffect, useRef } from "react";
 import { debug } from "@/utils/debug";
 
 type SceneInitFunction = () =>
-  | Promise<(() => void) | void>
+  | Promise<(() => void) | void | null>
   | (() => void)
-  | void;
+  | void
+  | null;
 
 const sceneStates = new Map<string, boolean>();
 const readyCallbacks = new Set<() => void>();
@@ -65,7 +66,8 @@ export function onSceneProgress(callback: (loaded: number, total: number) => voi
 
 export function useThreeScene(
   initFunction: SceneInitFunction,
-  sceneId: string
+  sceneId: string,
+  skipRefCheck = false
 ) {
   const cleanupRef = useRef<(() => void) | undefined>(undefined);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -73,10 +75,11 @@ export function useThreeScene(
   const registrationOrderRef = useRef<number>(registrationCounter++);
 
   useEffect(() => {
-    if (initializedRef.current || !containerRef.current) return;
+    if (initializedRef.current) return;
+    if (!skipRefCheck && !containerRef.current) return;
 
     initializedRef.current = true;
-    
+
     loadQueue.push({
       sceneId,
       initFunction: async () => {
@@ -88,7 +91,7 @@ export function useThreeScene(
       },
       registrationOrder: registrationOrderRef.current
     });
-    
+
     processQueue();
 
     return () => {
@@ -99,7 +102,7 @@ export function useThreeScene(
       sceneStates.delete(sceneId);
       loadQueue = loadQueue.filter(item => item.sceneId !== sceneId);
     };
-  }, [initFunction, sceneId]);
+  }, [initFunction, sceneId, skipRefCheck]);
 
   return containerRef;
 }

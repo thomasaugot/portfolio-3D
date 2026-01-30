@@ -1,9 +1,15 @@
 import "../globals.css";
-import { TranslationProvider } from "@/lib/providers/TranslationProvider";
-import { ThemeProvider } from "@/lib/providers/ThemeProvider";
-import { TabTitleAnimationProvider } from "@/lib/providers/TabTitleAnimationProvider";
-import ClientLoadingWrapper from "@/components/ClientLoadingWrapper";
-import AdminKeySequenceListener from "@/components/AdminKeySequenceListener";
+import { notFound } from "next/navigation";
+import { TranslationProvider } from "@/contexts/TranslationProvider";
+import { TabTitleAnimationProvider } from "@/contexts/TabTitleAnimationProvider";
+import ClientLoadingWrapper from "@/components/layout/ClientLoadingWrapper";
+import { locales, type Language } from "@/utils/locales";
+
+export const dynamicParams = false;
+
+export function generateStaticParams() {
+  return locales.map((locale) => ({ locale }));
+}
 
 export default async function LocaleLayout({
   children,
@@ -14,16 +20,14 @@ export default async function LocaleLayout({
 }) {
   const { locale } = await params;
 
+  // Validate locale - trigger 404 for unsupported locales
+  if (!locales.includes(locale as Language)) {
+    notFound();
+  }
+
   return (
     <html lang={locale} suppressHydrationWarning>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: `
-          (function() {
-            var theme = localStorage.getItem('theme') || 'dark';
-            document.documentElement.classList.add(theme);
-            document.documentElement.style.background = theme === 'dark' ? '#212121' : '#e8e4de';
-          })();
-        ` }} />
         <meta name="theme-color" content="#ffffff" id="theme-color-meta" />
         <meta name="color-scheme" content="light dark" />
         <link
@@ -43,15 +47,12 @@ export default async function LocaleLayout({
         />
       </head>
       <body className="antialiased" suppressHydrationWarning>
-        <ThemeProvider>
           <TranslationProvider>
             <TabTitleAnimationProvider />
-            <AdminKeySequenceListener />
             <ClientLoadingWrapper>
               <main>{children}</main>
             </ClientLoadingWrapper>
           </TranslationProvider>
-        </ThemeProvider>
       </body>
     </html>
   );

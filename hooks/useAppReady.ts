@@ -22,7 +22,6 @@ export function useAppReady(options: UseAppReadyOptions = {}) {
   useEffect(() => {
     // Cancel any previous running animation
     if (abortControllerRef.current) {
-      debug.log("🛑 useAppReady: Aborting previous animation");
       abortControllerRef.current.abort();
     }
 
@@ -65,7 +64,6 @@ export function useAppReady(options: UseAppReadyOptions = {}) {
         const checkTimeout = () => Date.now() - startTime > MAX_LOAD_TIME;
 
         // STAGE 1: Fonts (0% → 20%)
-        debug.log("📝 Stage 1: Loading fonts...");
         setProgress(5);
         await document.fonts.ready;
         await animateToProgress(20, 200);
@@ -74,7 +72,6 @@ export function useAppReady(options: UseAppReadyOptions = {}) {
         if (abortController.signal.aborted) return;
 
         // STAGE 2: Stylesheets (20% → 35%)
-        debug.log("🎨 Stage 2: Loading stylesheets...");
         await Promise.all(
           Array.from(document.styleSheets).map(async (sheet) => {
             if (sheet.href && !sheet.href.startsWith(window.location.origin)) {
@@ -95,7 +92,6 @@ export function useAppReady(options: UseAppReadyOptions = {}) {
         if (abortController.signal.aborted) return;
 
         // STAGE 3: Preload models into IndexedDB (35% → 55%)
-        debug.log("📦 Stage 3: Preloading 3D models into cache...");
         if (!checkTimeout()) {
           await preloadModels(getModelURLs());
         }
@@ -121,7 +117,6 @@ export function useAppReady(options: UseAppReadyOptions = {}) {
           ]);
 
           unsubscribe();
-          debug.log("✅ All critical 3D scenes ready");
         }
         await animateToProgress(95, 200);
 
@@ -142,7 +137,6 @@ export function useAppReady(options: UseAppReadyOptions = {}) {
         if (error instanceof Error && error.name === 'AbortError') {
           return;
         }
-        debug.error("❌ Init failed:", error);
         // Still show content on error but mark ready
         setProgress(100);
         setIsReady(true);

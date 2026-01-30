@@ -1,0 +1,155 @@
+{
+  "command": "ls ./proyectos",
+  "title": "Mi trabajo",
+  "count_label": "proyectos",
+  "scroll_explore": "Desliza para explorar",
+  "scroll_hint": "desliza",
+  "intro_kicker": "Selección destacada",
+  "intro_title": "Una selección curada de mis mejores proyectos.",
+  "intro_description": "Desliza para ver un proyecto por vez. Cada tarjeta se empareja con una escena 3D.",
+  "intro_meta_1": "5 proyectos",
+  "intro_meta_2": "Escenas 3D en vivo",
+  "intro_meta_3": "Un scroll = un proyecto",
+  "start_exploring": "Empezar a explorar",
+  "cta_complete": "¡Todos los proyectos explorados!",
+  "cta_title": "Construyamos algo juntos",
+  "cta_description": "Siempre estoy emocionado por nuevos retos y dar vida a las ideas.",
+  "cta_prompt": "¿Listo para empezar una conversación?",
+  "cta_contact": "Contáctame",
+  "cta_talk": "Hablemos",
+  "cta_github": "Ver GitHub",
+  "terminal": {
+    "header": "tom@portfolio ~ % ./projects.sh",
+    "intro_line1": "Inicializando portafolio...",
+    "intro_line2": "Esta es una selección curada de mis mejores trabajos.",
+    "intro_line3": "Cada proyecto demuestra mis habilidades en desarrollo web moderno, desde experiencias 3D interactivas hasta plataformas full-stack.",
+    "scroll_cta": "Teclear o deslizar para explorar cada proyecto",
+    "view_live": "Ver en vivo",
+    "project_count": "5 proyectos destacados cargados",
+    "next_prompt": "¿Seguir explorando?",
+    "next_project": "Siguiente proyecto"
+  },
+  "counter": {
+    "client": "Cliente"
+  },
+  "common": {
+    "cta": {
+      "view_full_case": "Ver caso completo"
+    },
+    "ui": {
+      "view_details": "Ver detalles"
+    }
+  },
+  "modal": {
+    "desktop_view": "Escritorio",
+    "mobile_view": "Móvil",
+    "gallery": "Galería",
+    "technologies": "Tecnologías",
+    "challenge": "Desafío",
+    "solution": "Solución",
+    "view_live": "Ver Proyecto en Vivo"
+  },
+  "categories": {
+    "corporate_web": "Sitio Corporativo",
+    "internal_platform": "Plataforma Interna",
+    "crm_platform": "Plataforma CRM",
+    "business_website": "Sitio Profesional",
+    "software_platform": "Plataforma de Software"
+  },
+  "dosxdos_web": {
+    "title": "Sitio Web Corporativo 2.0 + Panel de Administración",
+    "preview": {
+      "tagline": "Un estudio de diseño de lujo necesitaba una web a la altura de su trabajo creativo. Construí un sitio Next.js animado con GSAP y un CMS a medida para gestión de contenido autónoma.",
+      "description": "Rediseño completo del sitio corporativo con sistema de gestión de contenido integrado. Entrega de una plataforma moderna y optimizada para SEO que refleja la excelencia creativa de la marca.",
+      "key_points": {
+        "modern_experience": "Experiencia animada e interactiva desarrollada con Next.js 15 y GSAP",
+        "admin_panel": "Panel de administración personalizado con editor Lexical para gestión autónoma de contenido",
+        "seo_optimization": "Implementación SEO avanzada con JSON-LD y metadatos dinámicos"
+      }
+    },
+    "details": {
+      "challenge": "Dos por Dos necesitaba una presencia digital alineada con su trabajo de diseño comercial de alta gama. Su sitio anterior era estático, carecía de estructura de portfolio, no tenía estrategia SEO y no permitía gestionar el contenido de forma independiente.",
+      "solution": "Desarrollé una plataforma web completa con dos componentes: un sitio público animado que presenta servicios, portfolio y blog; y un panel de administración privado que permite al equipo publicar y gestionar contenido sin depender de desarrolladores."
+    }
+  },
+  "dosxdos_app": {
+    "title": "Plataforma de Gestión Interna - Rediseño Móvil",
+    "preview": {
+      "tagline": "Los equipos de campo luchaban con una herramienta web obsoleta. Rediseñé su CRM como app mobile-first con mapas interactivos y modo offline para iOS y Android.",
+      "description": "Rediseño completo de la plataforma interna CRM/gestión de proyectos. Transformación de una herramienta web obsoleta en aplicación optimizada para móvil desplegada como apps nativas iOS y Android.",
+      "key_points": {
+        "mobile_optimization": "Rediseño mobile-first para instaladores y responsables de rutas trabajando en campo",
+        "route_management": "Integración de mapa interactivo, reporte de incidentes y notificaciones en tiempo real",
+        "native_deployment": "Despliegue WebView como apps descargables iOS y Android"
+      }
+    },
+    "details": {
+      "challenge": "Dos × Dos disponía de un sistema CRM/REP funcional en Zoho, pero su herramienta web complementaria para coordinación de rutas y visualización de puntos de venta estaba obsoleta.",
+      "solution": "Rediseñé y extendí la plataforma interna manteniendo la integración Zoho. La nueva aplicación ofrece visualización clara de rutas mediante mapas interactivos, registro de incidentes, notificaciones en tiempo real, todo optimizado para dispositivos móviles."
+    }
+  },
+  "energia_solar": {
+    "title": "Plataforma de Monitoreo de Plantas Solares - CRM",
+    "preview": {
+      "tagline": "Los clientes solares navegaban entre tres apps de proveedores diferentes. Construí una plataforma unificada centralizando todos los datos, más un CRM admin para gestión de clientes.",
+      "description": "Plataforma full-stack que unifica múltiples proveedores solares en una interfaz única. Sistema de doble rol: panel de monitoreo para clientes y CRM interno para gestión de plantas.",
+      "key_points": {
+        "data_unification": "Punto de acceso único consolidando datos de Victron, SolarEdge y GoodWe",
+        "dual_interface": "Dashboard cliente para monitoreo + CRM admin para gestión de usuarios y plantas",
+        "native_experience": "Despliegue WebView ofreciendo experiencia de app nativa en iOS y Android"
+      }
+    },
+    "details": {
+      "challenge": "Los clientes de Energía Solar Canarias accedían a diferentes plataformas externas (Victron, SolarEdge, GoodWe) cada una con interfaces e identificadores separados.",
+      "solution": "Desarrollé una aplicación web modular con acceso basado en roles. Los clientes obtienen acceso unificado a todas sus plantas con visualización clara de producción, consumo, carga de batería, ahorros y alertas."
+    }
+  },
+  "charpente_durand": {
+    "title": "Sitio Profesional para Empresa de Carpintería",
+    "preview": {
+      "tagline": "Una empresa de carpintería francesa no tenía presencia online. Les construí un sitio optimizado SEO que rankea localmente y genera leads mediante formularios de contacto.",
+      "description": "Sitio web profesional desarrollado para establecer presencia online y competir efectivamente en el mercado local. Enfoque en optimización SEO y generación de leads.",
+      "key_points": {
+        "seo_boost": "Estructura optimizada SEO para superar competencia local",
+        "online_presence": "Sitio web moderno y profesional reflejando calidad del trabajo artesanal",
+        "lead_generation": "Integración de formulario de contacto para adquisición directa de clientes"
+      }
+    },
+    "details": {
+      "challenge": "Charpente Menuiserie Durand necesitaba una presencia online más fuerte para competir efectivamente en su mercado local.",
+      "solution": "Desarrollé un sitio web profesional optimizado para motores de búsqueda y visibilidad local. El sitio presenta claramente sus servicios de carpintería y facilita contacto de clientes."
+    }
+  },
+  "galaga_agency": {
+    "title": "Sitio Web 2.0 para Galaga Agency",
+    "preview": {
+      "tagline": "El antiguo sitio Webflow de Galaga no reflejaba su calibre creativo. Construí una experiencia 3D inmersiva con entornos Three.js y animaciones GSAP cinemáticas.",
+      "description": "Diseñé y desarrollé el nuevo sitio de Galaga Agency desde cero: una experiencia inmersiva y audaz que fusiona creatividad, tecnología e identidad.",
+      "key_points": {
+        "brand_reinvention": "Reinvención completa de la presencia digital de Galaga",
+        "modern_tech": "Impulsado por Next.js 15, TypeScript, GSAP y Three.js",
+        "interactive_design": "Storytelling 3D inmersivo y transiciones fluidas"
+      }
+    },
+    "details": {
+      "challenge": "El antiguo sitio Webflow ya no reflejaba el espíritu innovador ni la calidad del trabajo creativo de Galaga.",
+      "solution": "Diseñé y desarrollé un ecosistema digital completamente nuevo: expresivo, moderno y auténticamente Galaga."
+    }
+  },
+  "reloj_laboral": {
+    "title": "Reloj Laboral — Sistema de fichaje digital",
+    "preview": {
+      "tagline": "Las empresas españolas necesitaban fichaje digital conforme por ley. Construí un sistema full-stack con interfaces separadas para empleados, admins e inspectores.",
+      "description": "Diseñé y desarrollé Reloj Laboral, plataforma full-stack conforme a la regulación española 2025 sobre control horario.",
+      "key_points": {
+        "digital_compliance": "Conforme a legislación española 2025 sobre control horario digital",
+        "full_stack": "Solución completa: frontend, backend y base de datos",
+        "multi_role_system": "Interfaces personalizadas para empleados, administradores e inspectores"
+      }
+    },
+    "details": {
+      "challenge": "Las empresas españolas deben ahora registrar digitalmente las horas de trabajo según el artículo 34.9 del Estatuto de los Trabajadores.",
+      "solution": "Desarrollé tanto frontend como backend desde cero: sistema robusto y modular con roles diferenciados y trazabilidad completa."
+    }
+  }
+}

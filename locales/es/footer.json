@@ -1,26 +1,31 @@
 {
-    "brand": "by Thomas Augot",
-    "tagline": "Creando experiencias digitales que inspiran y conectan.",
-    "navigation": {
-      "title": "Navegación"
-    },
-    "services": {
-      "title": "Servicios",
-      "frontend": "Desarrollo Frontend",
-      "fullstack": "Soluciones Full-Stack",
-      "mobile": "Aplicaciones Móviles",
-      "animations": "Animaciones Interactivas"
-    },
-    "contact": {
-      "title": "Contáctame",
-      "location": "Las Palmas, Islas Canarias"
-    },
-    "social_label": "Encuéntrame en",
-    "credits": "Codificado con ",
-    "by": "por",
-    "copyright": "Todos los derechos reservados.",
-    "legal": {
-      "privacy": "Política de Privacidad",
-      "terms": "Términos de Servicio"
-    }
+  "command": "./nuevo-mensaje.sh",
+  "title": "Hablemos",
+  "description": "¿Tienes una idea de proyecto? ¿Necesitas un desarrollador? ¿O solo quieres saludar?",
+  "cta": "Tienes un proyecto en mente? Envia un brief corto y empezamos.",
+  "available": "Abierto a nuevas oportunidades",
+  "location_label": "En Gran Canaria, disponible mundialmente",
+  "phone_label": "telefono",
+  "email_label": "email",
+  "social_kicker": "enlaces",
+  "social_title": "Encuéntrame en otros lugares",
+  "social_description": "¿Prefieres redes? Escríbeme en cualquiera de estas plataformas o sigue lo que estoy construyendo.",
+  "rights": "Todos los derechos reservados.",
+  "back_to_top": "Volver arriba",
+  "form": {
+    "name_command": "introducir_nombre",
+    "name_placeholder": "Tu nombre",
+    "name_waiting": "escribe tu nombre...",
+    "email_command": "introducir_email",
+    "email_placeholder": "tu@email.com",
+    "email_waiting": "esperando nombre...",
+    "message_command": "escribir_mensaje",
+    "message_placeholder": "Hola Thomas, tengo esta idea genial de proyecto...",
+    "message_waiting": "esperando email...",
+    "submit": "Enviar mensaje",
+    "sending": "enviando",
+    "success_title": "¡Mensaje enviado!",
+    "success_text": "Gracias por contactarme. ¡Te respondo pronto!",
+    "send_another": "Enviar otro"
   }
+}

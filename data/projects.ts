@@ -14,8 +14,8 @@ export const projects: Project[] = [
       "SCSS",
       "Zustand",
       "GSAP",
-      "Lexical",
-      "NextAuth",
+      "PostgreSQL",
+      "Prisma",
     ],
     featured: false,
     preview: {
@@ -127,8 +127,8 @@ export const projects: Project[] = [
       "Tailwind CSS",
       "Redux Toolkit",
       "Framer Motion",
-      "React Hook Form",
       "WebView",
+      "iOS/Android"
     ],
     featured: true,
     preview: {
@@ -250,6 +250,8 @@ export const projects: Project[] = [
       "Tailwind CSS",
       "GSAP",
       "Three.js",
+      "Google Analytics 4",
+      "Tag Manager",
     ],
     featured: true,
     preview: {
@@ -309,7 +311,7 @@ export const projects: Project[] = [
       "Express.js",
       "PostgreSQL",
       "Supabase",
-      "JWT",
+      "Websockets",
       "GSAP",
     ],
     featured: true,

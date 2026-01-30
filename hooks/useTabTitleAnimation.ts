@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { typewriter, loadingDots } from "@/utils/animations/tab-title-animation";
+import { typewriter, loadingDots } from "@/utils/animations/other/tab-title-animation";
 
 export const useTabTitleAnimation = (phrases: string[], isLoading: boolean = false) => {
   useEffect(() => {

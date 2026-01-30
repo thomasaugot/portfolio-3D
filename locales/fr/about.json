@@ -1,149 +1,26 @@
 {
-  "hero": {
-    "title_1": "L'Histoire",
-    "title_2": "Derrière le Code",
-    "subtitle": "Développeur Full-Stack | 3+ Ans d'Expérience | Trilingue",
-    "stats": {
-      "years": "Années",
-      "projects": "Projets",
-      "languages": "Langues"
-    }
+  "command": "cat a-propos.md",
+  "name": "Thomas Augot",
+  "role": "Développeur Full-Stack • Passionné Frontend",
+  "location": "Grande Canarie, Espagne",
+  "bio": "Originaire de Nantes, aujourd’hui basé à Gran Canaria. Curieux et aventureux, j’ai parcouru le monde en backpack pendant des années — de l’Australie aux États‑Unis, en passant par l’Asie et bien plus. Il y a quelques années, j’ai changé de voie après avoir découvert le code, et cela fait maintenant plus de 3 ans que je développe mes compétences pour devenir un développeur polyvalent, capable de donner vie à tous types de projets web.",
+  "stats": {
+    "years": "Années",
+    "years_value": "3+",
+    "projects": "Projets",
+    "projects_value": "20+",
+    "languages": "Langues",
+    "languages_value": "EN/FR/ES"
   },
-  "intro": {
-    "paragraph_1": "Salut ! Je suis Thomas, développeur full-stack originaire de Nantes, France, maintenant basé à Gran Canaria. Avant de m'installer pour coder face à l'océan, j'ai passé des années à voyager autour du monde—Nouvelle-Zélande, Australie, Asie, États-Unis, et ailleurs. Ce mode de vie nomade m'a appris à m'adapter rapidement et à relever de nouveaux défis, exactement comme j'aborde le développement.",
-    "paragraph_2": "Je construis des applications web modernes de bout en bout. Que ce soit créer des interfaces fluides, configurer des serveurs, ou gérer des bases de données, j'aime travailler sur toute la stack. La plupart de mon temps va au frontend, créant des expériences interactives qui semblent soignées et responsive.",
-    "paragraph_3": "Courant en français, anglais et espagnol, je travaille avec des équipes et clients internationaux. Quand je ne code pas, vous me trouverez en train de surfer ou de profiter de la vie insulaire."
+  "tech": {
+    "frontend": "Frontend",
+    "backend_devops": "Backend & DevOps",
+    "seo_analytics": "SEO & Analytics",
+    "mobile": "Mobile"
   },
-  "tech_stack": {
-    "title": "Stack Technique",
-    "description": "Ma boîte à outils technique",
-    "categories": {
-      "development": "Développement",
-      "cloud": "Cloud & Mobile",
-      "tools": "IA & Outils"
-    }
-  },
-  "specialties": {
-    "title": "Ce Que Je Peux Faire",
-    "subtitle": "Du concept au déploiement, je donne vie aux idées",
-    "skills_label": "Compétences Clés",
-    "frontend_dev": {
-      "title": "Développement Frontend",
-      "description": "Création d'interfaces utilisateur belles et responsive avec React, Next.js et TypeScript. Je me concentre sur la performance, l'accessibilité et la création d'expériences utilisateur agréables."
-    },
-    "animations": {
-      "title": "Animations Interactives",
-      "description": "Donner vie aux designs avec GSAP et Three.js. Des animations déclenchées au scroll aux scènes 3D, je crée des interactions engageantes qui font ressortir les sites web."
-    },
-    "fullstack": {
-      "title": "Solutions Full-Stack",
-      "description": "Développement d'applications complètes de la base de données au déploiement. Je gère à la fois frontend et backend, intégrations d'APIs, authentification et workflows de déploiement."
-    },
-    "mobile_apps": {
-      "title": "Applications Mobiles",
-      "description": "Développement d'applications mobiles cross-platform avec React Native et Expo. Du développement à la publication sur App Store et Google Play, je gère tout le cycle de développement mobile."
-    },
-    "seo": {
-      "title": "SEO & Performance",
-      "description": "Optimisation des sites web pour les moteurs de recherche et la performance. J'implémente le SEO technique, améliore les Core Web Vitals, et m'assure que votre site se positionne bien et charge rapidement."
-    },
-    "multilingual": {
-      "title": "Projets Multilingues",
-      "description": "Avec une maîtrise du français, de l'anglais et de l'espagnol, je peux développer des applications multilingues et communiquer efficacement avec des équipes et clients internationaux."
-    }
-  },
-  "timeline": {
-    "title_1": "Mon Parcours",
-    "title_2": "de Développeur",
-    "now": "ACTUEL",
-    "work": "Travail",
-    "education": "Formation",
-    "technologies": "Technologies",
-    "view_details": "Voir détails",
-    "items": [
-      {
-        "type": "work",
-        "title": "Développeur Full Stack",
-        "organization": "Galaga Agency",
-        "period": "Septembre 2024 - Présent",
-        "location": "Telde, Îles Canaries, Espagne",
-        "tech": "Next.js, TypeScript, React, Node.js",
-        "description": "Développeur full-stack responsable du développement end-to-end des projets clients et plateformes internes. Développement d'applications web modernes avec Next.js 15, TypeScript, React, Tailwind CSS et SCSS. Construction de systèmes CRM complexes avec Redux, développement de systèmes backend avec Node.js, Express et PostgreSQL. Gestion de l'infrastructure serveur incluant configuration VPS et conteneurisation Docker. Création d'expériences UI interactives avec GSAP, Three.js et Framer Motion.",
-        "current": "true"
-      },
-      {
-        "type": "education",
-        "title": "Développement Frontend - React.js",
-        "organization": "UNIR | Universidad Internacional de La Rioja",
-        "period": "Avril 2024 - Août 2024",
-        "location": "Espagne",
-        "tech": "React, JavaScript, Frontend",
-        "description": "Spécialisation en ingénierie logicielle informatique axée sur React.js et les pratiques modernes de développement frontend."
-      },
-      {
-        "type": "work",
-        "title": "Développeur Frontend",
-        "organization": "Frigate",
-        "period": "Avril 2024 - Septembre 2024",
-        "location": "Londres, Royaume-Uni",
-        "tech": "React Native, React, Vite",
-        "description": "Contribution à l'application mobile de Frigate avec React Native. Construction du portail Admin avec React, Vite et Tailwind CSS. Création de documentation complète et participation aux sessions scrum et revues de code."
-      },
-      {
-        "type": "work",
-        "title": "Stagiaire Développeur Logiciel",
-        "organization": "Frigate",
-        "period": "Novembre 2023 - Avril 2024",
-        "location": "Londres, Royaume-Uni",
-        "tech": "Flutterflow, PostgreSQL, Firebase",
-        "description": "Développement de l'application mobile NauBank avec Flutterflow, PostgreSQL et Firebase. Travail en environnement Agile avec réunions scrum et revues de code. Maintenance du backend PostgreSQL et déploiement sur Heroku. Collaboration sur la transition de Flutterflow vers React Native."
-      },
-      {
-        "type": "work",
-        "title": "Développeur React Native",
-        "organization": "Osly Solutions",
-        "period": "Juillet 2023 - Novembre 2023",
-        "location": "Nantes, France",
-        "tech": "React Native, TypeScript, Supabase",
-        "description": "Développement d'application mobile pour la numérisation d'accès aux bâtiments en React Native et TypeScript. Implémentation du mode hors ligne, migration de la base de données vers Supabase, amélioration du design UI. Publication de plusieurs versions sur App Store et Google Play Store. Implémentation d'optimisations de performance et protocoles de cybersécurité."
-      },
-      {
-        "type": "work",
-        "title": "Développeur Web (Bénévole)",
-        "organization": "Association Eurafrique.eu",
-        "period": "Avril 2023 - Novembre 2023",
-        "location": "À distance",
-        "tech": "React, SCSS, Supabase",
-        "description": "Développement de site web multilingue en React et SCSS avec base de données Supabase. Gestion de l'administration d'hébergement web incluant cPanel et gestion de domaine. Supervision de l'équipe IT et conduite de revues de code."
-      },
-      {
-        "type": "work",
-        "title": "Développeur Web",
-        "organization": "Freelance | Indépendant",
-        "period": "Février 2023 - Avril 2024",
-        "location": "À distance",
-        "tech": "Next.js, TypeScript, Tailwind CSS",
-        "description": "Développement de sites web pour entreprises de construction avec Next.js et Tailwind CSS. Collaboration sur le site web de Kingworld Finance avec Next.js, TypeScript et Tailwind CSS. Contribution aux solutions de R&I Software avec React, TypeScript et SCSS."
-      },
-      {
-        "type": "education",
-        "title": "Programme Développement Web Full Stack",
-        "organization": "Ironhack",
-        "period": "Novembre 2022 - Février 2023",
-        "location": "Espagne",
-        "tech": "React, Node.js, Express, MongoDB",
-        "description": "Bootcamp intensif axé sur le développement JavaScript full-stack avec React, Node.js, Express et MongoDB."
-      }
-    ]
-  },
-  "cta": {
-    "title": "En Savoir Plus",
-    "subtitle": "Découvrez mon profil et mon travail",
-    "portfolio_title": "Voir Mes Réalisations",
-    "portfolio_description": "Parcourez mes projets récents et découvrez le type de travail que je livre pour mes clients et projets personnels.",
-    "view_portfolio": "Voir le Portfolio",
-    "contact_title": "Me Contacter",
-    "contact_description": "Intéressé par une collaboration ? Envoyez-moi un message et discutons de votre projet.",
-    "get_in_touch": "Contactez-moi"
-  }
+  "cta_work": "Ouvrir le portfolio ?",
+  "cta_command": "portfolio"
+  ,
+  "block_about": "À propos",
+  "block_skills": "Mes compétences"
 }

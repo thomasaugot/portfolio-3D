@@ -1,11 +1,11 @@
 "use client";
 
 import { ButtonHTMLAttributes, ReactNode } from "react";
-import SafeLink from "@/components/ui/SafeLink";
-import { cn } from "@/lib/utils";
+import Link from "next/link";
+import { cn } from "@/utils/cn";
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "filled" | "outlined" | "ghost";
+  variant?: "orange" | "green" | "outlined";
   size?: "sm" | "md" | "lg";
   children: ReactNode;
   className?: string;
@@ -15,7 +15,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 export const Button = ({
-  variant = "filled",
+  variant = "orange",
   size = "md",
   children,
   className,
@@ -26,43 +26,26 @@ export const Button = ({
   ...props
 }: ButtonProps) => {
   const baseStyles =
-    "relative inline-flex flex-1 text-nowrap items-center justify-center font-medium transition-all duration-300 ease-out transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100";
+    "relative inline-flex items-center justify-center gap-2 font-bold transition-all duration-300 ease-out hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100";
 
   const sizeStyles = {
-    sm: "px-4 py-2 text-sm rounded-xl",
-    md: "px-6 py-3 text-base rounded-xl",
-    lg: "px-6 py-3 text-lg rounded-xl",
+    sm: "px-4 py-2 text-sm rounded-lg",
+    md: "px-5 py-2.5 text-base rounded-lg",
+    lg: "px-6 py-3 text-lg rounded-lg",
   };
 
   const variantStyles = {
-    filled: `
-      gradient-primary text-black font-semibold
-      bg-[length:200%_200%] bg-left
-      shadow-lg hover:shadow-xl
-      transition-all duration-500 ease-in-out
-      overflow-hidden
-      before:content-[''] before:absolute before:inset-0 before:bg-[linear-gradient(120deg,transparent,rgba(255,255,255,0.4),transparent)]
-      before:translate-x-[-100%] hover:before:translate-x-[100%]
-      before:transition-transform before:duration-700 before:ease-in-out
+    orange: `
+      bg-secondary text-black
+      hover:shadow-lg hover:shadow-secondary/25
+    `,
+    green: `
+      bg-primary text-black
+      hover:shadow-lg hover:shadow-primary/25
     `,
     outlined: `
-      relative overflow-hidden
-      bg-bg text-text font-semibold
-      border-2 border-transparent
-      [background-image:linear-gradient(var(--theme-bg),var(--theme-bg)),linear-gradient(222deg,var(--theme-primary)_67.22%,var(--theme-secondary)_93.57%)]
-      [background-origin:border-box,border-box]
-      [background-clip:padding-box,border-box]
-      before:content-[''] before:absolute before:inset-0 before:-z-10
-      before:bg-[radial-gradient(circle_at_center,var(--theme-primary)_0%,var(--theme-secondary)_100%)]
-      before:scale-[0.3] before:opacity-0 before:blur-xl
-      hover:before:scale-[1.5] hover:before:opacity-100 hover:before:blur-0
-      before:transition-all before:duration-1000 before:ease-[cubic-bezier(0.19,1,0.22,1)]
-      hover:text-black
-      transition-colors duration-500
-    `,
-    ghost: `
-      bg-transparent text-muted hover:text-text hover:bg-bg
-      transition-all duration-300
+      bg-transparent text-white/80 border border-white/20
+      hover:border-white/40 hover:text-white
     `,
   };
 
@@ -84,10 +67,25 @@ export const Button = ({
   );
 
   if (asLink && href) {
+    const isExternal = href.startsWith("http") || href.startsWith("mailto:");
+
+    if (isExternal) {
+      return (
+        <a
+          href={href}
+          className={combinedClassName}
+          target={href.startsWith("http") ? "_blank" : undefined}
+          rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
+        >
+          {content}
+        </a>
+      );
+    }
+
     return (
-      <SafeLink href={href} className={combinedClassName}>
+      <Link href={href} className={combinedClassName}>
         {content}
-      </SafeLink>
+      </Link>
     );
   }
 

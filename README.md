@@ -2,6 +2,7 @@
 ### Translation & Project Data System Documentation
 
 ## Table of Contents
+- [Setup](#setup)
 - [Overview](#overview)
 - [File Structure](#file-structure)
 - [Translation System](#translation-system)
@@ -25,6 +26,39 @@
   - [Three.js Scenes](#threejs-scenes)
   - [Loading State](#loading-state)
   - [Rules](#rules)
+
+---
+
+## Setup
+
+### Quick Start (After Deploy)
+
+Run this ONCE after deploying to Vercel:
+
+```bash
+curl -X POST https://your-domain.com/api/admin/setup \
+  -H "Content-Type: application/json" \
+  -d '{"password":"YOUR_ADMIN_PASSWORD"}'
+```
+
+This automatically:
+1. ✅ Runs database migration (adds translation columns)
+2. ✅ Seeds all articles from Medium
+3. ✅ Translates everything to FR & ES
+
+### Environment Variables
+
+Set these in Vercel:
+- `ADMIN_PASSWORD` - Your admin password
+- `GOOGLE_TRANSLATE_API_KEY` - Get it [here](https://console.cloud.google.com/apis/credentials)
+
+### Adding New Articles
+
+1. Publish on Medium (in English)
+2. Go to `/admin` → Login
+3. Go to `/blog` → Click "Update Articles"
+
+New article gets translated and added to all 3 languages automatically.
 
 ---
 

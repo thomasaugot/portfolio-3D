@@ -1,26 +1,31 @@
 {
-  "brand": "by Thomas Augot",
-  "tagline": "Créer des expériences numériques qui inspirent et engagent.",
-  "navigation": {
-    "title": "Navigation"
-  },
-  "services": {
-    "title": "Services",
-    "frontend": "Développement Frontend",
-    "fullstack": "Solutions Full-Stack",
-    "mobile": "Applications Mobiles",
-    "animations": "Animations Interactives"
-  },
-  "contact": {
-    "title": "Contactez-moi",
-    "location": "Las Palmas, Îles Canaries"
-  },
-  "social_label": "Retrouvez-moi sur",
-  "credits": "Codé avec",
-  "by": "par",
-  "copyright": "Tous droits réservés.",
-  "legal": {
-    "privacy": "Politique de Confidentialité",
-    "terms": "Conditions d'Utilisation"
+  "command": "./nouveau-message.sh",
+  "title": "Contactez-moi",
+  "description": "Une idée de projet ? Besoin d'un développeur ? Ou juste envie de dire bonjour ?",
+  "cta": "Un projet en tête ? Envoyez un brief court et on part de là.",
+  "available": "Ouvert aux nouvelles opportunités",
+  "location_label": "Basé à Gran Canaria, disponible mondialement",
+  "phone_label": "telephone",
+  "email_label": "email",
+  "social_kicker": "réseaux",
+  "social_title": "Restons en contact",
+  "social_description": "Retrouvez-moi sur les réseaux ou suivez mes projets en cours.",
+  "rights": "Tous droits réservés.",
+  "back_to_top": "Retour en haut",
+  "form": {
+    "name_command": "entrer_nom",
+    "name_placeholder": "Votre nom",
+    "name_waiting": "tapez votre nom...",
+    "email_command": "entrer_email",
+    "email_placeholder": "votre@email.com",
+    "email_waiting": "en attente du nom...",
+    "message_command": "composer_message",
+    "message_placeholder": "Salut Thomas, j'ai une super idée de projet...",
+    "message_waiting": "en attente de l'email...",
+    "submit": "Envoyer",
+    "sending": "envoi",
+    "success_title": "Message envoyé !",
+    "success_text": "Merci de m'avoir contacté. Je vous réponds bientôt !",
+    "send_another": "Envoyer un autre"
   }
 }

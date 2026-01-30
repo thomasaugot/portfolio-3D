@@ -1,0 +1,155 @@
+{
+  "command": "ls ./projets",
+  "title": "Mon travail",
+  "count_label": "projets",
+  "scroll_explore": "Defiler pour explorer",
+  "scroll_hint": "défiler",
+  "intro_kicker": "Sélection",
+  "intro_title": "Une sélection de projets.",
+  "intro_description": "Défile pour avancer un projet à la fois. Chaque carte est liée à une scène 3D.",
+  "intro_meta_1": "5 projets",
+  "intro_meta_2": "Scenes 3D live",
+  "intro_meta_3": "Un scroll = un projet",
+  "start_exploring": "Commencer l'exploration",
+  "cta_complete": "Tous les projets explorés !",
+  "cta_title": "Construisons quelque chose ensemble",
+  "cta_description": "Je suis toujours partant pour relever de nouveaux défis et donner vie aux idées.",
+  "cta_prompt": "Prêt à démarrer une conversation ?",
+  "cta_contact": "Me contacter",
+  "cta_talk": "Discutons",
+  "cta_github": "Voir GitHub",
+  "terminal": {
+    "header": "tom@portfolio ~ % ./projects.sh",
+    "intro_line1": "Initialisation du portfolio...",
+    "intro_line2": "Une sélection de projets représentatifs de mes compétences.",
+    "intro_line3": "Chaque projet démontre mes compétences en développement web moderne, des expériences 3D interactives aux plateformes full-stack.",
+    "scroll_cta": "Cliquez ou scrollez pour explorer chaque projet",
+    "view_live": "Voir en ligne",
+    "project_count": "5 projets chargés",
+    "next_prompt": "Continuer l'exploration ?",
+    "next_project": "Projet suivant"
+  },
+  "counter": {
+    "client": "Client"
+  },
+  "common": {
+    "cta": {
+      "view_full_case": "Voir l'etude complete"
+    },
+    "ui": {
+      "view_details": "Voir les details"
+    }
+  },
+  "modal": {
+    "desktop_view": "Bureau",
+    "mobile_view": "Mobile",
+    "gallery": "Galerie",
+    "technologies": "Technologies",
+    "challenge": "Défi",
+    "solution": "Solution",
+    "view_live": "Voir le Projet en Direct"
+  },
+  "categories": {
+    "corporate_web": "Site Corporatif",
+    "internal_platform": "Plateforme Interne",
+    "crm_platform": "Plateforme CRM",
+    "business_website": "Site Professionnel",
+    "software_platform": "Plateforme Logicielle"
+  },
+  "dosxdos_web": {
+    "title": "Site Corporatif 2.0 + Panneau Admin",
+    "preview": {
+      "tagline": "Un studio de design de luxe avait besoin d'un site à la hauteur de leur travail créatif. J'ai construit un site Next.js animé avec GSAP et un CMS sur mesure pour une gestion de contenu autonome.",
+      "description": "Refonte complète du site corporatif avec système de gestion de contenu intégré. Livraison d'une plateforme moderne et optimisée SEO qui reflète l'excellence créative de la marque.",
+      "key_points": {
+        "modern_experience": "Expérience animée et interactive développée avec Next.js 15 et GSAP",
+        "admin_panel": "Panneau d'administration personnalisé avec éditeur Lexical pour gestion autonome du contenu",
+        "seo_optimization": "Implémentation SEO avancée avec JSON-LD et métadonnées dynamiques"
+      }
+    },
+    "details": {
+      "challenge": "Dos por Dos avait besoin d'une présence digitale alignée avec leur travail de design commercial haut de gamme.",
+      "solution": "J'ai développé une plateforme web complète avec deux composants : un site public animé présentant les services, le portfolio et le blog ; et un panneau d'administration privé."
+    }
+  },
+  "dosxdos_app": {
+    "title": "Plateforme de Gestion Interne - Refonte Mobile",
+    "preview": {
+      "tagline": "Les équipes terrain galéraient avec un outil web obsolète. J'ai redesigné leur CRM en app mobile-first avec cartes interactives et mode hors-ligne pour iOS et Android.",
+      "description": "Refonte complète de la plateforme interne CRM/gestion de projets. Transformation d'un outil web obsolète en application optimisée mobile.",
+      "key_points": {
+        "mobile_optimization": "Refonte mobile-first pour installateurs et responsables de routes travaillant sur le terrain",
+        "route_management": "Intégration de carte interactive, signalement d'incidents et notifications temps réel",
+        "native_deployment": "Déploiement WebView comme apps téléchargeables iOS et Android"
+      }
+    },
+    "details": {
+      "challenge": "Dos × Dos disposait d'un système CRM/REP fonctionnel sur Zoho, mais leur outil web complémentaire était obsolète.",
+      "solution": "J'ai redesigné et étendu la plateforme interne tout en maintenant l'intégration Zoho."
+    }
+  },
+  "energia_solar": {
+    "title": "Plateforme de Monitoring de Centrales Solaires - CRM",
+    "preview": {
+      "tagline": "Les clients d'une entreprise d'installations solaires jonglaient entre 7 apps de fournisseurs différents pour surveiller leurs sites. J'ai construit la partie frontend d'une plateforme unifiée centralisant toutes les données.",
+      "description": "Plateforme full-stack unifiant plusieurs fournisseurs solaires dans une interface unique.",
+      "key_points": {
+        "data_unification": "Point d'accès unique consolidant données Victron, SolarEdge et GoodWe",
+        "dual_interface": "Dashboard client pour monitoring + CRM admin pour gestion utilisateurs et centrales",
+        "native_experience": "Déploiement WebView offrant expérience d'app native sur iOS et Android"
+      }
+    },
+    "details": {
+      "challenge": "Les clients d'Energía Solar Canarias accédaient à différentes plateformes externes chacune avec interfaces et identifiants séparés.",
+      "solution": "J'ai développé une application web modulaire avec accès basé sur les rôles."
+    }
+  },
+  "charpente_durand": {
+    "title": "Site Professionnel pour Entreprise de Charpenterie",
+    "preview": {
+      "tagline": "Une entreprise de charpente française n'avait aucune présence en ligne. Je leur ai construit un site optimisé SEO qui se positionne localement.",
+      "description": "Site web professionnel développé pour établir une présence en ligne et concurrencer efficacement sur le marché local.",
+      "key_points": {
+        "seo_boost": "Structure optimisée SEO pour surpasser la concurrence locale",
+        "online_presence": "Site web moderne et professionnel reflétant la qualité du savoir-faire",
+        "lead_generation": "Intégration de formulaire de contact pour acquisition directe de clients"
+      }
+    },
+    "details": {
+      "challenge": "Charpente Menuiserie Durand avait besoin d'une présence en ligne plus forte pour concurrencer efficacement.",
+      "solution": "J'ai développé un site web professionnel optimisé pour les moteurs de recherche et la visibilité locale."
+    }
+  },
+  "galaga_agency": {
+    "title": "Site Web 2.0 pour Galaga Agency",
+    "preview": {
+      "tagline": "L'ancien site Webflow de Galaga ne reflétait pas leur calibre créatif. J'ai construit une expérience 3D immersive, optimisée pour le SEO et incluant un pannel Analytics .",
+      "description": "J'ai conçu et développé le nouveau site de Galaga Agency depuis zéro — une expérience immersive et audacieuse.",
+      "key_points": {
+        "brand_reinvention": "Réinvention complète de la présence numérique de Galaga",
+        "modern_tech": "Propulsé par Next.js 15, TypeScript, GSAP et Three.js",
+        "interactive_design": "Storytelling 3D immersif et transitions fluides"
+      }
+    },
+    "details": {
+      "challenge": "L'ancien site Webflow ne reflétait plus l'esprit innovant ni la qualité du travail créatif de Galaga.",
+      "solution": "J'ai conçu et développé un écosystème numérique entièrement nouveau — expressif, moderne et résolument Galaga."
+    }
+  },
+  "reloj_laboral": {
+    "title": "Reloj Laboral — Système de pointage numérique",
+    "preview": {
+      "tagline": "Les entreprises espagnoles devaient avoir un pointage digital conforme par la loi. J'ai construit un système full-stack.",
+      "description": "J'ai conçu et développé Reloj Laboral, une plateforme full-stack conforme à la réglementation espagnole 2025.",
+      "key_points": {
+        "digital_compliance": "Conforme à la législation espagnole 2025 sur le contrôle horaire digital",
+        "full_stack": "Solution complète — frontend, backend et base de données",
+        "multi_role_system": "Interfaces personnalisées pour employés, administrateurs et inspecteurs"
+      }
+    },
+    "details": {
+      "challenge": "Les entreprises espagnoles doivent désormais enregistrer numériquement les heures de travail selon l'article 34.9.",
+      "solution": "J'ai développé à la fois le frontend et le backend depuis zéro : un système robuste et modulaire."
+    }
+  }
+}

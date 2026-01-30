@@ -1,0 +1,34 @@
+{
+  "tab_title": {
+    "hello": "Hello!",
+    "name": "Thomas Augot",
+    "role": "Full-Stack Developer"
+  },
+  "whoami": "Thomas Augot",
+  "role": "Full-Stack Developer • Frontend specialist",
+  "tagline_prefix": "Welcome to my world",
+  "tagline": "I Build Digital Experiences",
+  "tagline_sub": "Crafting performant web apps with clean code and creative animations",
+  "terminal_title": "thomas@portfolio ~ % ./hello.sh",
+  "location": "Gran Canaria, Spain (remote-friendly)",
+  "skills_main": "React • Next.js • TypeScript • GSAP • Three.js",
+  "stack_favorite": "Next.js • TypeScript • GSAP • Tailwind CSS • Node.js",
+  "status": "Available for new opportunities",
+  "ready": "Ready",
+  "prompt_more": "Find out more?",
+  "prompt_work": "See my work?",
+  "prompt_contact": "Get in touch?",
+  "prompt_yes": "Yes",
+  "prompt_no": "No",
+  "processing_portfolio": "processing portfolio...",
+  "commands": {
+    "whoami": "whoami",
+    "location": "location --current",
+    "skills": "skills --core",
+    "stack": "stack --favorite",
+    "status": "status"
+  },
+  "cta_work": "See My Work",
+  "cta_contact": "Get In Touch",
+  "scroll": "scroll"
+}

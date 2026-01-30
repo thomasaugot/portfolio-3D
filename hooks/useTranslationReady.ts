@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useTranslation } from "@/lib/providers/TranslationProvider";
+import { useTranslation } from "@/contexts/TranslationProvider";
 
 export function useTranslationReady() {
   const [isReady, setIsReady] = useState(false);

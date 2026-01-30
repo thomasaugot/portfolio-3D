@@ -1,13 +1,12 @@
 "use client";
 
-import { useTranslation } from "@/lib/providers/TranslationProvider";
-import { animateLanguageChange } from "@/utils/animations/language-toggle-animations";
+import { useTranslation } from "@/contexts/TranslationProvider";
 import { useState, useEffect, useRef } from "react";
 
 const languages = [
-  { code: "en", label: "EN", name: "English" },
-  { code: "fr", label: "FR", name: "Français" },
-  { code: "es", label: "ES", name: "Español" },
+  { code: "en", label: "EN", flag: "🇬🇧" },
+  { code: "fr", label: "FR", flag: "🇫🇷" },
+  { code: "es", label: "ES", flag: "🇪🇸" },
 ];
 
 export default function LanguageToggle() {
@@ -34,122 +33,59 @@ export default function LanguageToggle() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleLanguageSelect = async (targetLang: string) => {
+  const handleLanguageSelect = (targetLang: string) => {
     if (targetLang === language) {
       setIsOpen(false);
       return;
     }
 
     setIsOpen(false);
-    await animateLanguageChange(language, targetLang);
-
     const pathname = window.location.pathname;
     const currentLocale = pathname.split("/")[1];
     const newPath = pathname.replace(`/${currentLocale}`, `/${targetLang}`);
     window.location.href = newPath;
   };
 
-  const currentLang =
-    languages.find((l) => l.code === language) || languages[0];
-
-  const displayLabel = mounted ? currentLang.label : "EN";
+  const currentLang = languages.find((l) => l.code === language) || languages[0];
 
   return (
     <div ref={dropdownRef} className="relative" style={{ zIndex: 999999 }}>
-      {/* Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        data-animate="language-toggle"
-        className="relative group cursor-pointer"
-        style={{ pointerEvents: "auto" }}
+        className="flex items-center gap-2 px-3 py-2 bg-bg-surface border border-white/10 rounded-lg hover:border-primary/50 transition-colors font-mono text-sm"
         type="button"
       >
-        {/* Gradient border */}
-        <div
-          className={`absolute -inset-[1px] bg-gradient-to-r from-primary via-secondary to-primary rounded-full transition-opacity duration-300 ${
-            isOpen ? "opacity-100" : "opacity-50 group-hover:opacity-100"
-          }`}
-        />
-
-        {/* Glow effect on hover */}
-        <div
-          className={`absolute -inset-2 bg-gradient-to-r from-primary/30 via-secondary/30 to-primary/30 rounded-full blur-lg transition-opacity duration-300 ${
-            isOpen ? "opacity-100" : "opacity-0 group-hover:opacity-60"
-          }`}
-        />
-
-        {/* Button content */}
-        <div className="relative flex items-center gap-3 px-5 py-2.5 bg-bg rounded-full">
-          <span className="font-bold text-text group-hover:text-primary transition-colors duration-300">
-            {displayLabel}
-          </span>
-          <div className="w-px h-4 bg-border" />
-          <svg
-            className={`w-4 h-4 text-text-muted group-hover:text-primary transition-all duration-300 ${
-              isOpen ? "rotate-180" : ""
-            }`}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M19 9l-7 7-7-7"
-            />
-          </svg>
-        </div>
+        <span>{currentLang.flag}</span>
+        <span className="text-white/80">{mounted ? currentLang.label : "EN"}</span>
+        <svg
+          className={`w-4 h-4 text-white/40 transition-transform ${isOpen ? "rotate-180" : ""}`}
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
       </button>
 
-      {/* Dropdown */}
       {mounted && isOpen && (
-        <div className="absolute top-full right-0 mt-3">
-          {/* Gradient border for dropdown */}
-          <div className="absolute -inset-[1px] bg-gradient-to-br from-primary via-secondary to-primary rounded-2xl" />
-
-          {/* Dropdown content */}
-          <div className="relative py-2 min-w-[160px] rounded-2xl bg-bg shadow-2xl overflow-hidden">
-            {languages.map((lang, index) => (
-              <button
-                key={lang.code}
-                onClick={() => handleLanguageSelect(lang.code)}
-                className={`w-full px-5 py-3 text-left flex items-center gap-3 transition-all duration-200 group/item
-                  ${
-                    lang.code === language
-                      ? "bg-gradient-to-r from-primary/10 to-secondary/10"
-                      : "hover:bg-gradient-to-r hover:from-primary/5 hover:to-secondary/5"
-                  }
-                `}
-              >
-                <span
-                  className={`font-bold text-sm transition-colors duration-200 ${
-                    lang.code === language
-                      ? "text-primary"
-                      : "text-text group-hover/item:text-primary"
-                  }`}
-                >
-                  {lang.label}
-                </span>
-                <span className="text-sm text-text-muted">{lang.name}</span>
-                {lang.code === language && (
-                  <div className="ml-auto w-5 h-5 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center">
-                    <svg
-                      className="w-3 h-3 text-bg"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </div>
-                )}
-              </button>
-            ))}
-          </div>
+        <div className="absolute top-full right-0 mt-2 bg-bg-surface border border-white/10 rounded-lg overflow-hidden shadow-xl min-w-[120px]">
+          {languages.map((lang) => (
+            <button
+              key={lang.code}
+              onClick={() => handleLanguageSelect(lang.code)}
+              className={`w-full px-4 py-2.5 text-left flex items-center gap-3 transition-colors font-mono text-sm ${
+                lang.code === language
+                  ? "bg-primary/10 text-primary"
+                  : "text-white/70 hover:bg-white/5 hover:text-white"
+              }`}
+            >
+              <span>{lang.flag}</span>
+              <span>{lang.label}</span>
+              {lang.code === language && (
+                <span className="ml-auto text-primary">✓</span>
+              )}
+            </button>
+          ))}
         </div>
       )}
     </div>
