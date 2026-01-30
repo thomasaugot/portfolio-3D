@@ -14,8 +14,8 @@ export default function AboutSection() {
     >
       {/* Container matching navbar max-width */}
       <div className="max-w-6xl mx-auto px-6 md:px-8 h-full relative">
-        {/* Portrait area - positioned to the left */}
-        <div className="absolute left-6 md:left-8 top-1/2 -translate-y-1/2">
+        {/* Portrait area - positioned to the left (hidden on mobile, overlaps terminal) */}
+        <div className="hidden md:block absolute left-6 md:left-8 top-1/2 -translate-y-1/2">
         <div data-about-portrait className="relative h-[500px] lg:h-[600px] flex items-center justify-center" style={{ perspective: "1000px", transformStyle: "preserve-3d" }}>
           {/* Animated gradient orbs */}
           <div

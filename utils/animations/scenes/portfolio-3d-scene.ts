@@ -172,6 +172,27 @@ export async function initPortfolioScene() {
   const config = getViewportConfig();
   const projects = getAllProjects().slice(0, 5);
 
+  // On mobile: skip all 3D model loading — 3D container is hidden anyway.
+  // Expose minimal __portfolioScene so scroll animation can still work.
+  if (config.isMobile) {
+    console.log("📱 Mobile detected — skipping portfolio 3D models");
+    (window as any).__portfolioScene = {
+      scene: null,
+      camera: null,
+      renderer: null,
+      projectModels: projects.map(() => ({
+        wrapper: { scale: { x: 1, y: 1, z: 1 }, visible: false, position: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, children: [] },
+        laptop: null,
+        iphone: null,
+        laptopOriginal: null,
+        iphoneOriginal: null,
+      })),
+      currentProject: 0,
+      isReady: true,
+    };
+    return;
+  }
+
   console.log(`📦 Loading ${projects.length} project models...`);
 
   const scene = new THREE.Scene();

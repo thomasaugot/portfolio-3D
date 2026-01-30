@@ -16,8 +16,8 @@ export default function ContactSection() {
     >
       {/* Container matching navbar max-width */}
       <div className="max-w-6xl mx-auto px-6 md:px-8 h-full relative">
-        {/* Left side - Social links */}
-        <div className="absolute left-6 md:left-8 top-1/2 -translate-y-1/2 w-[300px] lg:w-[320px]">
+        {/* Left side - Social links (hidden on mobile, shown inside terminal instead) */}
+        <div className="hidden md:block absolute left-6 md:left-8 top-1/2 -translate-y-1/2 w-[300px] lg:w-[320px]">
         {/* Gradient glow orbs */}
         <div className="absolute w-[250px] h-[250px] bg-primary/25 rounded-full blur-[70px] -top-16 -left-16 animate-[float_6s_ease-in-out_infinite]" />
         <div className="absolute w-[200px] h-[200px] bg-secondary/20 rounded-full blur-[50px] bottom-0 -right-10 animate-[float_8s_ease-in-out_infinite_1s]" />

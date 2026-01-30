@@ -64,6 +64,7 @@ export default function Canva({ children }: CanvaProps) {
   const lastStepRef = useRef(0);
   const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pendingDirectionRef = useRef(0);
+  const touchStartRef = useRef<{ x: number; y: number; time: number } | null>(null);
 
   const promptLabel =
     promptStage === "more"
@@ -249,6 +250,82 @@ export default function Canva({ children }: CanvaProps) {
     return () => window.removeEventListener("wheel", onWheel);
   }, [stage, isMorphing]);
 
+  // Touch/swipe navigation for mobile
+  useEffect(() => {
+    const isMobile = window.innerWidth < 1024;
+    if (!isMobile) return;
+
+    const sections: Stage[] = ["hero", "about", "projects", "contact"];
+    const SWIPE_THRESHOLD = 50; // minimum px to count as swipe
+    const SWIPE_MAX_TIME = 500; // max ms for the swipe gesture
+
+    const onTouchStart = (e: TouchEvent) => {
+      const touch = e.touches[0];
+      touchStartRef.current = { x: touch.clientX, y: touch.clientY, time: Date.now() };
+    };
+
+    const onTouchEnd = (e: TouchEvent) => {
+      if (!touchStartRef.current) return;
+      if (isMorphing) {
+        touchStartRef.current = null;
+        return;
+      }
+
+      // Projects section has its own touch handling
+      if (stage === "projects") {
+        touchStartRef.current = null;
+        return;
+      }
+
+      const touch = e.changedTouches[0];
+      const deltaX = touch.clientX - touchStartRef.current.x;
+      const deltaY = touch.clientY - touchStartRef.current.y;
+      const elapsed = Date.now() - touchStartRef.current.time;
+      touchStartRef.current = null;
+
+      // Must be a vertical swipe (more vertical than horizontal)
+      if (Math.abs(deltaY) < SWIPE_THRESHOLD) return;
+      if (Math.abs(deltaX) > Math.abs(deltaY)) return;
+      if (elapsed > SWIPE_MAX_TIME) return;
+
+      // Cooldown check
+      const now = performance.now();
+      if (now - lastStepRef.current < 800) return;
+      lastStepRef.current = now;
+
+      const direction = deltaY < 0 ? 1 : -1; // swipe up = next, swipe down = prev
+      const currentIndex = sections.indexOf(stage);
+      const nextIndex = currentIndex + direction;
+
+      if (nextIndex >= 0 && nextIndex < sections.length) {
+        const nextStage = sections[nextIndex];
+        setPromptStage(null);
+
+        switch (nextStage) {
+          case "hero":
+            goToHero();
+            break;
+          case "about":
+            goToAbout();
+            break;
+          case "projects":
+            goToProjects();
+            break;
+          case "contact":
+            goToContact();
+            break;
+        }
+      }
+    };
+
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchend", onTouchEnd, { passive: true });
+    return () => {
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchend", onTouchEnd);
+    };
+  }, [stage, isMorphing]);
+
   useEffect(() => {
     const handleIndexChange = (event: Event) => {
       if (stage !== "projects") return;
@@ -306,12 +383,78 @@ export default function Canva({ children }: CanvaProps) {
     ]
   );
 
+  const navSections: Stage[] = ["hero", "about", "projects", "contact"];
+  const currentIndex = navSections.indexOf(stage);
+  const canGoUp = currentIndex > 0;
+  const canGoDown = currentIndex < navSections.length - 1;
+
+  const goToPrev = () => {
+    if (isMorphing || !canGoUp) return;
+    const prev = navSections[currentIndex - 1];
+    switch (prev) {
+      case "hero": goToHero(); break;
+      case "about": goToAbout(); break;
+      case "projects": goToProjects(); break;
+    }
+  };
+
+  const goToNext = () => {
+    if (isMorphing || !canGoDown) return;
+    const next = navSections[currentIndex + 1];
+    switch (next) {
+      case "about": goToAbout(); break;
+      case "projects": goToProjects(); break;
+      case "contact": goToContact(); break;
+    }
+  };
+
   return (
     <main className="h-screen w-screen overflow-hidden bg-bg text-white relative">
       <Background />
       <CanvaContext.Provider value={value}>
         <Terminal />
         {children}
+        {/* Mobile nav - minimal chevrons on right edge */}
+        <div className="fixed right-3 top-1/2 -translate-y-1/2 z-[9999] flex flex-col gap-6 lg:hidden">
+          <button
+            onClick={goToPrev}
+            disabled={!canGoUp || isMorphing}
+            className={`p-2 rounded-lg backdrop-blur-sm transition-all duration-200 ${
+              canGoUp
+                ? "bg-white/5 border border-white/10 text-primary active:scale-90"
+                : "opacity-0 pointer-events-none"
+            }`}
+            aria-label="Previous section"
+          >
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M5 12.5L10 7.5L15 12.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
+          <div className="flex flex-col items-center gap-1 py-1">
+            {navSections.map((_, i) => (
+              <div
+                key={i}
+                className={`w-0.5 transition-all duration-300 rounded-full ${
+                  i === currentIndex ? "h-4 bg-primary" : "h-1.5 bg-white/20"
+                }`}
+              />
+            ))}
+          </div>
+          <button
+            onClick={goToNext}
+            disabled={!canGoDown || isMorphing}
+            className={`p-2 rounded-lg backdrop-blur-sm transition-all duration-200 ${
+              canGoDown
+                ? "bg-white/5 border border-white/10 text-primary active:scale-90"
+                : "opacity-0 pointer-events-none"
+            }`}
+            aria-label="Next section"
+          >
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
+        </div>
       </CanvaContext.Provider>
     </main>
   );

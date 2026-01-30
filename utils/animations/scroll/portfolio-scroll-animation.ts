@@ -14,6 +14,8 @@ import {
 
 let wheelHandler: ((e: WheelEvent) => void) | null = null;
 let introWheelHandlerRef: ((e: WheelEvent) => void) | null = null;
+let touchHandler: { start: (e: TouchEvent) => void; end: (e: TouchEvent) => void } | null = null;
+let introTouchHandlerRef: { start: (e: TouchEvent) => void; end: (e: TouchEvent) => void } | null = null;
 let isExpanded = false;
 let isPortfolioActive = false; // Track if portfolio section is currently active
 let currentSlideIndex = 0;
@@ -41,6 +43,16 @@ if (typeof window !== "undefined") {
       document.removeEventListener("wheel", introWheelHandlerRef);
       introWheelHandlerRef = null;
     }
+    if (touchHandler) {
+      document.removeEventListener("touchstart", touchHandler.start);
+      document.removeEventListener("touchend", touchHandler.end);
+      touchHandler = null;
+    }
+    if (introTouchHandlerRef) {
+      document.removeEventListener("touchstart", introTouchHandlerRef.start);
+      document.removeEventListener("touchend", introTouchHandlerRef.end);
+      introTouchHandlerRef = null;
+    }
   });
 
   // Listen for when portfolio section becomes visible to start intro typewriter
@@ -60,6 +72,16 @@ export function resetPortfolioState() {
   if (introWheelHandlerRef) {
     document.removeEventListener("wheel", introWheelHandlerRef);
     introWheelHandlerRef = null;
+  }
+  if (touchHandler) {
+    document.removeEventListener("touchstart", touchHandler.start);
+    document.removeEventListener("touchend", touchHandler.end);
+    touchHandler = null;
+  }
+  if (introTouchHandlerRef) {
+    document.removeEventListener("touchstart", introTouchHandlerRef.start);
+    document.removeEventListener("touchend", introTouchHandlerRef.end);
+    introTouchHandlerRef = null;
   }
   isExpanded = false;
   currentSlideIndex = 0;
@@ -192,6 +214,41 @@ export function initPortfolioScroll() {
   }
   introWheelHandlerRef = introWheelHandler;
   document.addEventListener("wheel", introWheelHandler, { passive: true });
+
+  // Touch handler for intro panel (mobile swipe up to start exploring)
+  let introTouchStart: { y: number; time: number } | null = null;
+
+  const introTouchStartHandler = (e: TouchEvent) => {
+    introTouchStart = { y: e.touches[0].clientY, time: Date.now() };
+  };
+
+  const introTouchEndHandler = (e: TouchEvent) => {
+    if (!introTouchStart) return;
+
+    const portfolioSection = document.querySelector("[data-portfolio-section]") as HTMLElement | null;
+    if (!portfolioSection) return;
+
+    const style = window.getComputedStyle(portfolioSection);
+    if (style.visibility === "hidden" || parseFloat(style.opacity) < 0.1) return;
+    if (isExpanded) return;
+
+    const deltaY = introTouchStart.y - e.changedTouches[0].clientY; // positive = swipe up
+    const elapsed = Date.now() - introTouchStart.time;
+    introTouchStart = null;
+
+    if (deltaY > 50 && elapsed < 500) {
+      pendingStartRequest = true;
+      window.dispatchEvent(new CustomEvent("portfolioStartRequested"));
+    }
+  };
+
+  if (introTouchHandlerRef) {
+    document.removeEventListener("touchstart", introTouchHandlerRef.start);
+    document.removeEventListener("touchend", introTouchHandlerRef.end);
+  }
+  introTouchHandlerRef = { start: introTouchStartHandler, end: introTouchEndHandler };
+  document.addEventListener("touchstart", introTouchStartHandler, { passive: true });
+  document.addEventListener("touchend", introTouchEndHandler, { passive: true });
 
   const waitForScene = () => {
     const portfolioScene = (window as any).__portfolioScene;
@@ -386,6 +443,52 @@ export function initPortfolioScroll() {
       };
 
       document.addEventListener("wheel", wheelHandler, { passive: false });
+
+      // Touch handler for slide navigation (mobile swipe between projects)
+      let slideTouchStart: { y: number; time: number } | null = null;
+
+      const slideTouchStartHandler = (e: TouchEvent) => {
+        slideTouchStart = { y: e.touches[0].clientY, time: Date.now() };
+      };
+
+      const slideTouchEndHandler = (e: TouchEvent) => {
+        if (!slideTouchStart) return;
+        if (!isExpanded || isAnimating) return;
+
+        const now = Date.now();
+        if (now - lastSlideChangeTime < SLIDE_COOLDOWN) {
+          slideTouchStart = null;
+          return;
+        }
+
+        const deltaY = slideTouchStart.y - e.changedTouches[0].clientY;
+        const elapsed = now - slideTouchStart.time;
+        slideTouchStart = null;
+
+        if (Math.abs(deltaY) < 50 || elapsed > 500) return;
+
+        const direction = deltaY > 0 ? 1 : -1; // swipe up = next, swipe down = prev
+        lastSlideChangeTime = now;
+
+        // If on CTA slide and swiping up, go to contact
+        if (currentSlideIndex === totalSlides - 1 && direction === 1) {
+          window.dispatchEvent(new CustomEvent("goToContact"));
+          return;
+        }
+
+        const nextIndex = currentSlideIndex + direction;
+        if (nextIndex >= 0 && nextIndex < totalSlides) {
+          goToSlide(nextIndex);
+        }
+      };
+
+      if (touchHandler) {
+        document.removeEventListener("touchstart", touchHandler.start);
+        document.removeEventListener("touchend", touchHandler.end);
+      }
+      touchHandler = { start: slideTouchStartHandler, end: slideTouchEndHandler };
+      document.addEventListener("touchstart", slideTouchStartHandler, { passive: true });
+      document.addEventListener("touchend", slideTouchEndHandler, { passive: true });
     };
 
     // Handle Start button click
@@ -484,6 +587,16 @@ export function initPortfolioScroll() {
     if (introWheelHandlerRef) {
       document.removeEventListener("wheel", introWheelHandlerRef);
       introWheelHandlerRef = null;
+    }
+    if (touchHandler) {
+      document.removeEventListener("touchstart", touchHandler.start);
+      document.removeEventListener("touchend", touchHandler.end);
+      touchHandler = null;
+    }
+    if (introTouchHandlerRef) {
+      document.removeEventListener("touchstart", introTouchHandlerRef.start);
+      document.removeEventListener("touchend", introTouchHandlerRef.end);
+      introTouchHandlerRef = null;
     }
     isExpanded = false;
     currentSlideIndex = 0;

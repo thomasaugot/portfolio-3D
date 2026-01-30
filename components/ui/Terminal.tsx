@@ -2,11 +2,13 @@
 
 import { MapPin, Check, Send, RotateCcw } from "lucide-react";
 import { useEffect, useState, useMemo, useRef, useCallback } from "react";
+import Image from "next/image";
 import { useTranslation } from "@/contexts/TranslationProvider";
 import { useCanva } from "@/components/ui/Canva";
 import { useIsAppReady } from "@/contexts/LoadingProvider";
 import { morphToHero, getTerminalConfig } from "@/utils/animations/terminal-morph";
 import { ABOUT_TECH_STACK_GROUPS } from "@/data/about";
+import { SOCIAL_LINKS } from "@/data/contact";
 import { Button } from "@/components/ui/Button";
 import { Input, Textarea } from "@/components/ui/Input";
 
@@ -77,6 +79,7 @@ export default function Terminal() {
     }),
     [terminalConfig]
   );
+  // Skip inline dimensions during morphing to let GSAP handle transitions
   const appliedTerminalStyle = isMorphing ? undefined : terminalStyle;
 
   useEffect(() => {
@@ -636,6 +639,23 @@ export default function Terminal() {
       )}
       {heroActive && (
         <>
+          {/* Mobile-only: compact portrait inside terminal for about stage */}
+          {stage === "about" && !isDesktop && !isMorphing && (
+            <div className="flex items-center gap-3 mb-3 pb-3 border-b border-white/10 animate-fadeIn">
+              <div className="relative w-12 h-12 rounded-full overflow-hidden border border-primary/40 flex-shrink-0">
+                <Image
+                  src="/assets/images/portrait/portrait.png"
+                  alt={t("about.name")}
+                  fill
+                  className="object-cover object-top"
+                />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-white">{t("about.name")}</p>
+                <p className="text-xs text-primary font-mono">{t("hero.role")}</p>
+              </div>
+            </div>
+          )}
           {lines.map((line, index) => {
             const spacingClass = index > 0 && line.type === "command" ? "mt-3" : "mt-2";
             return (
@@ -863,15 +883,42 @@ export default function Terminal() {
               </div>
             </form>
           )}
+          {/* Mobile-only: social links inside terminal (hidden in desktop ContactSection) */}
+          {!isDesktop && (
+            <div className="mt-3 pt-3 border-t border-white/10">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-primary text-xs">❯</span>
+                <span className="text-white/60 text-xs">cat ./socials.txt</span>
+              </div>
+              <div className="space-y-1.5 pl-4">
+                {SOCIAL_LINKS.map((social) => {
+                  const Icon = social.icon;
+                  return (
+                    <a
+                      key={social.label}
+                      href={social.href}
+                      target={social.label !== "Email" ? "_blank" : undefined}
+                      rel={social.label !== "Email" ? "noreferrer" : undefined}
+                      className="flex items-center gap-2.5 py-1.5 text-white/70 hover:text-primary transition-colors"
+                    >
+                      <Icon className="w-4 h-4 flex-shrink-0" />
+                      <span className="text-xs">{social.handle}</span>
+                    </a>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </div>
       )}
     </>
   );
 
   return (
-    <div data-terminal-wrapper className="fixed z-50 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+    <div data-terminal-wrapper className="fixed z-[100] opacity-0">
       <div
         data-terminal-shell
+        suppressHydrationWarning
         className="bg-bg-surface/95 backdrop-blur-sm rounded-xl border border-white/10 shadow-2xl overflow-hidden flex flex-col w-full h-full"
         style={appliedTerminalStyle}
       >
@@ -900,7 +947,7 @@ export default function Terminal() {
         )}
         <div
           data-terminal-body
-          className="relative p-4 md:p-6 font-mono text-sm leading-relaxed overflow-hidden flex-1 min-h-0"
+          className="relative p-4 md:p-6 font-mono text-sm leading-relaxed overflow-y-auto overflow-x-hidden flex-1 min-h-0 no-scrollbar"
         >
           <div
             data-terminal-content

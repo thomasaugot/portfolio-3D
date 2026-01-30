@@ -133,50 +133,43 @@ export const getTerminalConfig = (state: TerminalState) => {
   );
   const loaderHeight = config.isMobile ? 220 : 250;
 
-  const heroWidth = Math.min(
-    config.isMobile ? 600 : config.isTablet ? Math.min(640, viewWidth * 0.8) : Math.min(600, viewWidth * 0.52),
-    viewWidth
-  );
-  const heroHeight = Math.min(
-    config.isMobile ? 480 : config.isTablet ? Math.min(520, viewHeight * 0.7) : Math.min(560, viewHeight * 0.62),
-    viewHeight
-  );
+  // Mobile: use viewport-percentage sizing so terminal fills the screen
+  const heroWidth = config.isMobile
+    ? Math.round(viewWidth * 0.92)
+    : Math.min(config.isTablet ? Math.min(640, viewWidth * 0.8) : Math.min(600, viewWidth * 0.52), viewWidth);
+  const heroHeight = config.isMobile
+    ? Math.round(viewHeight * 0.72)
+    : Math.min(config.isTablet ? Math.min(520, viewHeight * 0.7) : Math.min(560, viewHeight * 0.62), viewHeight);
 
-  const aboutBaseWidth = Math.min(
-    config.isMobile ? 620 : config.isTablet ? Math.min(820, viewWidth * 0.8) : Math.min(1040, viewWidth * 0.5),
-    viewWidth
-  );
-  const aboutBaseHeight = Math.min(
-    config.isMobile ? 460 : config.isTablet ? Math.min(520, viewHeight * 0.75) : Math.min(670, viewHeight * 0.74),
-    viewHeight
-  );
+  const aboutBaseWidth = config.isMobile
+    ? Math.round(viewWidth * 0.92)
+    : Math.min(config.isTablet ? Math.min(820, viewWidth * 0.8) : Math.min(1040, viewWidth * 0.5), viewWidth);
+  const aboutBaseHeight = config.isMobile
+    ? Math.round(viewHeight * 0.78)
+    : Math.min(config.isTablet ? Math.min(520, viewHeight * 0.75) : Math.min(670, viewHeight * 0.74), viewHeight);
   const aboutWidth = Math.min(
-    Math.max(aboutBaseWidth, config.isDesktop ? 820 : 600),
+    Math.max(aboutBaseWidth, config.isDesktop ? 820 : config.isMobile ? aboutBaseWidth : 600),
     viewWidth
   );
   const aboutHeight = Math.min(
-    Math.max(aboutBaseHeight, heroHeight + 40),
+    Math.max(aboutBaseHeight, config.isMobile ? aboutBaseHeight : heroHeight + 40),
     viewHeight
   );
 
   // Projects intro state (centered, compact for intro content)
-  const projectsWidth = Math.min(
-    config.isMobile ? 520 : config.isTablet ? Math.min(620, viewWidth * 0.75) : Math.min(640, viewWidth * 0.42),
-    viewWidth
-  );
-  const projectsHeight = Math.min(
-    config.isMobile ? 380 : config.isTablet ? Math.min(420, viewHeight * 0.55) : Math.min(450, viewHeight * 0.52),
-    viewHeight
-  );
+  const projectsWidth = config.isMobile
+    ? Math.round(viewWidth * 0.92)
+    : Math.min(config.isTablet ? Math.min(620, viewWidth * 0.75) : Math.min(640, viewWidth * 0.42), viewWidth);
+  const projectsHeight = config.isMobile
+    ? Math.round(viewHeight * 0.65)
+    : Math.min(config.isTablet ? Math.min(420, viewHeight * 0.55) : Math.min(450, viewHeight * 0.52), viewHeight);
 
-  const contactWidth = Math.min(
-    config.isMobile ? 560 : config.isTablet ? Math.min(620, viewWidth * 0.8) : Math.min(680, viewWidth * 0.45),
-    viewWidth
-  );
-  const contactHeight = Math.min(
-    config.isMobile ? 520 : config.isTablet ? Math.min(560, viewHeight * 0.72) : Math.min(620, viewHeight * 0.72),
-    viewHeight
-  );
+  const contactWidth = config.isMobile
+    ? Math.round(viewWidth * 0.92)
+    : Math.min(config.isTablet ? Math.min(620, viewWidth * 0.8) : Math.min(680, viewWidth * 0.45), viewWidth);
+  const contactHeight = config.isMobile
+    ? Math.round(viewHeight * 0.78)
+    : Math.min(config.isTablet ? Math.min(560, viewHeight * 0.72) : Math.min(620, viewHeight * 0.72), viewHeight);
 
   switch (state) {
     case "loader":
@@ -184,7 +177,7 @@ export const getTerminalConfig = (state: TerminalState) => {
         ...baseConfig(config, loaderWidth, loaderHeight),
         widthCss: toPx(loaderWidth),
         heightCss: toPx(loaderHeight),
-        scale: 0.95,
+        scale: 1,
       };
     case "hero":
       return {
@@ -248,16 +241,18 @@ export function initTerminal() {
 
   const config = getTerminalConfig("loader");
 
+  // GSAP handles ALL positioning - no CSS transforms to conflict with
   gsap.set(terminal, {
     position: "fixed",
-    zIndex: 50,
-    top: config.top,
-    left: config.left,
-    xPercent: config.xPercent,
-    yPercent: config.yPercent,
-    x: config.x,
+    zIndex: 100,
+    top: "50%",
+    left: "50%",
+    xPercent: -50,
+    yPercent: -50,
+    x: 0,
     width: config.width,
-    scale: config.scale,
+    height: config.height,
+    scale: 1,
     opacity: 1,
   });
 
@@ -690,7 +685,9 @@ export function getExpandedProjectsConfig() {
   const availableHeight = viewHeight - navbarHeight - (padding * 2);
   const expandedHeight = config.isDesktop
     ? Math.min(640, availableHeight * 0.9)
-    : Math.min(540, availableHeight * 0.92);
+    : config.isMobile
+      ? Math.min(availableHeight * 0.88, availableHeight - 40)
+      : Math.min(540, availableHeight * 0.92);
 
   // Position: left side on desktop (28% from left edge), centered on mobile/tablet
   const leftPosition = config.isDesktop

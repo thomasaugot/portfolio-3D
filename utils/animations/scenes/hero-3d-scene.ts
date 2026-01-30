@@ -598,10 +598,15 @@ export async function initHero3DScene() {
   scene.add(hexFloor);
   hexFloorRef = hexFloor;
 
-  const vscodeTexture = await loadTexture(renderer);
-  const laptopWrapper = await loadLaptopModel(scene, config, vscodeTexture);
+  // Skip heavy laptop model + texture on mobile — hex floor alone gives ambient 3D feel
+  let vscodeTexture: THREE.Texture | null = null;
+  let laptopWrapper: THREE.Group | null = null;
+  if (!config.isMobile) {
+    vscodeTexture = await loadTexture(renderer);
+    laptopWrapper = await loadLaptopModel(scene, config, vscodeTexture);
+  }
 
-  // Mouse interaction for grabbing and rotating laptop
+  // Mouse interaction for grabbing and rotating laptop (desktop/tablet only)
   let isDragging = false;
   let previousMouseX = 0;
   let previousMouseY = 0;
@@ -636,11 +641,13 @@ export async function initHero3DScene() {
     container.style.cursor = "grab";
   };
 
-  container.style.cursor = "grab";
-  container.addEventListener("mousedown", onMouseDown);
-  container.addEventListener("mousemove", onMouseMove);
-  container.addEventListener("mouseup", onMouseUp);
-  container.addEventListener("mouseleave", onMouseUp);
+  if (!config.isMobile) {
+    container.style.cursor = "grab";
+    container.addEventListener("mousedown", onMouseDown);
+    container.addEventListener("mousemove", onMouseMove);
+    container.addEventListener("mouseup", onMouseUp);
+    container.addEventListener("mouseleave", onMouseUp);
+  }
 
   const handleResize = () => {
     const measure = perfMonitor.startMeasure("hero:resize");
