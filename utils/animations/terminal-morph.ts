@@ -91,8 +91,8 @@ const getContact = () => document.querySelector("[data-contact-section]") as HTM
 
 // Get viewport config
 const getConfig = () => {
-  const width = typeof window !== "undefined" ? window.innerWidth : 1920;
-  const height = typeof window !== "undefined" ? window.innerHeight : 1080;
+  const width = typeof window !== "undefined" ? window.innerWidth : 375;
+  const height = typeof window !== "undefined" ? window.innerHeight : 812;
   return {
     width,
     height,
@@ -138,7 +138,7 @@ export const getTerminalConfig = (state: TerminalState) => {
     ? Math.round(viewWidth * 0.92)
     : Math.min(config.isTablet ? Math.min(640, viewWidth * 0.8) : Math.min(600, viewWidth * 0.52), viewWidth);
   const heroHeight = config.isMobile
-    ? Math.round(viewHeight * 0.72)
+    ? Math.round(viewHeight * 0.78)
     : Math.min(config.isTablet ? Math.min(520, viewHeight * 0.7) : Math.min(560, viewHeight * 0.62), viewHeight);
 
   const aboutBaseWidth = config.isMobile
@@ -175,7 +175,7 @@ export const getTerminalConfig = (state: TerminalState) => {
     case "loader":
       return {
         ...baseConfig(config, loaderWidth, loaderHeight),
-        widthCss: toPx(loaderWidth),
+        widthCss: config.isMobile ? "min(320px, 88vw)" : toPx(loaderWidth),
         heightCss: toPx(loaderHeight),
         scale: 1,
       };
@@ -250,8 +250,8 @@ export function initTerminal() {
     xPercent: -50,
     yPercent: -50,
     x: 0,
-    width: config.width,
-    height: config.height,
+    width: config.widthCss,
+    height: config.heightCss,
     scale: 1,
     opacity: 1,
   });

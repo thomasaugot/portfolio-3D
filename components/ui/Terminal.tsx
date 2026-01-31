@@ -511,7 +511,7 @@ export default function Terminal() {
   const promptConfig = getPromptConfig();
   const isHeroStage = stage === "hero";
   const showPrompt = heroActive && prompt;
-  const showHeroTagline = isHeroStage && heroActive && isDesktop && !isMorphing;
+  const showHeroTagline = isHeroStage && heroActive && !isMorphing;
 
   // Contact form handlers
   const handleContactSubmit = (e: React.FormEvent) => {
@@ -641,8 +641,8 @@ export default function Terminal() {
         <>
           {/* Mobile-only: compact portrait inside terminal for about stage */}
           {stage === "about" && !isDesktop && !isMorphing && (
-            <div className="flex items-center gap-3 mb-3 pb-3 border-b border-white/10 animate-fadeIn">
-              <div className="relative w-12 h-12 rounded-full overflow-hidden border border-primary/40 flex-shrink-0">
+            <div className="flex flex-col items-center gap-2 mb-4 pb-4 border-b border-white/10 animate-fadeIn">
+              <div className="relative w-24 h-24 overflow-hidden border-2 border-primary/40 flex-shrink-0 morphing-border">
                 <Image
                   src="/assets/images/portrait/portrait.png"
                   alt={t("about.name")}
@@ -650,10 +650,8 @@ export default function Terminal() {
                   className="object-cover object-top"
                 />
               </div>
-              <div>
-                <p className="text-sm font-semibold text-white">{t("about.name")}</p>
-                <p className="text-xs text-primary font-mono">{t("hero.role")}</p>
-              </div>
+              <p className="text-sm font-semibold text-white">{t("about.name")}</p>
+              <p className="text-xs text-primary font-mono">{t("hero.role")}</p>
             </div>
           )}
           {lines.map((line, index) => {
@@ -671,11 +669,11 @@ export default function Terminal() {
                 )}
                 {line.type === "info-grid" && line.rows && (
                   <div className="mb-2 pl-4">
-                    <div className="flex flex-nowrap justify-start gap-10 overflow-x-auto pb-1 hide-scrollbar">
+                    <div className="flex flex-nowrap justify-start gap-4 md:gap-10 overflow-x-auto pb-1 hide-scrollbar">
                       {line.rows.map((row) => (
                         <div
                           key={row.label}
-                          className="flex min-w-[150px] items-end gap-2"
+                          className="flex min-w-[100px] md:min-w-[150px] items-end gap-2"
                         >
                           <span className="text-[0.65rem] uppercase tracking-[0.35em] text-white/40">
                             {row.label}
@@ -940,7 +938,7 @@ export default function Terminal() {
             <p className="text-xs font-mono text-secondary mb-2 tracking-widest uppercase">
               {t("hero.tagline_prefix")}
             </p>
-            <h1 className="text-2xl lg:text-3xl font-bold text-white leading-tight">
+            <h1 className="text-lg md:text-2xl lg:text-3xl font-bold text-white leading-tight">
               <TypewriterText text={heroTagline} speed={45} />
             </h1>
           </div>
