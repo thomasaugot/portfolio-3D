@@ -1,4 +1,5 @@
 "use client";
+import { useEffect, useState } from "react";
 import { useTranslation } from "@/contexts/TranslationProvider";
 import { useThreeScene } from "@/hooks/useThreeScene";
 import { initPortfolioScene } from "@/utils/animations/portfolio-3d-scene";
@@ -8,11 +9,20 @@ import { Check, Play } from "lucide-react";
 import ProjectPanel from "@/components/sections/ProjectPanel";
 import { getProjectsIntroSize } from "@/utils/terminal-sizes";
 
+const INTRO_SIZE_FALLBACK = {
+  width: "min(640px, 88vw)",
+  height: "min(92vh, 75vh)",
+};
+
 export default function ProjectsSection() {
   const { t } = useTranslation();
   const { projects } = useCanva();
   const sceneRef = useThreeScene(initPortfolioScene, "portfolio");
-  const introSize = getProjectsIntroSize();
+  const [introSize, setIntroSize] = useState(INTRO_SIZE_FALLBACK);
+
+  useEffect(() => {
+    setIntroSize(getProjectsIntroSize());
+  }, []);
 
   return (
     <section

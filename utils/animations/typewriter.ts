@@ -2,7 +2,7 @@ import { gsap } from "@/lib/gsap";
 
 // Single source of truth for typewriter speed across the entire app
 // higer value = slower typing
-export const CHAR_SPEED = 10;
+export const CHAR_SPEED = 5;
 
 let activeTimers: ReturnType<typeof setTimeout>[] = [];
 let currentPanelIndex = -1;

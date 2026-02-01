@@ -41,7 +41,7 @@ export default function TerminalLines({ lines }: TerminalLinesProps) {
               </div>
             )}
             {line.type === "output" && (
-              <div className="mb-1 text-white/80 pl-4">{line.content}</div>
+              <div className="mb-1 text-primary pl-4">{line.content}</div>
             )}
             {line.type === "success" && (
               <div className="mb-1 text-primary pl-4 flex items-center gap-2">
