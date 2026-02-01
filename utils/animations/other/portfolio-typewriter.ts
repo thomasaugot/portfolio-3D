@@ -63,11 +63,11 @@ function hideCursor() {
 function typewriteElement(
   element: HTMLElement,
   delay: number = 0,
-  speed: number = 25
+  _speed: number = 25
 ): Promise<void> {
   return new Promise((resolve) => {
     const fullText = element.dataset.typewriterText || element.textContent || "";
-        if (!fullText) {
+    if (!fullText) {
       resolve();
       return;
     }
@@ -83,36 +83,18 @@ function typewriteElement(
     // Find the parent line (for showing icons/prompts when typing starts)
     const parentLine = element.closest("[data-typewriter-line]") as HTMLElement | null;
 
-    const state = { index: 0 };
-    const duration = (fullText.length * speed) / 1000;
+    const timeout = setTimeout(() => {
+      // Show the parent line (with icon/prompt)
+      if (parentLine) {
+        gsap.set(parentLine, { opacity: 1 });
+      }
+      // Reveal entire line at once (line-by-line, not character-by-character)
+      element.textContent = fullText;
+      resolve();
+    }, delay);
 
-    const tween = gsap.to(state, {
-      index: fullText.length,
-      duration,
-      delay: delay / 1000,
-      ease: "none",
-      onStart: () => {
-        // Show the parent line (with icon/prompt) when typing starts
-        if (parentLine) {
-          gsap.set(parentLine, { opacity: 1 });
-        }
-        showCursor(element);
-      },
-      onUpdate: () => {
-        const current = Math.floor(state.index);
-        element.textContent = fullText.slice(0, current);
-        // Re-append cursor after text update
-        if (cursorElement && element.contains(cursorElement) === false) {
-          element.appendChild(cursorElement);
-        }
-      },
-      onComplete: () => {
-        element.textContent = fullText;
-        resolve();
-      },
-    });
-
-    activeTypewriters.push({ element, fullText, tween });
+    activeTypewriters.push({ element, fullText, tween: null });
+    revealTimeouts.push(timeout);
   });
 }
 
@@ -142,21 +124,41 @@ function revealElements(panel: HTMLElement, baseDelay: number) {
  * Typewrite all elements in a panel sequentially
  */
 async function typewritePanel(panel: HTMLElement) {
-  const elements = panel.querySelectorAll("[data-typewriter]") as NodeListOf<HTMLElement>;
+  const allElements = panel.querySelectorAll("[data-typewriter]") as NodeListOf<HTMLElement>;
+
+  // Filter out elements that are not visible (e.g. hidden on mobile via `hidden lg:flex`)
+  // This prevents hidden desktop-only elements from adding delay on mobile
+  const elements = Array.from(allElements).filter((el) => el.offsetParent !== null);
 
   let accumulatedDelay = 0;
   const promises: Promise<void>[] = [];
 
   elements.forEach((element) => {
     const lineDelay = parseInt(element.dataset.typewriterDelay || "100", 10);
-    const speed = parseInt(element.dataset.typewriterSpeed || "20", 10);
 
     accumulatedDelay += lineDelay;
-    promises.push(typewriteElement(element, accumulatedDelay, speed));
+    promises.push(typewriteElement(element, accumulatedDelay));
 
-    // Calculate approximate duration for this element
-    const text = element.dataset.typewriterText || element.textContent || "";
-    accumulatedDelay += (text.length * speed);
+    // Line is revealed instantly, no additional duration to accumulate
+  });
+
+  // Reveal any data-typewriter-line elements that have no visible data-typewriter children
+  // (e.g. tech badges wrapper whose command is hidden on mobile via `hidden lg:flex`)
+  const allLines = panel.querySelectorAll("[data-typewriter-line]") as NodeListOf<HTMLElement>;
+  allLines.forEach((line) => {
+    // Skip lines that are themselves hidden (display:none)
+    if (line.offsetParent === null) return;
+    // Check if this line has any visible data-typewriter children
+    const visibleTypewriters = Array.from(line.querySelectorAll("[data-typewriter]")).filter(
+      (el) => (el as HTMLElement).offsetParent !== null
+    );
+    if (visibleTypewriters.length === 0) {
+      // No visible typewriter children — reveal this line with a delay
+      const timeout = setTimeout(() => {
+        gsap.set(line, { opacity: 1 });
+      }, accumulatedDelay);
+      revealTimeouts.push(timeout);
+    }
   });
 
   // Start reveal animations after a delay based on total typewriting time

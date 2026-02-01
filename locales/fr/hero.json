@@ -30,5 +30,20 @@
   },
   "cta_work": "Voir mon travail",
   "cta_contact": "Me contacter",
-  "scroll": "défiler"
+  "scroll": "défiler",
+  "terminal": {
+    "loading": "chargement.sh",
+    "about_title": "tom@portfolio ~ % ./a-propos.sh",
+    "projects_title": "tom@portfolio ~ % ./projets.sh",
+    "contact_title": "./nouveau-message.sh",
+    "initializing": "Initialisation...",
+    "loading_message": "Préparation des ressources...",
+    "commands": {
+      "init": "./init-portfolio.sh",
+      "neofetch": "neofetch --terminal",
+      "cat_readme": "cat readme.md",
+      "ls_skills": "ls -la ./competences/",
+      "projects": "./projets.sh"
+    }
+  }
 }

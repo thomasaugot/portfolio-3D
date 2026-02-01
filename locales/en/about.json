@@ -5,10 +5,13 @@
   "location": "Gran Canaria, Spain",
   "bio": "I’m a French developer from Nantes, now based in Gran Canaria. A curious and adventurous mind took me around the world on a backpack for years — from Australia to the USA, across Asia and beyond. A few years ago I switched careers after discovering coding, and for more than 3 years I’ve been building skills every day to become a versatile, end‑to‑end developer who can shape products from idea to polished experience.",
   "stats": {
+    "experience_label": "experience",
     "years": "Years",
     "years_value": "3+",
+    "projects_label": "projects",
     "projects": "Projects",
     "projects_value": "20+",
+    "languages_label": "languages",
     "languages": "Languages",
     "languages_value": "EN/FR/ES"
   },

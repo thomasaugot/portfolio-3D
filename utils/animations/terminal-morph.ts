@@ -30,6 +30,8 @@ function resetPortfolioVisuals() {
       top: "50%",
       xPercent: -50,
       yPercent: -50,
+      x: 0,
+      y: 0,
       width: "min(640px, 88vw)",
       height: "min(450px, 58vh)",
     });
@@ -46,9 +48,19 @@ function resetPortfolioVisuals() {
     gsap.set(panel, { opacity: 0, pointerEvents: "none", y: 0 });
   });
 
-  // Hide 3D container
+  // Hide 3D container and reset mobile positioning
   if (portfolio3DContainer) {
-    gsap.set(portfolio3DContainer, { opacity: 0, pointerEvents: "none" });
+    gsap.set(portfolio3DContainer, {
+      opacity: 0,
+      pointerEvents: "none",
+      clearProps: "left,right,top,bottom,height,width,zIndex,overflow",
+    });
+  }
+
+  // Reset 3D zone to default state (in case it was collapsed for CTA)
+  const threeDZone = document.querySelector("[data-portfolio-3d-zone]") as HTMLElement | null;
+  if (threeDZone) {
+    gsap.set(threeDZone, { height: "50%", display: "block" });
   }
 
   // Hide scroll indicator
@@ -93,12 +105,15 @@ const getContact = () => document.querySelector("[data-contact-section]") as HTM
 const getConfig = () => {
   const width = typeof window !== "undefined" ? window.innerWidth : 375;
   const height = typeof window !== "undefined" ? window.innerHeight : 812;
+  const isPortrait = height > width;
+  const isTabletSize = width >= 768 && width < 1024;
   return {
     width,
     height,
-    isMobile: width < 768,
-    isTablet: width >= 768 && width < 1024,
-    isDesktop: width >= 1024,
+    // Portrait tablets use mobile layout; landscape tablets use desktop layout
+    isMobile: width < 768 || (isTabletSize && isPortrait),
+    isTablet: isTabletSize && !isPortrait,
+    isDesktop: width >= 1024 || (isTabletSize && !isPortrait),
   };
 };
 
@@ -133,19 +148,20 @@ export const getTerminalConfig = (state: TerminalState) => {
   );
   const loaderHeight = config.isMobile ? 220 : 250;
 
-  // Mobile: use viewport-percentage sizing so terminal fills the screen
+  // Mobile: use viewport-percentage sizing but cap max height so tall phones
+  // don't end up with huge gaps between content and terminal bottom
   const heroWidth = config.isMobile
     ? Math.round(viewWidth * 0.92)
     : Math.min(config.isTablet ? Math.min(640, viewWidth * 0.8) : Math.min(600, viewWidth * 0.52), viewWidth);
   const heroHeight = config.isMobile
-    ? Math.round(viewHeight * 0.78)
+    ? Math.min(Math.round(viewHeight * 0.78), 520)
     : Math.min(config.isTablet ? Math.min(520, viewHeight * 0.7) : Math.min(560, viewHeight * 0.62), viewHeight);
 
   const aboutBaseWidth = config.isMobile
     ? Math.round(viewWidth * 0.92)
     : Math.min(config.isTablet ? Math.min(820, viewWidth * 0.8) : Math.min(1040, viewWidth * 0.5), viewWidth);
   const aboutBaseHeight = config.isMobile
-    ? Math.round(viewHeight * 0.78)
+    ? Math.min(Math.round(viewHeight * 0.78), 580)
     : Math.min(config.isTablet ? Math.min(520, viewHeight * 0.75) : Math.min(670, viewHeight * 0.74), viewHeight);
   const aboutWidth = Math.min(
     Math.max(aboutBaseWidth, config.isDesktop ? 820 : config.isMobile ? aboutBaseWidth : 600),
@@ -161,14 +177,14 @@ export const getTerminalConfig = (state: TerminalState) => {
     ? Math.round(viewWidth * 0.92)
     : Math.min(config.isTablet ? Math.min(620, viewWidth * 0.75) : Math.min(640, viewWidth * 0.42), viewWidth);
   const projectsHeight = config.isMobile
-    ? Math.round(viewHeight * 0.65)
+    ? Math.min(Math.round(viewHeight * 0.8), 500)
     : Math.min(config.isTablet ? Math.min(420, viewHeight * 0.55) : Math.min(450, viewHeight * 0.52), viewHeight);
 
   const contactWidth = config.isMobile
     ? Math.round(viewWidth * 0.92)
     : Math.min(config.isTablet ? Math.min(620, viewWidth * 0.8) : Math.min(680, viewWidth * 0.45), viewWidth);
   const contactHeight = config.isMobile
-    ? Math.round(viewHeight * 0.78)
+    ? Math.min(Math.round(viewHeight * 0.78), 580)
     : Math.min(config.isTablet ? Math.min(560, viewHeight * 0.72) : Math.min(620, viewHeight * 0.72), viewHeight);
 
   switch (state) {
@@ -686,7 +702,7 @@ export function getExpandedProjectsConfig() {
   const expandedHeight = config.isDesktop
     ? Math.min(640, availableHeight * 0.9)
     : config.isMobile
-      ? Math.min(availableHeight * 0.88, availableHeight - 40)
+      ? Math.min(availableHeight * 0.93, availableHeight - 20)
       : Math.min(540, availableHeight * 0.92);
 
   // Position: left side on desktop (28% from left edge), centered on mobile/tablet
@@ -755,14 +771,44 @@ export function morphPortfolioToExpanded(onComplete?: () => void) {
     ease: "power2.inOut",
   }, 0.2);
 
-  // Fade in 3D container on the right (desktop only)
+  // Fade in 3D container
   // Keep pointer-events: none so scroll events pass through to the scroller
-  if (portfolio3DContainer && viewportConfig.isDesktop) {
+  if (portfolio3DContainer) {
+    if (viewportConfig.isMobile) {
+      // On mobile: position 3D container to match the 3D zone (top half of terminal body)
+      const terminalLeft = config.left - config.width / 2;
+      const terminalTop = config.top - config.height / 2;
+      const headerHeight = 44;
+      const bodyHeight = config.height - headerHeight;
+      const zoneHeight = bodyHeight / 2; // top half of terminal body
+      tl.set(portfolio3DContainer, {
+        left: `${terminalLeft}px`,
+        right: "auto",
+        top: `${terminalTop + headerHeight}px`,
+        bottom: "auto",
+        height: `${zoneHeight}px`,
+        width: `${config.width}px`,
+        zIndex: 51,
+        overflow: "hidden",
+      }, 0);
+      // Trigger Three.js canvas resize to match new container dimensions
+      tl.call(() => {
+        requestAnimationFrame(() => window.dispatchEvent(new Event("resize")));
+      }, [], 0.1);
+    }
     tl.to(portfolio3DContainer, {
       opacity: 1,
       duration: 0.5,
       ease: "power2.out",
     }, 0.5);
+  }
+
+  // Restore 3D zone visibility on mobile (in case it was collapsed for CTA)
+  if (viewportConfig.isMobile) {
+    const threeDZone = document.querySelector("[data-portfolio-3d-zone]") as HTMLElement | null;
+    if (threeDZone) {
+      tl.set(threeDZone, { height: "50%", display: "block" }, 0);
+    }
   }
 
   // Fade in scroll indicator
@@ -829,7 +875,9 @@ export function getCtaConfig() {
   const availableHeight = viewHeight - navbarHeight - (padding * 2);
   const ctaHeight = config.isDesktop
     ? Math.min(420, availableHeight * 0.65)
-    : Math.min(400, availableHeight * 0.7);
+    : config.isMobile
+      ? Math.min(availableHeight * 0.93, availableHeight - 20)
+      : Math.min(540, availableHeight * 0.92);
 
   return {
     width: ctaWidth,
@@ -861,6 +909,8 @@ export function morphPortfolioToCta(onComplete?: () => void) {
     tl.eventCallback("onComplete", onComplete);
   }
 
+  const viewportConfig = getConfig();
+
   // Fade out 3D container
   if (portfolio3DContainer) {
     tl.to(portfolio3DContainer, {
@@ -868,6 +918,14 @@ export function morphPortfolioToCta(onComplete?: () => void) {
       duration: 0.3,
       ease: "power2.in",
     }, 0);
+  }
+
+  // On mobile: collapse the 3D zone so CTA panel gets the full terminal body
+  if (viewportConfig.isMobile) {
+    const threeDZone = document.querySelector("[data-portfolio-3d-zone]") as HTMLElement | null;
+    if (threeDZone) {
+      tl.set(threeDZone, { height: "0%", display: "none" }, 0);
+    }
   }
 
   // Morph terminal to center
@@ -917,13 +975,43 @@ export function morphPortfolioToProjects(onComplete?: () => void) {
     ease: "power2.inOut",
   }, 0);
 
-  // Fade in 3D container (desktop only)
-  if (portfolio3DContainer && viewportConfig.isDesktop) {
+  // Fade in 3D container
+  if (portfolio3DContainer) {
+    if (viewportConfig.isMobile) {
+      // On mobile: position 3D container to match the 3D zone (top half of terminal body)
+      const terminalLeft = config.left - config.width / 2;
+      const terminalTop = config.top - config.height / 2;
+      const headerHeight = 44;
+      const bodyHeight = config.height - headerHeight;
+      const zoneHeight = bodyHeight / 2; // top half of terminal body
+      tl.set(portfolio3DContainer, {
+        left: `${terminalLeft}px`,
+        right: "auto",
+        top: `${terminalTop + headerHeight}px`,
+        bottom: "auto",
+        height: `${zoneHeight}px`,
+        width: `${config.width}px`,
+        zIndex: 51,
+        overflow: "hidden",
+      }, 0);
+      // Trigger Three.js canvas resize to match new container dimensions
+      tl.call(() => {
+        requestAnimationFrame(() => window.dispatchEvent(new Event("resize")));
+      }, [], 0.1);
+    }
     tl.to(portfolio3DContainer, {
       opacity: 1,
       duration: 0.4,
       ease: "power2.out",
     }, 0.2);
+  }
+
+  // Restore 3D zone visibility on mobile (in case it was collapsed for CTA)
+  if (viewportConfig.isMobile) {
+    const threeDZone = document.querySelector("[data-portfolio-3d-zone]") as HTMLElement | null;
+    if (threeDZone) {
+      tl.set(threeDZone, { height: "50%", display: "block" }, 0);
+    }
   }
 
   return tl;

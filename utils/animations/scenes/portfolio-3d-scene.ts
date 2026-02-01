@@ -138,12 +138,14 @@ const loadModel = async (
       }
     });
 
-    const scale = config.isMobile ? 35 : config.isTablet ? 45 : 55;
+    // Scale: larger on mobile so model fills the 3D zone better
+    const scale = config.isMobile ? 55 : config.isTablet ? 45 : 55;
     model.scale.set(scale, scale, scale);
     model.rotation.y = -0.3;
 
-    const modelY = config.isMobile ? 40 : config.isTablet ? 50 : -25;
-    const modelX = config.isMobile ? 10 : config.isTablet ? -15 : -20;
+    // Position: on mobile, model needs to be centered in the top 3D zone
+    const modelY = config.isMobile ? 10 : config.isTablet ? 50 : -25;
+    const modelX = config.isMobile ? 0 : config.isTablet ? -15 : -20;
     model.position.set(modelX, modelY, 0);
 
     const wrapper = new THREE.Group();
@@ -172,32 +174,12 @@ export async function initPortfolioScene() {
   const config = getViewportConfig();
   const projects = getAllProjects().slice(0, 5);
 
-  // On mobile: skip all 3D model loading — 3D container is hidden anyway.
-  // Expose minimal __portfolioScene so scroll animation can still work.
-  if (config.isMobile) {
-    console.log("📱 Mobile detected — skipping portfolio 3D models");
-    (window as any).__portfolioScene = {
-      scene: null,
-      camera: null,
-      renderer: null,
-      projectModels: projects.map(() => ({
-        wrapper: { scale: { x: 1, y: 1, z: 1 }, visible: false, position: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, children: [] },
-        laptop: null,
-        iphone: null,
-        laptopOriginal: null,
-        iphoneOriginal: null,
-      })),
-      currentProject: 0,
-      isReady: true,
-    };
-    return;
-  }
-
   console.log(`📦 Loading ${projects.length} project models...`);
 
   const scene = new THREE.Scene();
 
-  const fov = config.isMobile ? 50 : config.isTablet ? 35 : 25;
+  // FOV: wider on mobile to see more of the model in the constrained 3D zone
+  const fov = config.isMobile ? 45 : config.isTablet ? 35 : 25;
 
   const camera = new THREE.PerspectiveCamera(
     fov,
@@ -206,15 +188,15 @@ export async function initPortfolioScene() {
     5000
   );
 
-  // Camera centered - the container itself is positioned on the right half of the screen
+  // Camera position: on mobile, closer and more centered for the top 3D zone
   const cameraX = 0;
-  const cameraY = config.isMobile ? 60 : config.isTablet ? 50 : 40;
-  const cameraZ = config.isMobile ? 500 : config.isTablet ? 600 : 750;
+  const cameraY = config.isMobile ? 30 : config.isTablet ? 50 : 40;
+  const cameraZ = config.isMobile ? 400 : config.isTablet ? 600 : 750;
 
   camera.position.set(cameraX, cameraY, cameraZ);
 
-  // Look at center where models are
-  const lookAtY = config.isMobile ? -60 : config.isTablet ? -30 : -30;
+  // Look at: on mobile, look more towards center where model is positioned
+  const lookAtY = config.isMobile ? -20 : config.isTablet ? -30 : -30;
   camera.lookAt(0, lookAtY, 0);
 
   const renderer = new THREE.WebGLRenderer({

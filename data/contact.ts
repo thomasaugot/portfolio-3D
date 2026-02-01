@@ -1,10 +1,8 @@
-import { Mail } from "lucide-react";
-import { SiGithub, SiLinkedin, SiMedium } from "react-icons/si";
+import { SiGithub, SiLinkedin, SiMedium, SiGmail } from "react-icons/si";
 import type { IconType } from "react-icons";
-import type { LucideIcon } from "lucide-react";
 
 export interface SocialLink {
-  icon: IconType | LucideIcon;
+  icon: IconType;
   label: string;
   href: string;
   handle: string;
@@ -14,7 +12,7 @@ export interface SocialLink {
 
 export const SOCIAL_LINKS: SocialLink[] = [
   {
-    icon: Mail,
+    icon: SiGmail,
     label: "Email",
     href: "mailto:thomas.augot@gmail.com",
     handle: "thomas.augot@gmail.com",

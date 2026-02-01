@@ -30,5 +30,20 @@
   },
   "cta_work": "Ver mi trabajo",
   "cta_contact": "Contactar",
-  "scroll": "desliza"
+  "scroll": "desliza",
+  "terminal": {
+    "loading": "cargando.sh",
+    "about_title": "tom@portfolio ~ % ./sobre-mi.sh",
+    "projects_title": "tom@portfolio ~ % ./proyectos.sh",
+    "contact_title": "./nuevo-mensaje.sh",
+    "initializing": "Inicializando...",
+    "loading_message": "Preparando recursos...",
+    "commands": {
+      "init": "./init-portfolio.sh",
+      "neofetch": "neofetch --terminal",
+      "cat_readme": "cat LEEME.md",
+      "ls_skills": "ls -la ./habilidades/",
+      "projects": "./proyectos.sh"
+    }
+  }
 }

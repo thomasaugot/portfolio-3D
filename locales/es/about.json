@@ -5,10 +5,13 @@
   "location": "Gran Canaria, España",
   "bio": "Soy un desarrollador francés de Nantes y ahora vivo en Gran Canaria. Mi curiosidad y espíritu aventurero me llevaron a recorrer el mundo con mochila durante años — desde Australia hasta EE. UU., pasando por Asia y mucho más. Hace algunos años cambié de carrera al descubrir el código, y desde hace más de 3 años sigo creciendo para convertirme en un desarrollador versátil, capaz de llevar un producto de la idea a una experiencia pulida.",
   "stats": {
+    "experience_label": "experiencia",
     "years": "Años",
     "years_value": "3+",
+    "projects_label": "proyectos",
     "projects": "Proyectos",
     "projects_value": "20+",
+    "languages_label": "idiomas",
     "languages": "Idiomas",
     "languages_value": "EN/FR/ES"
   },

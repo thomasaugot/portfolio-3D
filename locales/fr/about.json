@@ -5,10 +5,13 @@
   "location": "Grande Canarie, Espagne",
   "bio": "Originaire de Nantes, aujourd’hui basé à Gran Canaria. Curieux et aventureux, j’ai parcouru le monde en backpack pendant des années — de l’Australie aux États‑Unis, en passant par l’Asie et bien plus. Il y a quelques années, j’ai changé de voie après avoir découvert le code, et cela fait maintenant plus de 3 ans que je développe mes compétences pour devenir un développeur polyvalent, capable de donner vie à tous types de projets web.",
   "stats": {
+    "experience_label": "expérience",
     "years": "Années",
     "years_value": "3+",
+    "projects_label": "projets",
     "projects": "Projets",
     "projects_value": "20+",
+    "languages_label": "langues",
     "languages": "Langues",
     "languages_value": "EN/FR/ES"
   },

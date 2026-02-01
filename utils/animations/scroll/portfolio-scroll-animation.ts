@@ -24,7 +24,8 @@ let wheelAccumulator = 0;
 let lastSlideChangeTime = 0;
 let pendingStartRequest = false; // Track if start was requested before scene ready
 const WHEEL_THRESHOLD = 150; // Minimum wheel delta to trigger slide change
-const SLIDE_COOLDOWN = 600; // Minimum ms between slide changes
+const SLIDE_COOLDOWN = 600; // Minimum ms between slide changes (wheel)
+const TOUCH_SLIDE_COOLDOWN = 900; // Minimum ms between slide changes (touch)
 
 // Listen for reset event from terminal-morph (avoids circular dependency)
 if (typeof window !== "undefined") {
@@ -236,7 +237,7 @@ export function initPortfolioScroll() {
     const elapsed = Date.now() - introTouchStart.time;
     introTouchStart = null;
 
-    if (deltaY > 50 && elapsed < 500) {
+    if (deltaY > 80 && elapsed < 500) {
       pendingStartRequest = true;
       window.dispatchEvent(new CustomEvent("portfolioStartRequested"));
     }
@@ -456,7 +457,7 @@ export function initPortfolioScroll() {
         if (!isExpanded || isAnimating) return;
 
         const now = Date.now();
-        if (now - lastSlideChangeTime < SLIDE_COOLDOWN) {
+        if (now - lastSlideChangeTime < TOUCH_SLIDE_COOLDOWN) {
           slideTouchStart = null;
           return;
         }
@@ -465,7 +466,7 @@ export function initPortfolioScroll() {
         const elapsed = now - slideTouchStart.time;
         slideTouchStart = null;
 
-        if (Math.abs(deltaY) < 50 || elapsed > 500) return;
+        if (Math.abs(deltaY) < 80 || elapsed > 500) return;
 
         const direction = deltaY > 0 ? 1 : -1; // swipe up = next, swipe down = prev
         lastSlideChangeTime = now;
