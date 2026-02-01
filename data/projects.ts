@@ -115,7 +115,7 @@ export const projects: Project[] = [
   //   },
   // },
   {
-    id: "003",
+    id: "002",
     slug: "energia-solar-canarias",
     client: "Energía Solar Canarias",
     title: "portfolio.energia_solar.title",
@@ -173,7 +173,7 @@ export const projects: Project[] = [
     },
   },
   {
-    id: "004",
+    id: "003",
     slug: "charpente-menuiserie-durand",
     client: "Charpente Menuiserie Durand",
     title: "portfolio.charpente_durand.title",
@@ -238,7 +238,7 @@ export const projects: Project[] = [
     },
   },
   {
-    id: "005",
+    id: "004",
     slug: "galaga-agency-website",
     client: "Galaga Agency",
     title: "portfolio.galaga_agency.title",
@@ -296,7 +296,7 @@ export const projects: Project[] = [
     },
   },
   {
-    id: "006",
+    id: "005",
     slug: "reloj-laboral-galaga",
     client: "Galaga Agency",
     title: "portfolio.reloj_laboral.title",
@@ -348,7 +348,7 @@ export const projects: Project[] = [
       mobileSkins: [
         "/assets/images/portfolio/reloj-laboral-galaga/mobile/mobile-1.png",
         "/assets/images/portfolio/reloj-laboral-galaga/mobile/mobile-2.png",
-        "/assets/images/portfolio/reloj-laboral-galaga/mobile/mobile-3.png",
+        "/assets/images/portfowhy i have lio/reloj-laboral-galaga/mobile/mobile-3.png",
         "/assets/images/portfolio/reloj-laboral-galaga/mobile/mobile-4.png",
         "/assets/images/portfolio/reloj-laboral-galaga/mobile/mobile-5.png",
         "/assets/images/portfolio/reloj-laboral-galaga/mobile/mobile-6.png",

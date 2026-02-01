@@ -33,7 +33,12 @@ export function isLowPerformanceDevice(): boolean {
  */
 export function getDeviceCapabilities() {
   const isLowPerf = isLowPerformanceDevice();
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  const width = typeof window !== 'undefined' ? window.innerWidth : 1920;
+  const height = typeof window !== 'undefined' ? window.innerHeight : 1080;
+  const isPortrait = height > width;
+  const isTabletSize = width >= 768 && width < 1024;
+  // Portrait tablets use mobile layout
+  const isMobile = width < 768 || (isTabletSize && isPortrait);
 
   return {
     isLowPerf,
@@ -63,16 +68,24 @@ import type { SceneConfig } from "./scene";
 /**
  * Get current viewport configuration
  * Detects device type and theme for scene customization
+ * Portrait tablets (768-1024px, height > width) use mobile layout
+ * Landscape tablets (768-1024px, width >= height) use desktop layout
  *
  * @returns SceneConfig object with viewport and theme info
  */
 export function getViewportConfig(): SceneConfig {
   const width = typeof window !== 'undefined' ? window.innerWidth : 1920;
+  const height = typeof window !== 'undefined' ? window.innerHeight : 1080;
+  const isPortrait = height > width;
+  const isTabletSize = width >= 768 && width < 1024;
 
   return {
-    isMobile: width < 768,
-    isTablet: width >= 768 && width < 1024,
-    isDesktop: width >= 1024,
+    // Portrait tablets use mobile layout
+    isMobile: width < 768 || (isTabletSize && isPortrait),
+    // Landscape tablets only
+    isTablet: isTabletSize && !isPortrait,
+    // Desktop or landscape tablets
+    isDesktop: width >= 1024 || (isTabletSize && !isPortrait),
   };
 }
 

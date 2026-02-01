@@ -48,8 +48,8 @@ export default async function LocaleLayout({
       </head>
       <body className="antialiased" suppressHydrationWarning>
           <TranslationProvider>
-            <TabTitleAnimationProvider />
             <ClientLoadingWrapper>
+              <TabTitleAnimationProvider />
               <main>{children}</main>
             </ClientLoadingWrapper>
           </TranslationProvider>

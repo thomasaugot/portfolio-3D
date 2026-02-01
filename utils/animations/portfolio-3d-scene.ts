@@ -179,7 +179,7 @@ export async function initPortfolioScene() {
   const scene = new THREE.Scene();
 
   // FOV: wider on mobile to see more of the model in the constrained 3D zone
-  const fov = config.isMobile ? 45 : config.isTablet ? 35 : 25;
+  const fov = config.isMobile ? 40 : config.isTablet ? 35 : 25;
 
   const camera = new THREE.PerspectiveCamera(
     fov,
@@ -191,12 +191,12 @@ export async function initPortfolioScene() {
   // Camera position: on mobile, closer and more centered for the top 3D zone
   const cameraX = 0;
   const cameraY = config.isMobile ? 30 : config.isTablet ? 50 : 40;
-  const cameraZ = config.isMobile ? 400 : config.isTablet ? 600 : 750;
+  const cameraZ = config.isMobile ? 300 : config.isTablet ? 600 : 750;
 
   camera.position.set(cameraX, cameraY, cameraZ);
 
   // Look at: on mobile, look more towards center where model is positioned
-  const lookAtY = config.isMobile ? -20 : config.isTablet ? -30 : -30;
+  const lookAtY = config.isMobile ? 10 : config.isTablet ? -30 : -30;
   camera.lookAt(0, lookAtY, 0);
 
   const renderer = new THREE.WebGLRenderer({

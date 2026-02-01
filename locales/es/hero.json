@@ -1,8 +1,9 @@
 {
   "tab_title": {
-    "hello": "¡Hola!",
-    "name": "Thomas Augot",
-    "role": "Desarrollador Full-Stack"
+    "p1": "helloimtom.dev",
+    "p2": "Creo Experiencias Digitales",
+    "p3": "Desarrollador Full-Stack",
+    "p4": "Trabajemos juntos"
   },
   "whoami": "Thomas Augot",
   "role": "Desarrollador Full-Stack • Apasionado del Frontend",

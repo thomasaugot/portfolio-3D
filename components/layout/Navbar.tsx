@@ -10,9 +10,24 @@ export default function Navbar() {
   const { stage, goToHero, goToAbout, goToProjects, goToContact } = useCanva();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const itemsRef = useRef<HTMLButtonElement[]>([]);
   const brandText = "~/helloimtom.dev";
+
+  // Viewport detection: portrait tablets use mobile layout
+  useEffect(() => {
+    const checkViewport = () => {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      const isTabletSize = w >= 768 && w < 1024;
+      // Desktop: >= 1024px OR landscape tablet (768-1024px with width >= height)
+      setIsDesktop(w >= 1024 || (isTabletSize && w >= h));
+    };
+    checkViewport();
+    window.addEventListener("resize", checkViewport);
+    return () => window.removeEventListener("resize", checkViewport);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
@@ -162,7 +177,7 @@ export default function Navbar() {
             </button>
 
             {/* Desktop */}
-            <div className="hidden md:flex items-center gap-8">
+            <div className={`items-center gap-8 ${isDesktop ? "flex" : "hidden"}`}>
               {navItems.map((item) => {
                 const isActive = stage === item.stage;
                 return (
@@ -192,7 +207,7 @@ export default function Navbar() {
       {/* Mobile toggle - OUTSIDE nav for proper z-index */}
       <button
         onClick={() => isMobileMenuOpen ? closeMenu() : setIsMobileMenuOpen(true)}
-        className="md:hidden fixed top-2 right-3 z-[100010] h-14 flex items-center justify-center gap-1"
+        className={`fixed top-2 right-3 z-[100010] h-14 items-center justify-center gap-1 ${isDesktop ? "hidden" : "flex"}`}
         aria-label="Toggle menu"
       >
         {/* Left brace */}
@@ -245,10 +260,10 @@ export default function Navbar() {
       </button>
 
       {/* Mobile Menu */}
-      {isMobileMenuOpen && (
+      {isMobileMenuOpen && !isDesktop && (
         <div
           ref={menuRef}
-          className="fixed inset-0 z-[100000] md:hidden bg-bg-surface flex flex-col overflow-hidden"
+          className="fixed inset-0 z-[100000] bg-bg-surface flex flex-col overflow-hidden"
           style={{ perspective: "1000px", transformStyle: "preserve-3d" }}
         >
           {/* Subtle glow orbs */}

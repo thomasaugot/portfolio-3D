@@ -1,8 +1,9 @@
 {
   "tab_title": {
-    "hello": "Hello!",
-    "name": "Thomas Augot",
-    "role": "Full-Stack Developer"
+    "p1": "helloimtom.dev",
+    "p2": "I Build Digital Experiences",
+    "p3": "Full-Stack Developer",
+    "p4": "Let's work together"
   },
   "whoami": "Thomas Augot",
   "role": "Full-Stack Developer • Frontend specialist",

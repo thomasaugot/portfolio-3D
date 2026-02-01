@@ -5,7 +5,18 @@
  */
 
 import { gsap } from "@/lib/gsap";
-import { animateLaptopOut, animateLaptopIn, animateHexFloorEntrance } from "@/utils/animations/scenes/hero-3d-scene";
+import { animateLaptopOut, animateLaptopIn, animateHexFloorEntrance } from "@/utils/animations/hero-3d-scene";
+import {
+  CENTERED_TERMINAL,
+  getProjectsIntroSize,
+  getViewportConfig,
+  getLoaderTerminalSize,
+  getHeroTerminalSize,
+  getAboutTerminalSize,
+  getProjectsExpandedSize,
+  getProjectsCtaSize,
+  getContactTerminalSize,
+} from "@/utils/terminal-sizes";
 
 /**
  * Reset portfolio visual state (inlined to avoid circular dependency)
@@ -25,6 +36,7 @@ function resetPortfolioVisuals() {
 
   // Reset terminal to centered intro position
   if (portfolioTerminal) {
+    const introSize = getProjectsIntroSize();
     gsap.set(portfolioTerminal, {
       left: "50%",
       top: "50%",
@@ -32,8 +44,8 @@ function resetPortfolioVisuals() {
       yPercent: -50,
       x: 0,
       y: 0,
-      width: "min(640px, 88vw)",
-      height: "min(450px, 58vh)",
+      width: introSize.width,
+      height: introSize.height,
     });
   }
 
@@ -101,21 +113,8 @@ const getAbout = () => document.querySelector("[data-about-section]") as HTMLEle
 const getProjects = () => document.querySelector("[data-canvas-projects]") as HTMLElement | null;
 const getContact = () => document.querySelector("[data-contact-section]") as HTMLElement | null;
 
-// Get viewport config
-const getConfig = () => {
-  const width = typeof window !== "undefined" ? window.innerWidth : 375;
-  const height = typeof window !== "undefined" ? window.innerHeight : 812;
-  const isPortrait = height > width;
-  const isTabletSize = width >= 768 && width < 1024;
-  return {
-    width,
-    height,
-    // Portrait tablets use mobile layout; landscape tablets use desktop layout
-    isMobile: width < 768 || (isTabletSize && isPortrait),
-    isTablet: isTabletSize && !isPortrait,
-    isDesktop: width >= 1024 || (isTabletSize && !isPortrait),
-  };
-};
+// Use centralized viewport config
+const getConfig = getViewportConfig;
 
 const toPx = (value: number) => `${Math.round(value)}px`;
 
@@ -136,95 +135,64 @@ const baseConfig = (
   scale: 1,
 });
 
-// Terminal position configurations for each state (includes height so terminal doesn't grow with content)
+// Terminal position configurations for each state (uses centralized size functions)
 export const getTerminalConfig = (state: TerminalState) => {
   const config = getConfig();
-  const viewWidth = config.width;
-  const viewHeight = config.height;
-
-  const loaderWidth = Math.min(
-    config.isMobile ? 320 : 360,
-    viewWidth * (config.isMobile ? 0.88 : 0.32)
-  );
-  const loaderHeight = config.isMobile ? 220 : 250;
-
-  // Mobile: use viewport-percentage sizing but cap max height so tall phones
-  // don't end up with huge gaps between content and terminal bottom
-  const heroWidth = config.isMobile
-    ? Math.round(viewWidth * 0.92)
-    : Math.min(config.isTablet ? Math.min(640, viewWidth * 0.8) : Math.min(600, viewWidth * 0.52), viewWidth);
-  const heroHeight = config.isMobile
-    ? Math.min(Math.round(viewHeight * 0.78), 520)
-    : Math.min(config.isTablet ? Math.min(520, viewHeight * 0.7) : Math.min(560, viewHeight * 0.62), viewHeight);
-
-  const aboutBaseWidth = config.isMobile
-    ? Math.round(viewWidth * 0.92)
-    : Math.min(config.isTablet ? Math.min(820, viewWidth * 0.8) : Math.min(1040, viewWidth * 0.5), viewWidth);
-  const aboutBaseHeight = config.isMobile
-    ? Math.min(Math.round(viewHeight * 0.78), 580)
-    : Math.min(config.isTablet ? Math.min(520, viewHeight * 0.75) : Math.min(670, viewHeight * 0.74), viewHeight);
-  const aboutWidth = Math.min(
-    Math.max(aboutBaseWidth, config.isDesktop ? 820 : config.isMobile ? aboutBaseWidth : 600),
-    viewWidth
-  );
-  const aboutHeight = Math.min(
-    Math.max(aboutBaseHeight, config.isMobile ? aboutBaseHeight : heroHeight + 40),
-    viewHeight
-  );
-
-  // Projects intro state (centered, compact for intro content)
-  const projectsWidth = config.isMobile
-    ? Math.round(viewWidth * 0.92)
-    : Math.min(config.isTablet ? Math.min(620, viewWidth * 0.75) : Math.min(640, viewWidth * 0.42), viewWidth);
-  const projectsHeight = config.isMobile
-    ? Math.min(Math.round(viewHeight * 0.8), 500)
-    : Math.min(config.isTablet ? Math.min(420, viewHeight * 0.55) : Math.min(450, viewHeight * 0.52), viewHeight);
-
-  const contactWidth = config.isMobile
-    ? Math.round(viewWidth * 0.92)
-    : Math.min(config.isTablet ? Math.min(620, viewWidth * 0.8) : Math.min(680, viewWidth * 0.45), viewWidth);
-  const contactHeight = config.isMobile
-    ? Math.min(Math.round(viewHeight * 0.78), 580)
-    : Math.min(config.isTablet ? Math.min(560, viewHeight * 0.72) : Math.min(620, viewHeight * 0.72), viewHeight);
 
   switch (state) {
-    case "loader":
+    case "loader": {
+      const size = getLoaderTerminalSize();
       return {
-        ...baseConfig(config, loaderWidth, loaderHeight),
-        widthCss: config.isMobile ? "min(320px, 88vw)" : toPx(loaderWidth),
-        heightCss: toPx(loaderHeight),
+        ...baseConfig(config, size.width, size.height),
+        widthCss: size.widthCss,
+        heightCss: size.heightCss,
         scale: 1,
       };
-    case "hero":
+    }
+    case "hero": {
+      const size = getHeroTerminalSize();
       return {
-        ...baseConfig(config, heroWidth, heroHeight),
-        widthCss: toPx(heroWidth),
-        heightCss: toPx(heroHeight),
-        left: config.isDesktop ? "35%" : "50%",
+        ...baseConfig(config, size.width, size.height),
+        widthCss: size.widthCss,
+        heightCss: size.heightCss,
+        left: size.left,
         top: "50%",
       };
-    case "about":
+    }
+    case "about": {
+      const size = getAboutTerminalSize();
       return {
-        ...baseConfig(config, aboutWidth, aboutHeight),
-        widthCss: toPx(aboutWidth),
-        heightCss: toPx(aboutHeight),
-        left: config.isDesktop ? "65%" : "50%",
+        ...baseConfig(config, size.width, size.height),
+        widthCss: size.widthCss,
+        heightCss: size.heightCss,
+        left: size.left,
         top: "50%",
       };
-    case "projects":
+    }
+    case "projects": {
+      const introSize = getProjectsIntroSize();
       return {
-        ...baseConfig(config, projectsWidth, projectsHeight),
-        widthCss: toPx(projectsWidth),
-        heightCss: toPx(projectsHeight),
         left: config.isDesktop ? "35%" : "50%",
+        top: "50%",
+        xPercent: -50,
+        yPercent: -50,
+        x: 0,
+        width: introSize.width,
+        height: introSize.height,
+        widthCss: introSize.width,
+        heightCss: introSize.height,
+        scale: 1,
       };
-    case "contact":
+    }
+    case "contact": {
+      const size = getContactTerminalSize();
       return {
-        ...baseConfig(config, contactWidth, contactHeight),
-        widthCss: toPx(contactWidth),
-        heightCss: toPx(contactHeight),
-        left: config.isDesktop ? "62%" : "50%",
+        ...baseConfig(config, size.width, size.height),
+        widthCss: size.widthCss,
+        heightCss: size.heightCss,
+        left: size.left,
       };
+    }
   }
 };
 
@@ -673,7 +641,7 @@ export function centerTerminal() {
     xPercent: -50,
     yPercent: -50,
     x: 0,
-    width: "min(560px, 88vw)",
+    width: CENTERED_TERMINAL.width,
     scale: 1,
     duration: 0.5,
     ease: "power3.out",
@@ -682,46 +650,10 @@ export function centerTerminal() {
 
 /**
  * Get expanded projects terminal config (left side, taller for project content)
- * Used after user clicks CTA to start viewing projects
+ * Uses centralized size function from terminal-sizes.ts
  */
 export function getExpandedProjectsConfig() {
-  const config = getConfig();
-  const viewWidth = config.width;
-  const viewHeight = config.height;
-
-  const navbarHeight = 80;
-  const padding = config.isMobile ? 16 : config.isTablet ? 24 : 32;
-
-  // On mobile/tablet: full width, on desktop: generous width for content
-  const expandedWidth = config.isDesktop
-    ? Math.min(680, viewWidth * 0.45)
-    : viewWidth - (padding * 2);
-
-  // Terminal height - use most of available space for comfortable reading
-  const availableHeight = viewHeight - navbarHeight - (padding * 2);
-  const expandedHeight = config.isDesktop
-    ? Math.min(640, availableHeight * 0.9)
-    : config.isMobile
-      ? Math.min(availableHeight * 0.93, availableHeight - 20)
-      : Math.min(540, availableHeight * 0.92);
-
-  // Position: left side on desktop (28% from left edge), centered on mobile/tablet
-  const leftPosition = config.isDesktop
-    ? viewWidth * 0.28
-    : viewWidth / 2;
-
-  // Vertically center in the available space below navbar
-  const topPosition = navbarHeight + (availableHeight / 2);
-
-  return {
-    width: expandedWidth,
-    height: expandedHeight,
-    top: topPosition,
-    left: leftPosition,
-    xPercent: -50,
-    yPercent: -50,
-    scale: 1,
-  };
+  return getProjectsExpandedSize();
 }
 
 /**
@@ -780,7 +712,7 @@ export function morphPortfolioToExpanded(onComplete?: () => void) {
       const terminalTop = config.top - config.height / 2;
       const headerHeight = 44;
       const bodyHeight = config.height - headerHeight;
-      const zoneHeight = bodyHeight / 2; // top half of terminal body
+      const zoneHeight = bodyHeight * 0.5;
       tl.set(portfolio3DContainer, {
         left: `${terminalLeft}px`,
         right: "auto",
@@ -857,37 +789,10 @@ export function showTerminal() {
 }
 
 /**
- * Get centered CTA config - used for final portfolio CTA slide
+ * Get centered CTA config - uses centralized size function from terminal-sizes.ts
  */
 export function getCtaConfig() {
-  const config = getConfig();
-  const viewWidth = config.width;
-  const viewHeight = config.height;
-
-  const navbarHeight = 80;
-  const padding = config.isMobile ? 16 : config.isTablet ? 24 : 32;
-
-  // Centered, slightly larger terminal for CTA
-  const ctaWidth = config.isDesktop
-    ? Math.min(600, viewWidth * 0.5)
-    : viewWidth - (padding * 2);
-
-  const availableHeight = viewHeight - navbarHeight - (padding * 2);
-  const ctaHeight = config.isDesktop
-    ? Math.min(420, availableHeight * 0.65)
-    : config.isMobile
-      ? Math.min(availableHeight * 0.93, availableHeight - 20)
-      : Math.min(540, availableHeight * 0.92);
-
-  return {
-    width: ctaWidth,
-    height: ctaHeight,
-    top: viewHeight / 2,
-    left: viewWidth / 2,
-    xPercent: -50,
-    yPercent: -50,
-    scale: 1,
-  };
+  return getProjectsCtaSize();
 }
 
 /**
@@ -983,7 +888,7 @@ export function morphPortfolioToProjects(onComplete?: () => void) {
       const terminalTop = config.top - config.height / 2;
       const headerHeight = 44;
       const bodyHeight = config.height - headerHeight;
-      const zoneHeight = bodyHeight / 2; // top half of terminal body
+      const zoneHeight = bodyHeight * 0.5;
       tl.set(portfolio3DContainer, {
         left: `${terminalLeft}px`,
         right: "auto",

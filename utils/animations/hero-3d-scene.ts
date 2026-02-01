@@ -300,11 +300,17 @@ const isLowPerformanceDevice = () => {
 
 const getViewportConfig = (): SceneConfig => {
   const width = typeof window !== "undefined" ? window.innerWidth : 1920;
+  const height = typeof window !== "undefined" ? window.innerHeight : 1080;
+  const isPortrait = height > width;
+  const isTabletSize = width >= 768 && width < 1024;
 
   return {
-    isMobile: width < 768,
-    isTablet: width >= 768 && width < 1024,
-    isDesktop: width >= 1024,
+    // Portrait tablets use mobile layout
+    isMobile: width < 768 || (isTabletSize && isPortrait),
+    // Landscape tablets only
+    isTablet: isTabletSize && !isPortrait,
+    // Desktop or landscape tablets
+    isDesktop: width >= 1024 || (isTabletSize && !isPortrait),
   };
 };
 

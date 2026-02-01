@@ -1,7 +1,7 @@
 "use client";
 
 import { useThreeScene } from "@/hooks/useThreeScene";
-import { initHero3DScene } from "@/utils/animations/scenes/hero-3d-scene";
+import { initHero3DScene } from "@/utils/animations/hero-3d-scene";
 
 export default function HeroSection() {
   const containerRef = useThreeScene(initHero3DScene, "hero");

@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import type { TerminalLine, Stage } from "@/data/terminal-content";
+import { CHAR_SPEED } from "@/utils/animations/typewriter";
 
 interface UseTerminalTypingOptions {
   heroActive: boolean;
@@ -79,9 +80,27 @@ export function useTerminalTyping({
           return;
         }
 
-        // Reveal entire line at once (line-by-line, not character-by-character)
-        updateLineText(line.content);
-        resolve();
+        // Quick character-by-character typewriter
+        const fullText = line.content;
+        const charSpeed = CHAR_SPEED;
+        let charIndex = 0;
+
+        const tick = () => {
+          if (isCancelled()) {
+            resolve();
+            return;
+          }
+          charIndex++;
+          if (charIndex >= fullText.length) {
+            updateLineText(fullText);
+            resolve();
+          } else {
+            updateLineText(fullText.slice(0, charIndex));
+            typingTimerRef.current = setTimeout(tick, charSpeed);
+          }
+        };
+
+        typingTimerRef.current = setTimeout(tick, charSpeed);
       }),
     [updateLineText]
   );
@@ -95,15 +114,29 @@ export function useTerminalTyping({
   }, []);
 
   const typePromptLabel = useCallback(
-    (label: string, _speed = 24, isCancelled: () => boolean) =>
+    (label: string, speed = 18, isCancelled: () => boolean) =>
       new Promise<void>((resolve) => {
         if (isCancelled()) {
           resolve();
           return;
         }
-        // Reveal prompt label instantly (consistent with line-by-line reveal)
-        setPromptLabelTyped(label);
-        resolve();
+        // Quick character-by-character typewriter for prompt label
+        let charIndex = 0;
+        const tick = () => {
+          if (isCancelled()) {
+            resolve();
+            return;
+          }
+          charIndex++;
+          if (charIndex >= label.length) {
+            setPromptLabelTyped(label);
+            resolve();
+          } else {
+            setPromptLabelTyped(label.slice(0, charIndex));
+            promptLabelTimerRef.current = setTimeout(tick, speed);
+          }
+        };
+        promptLabelTimerRef.current = setTimeout(tick, speed);
       }),
     []
   );

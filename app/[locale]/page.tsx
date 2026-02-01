@@ -2,9 +2,9 @@
 
 import { useGSAPAnimations } from "@/hooks/useGSAPAnimations";
 import { initTerminal } from "@/utils/animations/terminal-morph";
-import { initPortfolioScroll } from "@/utils/animations/scroll/portfolio-scroll-animation";
-import { initNavbarTypewriter } from "@/utils/animations/other/navbar-typewriter";
-import { initLaptopAnimations, initHexFloorAnimations } from "@/utils/animations/scenes/hero-3d-scene";
+import { initPortfolioScroll } from "@/utils/animations/portfolio-scroll-animation";
+import { initNavbarTypewriter } from "@/utils/animations/navbar-typewriter";
+import { initLaptopAnimations, initHexFloorAnimations } from "@/utils/animations/hero-3d-scene";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import HeroSection from "@/components/sections/HeroSection";

@@ -5,12 +5,13 @@ import {
   morphPortfolioToCta,
   morphPortfolioToProjects,
 } from "@/utils/animations/terminal-morph";
+import { getProjectsIntroSize } from "@/utils/terminal-sizes";
 import {
   typewriteIntroPanel,
   typewriteProjectPanel,
   typewriteCtaPanel,
   preparePanel,
-} from "@/utils/animations/other/portfolio-typewriter";
+} from "@/utils/animations/typewriter";
 
 let wheelHandler: ((e: WheelEvent) => void) | null = null;
 let introWheelHandlerRef: ((e: WheelEvent) => void) | null = null;
@@ -99,13 +100,14 @@ export function resetPortfolioState() {
   const projectCounter = portfolioTerminal?.querySelector("[data-project-counter]") as HTMLElement | null;
 
   if (portfolioTerminal) {
+    const introSize = getProjectsIntroSize();
     gsap.set(portfolioTerminal, {
       left: "50%",
       top: "50%",
       xPercent: -50,
       yPercent: -50,
-      width: "min(640px, 88vw)",
-      height: "min(450px, 58vh)",
+      width: introSize.width,
+      height: introSize.height,
     });
   }
 

@@ -1,23 +1,28 @@
 "use client";
-
 import { useTranslation } from "@/contexts/TranslationProvider";
 import { useThreeScene } from "@/hooks/useThreeScene";
-import { initPortfolioScene } from "@/utils/animations/scenes/portfolio-3d-scene";
+import { initPortfolioScene } from "@/utils/animations/portfolio-3d-scene";
 import { useCanva } from "@/components/ui/Canva";
 import { Button } from "@/components/ui/Button";
-import { ExternalLink, Check, Play, ChevronRight } from "lucide-react";
+import { Check, Play } from "lucide-react";
+import ProjectPanel from "@/components/sections/ProjectPanel";
+import { getProjectsIntroSize } from "@/utils/terminal-sizes";
 
 export default function ProjectsSection() {
   const { t } = useTranslation();
   const { projects } = useCanva();
   const sceneRef = useThreeScene(initPortfolioScene, "portfolio");
+  const introSize = getProjectsIntroSize();
 
   return (
     <section
       data-canvas-projects
       data-portfolio-section
       className="fixed inset-0 bg-transparent overflow-hidden"
-      style={{ visibility: "hidden", opacity: 0 }}
+      style={{
+        visibility: "hidden",
+        opacity: 0,
+      }}
     >
       {/* 3D Scene Container - positioned on the RIGHT half of the screen */}
       <div
@@ -46,8 +51,8 @@ export default function ProjectsSection() {
         data-portfolio-terminal
         className="absolute flex flex-col bg-bg-surface/95 backdrop-blur-sm rounded-xl border border-white/10 shadow-2xl overflow-hidden z-50 pointer-events-none"
         style={{
-          width: "min(640px, 88vw)",
-          height: "min(450px, 58vh)",
+          width: introSize.width,
+          height: introSize.height,
           left: "50%",
           top: "50%",
         }}
@@ -106,16 +111,16 @@ export default function ProjectsSection() {
             </div>
 
             {/* Second command - shown on taller mobiles (h >= 700px) and desktop */}
-            <div data-typewriter-line className="hidden [@media(min-height:700px)]:flex lg:flex items-center gap-2 mb-2 mt-2">
+            <div data-typewriter-line className="flex items-center gap-2 mb-2 mt-2">
               <span className="text-primary">❯</span>
               <span data-typewriter data-typewriter-delay="300" data-typewriter-speed="30" className="text-white">cat README.md</span>
             </div>
 
             {/* Info paragraphs - shown on taller mobiles (h >= 700px) and desktop */}
-            <div data-typewriter-line className="hidden [@media(min-height:700px)]:block lg:block text-secondary/80 pl-4 mb-2">
+            <div data-typewriter-line className="block text-secondary/80 pl-4 mb-2">
               <span data-typewriter data-typewriter-delay="200" data-typewriter-speed="12">{t("projects.terminal.intro_line2") || "This is a curated selection of my best work."}</span>
             </div>
-            <div data-typewriter-line className="hidden [@media(min-height:700px)]:block lg:block text-secondary/80 pl-4 mb-4">
+            <div data-typewriter-line className="block text-secondary/80 pl-4 mb-4">
               <span data-typewriter data-typewriter-delay="100" data-typewriter-speed="8">{t("projects.terminal.intro_line3") || "Each project demonstrates my skills in modern web development, from interactive 3D experiences to full-stack platforms."}</span>
             </div>
 
@@ -142,7 +147,7 @@ export default function ProjectsSection() {
           {/* Top zone: 3D model area — visible on mobile only */}
           <div
             data-portfolio-3d-zone
-            className="h-1/2 flex-shrink-0 lg:hidden"
+            className="h-[50%] flex-shrink-0 lg:hidden"
           />
 
           {/* Bottom zone: project content — takes bottom half on mobile, full area on desktop */}
@@ -152,110 +157,7 @@ export default function ProjectsSection() {
           >
             {/* Project panels - shown after terminal morphs to left */}
             {projects.map((project, index) => (
-              <div
-                key={project.id}
-                data-project-panel={index + 1}
-                className="absolute inset-0 flex flex-col justify-start p-3 lg:p-6 font-mono text-xs lg:text-sm leading-snug lg:leading-relaxed overflow-hidden lg:overflow-y-auto opacity-0 pointer-events-none"
-              >
-                {/* Command line */}
-                <div data-typewriter-line className="flex items-center gap-2 mb-1 lg:mb-2">
-                  <span className="text-primary">❯</span>
-                  <span data-typewriter data-typewriter-delay="100" data-typewriter-speed="25" className="text-white">cat ./projects/{project.id}.md</span>
-                </div>
-
-                {/* Project year, client & category */}
-                <div data-typewriter-line className="text-primary pl-4 flex items-center gap-2 mb-1.5 lg:mb-3">
-                  <Check className="w-3 h-3 lg:w-4 lg:h-4" />
-                  <span data-typewriter data-typewriter-delay="300" data-typewriter-speed="18">{project.year} • {project.client} • {t(project.category) || project.category}</span>
-                </div>
-
-                {/* Project title command - shown on taller mobiles and desktop */}
-                <div data-typewriter-line className="hidden [@media(min-height:700px)]:flex lg:flex items-center gap-2 mb-2 mt-2">
-                  <span className="text-primary">❯</span>
-                  <span data-typewriter data-typewriter-delay="350" data-typewriter-speed="25" className="text-white">echo $PROJECT_NAME</span>
-                </div>
-
-                {/* Title */}
-                <h2
-                  data-typewriter-line
-                  data-project-title
-                  className="pl-4 text-base lg:text-2xl font-bold text-white leading-tight mb-2 lg:mb-4"
-                >
-                  <span data-typewriter data-typewriter-delay="300" data-typewriter-speed="22">{t(project.title) || project.title}</span>
-                </h2>
-
-                {/* Description command - shown on taller mobiles (h >= 700px) and desktop */}
-                <div data-typewriter-line className="hidden [@media(min-height:700px)]:flex lg:flex items-center gap-2 mb-2">
-                  <span className="text-primary">❯</span>
-                  <span data-typewriter data-typewriter-delay="400" data-typewriter-speed="25" className="text-white">cat description.txt</span>
-                </div>
-
-                {/* Description - shown on taller mobiles (h >= 700px) and desktop */}
-                <div
-                  data-typewriter-line
-                  data-project-description
-                  className="hidden [@media(min-height:700px)]:block lg:block text-secondary/80 pl-4 mb-4"
-                >
-                  <span data-typewriter data-typewriter-delay="300" data-typewriter-speed="8">{t(project.preview.tagline) || project.preview.tagline}</span>
-                </div>
-
-                {/* Tech stack command + badges */}
-                <div data-typewriter-line className="mb-2 lg:mb-4">
-                  <div className="hidden [@media(min-height:700px)]:flex lg:flex items-center gap-2 mb-2">
-                    <span className="text-primary">❯</span>
-                    <span data-typewriter data-typewriter-delay="400" data-typewriter-speed="25" className="text-white">ls ./tech-stack/</span>
-                  </div>
-                  <div data-project-techs className="pl-4 flex flex-wrap gap-1 lg:gap-2">
-                    {project.technologies.map((tech, techIndex) => (
-                      <span
-                        key={techIndex}
-                        className="text-[0.65rem] px-2 py-0.5 lg:text-xs lg:px-3 lg:py-1.5 rounded-md bg-white/5 border border-white/10 text-white/70"
-                      >
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Live URL as terminal line */}
-                {project.media.link && (
-                  <div className="mb-2 lg:mb-4">
-                    <div data-typewriter-line className="hidden [@media(min-height:700px)]:flex lg:flex items-center gap-2 mb-2">
-                      <span className="text-primary">❯</span>
-                      <span data-typewriter data-typewriter-delay="350" data-typewriter-speed="25" className="text-white">echo $LIVE_URL</span>
-                    </div>
-                    <a
-                      data-typewriter-line
-                      href={project.media.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="pl-4 text-primary hover:text-secondary transition-colors inline-flex items-center gap-2 underline underline-offset-2 text-xs lg:text-sm"
-                    >
-                      <span data-typewriter data-typewriter-delay="200" data-typewriter-speed="12">{project.media.link}</span>
-                      <ExternalLink className="w-3 h-3" />
-                    </a>
-                  </div>
-                )}
-
-                {/* Next Project CTA */}
-                <div data-project-cta className="mt-auto pt-2 lg:pt-3 border-t border-white/10 opacity-0" data-typewriter-reveal data-typewriter-delay="300">
-                  <div className="hidden [@media(min-height:700px)]:flex lg:flex items-center gap-2 text-white mb-3">
-                    <span className="text-primary">❯</span>
-                    <span>{t("projects.terminal.next_prompt") || "Continue exploring?"}</span>
-                  </div>
-                  <Button
-                    type="button"
-                    data-next-project-btn
-                    data-current-index={index}
-                    variant="green"
-                    size="sm"
-                    className="lg:px-5 lg:py-2.5 lg:text-base"
-                  >
-                    {t("projects.terminal.next_project") || "Next Project"}
-                    <ChevronRight className="w-3 h-3 lg:w-4 lg:h-4" />
-                  </Button>
-                </div>
-              </div>
+              <ProjectPanel key={project.id} project={project} index={index} t={t} />
             ))}
           </div>
 
