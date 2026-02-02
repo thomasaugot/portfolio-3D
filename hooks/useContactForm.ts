@@ -3,11 +3,11 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import emailjs from "@emailjs/browser";
 
+export type ContactFormState = "idle" | "sending" | "success";
+
 const EMAILJS_SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
 const EMAILJS_TEMPLATE_ID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
 const EMAILJS_PUBLIC_KEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
-
-export type ContactFormState = "idle" | "sending" | "success";
 
 export function useContactForm(stage: string, showPrompt: boolean) {
   const [formState, setFormState] = useState<ContactFormState>("idle");
