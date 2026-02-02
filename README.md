@@ -51,7 +51,11 @@ This automatically:
 Set these in Vercel:
 - `ADMIN_PASSWORD` - Your admin password
 - `GOOGLE_TRANSLATE_API_KEY` - Get it [here](https://console.cloud.google.com/apis/credentials)
+- `NEXT_PUBLIC_EMAILJS_SERVICE_ID` - EmailJS service identifier (e.g., `service_xxx`)
+- `NEXT_PUBLIC_EMAILJS_TEMPLATE_ID` - EmailJS template identifier (e.g., `template_xxx`)
+- `NEXT_PUBLIC_EMAILJS_PUBLIC_KEY` - EmailJS public key / user ID for client-side requests
 
+Create an EmailJS template that accepts `from_name`, `reply_to`, and `message` parameters so the contact form can pass your visitor's name, email, and message. After creating the service/template in the EmailJS dashboard, copy the identifiers into the environment variables above (use `.env.local` for local development and the Vercel dashboard for preview/production).
 ### Adding New Articles
 
 1. Publish on Medium (in English)

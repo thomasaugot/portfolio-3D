@@ -1,6 +1,11 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
+import emailjs from "@emailjs/browser";
+
+const EMAILJS_SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
+const EMAILJS_TEMPLATE_ID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
+const EMAILJS_PUBLIC_KEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
 
 export type ContactFormState = "idle" | "sending" | "success";
 
@@ -12,18 +17,34 @@ export function useContactForm(stage: string, showPrompt: boolean) {
   const nameInputRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = useCallback(
-    (e: React.FormEvent) => {
+    async (e: React.FormEvent) => {
       e.preventDefault();
       if (!name || !email || !message) return;
 
+      if (!EMAILJS_SERVICE_ID || !EMAILJS_TEMPLATE_ID || !EMAILJS_PUBLIC_KEY) {
+        console.error("EmailJS environment variables are missing.");
+        return;
+      }
+
       setFormState("sending");
 
-      const mailtoLink = `mailto:thomas.augot@gmail.com?subject=Portfolio Contact from ${encodeURIComponent(name)}&body=${encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`)}`;
-      window.location.href = mailtoLink;
+      try {
+        await emailjs.send(
+          EMAILJS_SERVICE_ID,
+          EMAILJS_TEMPLATE_ID,
+          {
+            from_name: name,
+            reply_to: email,
+            message,
+          },
+          EMAILJS_PUBLIC_KEY
+        );
 
-      setTimeout(() => {
         setFormState("success");
-      }, 500);
+      } catch (error) {
+        console.error("EmailJS send failed:", error);
+        setFormState("idle");
+      }
     },
     [name, email, message]
   );
