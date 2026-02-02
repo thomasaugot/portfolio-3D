@@ -490,10 +490,40 @@ const loadTexture = async (
   }
 };
 
+const loadLogoTexture = async (
+  renderer: THREE.WebGLRenderer
+): Promise<THREE.Texture | null> => {
+  const textureLoader = new THREE.TextureLoader();
+
+  try {
+    const texture = await new Promise<THREE.Texture>((resolve, reject) => {
+      textureLoader.load(
+        "/assets/images/logo/logo-mobile.png",
+        (texture) => {
+          texture.flipY = false; // GLB models typically don't need flip
+          texture.wrapS = THREE.ClampToEdgeWrapping;
+          texture.wrapT = THREE.ClampToEdgeWrapping;
+          texture.minFilter = THREE.LinearFilter;
+          texture.magFilter = THREE.LinearFilter;
+          texture.colorSpace = THREE.SRGBColorSpace;
+          resolve(texture);
+        },
+        undefined,
+        reject
+      );
+    });
+    return texture;
+  } catch (error) {
+    console.warn("Could not load logo texture:", error);
+    return null;
+  }
+};
+
 const loadLaptopModel = async (
   scene: THREE.Scene,
   config: SceneConfig,
-  vscodeTexture: THREE.Texture | null
+  vscodeTexture: THREE.Texture | null,
+  renderer: THREE.WebGLRenderer
 ): Promise<THREE.Group | null> => {
   const measure = perfMonitor.startMeasure("hero:loadLaptopModel");
 
@@ -501,6 +531,9 @@ const loadLaptopModel = async (
     "three/examples/jsm/loaders/GLTFLoader.js"
   );
   const loader = new GLTFLoader();
+
+  // Load the new logo texture
+  const logoTexture = await loadLogoTexture(renderer);
 
   try {
     const gltf = await loadCachedGLTF(loader, "/assets/models/laptop-logo.glb");
@@ -525,12 +558,14 @@ const loadLaptopModel = async (
           child.material.color = new THREE.Color(0x3a3a3a);
           child.material.emissive = new THREE.Color(0x1a1a1a);
           child.material.emissiveIntensity = 0.2;
-        } else if (child.material?.map && !child.name.includes("Screen") && !child.name.includes("Keyboard") && !child.name.includes("Body")) {
-          // Any textured mesh that isn't screen/keyboard/body - likely the logo
-          // Enable transparency and use alphaTest to cut out black background
-          child.material.transparent = true;
-          child.material.alphaTest = 0.1;
-          child.material.depthWrite = true;
+        } else if (child.name === "Empty001" && logoTexture) {
+          // Logo on the back of the laptop screen - replace with new logo
+          child.material = new THREE.MeshBasicMaterial({
+            map: logoTexture,
+            transparent: true,
+            alphaTest: 0.1,
+            side: THREE.DoubleSide,
+          });
           child.material.needsUpdate = true;
         } else if (child.material) {
           // Charcoal metallic body
@@ -609,7 +644,7 @@ export async function initHero3DScene() {
   let laptopWrapper: THREE.Group | null = null;
   if (!config.isMobile) {
     vscodeTexture = await loadTexture(renderer);
-    laptopWrapper = await loadLaptopModel(scene, config, vscodeTexture);
+    laptopWrapper = await loadLaptopModel(scene, config, vscodeTexture, renderer);
   }
 
   // Mouse interaction for grabbing and rotating laptop (desktop/tablet only)

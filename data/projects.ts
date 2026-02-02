@@ -16,6 +16,9 @@ export const projects: Project[] = [
       "GSAP",
       "PostgreSQL",
       "Prisma",
+      "Node.js",
+      "Google Analytics 4",
+      "Tag Manager",
     ],
     featured: false,
     preview: {

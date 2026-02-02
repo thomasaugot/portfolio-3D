@@ -6,7 +6,6 @@ import type { SceneConfig } from "@/utils/three/scene";
 
 const MODEL_PATHS = [
   "/assets/models/iphone-laptop-scene-1.glb",
-  "/assets/models/iphone-laptop-scene-2.glb",
   "/assets/models/iphone-laptop-scene-3.glb",
 ];
 
@@ -138,13 +137,13 @@ const loadModel = async (
       }
     });
 
-    // Scale: larger on mobile so model fills the 3D zone better
-    const scale = config.isMobile ? 55 : config.isTablet ? 45 : 55;
+    // Scale: tuned per viewport (mobile 3D container is full-screen, so models need to be smaller)
+    const scale = config.isMobile ? 25 : config.isTablet ? 45 : 55;
     model.scale.set(scale, scale, scale);
     model.rotation.y = -0.3;
 
-    // Position: on mobile, model needs to be centered in the top 3D zone
-    const modelY = config.isMobile ? 10 : config.isTablet ? 50 : -25;
+    // Position: on mobile, push model up so it sits in the upper portion of viewport
+    const modelY = config.isMobile ? 70 : config.isTablet ? 50 : -25;
     const modelX = config.isMobile ? 0 : config.isTablet ? -15 : -20;
     model.position.set(modelX, modelY, 0);
 
@@ -188,15 +187,15 @@ export async function initPortfolioScene() {
     5000
   );
 
-  // Camera position: on mobile, closer and more centered for the top 3D zone
+  // Camera position: on mobile, further back since 3D container is full-screen
   const cameraX = 0;
-  const cameraY = config.isMobile ? 30 : config.isTablet ? 50 : 40;
-  const cameraZ = config.isMobile ? 300 : config.isTablet ? 600 : 750;
+  const cameraY = config.isMobile ? 60 : config.isTablet ? 50 : 40;
+  const cameraZ = config.isMobile ? 380 : config.isTablet ? 600 : 750;
 
   camera.position.set(cameraX, cameraY, cameraZ);
 
-  // Look at: on mobile, look more towards center where model is positioned
-  const lookAtY = config.isMobile ? 10 : config.isTablet ? -30 : -30;
+  // Look at: on mobile, look towards upper area where model is positioned
+  const lookAtY = config.isMobile ? 40 : config.isTablet ? -30 : -30;
   camera.lookAt(0, lookAtY, 0);
 
   const renderer = new THREE.WebGLRenderer({
@@ -342,6 +341,48 @@ export async function initPortfolioScene() {
   };
   window.addEventListener("resize", handleResize);
 
+  // --- Grab-and-rotate interaction (like hero laptop) ---
+  let isDragging = false;
+  let previousPointerX = 0;
+  let previousPointerY = 0;
+
+  const onPointerDown = (event: PointerEvent) => {
+    isDragging = true;
+    previousPointerX = event.clientX;
+    previousPointerY = event.clientY;
+    hexContainer.style.cursor = "grabbing";
+  };
+
+  const onPointerMove = (event: PointerEvent) => {
+    if (!isDragging) return;
+    const activeModel = projectModels.find(
+      (m) => m.wrapper.visible && m.wrapper.scale.x > 0.9
+    );
+    if (!activeModel) return;
+
+    const deltaX = event.clientX - previousPointerX;
+    const deltaY = event.clientY - previousPointerY;
+
+    activeModel.wrapper.rotation.y += deltaX * 0.008;
+    activeModel.wrapper.rotation.x += deltaY * 0.008;
+    // Clamp X rotation to prevent flipping
+    activeModel.wrapper.rotation.x = Math.max(-0.5, Math.min(0.5, activeModel.wrapper.rotation.x));
+
+    previousPointerX = event.clientX;
+    previousPointerY = event.clientY;
+  };
+
+  const onPointerUp = () => {
+    isDragging = false;
+    hexContainer.style.cursor = "grab";
+  };
+
+  hexContainer.style.cursor = "grab";
+  hexContainer.addEventListener("pointerdown", onPointerDown);
+  hexContainer.addEventListener("pointermove", onPointerMove);
+  hexContainer.addEventListener("pointerup", onPointerUp);
+  hexContainer.addEventListener("pointerleave", onPointerUp);
+
   let animationId: number;
   let time = 0;
   let lastFrameTime = performance.now();
@@ -370,6 +411,12 @@ export async function initPortfolioScene() {
       if (modelData.wrapper.visible && modelData.wrapper.scale.x > 0.9) {
         const floatIntensity = config.isMobile ? 2 : config.isTablet ? 2.5 : 3;
         modelData.wrapper.position.y = Math.sin(time * 0.6) * floatIntensity;
+
+        // Spring back to initial rotation when not dragging
+        if (!isDragging) {
+          modelData.wrapper.rotation.y += (0 - modelData.wrapper.rotation.y) * 0.05;
+          modelData.wrapper.rotation.x += (0 - modelData.wrapper.rotation.x) * 0.05;
+        }
 
         if (modelData.wrapper.children[0]) {
           const rotationFactor = config.isMobile
@@ -453,6 +500,10 @@ export async function initPortfolioScene() {
 
   return () => {
     window.removeEventListener("resize", handleResize);
+    hexContainer.removeEventListener("pointerdown", onPointerDown);
+    hexContainer.removeEventListener("pointermove", onPointerMove);
+    hexContainer.removeEventListener("pointerup", onPointerUp);
+    hexContainer.removeEventListener("pointerleave", onPointerUp);
     if (animationId) cancelAnimationFrame(animationId);
 
     scene.traverse((child: any) => {

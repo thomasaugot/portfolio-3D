@@ -92,9 +92,10 @@ export function resetPortfolioState() {
   lastSlideChangeTime = 0;
   pendingStartRequest = false;
 
+  const portfolioSection = document.querySelector("[data-portfolio-section]") as HTMLElement | null;
   const portfolioTerminal = document.querySelector("[data-portfolio-terminal]") as HTMLElement | null;
   const introPanel = portfolioTerminal?.querySelector("[data-intro-panel]") as HTMLElement;
-  const projectPanels = portfolioTerminal?.querySelectorAll("[data-project-panel]") || [];
+  const projectPanels = portfolioSection?.querySelectorAll("[data-project-panel]") || [];
   const portfolio3DContainer = document.querySelector("[data-portfolio-3d-container]") as HTMLElement;
   const scrollIndicator = document.querySelector("[data-scroll-indicator]") as HTMLElement;
   const projectCounter = portfolioTerminal?.querySelector("[data-project-counter]") as HTMLElement | null;
@@ -115,8 +116,9 @@ export function resetPortfolioState() {
     gsap.set(introPanel, { opacity: 1, pointerEvents: "auto" });
   }
 
-  projectPanels.forEach((panel: Element, index: number) => {
-    if (index === 0) return;
+  projectPanels.forEach((panel: Element) => {
+    const panelValue = parseInt((panel as HTMLElement).dataset.projectPanel || "0", 10);
+    if (panelValue === 0) return; // skip intro
     gsap.set(panel, { opacity: 0, pointerEvents: "none", y: 0 });
   });
 
@@ -220,28 +222,54 @@ export function initPortfolioScroll() {
 
   // Touch handler for intro panel (mobile swipe up to start exploring)
   let introTouchStart: { y: number; time: number } | null = null;
+  const INTRO_TOUCH_THRESHOLD = 50; // px - lowered for easier detection
+  const INTRO_TOUCH_MAX_TIME = 800; // ms - increased for easier detection
 
   const introTouchStartHandler = (e: TouchEvent) => {
     introTouchStart = { y: e.touches[0].clientY, time: Date.now() };
+    console.log("intro touch START:", introTouchStart.y);
   };
 
   const introTouchEndHandler = (e: TouchEvent) => {
-    if (!introTouchStart) return;
+    if (!introTouchStart) {
+      console.log("intro touch END: no start recorded");
+      return;
+    }
 
     const portfolioSection = document.querySelector("[data-portfolio-section]") as HTMLElement | null;
-    if (!portfolioSection) return;
+    if (!portfolioSection) {
+      console.log("intro touch END: no portfolio section found");
+      introTouchStart = null;
+      return;
+    }
 
     const style = window.getComputedStyle(portfolioSection);
-    if (style.visibility === "hidden" || parseFloat(style.opacity) < 0.1) return;
-    if (isExpanded) return;
+    const isHidden = style.visibility === "hidden";
+    const opacity = parseFloat(style.opacity);
+    console.log("intro touch END: visibility=", style.visibility, "opacity=", opacity, "isExpanded=", isExpanded);
+
+    if (isHidden || opacity < 0.1) {
+      console.log("intro touch END: section not visible");
+      introTouchStart = null;
+      return;
+    }
+    if (isExpanded) {
+      console.log("intro touch END: already expanded");
+      introTouchStart = null;
+      return;
+    }
 
     const deltaY = introTouchStart.y - e.changedTouches[0].clientY; // positive = swipe up
     const elapsed = Date.now() - introTouchStart.time;
+    console.log("intro touch END: deltaY=", deltaY, "elapsed=", elapsed, "threshold=", INTRO_TOUCH_THRESHOLD, "maxTime=", INTRO_TOUCH_MAX_TIME);
     introTouchStart = null;
 
-    if (deltaY > 80 && elapsed < 500) {
+    if (deltaY > INTRO_TOUCH_THRESHOLD && elapsed < INTRO_TOUCH_MAX_TIME) {
+      console.log("intro touch END: TRIGGERING START!");
       pendingStartRequest = true;
       window.dispatchEvent(new CustomEvent("portfolioStartRequested"));
+    } else {
+      console.log("intro touch END: swipe not strong/fast enough");
     }
   };
 
@@ -252,6 +280,20 @@ export function initPortfolioScroll() {
   introTouchHandlerRef = { start: introTouchStartHandler, end: introTouchEndHandler };
   document.addEventListener("touchstart", introTouchStartHandler, { passive: true });
   document.addEventListener("touchend", introTouchEndHandler, { passive: true });
+
+  // Set up button click handler IMMEDIATELY (before scene loads)
+  // This dispatches portfolioStartRequested which will be handled when scene is ready
+  const portfolioSection = document.querySelector("[data-portfolio-section]") as HTMLElement | null;
+  const portfolioTerminal = portfolioSection?.querySelector("[data-portfolio-terminal]") as HTMLElement | null;
+  const startBtnEarly = portfolioTerminal?.querySelector("[data-start-projects-btn]") as HTMLElement;
+
+  if (startBtnEarly) {
+    startBtnEarly.addEventListener("click", () => {
+      if (isExpanded) return;
+      pendingStartRequest = true;
+      window.dispatchEvent(new CustomEvent("portfolioStartRequested"));
+    });
+  }
 
   const waitForScene = () => {
     const portfolioScene = (window as any).__portfolioScene;
@@ -265,11 +307,10 @@ export function initPortfolioScroll() {
 
     const projects = getAllProjects().slice(0, 5);
     const portfolioTerminal = portfolioSection.querySelector("[data-portfolio-terminal]") as HTMLElement | null;
-    const projectPanels = portfolioTerminal?.querySelectorAll("[data-project-panel]") || [];
+    const projectPanels = portfolioSection.querySelectorAll("[data-project-panel]") || [];
     const { projectModels } = portfolioScene;
 
     const introPanel = portfolioTerminal?.querySelector("[data-intro-panel]") as HTMLElement;
-    const startBtn = portfolioTerminal?.querySelector("[data-start-projects-btn]") as HTMLElement;
     const portfolio3DContainer = portfolioSection.querySelector("[data-portfolio-3d-container]") as HTMLElement;
     const scrollIndicator = document.querySelector("[data-scroll-indicator]") as HTMLElement;
     const projectCounter = portfolioTerminal?.querySelector("[data-project-counter]") as HTMLElement | null;
@@ -288,8 +329,9 @@ export function initPortfolioScroll() {
       gsap.set(scrollIndicator, { opacity: 0, pointerEvents: "none" });
     }
 
-    projectPanels.forEach((panel: Element, index: number) => {
-      if (index === 0) return;
+    projectPanels.forEach((panel: Element) => {
+      const panelValue = parseInt((panel as HTMLElement).dataset.projectPanel || "0", 10);
+      if (panelValue === 0) return; // skip intro
       gsap.set(panel, { opacity: 0, pointerEvents: "none" });
     });
 
@@ -308,10 +350,11 @@ export function initPortfolioScroll() {
       const fromIndex = currentSlideIndex;
       currentSlideIndex = targetIndex;
 
-      // Hide all panels except target
-      projectPanels.forEach((panel: Element, index: number) => {
-        if (index === 0) return;
-        const panelSlideIndex = index - 1;
+      // Hide all panels except target (use data attribute, not NodeList index, since DOM order varies with portal)
+      projectPanels.forEach((panel: Element) => {
+        const panelValue = parseInt((panel as HTMLElement).dataset.projectPanel || "0", 10);
+        if (panelValue === 0) return; // skip intro
+        const panelSlideIndex = panelValue - 1;
         if (panelSlideIndex !== targetIndex) {
           gsap.set(panel, { opacity: 0, y: 0, pointerEvents: "none" });
         }
@@ -331,7 +374,7 @@ export function initPortfolioScroll() {
 
       // Show new panel
       const newPanelIndex = targetIndex + 1;
-      const newPanel = portfolioTerminal?.querySelector(`[data-project-panel="${newPanelIndex}"]`) as HTMLElement | null;
+      const newPanel = portfolioSection.querySelector(`[data-project-panel="${newPanelIndex}"]`) as HTMLElement | null;
       if (newPanel) {
         preparePanel(`[data-project-panel="${newPanelIndex}"]`);
 
@@ -503,7 +546,7 @@ export function initPortfolioScroll() {
         setupWheelNavigation();
 
         // Show first project panel
-        const firstProjectPanel = portfolioTerminal?.querySelector('[data-project-panel="1"]') as HTMLElement | null;
+        const firstProjectPanel = portfolioSection.querySelector('[data-project-panel="1"]') as HTMLElement | null;
         if (firstProjectPanel) {
           preparePanel('[data-project-panel="1"]');
 
@@ -543,25 +586,23 @@ export function initPortfolioScroll() {
       });
     };
 
-    if (startBtn) {
-      startBtn.addEventListener("click", handleStartClick);
-    }
-
-    // Listen for scroll-triggered start request
+    // Listen for scroll-triggered start request (also handles early button clicks)
     const handleStartRequest = () => {
       pendingStartRequest = false;
+      (window as any).__portfolioPendingStart = false;
       handleStartClick();
     };
     window.addEventListener("portfolioStartRequested", handleStartRequest);
 
-    // Check if start was requested before scene was ready
-    if (pendingStartRequest) {
+    // Check if start was requested before scene was ready (check both flags)
+    if (pendingStartRequest || (window as any).__portfolioPendingStart) {
       pendingStartRequest = false;
+      (window as any).__portfolioPendingStart = false;
       handleStartClick();
     }
 
-    // Handle Next Project button clicks
-    const nextProjectBtns = portfolioTerminal?.querySelectorAll("[data-next-project-btn]") || [];
+    // Handle Next Project button clicks (panels are portaled, query from section)
+    const nextProjectBtns = portfolioSection.querySelectorAll("[data-next-project-btn]") || [];
     nextProjectBtns.forEach((btn) => {
       btn.addEventListener("click", (e: Event) => {
         const button = e.currentTarget as HTMLElement;
@@ -571,7 +612,7 @@ export function initPortfolioScroll() {
     });
 
     // Handle Contact CTA button click
-    const contactCtaBtn = portfolioTerminal?.querySelector("[data-contact-cta-btn]") as HTMLElement | null;
+    const contactCtaBtn = portfolioSection.querySelector("[data-contact-cta-btn]") as HTMLElement | null;
     if (contactCtaBtn) {
       contactCtaBtn.addEventListener("click", () => {
         // Dispatch event to trigger contact section transition

@@ -89,7 +89,7 @@
     }
   },
   "energia_solar": {
-    "title": "Plateforme de Monitoring de Centrales Solaires - CRM",
+    "title": "Plateforme de Monitoring - CRM",
     "preview": {
       "tagline": "Les clients d'une entreprise d'installations solaires jonglaient entre 7 apps de fournisseurs différents pour surveiller leurs sites. J'ai construit la partie frontend d'une plateforme unifiée centralisant toutes les données.",
       "description": "Plateforme full-stack unifiant plusieurs fournisseurs solaires dans une interface unique.",

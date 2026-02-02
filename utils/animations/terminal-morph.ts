@@ -179,8 +179,8 @@ export const getTerminalConfig = (state: TerminalState) => {
         x: 0,
         width: introSize.width,
         height: introSize.height,
-        widthCss: introSize.width,
-        heightCss: introSize.height,
+        widthCss: introSize.widthCss,
+        heightCss: introSize.heightCss,
         scale: 1,
       };
     }
@@ -672,7 +672,6 @@ export function morphPortfolioToExpanded(onComplete?: () => void) {
   }
 
   const config = getExpandedProjectsConfig();
-  const viewportConfig = getConfig();
   const tl = gsap.timeline();
 
   if (onComplete) {
@@ -704,43 +703,17 @@ export function morphPortfolioToExpanded(onComplete?: () => void) {
   }, 0.2);
 
   // Fade in 3D container
-  // Keep pointer-events: none so scroll events pass through to the scroller
+  // Fade in 3D container - keep it full-screen so models are never truncated
   if (portfolio3DContainer) {
-    if (viewportConfig.isMobile) {
-      // On mobile: position 3D container to match the 3D zone (top half of terminal body)
-      const terminalLeft = config.left - config.width / 2;
-      const terminalTop = config.top - config.height / 2;
-      const headerHeight = 44;
-      const bodyHeight = config.height - headerHeight;
-      const zoneHeight = bodyHeight * 0.5;
-      tl.set(portfolio3DContainer, {
-        left: `${terminalLeft}px`,
-        right: "auto",
-        top: `${terminalTop + headerHeight}px`,
-        bottom: "auto",
-        height: `${zoneHeight}px`,
-        width: `${config.width}px`,
-        zIndex: 51,
-        overflow: "hidden",
-      }, 0);
-      // Trigger Three.js canvas resize to match new container dimensions
-      tl.call(() => {
-        requestAnimationFrame(() => window.dispatchEvent(new Event("resize")));
-      }, [], 0.1);
-    }
+    tl.set(portfolio3DContainer, {
+      zIndex: 55, // Above terminal (z-50), below portaled content (z-60)
+      pointerEvents: "auto", // Enable grab-and-rotate interaction
+    }, 0);
     tl.to(portfolio3DContainer, {
       opacity: 1,
       duration: 0.5,
       ease: "power2.out",
     }, 0.5);
-  }
-
-  // Restore 3D zone visibility on mobile (in case it was collapsed for CTA)
-  if (viewportConfig.isMobile) {
-    const threeDZone = document.querySelector("[data-portfolio-3d-zone]") as HTMLElement | null;
-    if (threeDZone) {
-      tl.set(threeDZone, { height: "50%", display: "block" }, 0);
-    }
   }
 
   // Fade in scroll indicator
@@ -854,7 +827,6 @@ export function morphPortfolioToCta(onComplete?: () => void) {
 export function morphPortfolioToProjects(onComplete?: () => void) {
   const portfolioTerminal = document.querySelector("[data-portfolio-terminal]") as HTMLElement | null;
   const portfolio3DContainer = document.querySelector("[data-portfolio-3d-container]") as HTMLElement | null;
-  const viewportConfig = getConfig();
 
   if (!portfolioTerminal) {
     onComplete?.();
@@ -880,43 +852,17 @@ export function morphPortfolioToProjects(onComplete?: () => void) {
     ease: "power2.inOut",
   }, 0);
 
-  // Fade in 3D container
+  // Fade in 3D container - keep it full-screen so models are never truncated
   if (portfolio3DContainer) {
-    if (viewportConfig.isMobile) {
-      // On mobile: position 3D container to match the 3D zone (top half of terminal body)
-      const terminalLeft = config.left - config.width / 2;
-      const terminalTop = config.top - config.height / 2;
-      const headerHeight = 44;
-      const bodyHeight = config.height - headerHeight;
-      const zoneHeight = bodyHeight * 0.5;
-      tl.set(portfolio3DContainer, {
-        left: `${terminalLeft}px`,
-        right: "auto",
-        top: `${terminalTop + headerHeight}px`,
-        bottom: "auto",
-        height: `${zoneHeight}px`,
-        width: `${config.width}px`,
-        zIndex: 51,
-        overflow: "hidden",
-      }, 0);
-      // Trigger Three.js canvas resize to match new container dimensions
-      tl.call(() => {
-        requestAnimationFrame(() => window.dispatchEvent(new Event("resize")));
-      }, [], 0.1);
-    }
+    tl.set(portfolio3DContainer, {
+      zIndex: 55, // Above terminal (z-50), below portaled content (z-60)
+      pointerEvents: "auto", // Enable grab-and-rotate interaction
+    }, 0);
     tl.to(portfolio3DContainer, {
       opacity: 1,
       duration: 0.4,
       ease: "power2.out",
     }, 0.2);
-  }
-
-  // Restore 3D zone visibility on mobile (in case it was collapsed for CTA)
-  if (viewportConfig.isMobile) {
-    const threeDZone = document.querySelector("[data-portfolio-3d-zone]") as HTMLElement | null;
-    if (threeDZone) {
-      tl.set(threeDZone, { height: "50%", display: "block" }, 0);
-    }
   }
 
   return tl;

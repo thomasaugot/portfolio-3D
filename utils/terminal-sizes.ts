@@ -11,10 +11,12 @@ export const getViewportConfig = () => {
   const height = typeof window !== "undefined" ? window.innerHeight : 812;
   const isPortrait = height > width;
   const isTabletSize = width >= 768 && width < 1024;
+  const isMobile = width < 768 || (isTabletSize && isPortrait);
   return {
     width,
     height,
-    isMobile: width < 768 || (isTabletSize && isPortrait),
+    isMobile,
+    isTallMobile: isMobile && height > 800,
     isTablet: isTabletSize && !isPortrait,
     isDesktop: width >= 1024 || (isTabletSize && !isPortrait),
   };
@@ -117,11 +119,22 @@ export const getAboutTerminalSize = () => {
 // PROJECTS TERMINAL (Intro state - centered, compact)
 // =====================================================
 export const getProjectsIntroSize = () => {
-  const viewportConfig = getViewportConfig();
+  const config = getViewportConfig();
+
+  // Numeric values for GSAP animations (must match CSS values below)
+  const width = Math.min(640, config.width * 0.88);
+  const height = config.isTallMobile
+    ? Math.min(520, config.height * 0.58)
+    : config.isMobile
+      ? config.height * 0.75
+      : config.height * 0.52;
 
   return {
-    width: "min(640px, 88vw)",
-    height: viewportConfig.isMobile ? "min(92vh, 75vh)" : "min(52vh, 52vh)",
+    width,
+    height,
+    // CSS string values for React component initial styling
+    widthCss: "min(640px, 88vw)",
+    heightCss: config.isTallMobile ? "min(520px, 58vh)" : config.isMobile ? "75vh" : "52vh",
   };
 };
 
@@ -131,7 +144,7 @@ export const getProjectsIntroSize = () => {
 export const getProjectsExpandedSize = () => {
   const config = getViewportConfig();
   const navbarHeight = 80;
-  const padding = config.isMobile ? 16 : config.isTablet ? 24 : 32;
+  const padding = config.isMobile ? 8 : config.isTablet ? 24 : 32;
 
   const width = config.isDesktop
     ? Math.min(680, config.width * 0.45)
@@ -141,11 +154,13 @@ export const getProjectsExpandedSize = () => {
   const height = config.isDesktop
     ? Math.min(640, availableHeight * 0.9)
     : config.isMobile
-      ? Math.min(availableHeight * 0.93, availableHeight - 20)
+      ? Math.min(availableHeight * 0.97, availableHeight - 8)
       : Math.min(540, availableHeight * 0.92);
 
   const left = config.isDesktop ? config.width * 0.28 : config.width / 2;
-  const top = navbarHeight + availableHeight / 2;
+  const top = config.isMobile
+    ? config.height / 2   // Center in full viewport on mobile
+    : navbarHeight + availableHeight / 2;
 
   return {
     width,
@@ -174,7 +189,9 @@ export const getProjectsCtaSize = () => {
   const height = config.isDesktop
     ? Math.min(420, availableHeight * 0.65)
     : config.isMobile
-      ? Math.min(availableHeight * 0.93, availableHeight - 20)
+      ? config.isTallMobile
+        ? Math.min(480, availableHeight * 0.58)
+        : Math.min(availableHeight * 0.93, availableHeight - 20)
       : Math.min(540, availableHeight * 0.92);
 
   return {
