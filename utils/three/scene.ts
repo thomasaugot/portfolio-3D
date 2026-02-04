@@ -10,6 +10,7 @@ import { THEME_COLORS } from "@/utils/colors";
 
 export interface SceneConfig {
   isMobile: boolean;
+  isTabletPortrait?: boolean;
   isTablet: boolean;
   isDesktop: boolean;
   isLight?: boolean;

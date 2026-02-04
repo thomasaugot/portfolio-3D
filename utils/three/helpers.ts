@@ -80,8 +80,10 @@ export function getViewportConfig(): SceneConfig {
   const isTabletSize = width >= 768 && width < 1024;
 
   return {
-    // Portrait tablets use mobile layout
+    // Portrait tablets use mobile layout (kept for backward compat)
     isMobile: width < 768 || (isTabletSize && isPortrait),
+    // Portrait tablets specifically
+    isTabletPortrait: isTabletSize && isPortrait,
     // Landscape tablets only
     isTablet: isTabletSize && !isPortrait,
     // Desktop or landscape tablets

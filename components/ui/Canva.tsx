@@ -5,10 +5,12 @@ import { createContext, useContext, useEffect, useMemo } from "react";
 import Background from "@/components/ui/Background";
 import Terminal from "@/components/ui/Terminal";
 import MobileNav from "@/components/ui/MobileNav";
+import BackToTop from "@/components/ui/BackToTop";
 import { useTranslation } from "@/contexts/TranslationProvider";
 import { useStageNavigation } from "@/hooks/useStageNavigation";
 import { useWheelNavigation } from "@/hooks/useWheelNavigation";
 import { useTouchNavigation } from "@/hooks/useTouchNavigation";
+import { useViewportReload } from "@/hooks/useViewportReload";
 import { getAllProjects } from "@/data/projects";
 
 type Stage = "hero" | "about" | "projects" | "contact";
@@ -52,6 +54,9 @@ interface CanvaProps {
 export default function Canva({ children }: CanvaProps) {
   const { t } = useTranslation();
   const projects = useMemo(() => getAllProjects().slice(0, 5), []);
+
+  // Reload when viewport crosses a layout breakpoint (e.g. tablet rotation)
+  useViewportReload();
 
   const {
     stage,
@@ -178,6 +183,7 @@ export default function Canva({ children }: CanvaProps) {
           goToProjects={goToProjects}
           goToContact={goToContact}
         />
+        <BackToTop />
       </CanvaContext.Provider>
     </main>
   );

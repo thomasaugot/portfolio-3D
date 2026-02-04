@@ -25,7 +25,7 @@ export default function TerminalLines({ lines }: TerminalLinesProps) {
             )}
             {line.type === "info-grid" && line.rows && (
               <div className="mb-2 pl-4">
-                <div className="flex flex-col gap-1.5 md:flex-row md:flex-nowrap md:justify-start md:gap-10 md:overflow-x-auto pb-1 hide-scrollbar">
+                <div className="flex flex-col gap-1.5 md:flex-row md:flex-wrap md:justify-start md:gap-x-10 md:gap-y-1.5">
                   {line.rows.map((row) => (
                     <div
                       key={row.label}
@@ -55,11 +55,11 @@ export default function TerminalLines({ lines }: TerminalLinesProps) {
             )}
             {line.type === "badge-group" && line.category && line.badges && (
               <div className="mb-1 pl-4">
-                <div className="flex flex-col gap-1.5 md:flex-row md:items-center md:gap-4 md:overflow-x-auto pb-1 text-[0.65rem] text-white/60 hide-scrollbar">
+                <div className="flex flex-col gap-1.5 md:flex-row md:flex-wrap md:items-center md:gap-4 text-[0.65rem] text-white/60">
                   <span className="flex-shrink-0 text-[0.65rem] uppercase tracking-[0.35em] text-white/40">
                     {line.category}
                   </span>
-                  <div className="flex flex-wrap gap-1.5 md:flex-nowrap md:gap-2 md:whitespace-nowrap">
+                  <div className="flex flex-wrap gap-1.5 md:gap-2">
                     {line.badges.map((badge) => (
                       <span
                         key={badge}

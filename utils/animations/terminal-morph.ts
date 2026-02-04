@@ -156,7 +156,7 @@ export const getTerminalConfig = (state: TerminalState) => {
         widthCss: size.widthCss,
         heightCss: size.heightCss,
         left: size.left,
-        top: "50%",
+        top: (size as any).top || "50%",
       };
     }
     case "about": {

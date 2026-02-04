@@ -1,9 +1,11 @@
 /**
  * Terminal Size Configurations (Single Source of Truth)
  * All terminal dimensions across the app are controlled from this file
+ *
+ * CSS values use responsive units (vw/vh/min/clamp) so terminals
+ * scale proportionally across all viewport sizes.
+ * Numeric values are kept for GSAP animation targets.
  */
-
-import { config } from "@/middleware";
 
 // Viewport detection helper
 export const getViewportConfig = () => {
@@ -17,12 +19,11 @@ export const getViewportConfig = () => {
     height,
     isMobile,
     isTallMobile: isMobile && height > 800,
+    isTabletPortrait: isTabletSize && isPortrait,
     isTablet: isTabletSize && !isPortrait,
     isDesktop: width >= 1024 || (isTabletSize && !isPortrait),
   };
 };
-
-const toPx = (value: number) => `${Math.round(value)}px`;
 
 // =====================================================
 // LOADER TERMINAL
@@ -37,8 +38,8 @@ export const getLoaderTerminalSize = () => {
   return {
     width,
     height,
-    widthCss: config.isMobile ? "min(320px, 88vw)" : toPx(width),
-    heightCss: toPx(height),
+    widthCss: config.isMobile ? "min(320px, 88vw)" : "min(360px, 32vw)",
+    heightCss: config.isMobile ? "min(220px, 28vh)" : "min(250px, 30vh)",
   };
 };
 
@@ -47,6 +48,21 @@ export const getLoaderTerminalSize = () => {
 // =====================================================
 export const getHeroTerminalSize = () => {
   const config = getViewportConfig();
+
+  // Portrait tablets: terminal in bottom-left quadrant, laptop in top-right
+  if (config.isTabletPortrait) {
+    const width = Math.min(520, Math.round(config.width * 0.62));
+    const height = Math.min(620, Math.round(config.height * 0.58));
+    return {
+      width,
+      height,
+      widthCss: "min(520px, 62vw)",
+      heightCss: "min(620px, 58vh)",
+      left: "35%",
+      top: "65%",
+    };
+  }
+
   const width = config.isMobile
     ? Math.round(config.width * 0.92)
     : Math.min(
@@ -66,8 +82,16 @@ export const getHeroTerminalSize = () => {
   return {
     width,
     height,
-    widthCss: toPx(width),
-    heightCss: toPx(height),
+    widthCss: config.isMobile
+      ? "min(92vw, 520px)"
+      : config.isTablet
+        ? "min(640px, 80vw)"
+        : "min(600px, 52vw)",
+    heightCss: config.isMobile
+      ? "min(78vh, 520px)"
+      : config.isTablet
+        ? "min(520px, 70vh)"
+        : "min(560px, 62vh)",
     left: config.isDesktop ? "35%" : "50%",
   };
 };
@@ -109,8 +133,16 @@ export const getAboutTerminalSize = () => {
   return {
     width,
     height,
-    widthCss: toPx(width),
-    heightCss: toPx(height),
+    widthCss: config.isMobile
+      ? "min(92vw, 600px)"
+      : config.isTablet
+        ? "min(820px, 80vw)"
+        : "min(1040px, 50vw)",
+    heightCss: config.isMobile
+      ? "min(80vh, 600px)"
+      : config.isTablet
+        ? "min(520px, 75vh)"
+        : "min(670px, 74vh)",
     left: config.isDesktop ? "65%" : "50%",
   };
 };
@@ -132,7 +164,6 @@ export const getProjectsIntroSize = () => {
   return {
     width,
     height,
-    // CSS string values for React component initial styling
     widthCss: "min(640px, 88vw)",
     heightCss: config.isTallMobile ? "min(520px, 58vh)" : config.isMobile ? "75vh" : "52vh",
   };
@@ -159,7 +190,7 @@ export const getProjectsExpandedSize = () => {
 
   const left = config.isDesktop ? config.width * 0.28 : config.width / 2;
   const top = config.isMobile
-    ? config.height / 2   // Center in full viewport on mobile
+    ? config.height / 2
     : navbarHeight + availableHeight / 2;
 
   return {
@@ -229,8 +260,16 @@ export const getContactTerminalSize = () => {
   return {
     width,
     height,
-    widthCss: toPx(width),
-    heightCss: toPx(height),
+    widthCss: config.isMobile
+      ? "min(92vw, 580px)"
+      : config.isTablet
+        ? "min(620px, 80vw)"
+        : "min(680px, 45vw)",
+    heightCss: config.isMobile
+      ? "min(78vh, 580px)"
+      : config.isTablet
+        ? "min(560px, 72vh)"
+        : "min(620px, 72vh)",
     left: config.isDesktop ? "62%" : "50%",
   };
 };

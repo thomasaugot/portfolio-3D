@@ -9,6 +9,7 @@ let sceneRef: THREE.Scene | null = null;
 let hexFloorRef: THREE.Group | null = null;
 let hexFloorBaseRotation = 0; // Base rotation that GSAP animates
 let isAnimatingOut = false;
+let floatBlend = 0; // Ramps 0→1 after tornado ends, prevents Y jump
 let hexFloorEntranceDone = false;
 let laptopAnimationsInitialized = false;
 
@@ -47,6 +48,7 @@ export function animateLaptopOut(): Promise<void> {
 
     // Stop the floating animation so GSAP can take over
     isAnimatingOut = true;
+    floatBlend = 0;
 
     const laptop = laptopRef;
     const startRotationY = laptop.rotation.y;
@@ -104,13 +106,15 @@ export function animateLaptopIn(): void {
 
   const laptop = laptopRef;
   const config = getViewportConfig();
-  const baseY = config.isMobile ? 40 : config.isTablet ? 50 : 30;
-  const targetRotationY = config.isMobile ? 0 : config.isTablet ? -0.1 : -0.15;
-  const posX = config.isMobile ? 0 : config.isTablet ? 300 : 420;
-  const posZ = config.isMobile ? 50 : 80;
+  const baseY = config.isTabletPortrait ? 130 : config.isMobile ? 40 : config.isTablet ? 50 : 30;
+  const targetRotationY = config.isTabletPortrait ? -0.3 : config.isMobile ? 0 : config.isTablet ? -0.1 : -0.15;
+  const targetRotationX = config.isTabletPortrait ? 0.1 : 0;
+  const posX = config.isTabletPortrait ? 200 : config.isMobile ? 0 : config.isTablet ? 300 : 420;
+  const posZ = config.isTabletPortrait ? 50 : config.isMobile ? 50 : 80;
 
   // Block floating animation during entrance
   isAnimatingOut = true;
+  floatBlend = 0;
 
   // Reset materials first
   laptop.traverse((child: any) => {
@@ -127,7 +131,7 @@ export function animateLaptopIn(): void {
   // Set starting state: invisible, rotated back (4 full rotations)
   laptop.position.set(posX, baseY, posZ);
   laptop.scale.set(0.001, 0.001, 0.001);
-  laptop.rotation.set(0, targetRotationY - Math.PI * 4, 0);
+  laptop.rotation.set(targetRotationX, targetRotationY - Math.PI * 4, 0);
 
   // Create timeline for coordinated animation
   const tl = gsap.timeline({
@@ -138,6 +142,7 @@ export function animateLaptopIn(): void {
 
   // Spin forward (4 rotations)
   tl.to(laptop.rotation, {
+    x: targetRotationX,
     y: targetRotationY,
     duration: 0.9,
     ease: "power2.out",
@@ -249,11 +254,14 @@ export function resetLaptop(): void {
 
   const laptop = laptopRef;
   const config = getViewportConfig();
-  const scale = config.isMobile ? 45 : 60;
-  const baseY = config.isMobile ? 40 : config.isTablet ? 50 : 30;
+  const scale = config.isTabletPortrait ? 38 : config.isMobile ? 45 : 60;
+  const baseY = config.isTabletPortrait ? 130 : config.isMobile ? 40 : config.isTablet ? 50 : 30;
 
   // Reset position
-  if (config.isMobile) {
+  if (config.isTabletPortrait) {
+    laptop.position.set(200, baseY, 50);
+    laptop.rotation.set(0.1, -0.3, 0);
+  } else if (config.isMobile) {
     laptop.position.set(0, baseY, 50);
     laptop.rotation.set(0, 0, 0);
   } else if (config.isTablet) {
@@ -282,6 +290,7 @@ export function resetLaptop(): void {
 
 interface SceneConfig {
   isMobile: boolean;
+  isTabletPortrait: boolean;
   isTablet: boolean;
   isDesktop: boolean;
 }
@@ -305,8 +314,10 @@ const getViewportConfig = (): SceneConfig => {
   const isTabletSize = width >= 768 && width < 1024;
 
   return {
-    // Portrait tablets use mobile layout
+    // Portrait tablets use mobile layout (kept for backward compat)
     isMobile: width < 768 || (isTabletSize && isPortrait),
+    // Portrait tablets specifically — overrides mobile for hero scene
+    isTabletPortrait: isTabletSize && isPortrait,
     // Landscape tablets only
     isTablet: isTabletSize && !isPortrait,
     // Desktop or landscape tablets
@@ -319,29 +330,36 @@ const createScene = (container: HTMLElement, config: SceneConfig) => {
 
   const scene = new THREE.Scene();
 
+  const fov = config.isTabletPortrait ? 55 : config.isMobile ? 65 : 50;
   const camera = new THREE.PerspectiveCamera(
-    config.isMobile ? 65 : 50,
+    fov,
     container.clientWidth / container.clientHeight,
     0.1,
     5000
   );
 
-  // Camera positioned to see laptop on the RIGHT side, vertically centered
-  camera.position.set(
-    config.isMobile ? 0 : 120,
-    config.isMobile ? 60 : 160,
-    config.isMobile ? 450 : 600
-  );
-  camera.lookAt(config.isMobile ? 0 : 220, 20, 0);
+  // Camera positioning per device type
+  if (config.isTabletPortrait) {
+    // Portrait tablet: camera shifted right to frame laptop in top-right quadrant
+    camera.position.set(150, 140, 520);
+    camera.lookAt(200, 30, 0);
+  } else if (config.isMobile) {
+    camera.position.set(0, 60, 450);
+    camera.lookAt(0, 20, 0);
+  } else {
+    // Desktop / landscape tablet: laptop on the RIGHT side
+    camera.position.set(120, 160, 600);
+    camera.lookAt(220, 20, 0);
+  }
 
   const lowPerf = isLowPerformanceDevice();
   const renderer = new THREE.WebGLRenderer({
     alpha: true,
-    antialias: !config.isMobile && !lowPerf,
+    antialias: (!config.isMobile || config.isTabletPortrait) && !lowPerf,
     powerPreference: "high-performance",
   });
   renderer.setSize(container.clientWidth, container.clientHeight);
-  const maxPixelRatio = config.isMobile ? 1.5 : 2;
+  const maxPixelRatio = (config.isMobile && !config.isTabletPortrait) ? 1.5 : 2;
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, maxPixelRatio));
   renderer.setClearColor(0x000000, 0);
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -388,8 +406,8 @@ const createHexFloor = (config: SceneConfig) => {
   const measure = perfMonitor.startMeasure("hero:createHexFloor");
 
   const group = new THREE.Group();
-  const hexSize = config.isMobile ? 55 : 75;
-  const radius = config.isMobile ? 8 : 14;
+  const hexSize = (config.isMobile && !config.isTabletPortrait) ? 55 : 75;
+  const radius = (config.isMobile && !config.isTabletPortrait) ? 8 : 14;
 
   for (let q = -radius; q <= radius; q++) {
     for (let r = -radius; r <= radius; r++) {
@@ -438,7 +456,7 @@ const createHexFloor = (config: SceneConfig) => {
       const x = hexSize * 1.5 * q;
       const z = hexSize * Math.sqrt(3) * (r + q / 2);
 
-      hex.position.set(x, config.isMobile ? -130 : -180, z);
+      hex.position.set(x, (config.isMobile && !config.isTabletPortrait) ? -130 : -180, z);
 
       (hex as any).baseOpacity = opacity * 0.6;
       (hex as any).pulseOffset = distance * 0.12;
@@ -580,7 +598,7 @@ const loadLaptopModel = async (
     });
 
     // Set model scale (this is the base scale)
-    const scale = config.isMobile ? 45 : 60;
+    const scale = config.isTabletPortrait ? 38 : config.isMobile ? 45 : 60;
     model.scale.set(scale, scale, scale);
 
     const wrapper = new THREE.Group();
@@ -589,8 +607,12 @@ const loadLaptopModel = async (
     // Start wrapper invisible - will animate in when terminal morphs to hero
     wrapper.scale.set(0, 0, 0);
 
-    // Position laptop on the RIGHT side, not overlapping terminal
-    if (config.isMobile) {
+    // Position laptop based on device type
+    if (config.isTabletPortrait) {
+      // Portrait tablet: top-right quadrant, angled down-left toward terminal
+      wrapper.position.set(200, 130, 50);
+      wrapper.rotation.set(0.1, -0.3, 0);
+    } else if (config.isMobile) {
       wrapper.position.set(0, 40, 50);
       wrapper.rotation.y = 0;
     } else if (config.isTablet) {
@@ -639,10 +661,11 @@ export async function initHero3DScene() {
   scene.add(hexFloor);
   hexFloorRef = hexFloor;
 
-  // Skip heavy laptop model + texture on mobile — hex floor alone gives ambient 3D feel
+  // Skip heavy laptop model + texture on phones — hex floor alone gives ambient 3D feel
+  // Portrait tablets get the laptop since they have enough screen space
   let vscodeTexture: THREE.Texture | null = null;
   let laptopWrapper: THREE.Group | null = null;
-  if (!config.isMobile) {
+  if (!config.isMobile || config.isTabletPortrait) {
     vscodeTexture = await loadTexture(renderer);
     laptopWrapper = await loadLaptopModel(scene, config, vscodeTexture, renderer);
   }
@@ -652,7 +675,7 @@ export async function initHero3DScene() {
   let previousMouseX = 0;
   let previousMouseY = 0;
   const initialRotationY = laptopWrapper ? laptopWrapper.rotation.y : -0.15;
-  const initialRotationX = 0;
+  const initialRotationX = config.isTabletPortrait ? 0.1 : 0;
 
   const onMouseDown = (event: MouseEvent) => {
     isDragging = true;
@@ -682,12 +705,45 @@ export async function initHero3DScene() {
     container.style.cursor = "grab";
   };
 
-  if (!config.isMobile) {
-    container.style.cursor = "grab";
+  // Touch events for portrait tablets
+  const onTouchStart = (event: TouchEvent) => {
+    if (event.touches.length !== 1) return;
+    isDragging = true;
+    previousMouseX = event.touches[0].clientX;
+    previousMouseY = event.touches[0].clientY;
+  };
+
+  const onTouchMove = (event: TouchEvent) => {
+    if (!isDragging || !laptopWrapper || event.touches.length !== 1) return;
+
+    const deltaX = event.touches[0].clientX - previousMouseX;
+    const deltaY = event.touches[0].clientY - previousMouseY;
+
+    laptopWrapper.rotation.y += deltaX * 0.01;
+    laptopWrapper.rotation.x += deltaY * 0.01;
+
+    // Clamp X rotation
+    laptopWrapper.rotation.x = Math.max(-0.5, Math.min(0.5, laptopWrapper.rotation.x));
+
+    previousMouseX = event.touches[0].clientX;
+    previousMouseY = event.touches[0].clientY;
+  };
+
+  const onTouchEnd = () => {
+    isDragging = false;
+  };
+
+  if (!config.isMobile || config.isTabletPortrait) {
+    container.style.cursor = config.isTabletPortrait ? "default" : "grab";
     container.addEventListener("mousedown", onMouseDown);
     container.addEventListener("mousemove", onMouseMove);
     container.addEventListener("mouseup", onMouseUp);
     container.addEventListener("mouseleave", onMouseUp);
+    if (config.isTabletPortrait) {
+      container.addEventListener("touchstart", onTouchStart, { passive: true });
+      container.addEventListener("touchmove", onTouchMove, { passive: true });
+      container.addEventListener("touchend", onTouchEnd);
+    }
   }
 
   const handleResize = () => {
@@ -709,7 +765,7 @@ export async function initHero3DScene() {
   const hexColor1 = new THREE.Color(0x02bccc);
   const hexColor2 = new THREE.Color(0xccff02);
 
-  const baseY = config.isMobile ? 40 : config.isTablet ? 50 : 30;
+  const baseY = config.isTabletPortrait ? 130 : config.isMobile ? 40 : config.isTablet ? 50 : 30;
 
   const animate = () => {
     if (document.hidden) {
@@ -753,7 +809,9 @@ export async function initHero3DScene() {
     // Laptop floating and smooth return to initial position
     // Skip if exit animation is running (GSAP controls position)
     if (laptopWrapper && !isAnimatingOut) {
-      laptopWrapper.position.y = baseY + Math.sin(time * 0.6) * 12;
+      // Ramp up float blend so floating eases in after tornado
+      floatBlend = Math.min(1, floatBlend + 0.02);
+      laptopWrapper.position.y = baseY + Math.sin(time * 0.6) * 12 * floatBlend;
 
       if (!isDragging) {
         // Smoothly return to initial rotation when not dragging
@@ -788,6 +846,9 @@ export async function initHero3DScene() {
     container.removeEventListener("mousemove", onMouseMove);
     container.removeEventListener("mouseup", onMouseUp);
     container.removeEventListener("mouseleave", onMouseUp);
+    container.removeEventListener("touchstart", onTouchStart);
+    container.removeEventListener("touchmove", onTouchMove);
+    container.removeEventListener("touchend", onTouchEnd);
     if (animationId) cancelAnimationFrame(animationId);
 
     scene.traverse((child: any) => {

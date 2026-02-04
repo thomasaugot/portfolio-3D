@@ -131,7 +131,9 @@ export default function Terminal() {
     const w = window.innerWidth;
     const h = window.innerHeight;
     const isTabletSize = w >= 768 && w < 1024;
-    setIsDesktop(w >= 1024 || (isTabletSize && w >= h));
+    const isTabletPortrait = isTabletSize && h > w;
+    // Landscape tablets + desktops use desktop content; portrait tablets use mobile content
+    setIsDesktop(w >= 1024 || (isTabletSize && !isTabletPortrait));
 
     const cursorId = setInterval(() => setCursor((prev) => !prev), 530);
     return () => clearInterval(cursorId);
