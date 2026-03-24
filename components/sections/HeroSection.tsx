@@ -7,12 +7,16 @@ export default function HeroSection() {
   const containerRef = useThreeScene(initHero3DScene, "hero");
 
   return (
-    <div className="fixed inset-0 overflow-hidden bg-[#1e1e1e]" data-hero-section>
+    <div
+      className="fixed inset-0 overflow-hidden bg-bg"
+      data-hero-section
+      aria-hidden="true"
+    >
       <div className="hidden" data-hero-content data-hero-bg data-laptop />
 
       {/* Background gradient */}
       <div data-hero-backdrop className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#252525] via-[#1e1e1e] to-[#1a1a1a]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-bg-surface via-bg to-bg-surface" />
       </div>
 
       {/* 3D scene container */}

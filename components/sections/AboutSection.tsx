@@ -1,16 +1,14 @@
 "use client";
 
-import { useTranslation } from "@/contexts/TranslationProvider";
 import Image from "next/image";
 
 export default function AboutSection() {
-  const { t } = useTranslation();
-
   return (
     <div
       className="fixed inset-0 z-20 pointer-events-none"
       style={{ visibility: "hidden", opacity: 0 }}
       data-about-section
+      aria-hidden="true"
     >
       {/* Container matching navbar max-width */}
       <div className="max-w-6xl mx-auto px-6 md:px-8 h-full relative">
@@ -33,10 +31,10 @@ export default function AboutSection() {
             <div className="absolute -inset-14 border border-secondary/20 rounded-full animate-[spin_45s_linear_infinite_reverse]" />
 
             {/* Portrait - simple rounded frame */}
-            <div className="relative w-[280px] lg:w-[320px] h-[360px] lg:h-[420px] rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-primary/20">
+            <div className="relative w-[280px] lg:w-[320px] h-[360px] lg:h-[420px] rounded-2xl overflow-hidden border border-border shadow-2xl shadow-primary/20">
               <Image
-                src="/assets/images/portrait/portrait.png"
-                alt={t("about.name")}
+                src="/assets/images/portrait/portrait.webp"
+                alt=""
                 fill
                 className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
                 priority

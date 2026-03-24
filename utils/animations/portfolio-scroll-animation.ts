@@ -12,6 +12,7 @@ import {
   typewriteCtaPanel,
   preparePanel,
 } from "@/utils/animations/typewriter";
+import { motionDuration, prefersReducedMotion } from "@/utils/motion";
 
 let wheelHandler: ((e: WheelEvent) => void) | null = null;
 let introWheelHandlerRef: ((e: WheelEvent) => void) | null = null;
@@ -27,6 +28,35 @@ let pendingStartRequest = false; // Track if start was requested before scene re
 const WHEEL_THRESHOLD = 150; // Minimum wheel delta to trigger slide change
 const SLIDE_COOLDOWN = 600; // Minimum ms between slide changes (wheel)
 const TOUCH_SLIDE_COOLDOWN = 900; // Minimum ms between slide changes (touch)
+
+function setPanelAccessibilityState(panel: HTMLElement, isActive: boolean) {
+  panel.setAttribute("aria-hidden", isActive ? "false" : "true");
+
+  if (isActive) {
+    panel.removeAttribute("inert");
+  } else {
+    panel.setAttribute("inert", "");
+  }
+}
+
+function focusPanelTarget(panel: HTMLElement) {
+  window.setTimeout(() => {
+    const preferredTarget =
+      panel.querySelector<HTMLElement>("[data-contact-cta-btn]") ||
+      panel.querySelector<HTMLElement>("[data-next-project-btn]") ||
+      panel;
+
+    preferredTarget.focus();
+  }, 120);
+}
+
+function getPanelTransitionFrom(isForward: boolean) {
+  if (prefersReducedMotion()) {
+    return { opacity: 0, y: 0, scale: 1 };
+  }
+
+  return { opacity: 0, y: isForward ? 30 : -30, scale: 1 };
+}
 
 // Listen for reset event from terminal-morph (avoids circular dependency)
 if (typeof window !== "undefined") {
@@ -94,7 +124,7 @@ export function resetPortfolioState() {
 
   const portfolioSection = document.querySelector("[data-portfolio-section]") as HTMLElement | null;
   const portfolioTerminal = document.querySelector("[data-portfolio-terminal]") as HTMLElement | null;
-  const introPanel = portfolioTerminal?.querySelector("[data-intro-panel]") as HTMLElement;
+  const introPanel = document.querySelector("[data-intro-panel]") as HTMLElement | null;
   const projectPanels = portfolioSection?.querySelectorAll("[data-project-panel]") || [];
   const portfolio3DContainer = document.querySelector("[data-portfolio-3d-container]") as HTMLElement;
   const scrollIndicator = document.querySelector("[data-scroll-indicator]") as HTMLElement;
@@ -114,12 +144,14 @@ export function resetPortfolioState() {
 
   if (introPanel) {
     gsap.set(introPanel, { opacity: 1, pointerEvents: "auto" });
+    setPanelAccessibilityState(introPanel, true);
   }
 
   projectPanels.forEach((panel: Element) => {
     const panelValue = parseInt((panel as HTMLElement).dataset.projectPanel || "0", 10);
     if (panelValue === 0) return; // skip intro
     gsap.set(panel, { opacity: 0, pointerEvents: "none", y: 0 });
+    setPanelAccessibilityState(panel as HTMLElement, false);
   });
 
   if (portfolio3DContainer) {
@@ -149,6 +181,8 @@ export function initPortfolioScroll() {
     document.removeEventListener("wheel", wheelHandler);
     wheelHandler = null;
   }
+  let startRequestHandlerRef: ((event: Event) => void) | null = null;
+  let keyboardNavigateHandlerRef: ((event: Event) => void) | null = null;
   isExpanded = false;
   currentSlideIndex = 0;
   isAnimating = false;
@@ -284,8 +318,7 @@ export function initPortfolioScroll() {
   // Set up button click handler IMMEDIATELY (before scene loads)
   // This dispatches portfolioStartRequested which will be handled when scene is ready
   const portfolioSection = document.querySelector("[data-portfolio-section]") as HTMLElement | null;
-  const portfolioTerminal = portfolioSection?.querySelector("[data-portfolio-terminal]") as HTMLElement | null;
-  const startBtnEarly = portfolioTerminal?.querySelector("[data-start-projects-btn]") as HTMLElement;
+  const startBtnEarly = document.querySelector("[data-start-projects-btn]") as HTMLElement | null;
 
   if (startBtnEarly) {
     startBtnEarly.addEventListener("click", () => {
@@ -310,7 +343,7 @@ export function initPortfolioScroll() {
     const projectPanels = portfolioSection.querySelectorAll("[data-project-panel]") || [];
     const { projectModels } = portfolioScene;
 
-    const introPanel = portfolioTerminal?.querySelector("[data-intro-panel]") as HTMLElement;
+    const introPanel = document.querySelector("[data-intro-panel]") as HTMLElement | null;
     const portfolio3DContainer = portfolioSection.querySelector("[data-portfolio-3d-container]") as HTMLElement;
     const scrollIndicator = document.querySelector("[data-scroll-indicator]") as HTMLElement;
     const projectCounter = portfolioTerminal?.querySelector("[data-project-counter]") as HTMLElement | null;
@@ -322,6 +355,9 @@ export function initPortfolioScroll() {
 
     // Initialize
     gsap.set(introPanel, { opacity: 1, pointerEvents: "auto" });
+    if (introPanel) {
+      setPanelAccessibilityState(introPanel, true);
+    }
     if (portfolio3DContainer) {
       gsap.set(portfolio3DContainer, { opacity: 0, pointerEvents: "none" });
     }
@@ -333,6 +369,7 @@ export function initPortfolioScroll() {
       const panelValue = parseInt((panel as HTMLElement).dataset.projectPanel || "0", 10);
       if (panelValue === 0) return; // skip intro
       gsap.set(panel, { opacity: 0, pointerEvents: "none" });
+      setPanelAccessibilityState(panel as HTMLElement, false);
     });
 
     projectModels.forEach((modelData: any) => {
@@ -357,6 +394,7 @@ export function initPortfolioScroll() {
         const panelSlideIndex = panelValue - 1;
         if (panelSlideIndex !== targetIndex) {
           gsap.set(panel, { opacity: 0, y: 0, pointerEvents: "none" });
+          setPanelAccessibilityState(panel as HTMLElement, false);
         }
       });
 
@@ -377,22 +415,26 @@ export function initPortfolioScroll() {
       const newPanel = portfolioSection.querySelector(`[data-project-panel="${newPanelIndex}"]`) as HTMLElement | null;
       if (newPanel) {
         preparePanel(`[data-project-panel="${newPanelIndex}"]`);
+        setPanelAccessibilityState(newPanel, true);
 
         gsap.fromTo(
           newPanel,
-          { opacity: 0, y: fromIndex < targetIndex ? 30 : -30 },
+          getPanelTransitionFrom(fromIndex < targetIndex),
           {
             opacity: 1,
             y: 0,
+            scale: 1,
             pointerEvents: "auto",
-            duration: 0.4,
+            duration: motionDuration(0.4),
             ease: "power3.out",
             onComplete: () => {
               isAnimating = false;
               if (targetIndex < totalProjects) {
                 typewriteProjectPanel(targetIndex);
+                focusPanelTarget(newPanel);
               } else if (targetIndex === totalProjects) {
                 typewriteCtaPanel(totalProjects);
+                focusPanelTarget(newPanel);
               }
             },
           }
@@ -541,6 +583,9 @@ export function initPortfolioScroll() {
     const handleStartClick = () => {
       if (isExpanded) return;
       isExpanded = true;
+      if (introPanel) {
+        setPanelAccessibilityState(introPanel, false);
+      }
 
       morphPortfolioToExpanded(() => {
         setupWheelNavigation();
@@ -549,14 +594,18 @@ export function initPortfolioScroll() {
         const firstProjectPanel = portfolioSection.querySelector('[data-project-panel="1"]') as HTMLElement | null;
         if (firstProjectPanel) {
           preparePanel('[data-project-panel="1"]');
+          setPanelAccessibilityState(firstProjectPanel, true);
+          gsap.set(firstProjectPanel, getPanelTransitionFrom(true));
 
           gsap.to(firstProjectPanel, {
             opacity: 1,
             pointerEvents: "auto",
-            duration: 0.4,
+            scale: 1,
+            duration: motionDuration(0.4),
             ease: "power2.out",
             onComplete: () => {
               typewriteProjectPanel(0);
+              focusPanelTarget(firstProjectPanel);
             },
           });
         }
@@ -567,7 +616,7 @@ export function initPortfolioScroll() {
           projectModels[0].wrapper.position.z = 0;
           gsap.to(projectModels[0].wrapper.scale, {
             x: 1, y: 1, z: 1,
-            duration: 0.6,
+            duration: motionDuration(0.6),
             ease: "back.out(1.5)",
           });
         }
@@ -592,7 +641,35 @@ export function initPortfolioScroll() {
       (window as any).__portfolioPendingStart = false;
       handleStartClick();
     };
+    startRequestHandlerRef = handleStartRequest;
     window.addEventListener("portfolioStartRequested", handleStartRequest);
+
+    const handleKeyboardNavigate = (event: Event) => {
+      const direction = (event as CustomEvent).detail?.direction;
+      if (direction !== 1 && direction !== -1) return;
+
+      if (!isExpanded) {
+        if (direction === 1) {
+          handleStartClick();
+        }
+        return;
+      }
+
+      if (isAnimating) return;
+
+      const nextIndex = currentSlideIndex + direction;
+
+      if (currentSlideIndex === totalSlides - 1 && direction === 1) {
+        window.dispatchEvent(new CustomEvent("goToContact"));
+        return;
+      }
+
+      if (nextIndex >= 0 && nextIndex < totalSlides) {
+        goToSlide(nextIndex);
+      }
+    };
+    keyboardNavigateHandlerRef = handleKeyboardNavigate;
+    window.addEventListener("portfolioNavigate", handleKeyboardNavigate);
 
     // Check if start was requested before scene was ready (check both flags)
     if (pendingStartRequest || (window as any).__portfolioPendingStart) {
@@ -624,6 +701,14 @@ export function initPortfolioScroll() {
   waitForScene();
 
   return () => {
+    if (keyboardNavigateHandlerRef) {
+      window.removeEventListener("portfolioNavigate", keyboardNavigateHandlerRef);
+      keyboardNavigateHandlerRef = null;
+    }
+    if (startRequestHandlerRef) {
+      window.removeEventListener("portfolioStartRequested", startRequestHandlerRef);
+      startRequestHandlerRef = null;
+    }
     if (wheelHandler) {
       document.removeEventListener("wheel", wheelHandler);
       wheelHandler = null;

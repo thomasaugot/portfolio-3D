@@ -11,10 +11,10 @@ interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
 }
 
 const baseStyles =
-  "w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm placeholder:text-white/30 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed";
+  "keyboard-field-focus w-full bg-text/7 border border-border rounded-lg px-3 py-2 text-text text-sm placeholder:text-muted transition-colors disabled:opacity-50 disabled:cursor-not-allowed";
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ className = "", variant = "default", ...props }, ref) => {
+  ({ className = "", ...props }, ref) => {
     return (
       <input
         ref={ref}
@@ -28,7 +28,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 Input.displayName = "Input";
 
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ className = "", variant = "default", ...props }, ref) => {
+  ({ className = "", ...props }, ref) => {
     return (
       <textarea
         ref={ref}

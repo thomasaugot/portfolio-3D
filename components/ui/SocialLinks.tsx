@@ -13,10 +13,10 @@ export default function SocialLinks({ className = "" }: { className?: string }) 
             href={link.href}
             target="_blank"
             rel="noreferrer"
-            className="group text-white/40 hover:text-white transition-colors"
+            className="keyboard-focus-ring group rounded-lg text-text/70 transition-colors hover:text-text"
             aria-label={link.label}
           >
-            <Icon className={`w-7 h-7 transition-colors ${link.color}`} />
+            <Icon aria-hidden="true" className={`w-7 h-7 transition-colors ${link.color}`} />
           </a>
         );
       })}

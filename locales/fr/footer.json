@@ -10,6 +10,12 @@
   "social_kicker": "réseaux",
   "social_title": "Restons en contact",
   "social_description": "Retrouvez-moi sur les réseaux ou suivez mes projets en cours.",
+  "motion": {
+    "toggle": "Mode de mouvement",
+    "system": "systeme",
+    "full": "complet",
+    "reduced": "reduit"
+  },
   "rights": "Tous droits réservés.",
   "back_to_top": "Retour en haut",
   "form": {
@@ -26,6 +32,14 @@
     "sending": "envoi",
     "success_title": "Message envoyé !",
     "success_text": "Merci de m'avoir contacté. Je vous réponds bientôt !",
-    "send_another": "Envoyer un autre"
+    "send_another": "Envoyer un autre",
+    "errors": {
+      "name_required": "Veuillez entrer votre nom.",
+      "email_required": "Veuillez entrer votre adresse email.",
+      "email_invalid": "Veuillez entrer une adresse email valide.",
+      "message_required": "Veuillez entrer un message.",
+      "config": "Le formulaire de contact n'est pas configuré correctement pour le moment.",
+      "send": "Une erreur s'est produite lors de l'envoi du message. Veuillez réessayer."
+    }
   }
 }

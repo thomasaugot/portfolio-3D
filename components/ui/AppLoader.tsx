@@ -98,7 +98,7 @@ export default function AppLoader({
       style={{ pointerEvents: phase === "exiting" ? "none" : "auto" }}
     >
       {/* Background grid */}
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:50px_50px] pointer-events-none" />
+      <div className="absolute inset-0 opacity-30 bg-[linear-gradient(var(--theme-border)_1px,transparent_1px),linear-gradient(90deg,var(--theme-border)_1px,transparent_1px)] bg-[size:50px_50px] pointer-events-none" />
 
       {/* Glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-primary/10 rounded-full blur-[120px] pointer-events-none" />
@@ -110,15 +110,15 @@ export default function AppLoader({
       >
         <div className="w-full max-w-md px-6">
           {/* Terminal window */}
-          <div className="bg-bg-surface rounded-xl border border-white/10 shadow-2xl overflow-hidden">
+          <div className="bg-bg-surface rounded-xl border border-border shadow-2xl overflow-hidden">
             {/* Terminal header */}
-            <div className="flex items-center gap-2 px-4 py-3 bg-bg-panel border-b border-white/10">
+            <div className="flex items-center gap-2 px-4 py-3 bg-bg-panel border-b border-border">
               <div className="flex gap-2">
                 <div className="w-3 h-3 rounded-full bg-[#ff5f56]" />
                 <div className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
                 <div className="w-3 h-3 rounded-full bg-[#27ca40]" />
               </div>
-              <span className="ml-4 text-xs text-white/40 font-mono">
+              <span className="ml-4 text-xs text-muted font-mono">
                 loading.sh
               </span>
             </div>
@@ -127,16 +127,16 @@ export default function AppLoader({
             <div className="p-6 font-mono text-sm">
               <div className="mb-4">
                 <span className="text-primary">❯</span>
-                <span className="text-white ml-2">./init-portfolio.sh</span>
+                <span className="text-text ml-2">./init-portfolio.sh</span>
               </div>
 
-              <div className="mb-4 text-white/60">
+              <div className="mb-4 text-text/82">
                 Loading assets...
               </div>
 
               {/* Progress */}
               <div className="flex items-center gap-4 mb-4">
-                <div className="flex-1 h-2 bg-white/10 rounded-full overflow-hidden">
+                <div className="flex-1 h-2 bg-text/12 rounded-full overflow-hidden">
                   <div
                     ref={progressBarRef}
                     className="h-full w-0 bg-gradient-to-r from-primary to-primary rounded-full transition-all duration-300"
@@ -149,7 +149,7 @@ export default function AppLoader({
                   >
                     0
                   </span>
-                  <span className="text-white/40">%</span>
+                  <span className="text-muted">%</span>
                 </div>
               </div>
 

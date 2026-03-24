@@ -1,5 +1,10 @@
-import { notFound } from "next/navigation";
+import { redirect } from "next/navigation";
 
-export default function LocaleCatchAll() {
-  notFound();
+export default async function LocaleCatchAll({
+  params,
+}: {
+  params: Promise<{ locale: string; slug?: string[] }>;
+}) {
+  const { locale } = await params;
+  redirect(`/${locale}`);
 }

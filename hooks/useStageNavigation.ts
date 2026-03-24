@@ -1,12 +1,15 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { usePathname } from "next/navigation";
+import { useEffect, useState, useCallback } from "react";
 import {
   morphToAbout,
   morphToProjects,
   morphToContact,
   morphToHeroFromAny,
 } from "@/utils/animations/terminal-morph";
+import { getStageFromPathname, getStagePath } from "@/utils/stage-paths";
+import { waitForStableStageMeasurement } from "@/utils/terminal-sizes";
 
 export type Stage = "hero" | "about" | "projects" | "contact";
 export type PromptStage = "more" | "work" | "contact" | null;
@@ -16,6 +19,7 @@ interface UseStageNavigationOptions {
 }
 
 export function useStageNavigation({ t }: UseStageNavigationOptions) {
+  const pathname = usePathname();
   const [stage, setStage] = useState<Stage>("hero");
   const [promptStage, setPromptStage] = useState<PromptStage>(null);
   const [activeIndex, setActiveIndex] = useState(-1);
@@ -32,20 +36,27 @@ export function useStageNavigation({ t }: UseStageNavigationOptions) {
           ? t("hero.prompt_contact")
           : undefined;
 
+  const waitForStageMeasurement = useCallback((targetStage: Stage) => {
+    if (targetStage === "projects") return Promise.resolve();
+    return waitForStableStageMeasurement(targetStage).then(() => undefined);
+  }, []);
+
   const transitionToStage = useCallback(
     (
       targetStage: Stage,
       morphFn: (onComplete?: () => void) => void,
       onComplete?: () => void
     ) => {
-      setIsMorphing(true);
-      morphFn(() => {
-        setIsMorphing(false);
-        setStage(targetStage);
-        onComplete?.();
+      waitForStageMeasurement(targetStage).then(() => {
+        setIsMorphing(true);
+        morphFn(() => {
+          setIsMorphing(false);
+          setStage(targetStage);
+          onComplete?.();
+        });
       });
     },
-    []
+    [waitForStageMeasurement]
   );
 
   const goToHero = useCallback(() => {
@@ -130,6 +141,24 @@ export function useStageNavigation({ t }: UseStageNavigationOptions) {
   const clearPromptStage = useCallback(() => {
     setPromptStage(null);
   }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const { locale } = getStageFromPathname(pathname);
+    if (!locale) return;
+
+    const nextPath = getStagePath(locale, stage);
+
+    const currentPath = window.location.pathname;
+    if (currentPath === nextPath && !window.location.hash) return;
+
+    window.history.replaceState(
+      window.history.state,
+      "",
+      `${nextPath}${window.location.search}`
+    );
+  }, [pathname, stage]);
 
   return {
     stage,

@@ -21,17 +21,30 @@
   --theme-secondary: #f59e0b;
   --theme-accent: #22d3ee;
 
-  --theme-bg: #2a2a2a;
-  --theme-bg-surface: #1a1a1a;
-  --theme-bg-panel: #2a2a2a;
-  --theme-border: #2a2a2a;
+  /* Dark theme (default) */
+  --theme-bg: #1a1a1a;
+  --theme-bg-surface: #111111;
+  --theme-bg-panel: #242424;
+  --theme-border: #333333;
+  --theme-text: #f0f0f0;
+  --theme-text-muted: #aaaaaa;
+}
 
-  --theme-text: #ffffff;
-  --theme-text-muted: #a1a1aa;
+[data-theme="light"] {
+  --theme-bg: #ebe6db;
+  --theme-bg-surface: #f7f2e8;
+  --theme-bg-panel: #e2d9ca;
+  --theme-border: #c2b39a;
+  --theme-text: #23201a;
+  --theme-text-muted: #655c50;
 }
 
 html {
   scroll-behavior: smooth;
+}
+
+html[data-motion-preference="reduced"] {
+  scroll-behavior: auto;
 }
 
 html,
@@ -50,6 +63,42 @@ body {
   padding-bottom: env(safe-area-inset-bottom);
   padding-left: env(safe-area-inset-left);
   padding-right: env(safe-area-inset-right);
+}
+
+.keyboard-focus-ring {
+  outline: none !important;
+}
+
+html:not([data-input-modality="keyboard"]) .keyboard-focus-ring:focus,
+html:not([data-input-modality="keyboard"]) .keyboard-focus-ring:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+html[data-input-modality="keyboard"] .keyboard-focus-ring:focus,
+html[data-input-modality="keyboard"] .keyboard-focus-ring:focus-visible {
+  outline: none !important;
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--theme-primary) 90%, transparent),
+    0 0 0 4px var(--theme-bg-surface);
+}
+
+.keyboard-field-focus {
+  outline: none !important;
+}
+
+html:not([data-input-modality="keyboard"]) .keyboard-field-focus:focus,
+html:not([data-input-modality="keyboard"]) .keyboard-field-focus:focus-visible {
+  outline: none !important;
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: none !important;
+}
+
+html[data-input-modality="keyboard"] .keyboard-field-focus:focus,
+html[data-input-modality="keyboard"] .keyboard-field-focus:focus-visible {
+  outline: none !important;
+  border-color: color-mix(in srgb, var(--theme-primary) 50%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--theme-primary) 20%, transparent);
 }
 
 button {
@@ -123,6 +172,26 @@ button {
 
 .animate-fadeIn {
   animation: fadeIn 0.3s ease-out forwards;
+}
+
+@keyframes slotIn {
+  0% {
+    opacity: 0;
+    transform: translateY(0.7em);
+    filter: blur(3px);
+  }
+  60% {
+    filter: blur(0px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0px);
+  }
+}
+
+.animate-slot-in {
+  animation: slotIn 0.45s cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
 
 @keyframes blink {

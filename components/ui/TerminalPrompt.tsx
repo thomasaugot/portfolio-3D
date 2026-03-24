@@ -17,8 +17,8 @@ interface TerminalPromptProps {
 
 export default function TerminalPrompt({ promptLabelTyped, promptConfig }: TerminalPromptProps) {
   return (
-    <div className="mt-3 pt-3 border-t border-white/10">
-      <div className="flex items-center gap-2 text-white">
+    <div className="mt-3 pt-3 border-t border-border">
+      <div className="flex items-center gap-2 text-text">
         <span className="text-primary">❯</span>
         <span>{promptLabelTyped || promptConfig.label}</span>
       </div>

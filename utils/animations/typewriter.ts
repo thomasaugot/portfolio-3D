@@ -1,4 +1,5 @@
 import { gsap } from "@/lib/gsap";
+import { motionDelay, motionDuration, prefersReducedMotion } from "@/utils/motion";
 
 // Single source of truth for typewriter speed across the entire app
 // higer value = slower typing
@@ -20,6 +21,12 @@ function typeChars(
   fullText: string,
   onDone: () => void
 ) {
+  if (prefersReducedMotion()) {
+    element.textContent = fullText;
+    onDone();
+    return;
+  }
+
   let i = 0;
   const tick = () => {
     i++;
@@ -57,7 +64,7 @@ async function typewritePanel(panel: HTMLElement) {
     // Delay before this line starts
     const lineDelay = parseInt(element.dataset.typewriterDelay || "80", 10);
     await new Promise<void>((r) => {
-      const id = setTimeout(r, lineDelay);
+      const id = setTimeout(r, motionDelay(lineDelay));
       activeTimers.push(id);
     });
 
@@ -84,8 +91,8 @@ async function typewritePanel(panel: HTMLElement) {
   reveals.forEach((el) => {
     const delay = parseInt((el as HTMLElement).dataset.typewriterDelay || "200", 10);
     const id = setTimeout(() => {
-      gsap.to(el, { opacity: 1, duration: 0.4, ease: "power2.out" });
-    }, delay);
+      gsap.to(el, { opacity: 1, duration: motionDuration(0.4), ease: "power2.out" });
+    }, motionDelay(delay));
     activeTimers.push(id);
   });
 }
@@ -133,7 +140,12 @@ export function typewriteIntroPanel() {
 
   typewritePanel(introPanel).then(() => {
     if (introCta) {
-      gsap.to(introCta, { opacity: 1, duration: 0.4, delay: 0.2, ease: "power2.out" });
+      gsap.to(introCta, {
+        opacity: 1,
+        duration: motionDuration(0.4),
+        delay: motionDelay(0.2),
+        ease: "power2.out",
+      });
     }
   });
 }

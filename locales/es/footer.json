@@ -10,6 +10,12 @@
   "social_kicker": "enlaces",
   "social_title": "Encuéntrame en otros lugares",
   "social_description": "¿Prefieres redes? Escríbeme en cualquiera de estas plataformas o sigue lo que estoy construyendo.",
+  "motion": {
+    "toggle": "Modo de movimiento",
+    "system": "sistema",
+    "full": "completo",
+    "reduced": "reducido"
+  },
   "rights": "Todos los derechos reservados.",
   "back_to_top": "Volver arriba",
   "form": {
@@ -26,6 +32,14 @@
     "sending": "enviando",
     "success_title": "¡Mensaje enviado!",
     "success_text": "Gracias por contactarme. ¡Te respondo pronto!",
-    "send_another": "Enviar otro"
+    "send_another": "Enviar otro",
+    "errors": {
+      "name_required": "Por favor, introduce tu nombre.",
+      "email_required": "Por favor, introduce tu correo electronico.",
+      "email_invalid": "Por favor, introduce un correo electronico valido.",
+      "message_required": "Por favor, escribe un mensaje.",
+      "config": "El formulario de contacto no esta configurado correctamente en este momento.",
+      "send": "Ha ocurrido un error al enviar tu mensaje. Intentalo de nuevo."
+    }
   }
 }

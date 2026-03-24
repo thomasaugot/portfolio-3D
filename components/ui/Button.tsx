@@ -26,7 +26,7 @@ export const Button = ({
   ...props
 }: ButtonProps) => {
   const baseStyles =
-    "relative inline-flex items-center justify-center gap-2 font-bold transition-all duration-300 ease-out hover:scale-[1.02] text-nowrap active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100";
+    "keyboard-focus-ring relative inline-flex items-center justify-center gap-2 font-bold transition-all duration-300 ease-out hover:scale-[1.02] text-nowrap active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100";
 
   const sizeStyles = {
     sm: "px-4 py-2 text-sm rounded-lg",
@@ -44,8 +44,8 @@ export const Button = ({
       hover:shadow-lg hover:shadow-primary/25
     `,
     outlined: `
-      bg-transparent text-white/80 border border-white/20
-      hover:border-white/40 hover:text-white
+      bg-transparent text-text/90 border border-border
+      hover:border-text/55 hover:text-text
     `,
   };
 

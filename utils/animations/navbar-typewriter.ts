@@ -1,4 +1,5 @@
 import { gsap } from "@/lib/gsap";
+import { prefersReducedMotion } from "@/utils/motion";
 
 let typewriterTween: gsap.core.Tween | null = null;
 let retryTimeout: ReturnType<typeof setTimeout> | null = null;
@@ -32,6 +33,11 @@ export function initNavbarTypewriter() {
 
     fullText = target.dataset.text || target.textContent || "";
     if (!fullText) return;
+
+    if (prefersReducedMotion()) {
+      target.textContent = fullText;
+      return;
+    }
 
     target.textContent = "";
 

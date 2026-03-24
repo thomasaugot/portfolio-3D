@@ -17,10 +17,10 @@ export default function BackToTop() {
       }}
       disabled={isMorphing}
       aria-label="Back to top"
-      className={`fixed bottom-12 md:bottom-6 right-6 md:right-auto md:left-6 z-[100002] p-3 rounded-xl
-        bg-white/5 border border-white/10 text-primary backdrop-blur-sm
+      className={`keyboard-focus-ring fixed bottom-12 md:bottom-6 right-6 md:right-auto md:left-6 z-[100002] p-3 rounded-xl
+        bg-text/7 border border-border text-primary backdrop-blur-sm
         transition-all duration-300 ease-out
-        hover:bg-white/10 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/10
+        hover:bg-text/12 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/10
         active:scale-90 disabled:opacity-50 disabled:cursor-not-allowed
         ${visible ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 translate-y-4 pointer-events-none"}`}
     >

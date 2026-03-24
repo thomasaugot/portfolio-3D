@@ -2,6 +2,7 @@ import { THREE } from "@/lib/three";
 import { gsap } from "@/lib/gsap";
 import { perfMonitor } from "@/utils/performance-monitor";
 import { loadCachedGLTF } from "@/utils/model-cache";
+import { motionDuration, prefersReducedMotion } from "@/utils/motion";
 
 // Global reference to laptop for external animations
 let laptopRef: THREE.Group | null = null;
@@ -12,6 +13,63 @@ let isAnimatingOut = false;
 let floatBlend = 0; // Ramps 0→1 after tornado ends, prevents Y jump
 let hexFloorEntranceDone = false;
 let laptopAnimationsInitialized = false;
+let laptopThemeObserver: MutationObserver | null = null;
+
+const isLightThemeActive = () =>
+  typeof document !== "undefined" &&
+  document.documentElement.dataset.theme === "light";
+
+const applyLaptopMaterialTheme = (model: THREE.Object3D) => {
+  const isLightTheme = isLightThemeActive();
+  const bodyColor = new THREE.Color(isLightTheme ? 0x686764 : 0x5a5a5a);
+  const bodyEmissive = new THREE.Color(isLightTheme ? 0x232321 : 0x2a2a2a);
+  const keyboardColor = new THREE.Color(0x3a3a3a);
+  const keyboardEmissive = new THREE.Color(0x141414);
+
+  model.traverse((child: any) => {
+    if (!child.isMesh || !child.material) return;
+
+    if (child.name === "Keyboard_Keyboard_0") {
+      child.material.color = keyboardColor.clone();
+      child.material.emissive = keyboardEmissive.clone();
+      child.material.emissiveIntensity = 0.12;
+      child.material.metalness = 0.25;
+      child.material.roughness = 0.82;
+      child.material.needsUpdate = true;
+      return;
+    }
+
+    if (child.name === "Screen_Screen_0" || child.name === "Empty001") {
+      return;
+    }
+
+    child.material.color = bodyColor.clone();
+    child.material.emissive = bodyEmissive.clone();
+    child.material.emissiveIntensity = isLightTheme ? 0.08 : 0.3;
+    child.material.metalness = isLightTheme ? 0.56 : 0.7;
+    child.material.roughness = isLightTheme ? 0.5 : 0.4;
+    child.material.needsUpdate = true;
+  });
+};
+
+const syncLaptopTheme = () => {
+  if (!laptopRef) return;
+  applyLaptopMaterialTheme(laptopRef);
+};
+
+const watchLaptopTheme = () => {
+  if (typeof document === "undefined") return;
+
+  laptopThemeObserver?.disconnect();
+  laptopThemeObserver = new MutationObserver(() => {
+    syncLaptopTheme();
+  });
+
+  laptopThemeObserver.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["data-theme"],
+  });
+};
 
 /**
  * Initialize laptop animations - called at page level
@@ -46,6 +104,12 @@ export function animateLaptopOut(): Promise<void> {
       return;
     }
 
+    if (prefersReducedMotion()) {
+      laptopRef.scale.set(0, 0, 0);
+      resolve();
+      return;
+    }
+
     // Stop the floating animation so GSAP can take over
     isAnimatingOut = true;
     floatBlend = 0;
@@ -63,7 +127,7 @@ export function animateLaptopOut(): Promise<void> {
     // Rapid spin - multiple full rotations (tornado vortex)
     tl.to(laptop.rotation, {
       y: startRotationY + Math.PI * 4,
-      duration: 0.9,
+      duration: motionDuration(0.9),
       ease: "power2.in",
     }, 0);
 
@@ -72,7 +136,7 @@ export function animateLaptopOut(): Promise<void> {
       x: 0,
       y: 0,
       z: 0,
-      duration: 0.8,
+      duration: motionDuration(0.8),
       ease: "power2.in",
     }, 0.1);
 
@@ -85,7 +149,7 @@ export function animateLaptopOut(): Promise<void> {
           mat.needsUpdate = true;
           tl.to(mat, {
             opacity: 0,
-            duration: 0.6,
+            duration: motionDuration(0.6),
             ease: "power2.in",
             onUpdate: () => {
               mat.needsUpdate = true;
@@ -111,6 +175,14 @@ export function animateLaptopIn(): void {
   const targetRotationX = config.isTabletPortrait ? 0.1 : 0;
   const posX = config.isTabletPortrait ? 200 : config.isMobile ? 0 : config.isTablet ? 300 : 420;
   const posZ = config.isTabletPortrait ? 50 : config.isMobile ? 50 : 80;
+
+  if (prefersReducedMotion()) {
+    laptop.position.set(posX, baseY, posZ);
+    laptop.scale.set(1, 1, 1);
+    laptop.rotation.set(targetRotationX, targetRotationY, 0);
+    isAnimatingOut = false;
+    return;
+  }
 
   // Block floating animation during entrance
   isAnimatingOut = true;
@@ -144,7 +216,7 @@ export function animateLaptopIn(): void {
   tl.to(laptop.rotation, {
     x: targetRotationX,
     y: targetRotationY,
-    duration: 0.9,
+    duration: motionDuration(0.9),
     ease: "power2.out",
   }, 0);
 
@@ -153,7 +225,7 @@ export function animateLaptopIn(): void {
     x: 1,
     y: 1,
     z: 1,
-    duration: 0.9,
+    duration: motionDuration(0.9),
     ease: "back.out(1.7)",
   }, 0);
 }
@@ -171,6 +243,10 @@ export function animateHexFloorRotation(direction: number = 1): void {
     return;
   }
 
+  if (prefersReducedMotion()) {
+    return;
+  }
+
   const rotationAmount = direction * Math.PI * 0.5; // 90 degree rotation
   const targetRotation = hexFloorBaseRotation + rotationAmount;
 
@@ -178,7 +254,7 @@ export function animateHexFloorRotation(direction: number = 1): void {
 
   gsap.to({ value: hexFloorBaseRotation }, {
     value: targetRotation,
-    duration: 0.8,
+    duration: motionDuration(0.8),
     ease: "power2.inOut",
     onUpdate: function() {
       hexFloorBaseRotation = this.targets()[0].value;
@@ -197,6 +273,17 @@ export function animateHexFloorRotation(direction: number = 1): void {
  */
 export function animateHexFloorEntrance(): void {
   if (!hexFloorRef) return;
+
+  if (prefersReducedMotion()) {
+    hexFloorRef.children.forEach((hex) => {
+      const material = (hex as THREE.Line).material as THREE.LineBasicMaterial;
+      const baseOpacity = (hex as any).baseOpacity || 0.1;
+      material.opacity = baseOpacity;
+      hex.position.y = (hex as any).baseY ?? hex.position.y;
+    });
+    hexFloorEntranceDone = true;
+    return;
+  }
 
   const children = hexFloorRef.children;
 
@@ -377,6 +464,11 @@ const setupLighting = (scene: THREE.Scene) => {
   const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
   scene.add(ambientLight);
 
+  // Soft overhead fill to lift the whole scene a bit without flattening it
+  const overheadLight = new THREE.DirectionalLight(0xf5f1e8, 0.55);
+  overheadLight.position.set(0, 520, 120);
+  scene.add(overheadLight);
+
   // Key light from top-right (pure white)
   const keyLight = new THREE.DirectionalLight(0xffffff, 1.4);
   keyLight.position.set(400, 400, 200);
@@ -440,8 +532,8 @@ const createHexFloor = (config: SceneConfig) => {
         (Math.sin(q * 0.5) + Math.cos(r * 0.5)) * 0.5 + 0.5;
 
       const color = new THREE.Color().lerpColors(
-        new THREE.Color(0x02bccc),
-        new THREE.Color(0xccff02),
+        new THREE.Color(0x0a8a70),
+        new THREE.Color(0x8a7a00),
         gradientFactor
       );
 
@@ -572,10 +664,6 @@ const loadLaptopModel = async (
             toneMapped: false,
           });
           child.material.needsUpdate = true;
-        } else if (child.name === "Keyboard_Keyboard_0") {
-          child.material.color = new THREE.Color(0x3a3a3a);
-          child.material.emissive = new THREE.Color(0x1a1a1a);
-          child.material.emissiveIntensity = 0.2;
         } else if (child.name === "Empty001" && logoTexture) {
           // Logo on the back of the laptop screen - replace with new logo
           child.material = new THREE.MeshBasicMaterial({
@@ -585,17 +673,11 @@ const loadLaptopModel = async (
             side: THREE.DoubleSide,
           });
           child.material.needsUpdate = true;
-        } else if (child.material) {
-          // Charcoal metallic body
-          child.material.color = new THREE.Color(0x5a5a5a);
-          child.material.emissive = new THREE.Color(0x2a2a2a);
-          child.material.emissiveIntensity = 0.3;
-          child.material.metalness = 0.7;
-          child.material.roughness = 0.4;
-          child.material.needsUpdate = true;
         }
       }
     });
+
+    applyLaptopMaterialTheme(model);
 
     // Set model scale (this is the base scale)
     const scale = config.isTabletPortrait ? 38 : config.isMobile ? 45 : 60;
@@ -628,6 +710,7 @@ const loadLaptopModel = async (
 
     // Store global reference for external animations
     laptopRef = wrapper;
+    watchLaptopTheme();
 
     measure();
     return wrapper;
@@ -762,8 +845,8 @@ export async function initHero3DScene() {
   let time = 0;
   let frameCounter = 0;
 
-  const hexColor1 = new THREE.Color(0x02bccc);
-  const hexColor2 = new THREE.Color(0xccff02);
+  const hexColor1 = new THREE.Color(0x0a8a70);
+  const hexColor2 = new THREE.Color(0x8a7a00);
 
   const baseY = config.isTabletPortrait ? 130 : config.isMobile ? 40 : config.isTablet ? 50 : 30;
 
@@ -835,6 +918,8 @@ export async function initHero3DScene() {
   return () => {
     // Clear global references
     laptopRef = null;
+    laptopThemeObserver?.disconnect();
+    laptopThemeObserver = null;
     sceneRef = null;
     hexFloorRef = null;
     hexFloorBaseRotation = 0;

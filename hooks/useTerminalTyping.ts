@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import type { TerminalLine, Stage } from "@/data/terminal-content";
 import { CHAR_SPEED } from "@/utils/animations/typewriter";
+import { useMotionPreference } from "@/contexts/MotionPreferenceProvider";
 
 interface UseTerminalTypingOptions {
   heroActive: boolean;
@@ -21,6 +22,7 @@ export function useTerminalTyping({
   promptLabel,
   onTypingComplete,
 }: UseTerminalTypingOptions) {
+  const { reducedMotion } = useMotionPreference();
   const [lines, setLines] = useState<TerminalLine[]>([]);
   const [typing, setTyping] = useState(false);
   const [contentReady, setContentReady] = useState(false);
@@ -80,6 +82,12 @@ export function useTerminalTyping({
           return;
         }
 
+        if (reducedMotion) {
+          updateLineText(line.content);
+          resolve();
+          return;
+        }
+
         // Quick character-by-character typewriter
         const fullText = line.content;
         const charSpeed = CHAR_SPEED;
@@ -102,7 +110,7 @@ export function useTerminalTyping({
 
         typingTimerRef.current = setTimeout(tick, charSpeed);
       }),
-    [updateLineText]
+    [reducedMotion, updateLineText]
   );
 
   const resetPromptLabel = useCallback(() => {
@@ -117,6 +125,11 @@ export function useTerminalTyping({
     (label: string, speed = 18, isCancelled: () => boolean) =>
       new Promise<void>((resolve) => {
         if (isCancelled()) {
+          resolve();
+          return;
+        }
+        if (reducedMotion) {
+          setPromptLabelTyped(label);
           resolve();
           return;
         }
@@ -138,7 +151,7 @@ export function useTerminalTyping({
         };
         promptLabelTimerRef.current = setTimeout(tick, speed);
       }),
-    []
+    [reducedMotion]
   );
 
   const resetState = useCallback(() => {
@@ -182,7 +195,7 @@ export function useTerminalTyping({
 
       for (const line of content) {
         if (cancelled) break;
-        await wait(line.delay ?? 100);
+        await wait(reducedMotion ? 0 : (line.delay ?? 100));
         if (cancelled) break;
 
         appendLine(line);
@@ -192,7 +205,7 @@ export function useTerminalTyping({
       if (cancelled) return;
 
       if (promptLabel) {
-        await typePromptLabel(promptLabel, 26, () => cancelled);
+        await typePromptLabel(promptLabel, reducedMotion ? 0 : 26, () => cancelled);
         if (cancelled) return;
       } else {
         setPromptLabelTyped("");
@@ -201,7 +214,7 @@ export function useTerminalTyping({
       setTyping(false);
       setTimeout(() => {
         onTypingComplete();
-      }, 300);
+      }, reducedMotion ? 0 : 300);
     };
 
     runTypingQueue();
@@ -232,6 +245,7 @@ export function useTerminalTyping({
     typeLine,
     resetPromptLabel,
     typePromptLabel,
+    reducedMotion,
   ]);
 
   return {

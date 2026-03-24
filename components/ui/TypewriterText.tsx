@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useMotionPreference } from "@/contexts/MotionPreferenceProvider";
 
 interface TypewriterTextProps {
   text: string;
@@ -9,10 +10,16 @@ interface TypewriterTextProps {
 
 export default function TypewriterText({ text, speed = 30 }: TypewriterTextProps) {
   const [display, setDisplay] = useState("");
+  const { reducedMotion } = useMotionPreference();
 
   useEffect(() => {
     if (!text) {
       setDisplay("");
+      return;
+    }
+
+    if (reducedMotion) {
+      setDisplay(text);
       return;
     }
 
@@ -34,7 +41,7 @@ export default function TypewriterText({ text, speed = 30 }: TypewriterTextProps
         clearTimeout(timer);
       }
     };
-  }, [text, speed]);
+  }, [text, speed, reducedMotion]);
 
   return <>{display}</>;
 }

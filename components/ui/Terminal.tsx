@@ -1,17 +1,19 @@
 "use client";
 
 import { ChevronsDown } from "lucide-react";
-import { useEffect, useState, useMemo, useRef, useCallback } from "react";
+import { useEffect, useState, useMemo, useRef, useCallback, useLayoutEffect } from "react";
 import { useTranslation } from "@/contexts/TranslationProvider";
 import { useCanva } from "@/components/ui/Canva";
 import { useIsAppReady } from "@/contexts/LoadingProvider";
 import { morphToHero, getTerminalConfig } from "@/utils/animations/terminal-morph";
-import TypewriterText from "@/components/ui/TypewriterText";
+import { gsap } from "@/lib/gsap";
+import TaglineCarousel from "@/components/ui/TaglineCarousel";
 import ContactForm from "@/components/ui/ContactForm";
 import TerminalLines from "@/components/ui/TerminalLines";
 import TerminalPrompt from "@/components/ui/TerminalPrompt";
 import AboutPortrait from "@/components/ui/AboutPortrait";
 import { useTerminalTyping } from "@/hooks/useTerminalTyping";
+import { useStageFocus } from "@/hooks/useStageFocus";
 import {
   getStageContent,
   getLoadingLines,
@@ -20,6 +22,7 @@ import {
   type Stage,
   type TerminalLine,
 } from "@/data/terminal-content";
+import { waitForStableStageMeasurement } from "@/utils/terminal-sizes";
 
 type TerminalState = Stage | "loader";
 
@@ -37,6 +40,7 @@ export default function Terminal() {
     goToHero,
     isMorphing,
     setIsMorphing,
+    measurementVersion,
   } = useCanva();
   const { isReady, progress } = useIsAppReady();
 
@@ -49,10 +53,18 @@ export default function Terminal() {
 
   const prevStageRef = useRef(stage);
   const terminalBodyRef = useRef<HTMLDivElement>(null);
+  const taglineSectionRef = useRef<HTMLDivElement>(null);
   const [canScrollDown, setCanScrollDown] = useState(false);
 
   const terminalState: TerminalState = heroActive ? stage : "loader";
-  const terminalConfig = useMemo(() => getTerminalConfig(terminalState), [terminalState]);
+  const terminalConfig = useMemo(
+    () => {
+      void measurementVersion;
+      return getTerminalConfig(terminalState);
+    },
+    [terminalState, measurementVersion]
+  );
+  const isHeroStage = stage === "hero";
   const terminalStyle = useMemo(
     () => ({
       width: terminalConfig.widthCss,
@@ -103,10 +115,19 @@ export default function Terminal() {
   });
 
   const loadingLines = useMemo(() => getLoadingLines(t), [t]);
-  const heroTagline = t("hero.tagline");
-  const isHeroStage = stage === "hero";
+  const taglineBefore = t("hero.tagline_before");
+  const taglineAfter = t("hero.tagline_after");
+  const taglineWords = t("hero.tagline_words").split(",").map((w) => w.trim()).filter(Boolean);
   const showPrompt = heroActive && prompt;
   const showHeroTagline = isHeroStage && heroActive && !isMorphing;
+  const stageContentHeadingId = `stage-content-heading-${stage}`;
+  const stageContentLabel = getHeaderLabel(stage, heroActive, t);
+
+  useStageFocus({
+    stage,
+    isMorphing,
+    isReady: heroActive,
+  });
 
   // Scroll indicator check
   useEffect(() => {
@@ -142,15 +163,24 @@ export default function Terminal() {
   // Morph to hero when ready + set hero ready
   useEffect(() => {
     if (!isReady || hasExpanded) return;
-    setHasExpanded(true);
-    setTerminalContentHidden(true);
-    setIsMorphing(true);
-    morphToHero(() => {
-      setIsMorphing(false);
-      setHeroActive(true);
-      setHeroReady(true);
+    let cancelled = false;
+
+    void waitForStableStageMeasurement("hero").then((height) => {
+      if (cancelled || hasExpanded || height === null) return;
+      setHasExpanded(true);
+      setTerminalContentHidden(true);
+      setIsMorphing(true);
+      morphToHero(() => {
+        setIsMorphing(false);
+        setHeroActive(true);
+        setHeroReady(true);
+      });
     });
-  }, [isReady, hasExpanded, setIsMorphing, setHeroReady]);
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isReady, hasExpanded, setIsMorphing, setHeroReady, measurementVersion]);
 
   // Handle stage/language changes and morphing state
   useEffect(() => {
@@ -164,7 +194,6 @@ export default function Terminal() {
       return;
     }
 
-    // Stage changed
     if (prevStageRef.current !== stage) {
       prevStageRef.current = stage;
       resetForStageChange();
@@ -181,37 +210,64 @@ export default function Terminal() {
     return () => clearTimeout(id);
   }, [heroActive, isMorphing, stage, language, resetForStageChange, setContentReady, contentReady]);
 
+  useLayoutEffect(() => {
+    if (isMorphing) return;
+
+    const wrapper = document.querySelector("[data-terminal-wrapper]") as HTMLElement | null;
+    if (!wrapper) return;
+
+    gsap.set(wrapper, {
+      width: terminalConfig.width,
+      height: terminalConfig.height,
+    });
+  }, [isMorphing, terminalConfig.width, terminalConfig.height, measurementVersion]);
+
   return (
     <div data-terminal-wrapper className="fixed z-[100] opacity-0">
       <div
+        id={stage === "projects" ? undefined : "stage-content"}
+        data-stage-focus-target={stage === "projects" ? undefined : stage}
         data-terminal-shell
         suppressHydrationWarning
-        className="bg-bg-surface/95 backdrop-blur-sm rounded-xl border border-white/10 shadow-2xl overflow-hidden flex flex-col w-full h-full"
+        role="region"
+        aria-labelledby="terminal-stage-title"
+        tabIndex={-1}
+        className="keyboard-focus-ring bg-bg-surface/96 backdrop-blur-sm rounded-xl border border-border shadow-2xl overflow-hidden flex flex-col w-full h-full [html[data-theme='light']_&]:border-[#c8b99f] [html[data-theme='light']_&]:bg-[#f8f3e9]/96 [html[data-theme='light']_&]:shadow-[0_28px_80px_rgba(16,185,129,0.08),0_18px_40px_rgba(149,115,37,0.12)]"
         style={appliedTerminalStyle}
       >
         {/* Header */}
         <div
           data-terminal-header
-          className="flex items-center gap-2 px-4 py-3 bg-bg-panel border-b border-white/10 text-nowrap"
+          className="flex items-center gap-2 px-4 py-3 bg-bg-panel border-b border-border text-nowrap [html[data-theme='light']_&]:bg-[linear-gradient(90deg,rgba(16,185,129,0.07),rgba(245,158,11,0.06))] [html[data-theme='light']_&]:border-b-[#cdbda3]"
         >
           <div className="flex gap-2">
             <div className="w-3 h-3 rounded-full bg-[#ff5f56]" />
             <div className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
             <div className="w-3 h-3 rounded-full bg-[#27ca40]" />
           </div>
-          <span className="ml-4 text-xs text-white/40 font-mono text-nowrap">
+          <h2
+            id="terminal-stage-title"
+            className="ml-4 text-xs text-muted font-mono text-nowrap [html[data-theme='light']_&]:text-[#756a5b]"
+          >
             {getHeaderLabel(stage, heroActive, t)}
-          </span>
+          </h2>
         </div>
 
         {/* Hero tagline */}
         {showHeroTagline && (
-          <div className="px-4 md:px-6 pt-4 pb-2 border-b border-white/10">
+          <div ref={taglineSectionRef} className="px-4 md:px-6 pt-4 pb-2 border-b border-border [html[data-theme='light']_&]:border-b-[#d4c7ae]">
             <p className="text-xs font-mono text-secondary mb-2 tracking-widest uppercase">
               {t("hero.tagline_prefix")}
             </p>
-            <h1 className="text-lg md:text-2xl lg:text-3xl font-bold text-white leading-tight">
-              <TypewriterText text={heroTagline} speed={45} />
+            <h1
+              id={stageContentHeadingId}
+              className="text-lg md:text-2xl lg:text-3xl font-bold text-text leading-tight"
+            >
+              <TaglineCarousel
+                before={taglineBefore}
+                after={taglineAfter}
+                words={taglineWords}
+              />
             </h1>
           </div>
         )}
@@ -220,7 +276,9 @@ export default function Terminal() {
         <div
           ref={terminalBodyRef}
           data-terminal-body
-          className="relative p-4 md:p-6 font-mono text-sm leading-relaxed overflow-y-auto overflow-x-hidden flex-1 min-h-0 no-scrollbar"
+          className={`relative p-4 md:p-6 font-mono text-sm leading-relaxed overflow-x-hidden flex-1 min-h-0 no-scrollbar ${
+            isHeroStage ? "overflow-y-hidden" : "overflow-y-auto"
+          }`}
         >
           <div
             data-terminal-content
@@ -230,12 +288,12 @@ export default function Terminal() {
           >
             {/* Loading state */}
             {!heroActive && typeof progress === "number" && (
-              <div className="mb-4 rounded-lg border border-white/10 bg-white/5 px-4 py-3">
-                <div className="flex items-center justify-between text-xs text-white/50">
+              <div className="mb-4 rounded-lg border border-border bg-bg-surface/60 px-4 py-3">
+                <div className="flex items-center justify-between text-xs text-muted">
                   <span>{t("hero.terminal.initializing")}</span>
                   <span className="text-primary font-bold tabular-nums">{progress}%</span>
                 </div>
-                <div className="mt-2 h-1.5 rounded-full bg-white/10 overflow-hidden">
+                <div className="mt-2 h-1.5 rounded-full bg-text/12 overflow-hidden">
                   <div
                     className="h-full bg-gradient-to-r from-primary to-secondary"
                     style={{ width: `${progress}%` }}
@@ -249,7 +307,7 @@ export default function Terminal() {
                   <div key={`loading-${index}`} className="mb-1.5 animate-fadeIn">
                     <div className="flex items-center gap-2">
                       <span className="text-primary">❯</span>
-                      <span className="text-white">{line.content}</span>
+                      <span className="text-text">{line.content}</span>
                     </div>
                   </div>
                 ))}
@@ -258,10 +316,15 @@ export default function Terminal() {
 
             {/* Active content */}
             {heroActive && (
-              <>
+              <section aria-labelledby={stageContentHeadingId}>
+                {stage !== "hero" && (
+                  <h2 id={stageContentHeadingId} className="sr-only">
+                    {stageContentLabel}
+                  </h2>
+                )}
                 <AboutPortrait visible={stage === "about" && !isDesktop && !isMorphing} />
                 <TerminalLines lines={lines} />
-              </>
+              </section>
             )}
 
             {/* Typing cursor */}
@@ -276,7 +339,7 @@ export default function Terminal() {
 
             {/* Status message */}
             {statusMessage && isHeroStage && (
-              <div className="mt-3 text-secondary/80 flex items-center gap-2">
+              <div className="mt-3 text-text/82 flex items-center gap-2">
                 <span className="text-primary">❯</span>
                 <span>{statusMessage}</span>
               </div>
@@ -298,13 +361,14 @@ export default function Terminal() {
           {/* Scroll indicator */}
           {heroActive && canScrollDown && !isDesktop && (
             <div className="sticky bottom-0 left-0 right-0 flex justify-center pointer-events-none pt-4">
-              <div className="bg-bg-surface/90 backdrop-blur-sm rounded-full px-3 py-1 border border-white/10 pointer-events-auto">
+              <div className="bg-bg-surface/92 backdrop-blur-sm rounded-full px-3 py-1 border border-border pointer-events-auto">
                 <ChevronsDown className="w-4 h-4 text-primary animate-bounce" />
               </div>
             </div>
           )}
         </div>
       </div>
+
     </div>
   );
 }

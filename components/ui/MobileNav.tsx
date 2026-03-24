@@ -64,7 +64,7 @@ export default function MobileNav({
         disabled={!canGoUp || isMorphing}
         className={`p-2 rounded-lg backdrop-blur-sm transition-all duration-200 ${
           canGoUp
-            ? "bg-white/5 border border-white/10 text-primary active:scale-90"
+            ? "keyboard-focus-ring bg-text/7 border border-border text-primary active:scale-90"
             : "opacity-0 pointer-events-none"
         }`}
         aria-label="Previous section"
@@ -79,12 +79,12 @@ export default function MobileNav({
           />
         </svg>
       </button>
-      <div className="flex flex-col items-center gap-1 py-1">
+      <div className="flex flex-col items-center gap-1 py-1" aria-hidden="true">
         {NAV_SECTIONS.map((_, i) => (
           <div
             key={i}
             className={`w-0.5 transition-all duration-300 rounded-full ${
-              i === currentIndex ? "h-4 bg-primary" : "h-1.5 bg-white/20"
+              i === currentIndex ? "h-4 bg-primary" : "h-1.5 bg-text/35"
             }`}
           />
         ))}
@@ -94,7 +94,7 @@ export default function MobileNav({
         disabled={!canGoDown || isMorphing}
         className={`p-2 rounded-lg backdrop-blur-sm transition-all duration-200 ${
           canGoDown
-            ? "bg-white/5 border border-white/10 text-primary active:scale-90"
+            ? "keyboard-focus-ring bg-text/7 border border-border text-primary active:scale-90"
             : "opacity-0 pointer-events-none"
         }`}
         aria-label="Next section"

@@ -2,6 +2,7 @@
 
 import { useTranslation } from "@/contexts/TranslationProvider";
 import { useState, useEffect } from "react";
+import { getStageFromPathname, getStagePath } from "@/utils/stage-paths";
 
 const languages = ["en", "fr", "es"] as const;
 
@@ -15,23 +16,23 @@ export default function LanguageToggle() {
 
   const handleLanguageSelect = (targetLang: string) => {
     if (targetLang === language) return;
-    const pathname = window.location.pathname;
-    const currentLocale = pathname.split("/")[1];
-    const newPath = pathname.replace(`/${currentLocale}`, `/${targetLang}`);
+    const { stage } = getStageFromPathname(window.location.pathname);
+    const newPath = getStagePath(targetLang as typeof languages[number], stage);
     window.location.href = newPath;
   };
 
   return (
-    <div className="flex items-center gap-1 font-mono text-sm">
+    <div className="flex items-center gap-1 font-mono text-sm" role="group" aria-label="Language selector">
       {languages.map((lang, i) => (
         <span key={lang} className="flex items-center">
-          {i > 0 && <span className="text-white/20 mx-1">/</span>}
+          {i > 0 && <span className="text-muted mx-1">/</span>}
           <button
             onClick={() => handleLanguageSelect(lang)}
-            className={`transition-colors ${
+            aria-current={mounted && lang === language ? "true" : undefined}
+            className={`keyboard-focus-ring rounded-md px-1 py-0.5 transition-colors ${
               mounted && lang === language
                 ? "text-primary"
-                : "text-white/40 hover:text-white"
+                : "text-text/72 hover:text-text"
             }`}
           >
             {lang.toUpperCase()}

@@ -6,6 +6,7 @@
 
 import { gsap } from "@/lib/gsap";
 import { animateLaptopOut, animateLaptopIn, animateHexFloorEntrance } from "@/utils/animations/hero-3d-scene";
+import { motionDelay, motionDuration, prefersReducedMotion } from "@/utils/motion";
 import {
   CENTERED_TERMINAL,
   getProjectsIntroSize,
@@ -26,15 +27,15 @@ function resetPortfolioVisuals() {
   // Dispatch event so portfolio-scroll-animation can reset isExpanded
   window.dispatchEvent(new CustomEvent("portfolioReset"));
 
+  const portfolioSection = document.querySelector("[data-portfolio-section]") as HTMLElement | null;
   const portfolioTerminal = document.querySelector("[data-portfolio-terminal]") as HTMLElement | null;
-  const introPanel = portfolioTerminal?.querySelector("[data-intro-panel]") as HTMLElement;
-  const projectPanels = portfolioTerminal?.querySelectorAll("[data-project-panel]") || [];
+  const introPanel = portfolioTerminal?.querySelector("[data-intro-panel]") as HTMLElement | null;
+  const projectPanels = portfolioSection?.querySelectorAll("[data-project-panel]") || [];
   const portfolio3DContainer = document.querySelector("[data-portfolio-3d-container]") as HTMLElement;
   const scrollIndicator = document.querySelector("[data-scroll-indicator]") as HTMLElement;
   const projectCounter = portfolioTerminal?.querySelector("[data-project-counter]") as HTMLElement | null;
   const scroller = document.querySelector("[data-portfolio-scroller]") as HTMLElement | null;
 
-  // Reset terminal to centered intro position
   if (portfolioTerminal) {
     const introSize = getProjectsIntroSize();
     gsap.set(portfolioTerminal, {
@@ -117,6 +118,9 @@ const getContact = () => document.querySelector("[data-contact-section]") as HTM
 const getConfig = getViewportConfig;
 
 const toPx = (value: number) => `${Math.round(value)}px`;
+
+const getReducedEntry = (full: Record<string, number>, reduced: Record<string, number>) =>
+  prefersReducedMotion() ? reduced : full;
 
 const baseConfig = (
   config: ReturnType<typeof getConfig>,
@@ -202,12 +206,17 @@ const fadeSection = (section: HTMLElement | null, show: boolean, delay = 0) => {
 
   if (show) {
     gsap.set(section, { visibility: "visible", pointerEvents: "auto" });
-    gsap.to(section, { opacity: 1, duration: 0.4, delay, ease: "power2.out" });
+    gsap.to(section, {
+      opacity: 1,
+      duration: motionDuration(0.4),
+      delay: motionDelay(delay),
+      ease: "power2.out",
+    });
   } else {
     gsap.to(section, {
       opacity: 0,
-      duration: 0.3,
-      delay,
+      duration: motionDuration(0.3),
+      delay: motionDelay(delay),
       ease: "power2.in",
       onComplete: () => {
         gsap.set(section, { visibility: "hidden", pointerEvents: "none" });
@@ -276,7 +285,7 @@ export function morphToHero(onComplete?: () => void) {
     width: config.width,
     height: config.height,
     scale: config.scale,
-    duration: 0.8,
+    duration: motionDuration(0.8),
     ease: "power3.out",
     onComplete,
   });
@@ -284,7 +293,7 @@ export function morphToHero(onComplete?: () => void) {
   // Animate laptop in with tornado effect (slightly delayed)
   setTimeout(() => {
     animateLaptopIn();
-  }, 200);
+  }, motionDelay(200));
 
   // Ripple reveal hex floor from center outward
   animateHexFloorEntrance();
@@ -332,7 +341,7 @@ export async function morphToAbout(onComplete?: () => void) {
 
   // Fade out hero backdrop
   if (heroBackdrop) {
-    tl.to(heroBackdrop, { opacity: 0, duration: 0.4 }, 0);
+    tl.to(heroBackdrop, { opacity: 0, duration: motionDuration(0.4) }, 0);
   }
 
   // Morph terminal to right side
@@ -345,23 +354,26 @@ export async function morphToAbout(onComplete?: () => void) {
     width: config.width,
     height: config.height,
     scale: config.scale,
-    duration: 0.7,
+    duration: motionDuration(0.7),
     ease: "power2.inOut",
   }, 0);
 
   // Fade in about section background elements
-  tl.call(() => fadeSection(about, true), [], 0.3);
+  tl.call(() => fadeSection(about, true), [], motionDelay(0.3));
 
   // Portrait entrance - cinematic reveal with rotation and scale
   tl.fromTo("[data-about-portrait]",
-    { scale: 0.6, opacity: 0, y: 80, rotateY: -25, rotateX: 10 },
+    getReducedEntry(
+      { scale: 0.6, opacity: 0, y: 80, rotateY: -25, rotateX: 10 },
+      { scale: 1, opacity: 0, y: 0, rotateY: 0, rotateX: 0 }
+    ),
     {
       scale: 1,
       opacity: 1,
       y: 0,
       rotateY: 0,
       rotateX: 0,
-      duration: 1.2,
+      duration: motionDuration(1.2),
       ease: "back.out(1.4)"
     },
     0.3
@@ -370,8 +382,8 @@ export async function morphToAbout(onComplete?: () => void) {
   // Glow orbs fade in with slight delay and float effect
   tl.fromTo("[data-about-glow]",
     { scale: 0.5, opacity: 0 },
-    { scale: 1, opacity: 1, duration: 0.8, ease: "power3.out" },
-    0.35
+    { scale: 1, opacity: 1, duration: motionDuration(0.8), ease: "power3.out" },
+    motionDelay(0.35)
   );
 
   return tl;
@@ -395,17 +407,17 @@ export async function morphToProjects(onComplete?: () => void) {
 
   // Animate portrait exit with flair before fading section
   gsap.to("[data-about-portrait]", {
-    scale: 0.7,
+    scale: prefersReducedMotion() ? 1 : 0.7,
     opacity: 0,
-    x: -100,
-    rotateY: 25,
-    duration: 0.5,
+    x: prefersReducedMotion() ? 0 : -100,
+    rotateY: prefersReducedMotion() ? 0 : 25,
+    duration: motionDuration(0.5),
     ease: "power2.in"
   });
   gsap.to("[data-about-glow]", {
     scale: 0.5,
     opacity: 0,
-    duration: 0.4,
+    duration: motionDuration(0.4),
     ease: "power2.in"
   });
 
@@ -430,7 +442,7 @@ export async function morphToProjects(onComplete?: () => void) {
 
   // Fade out hero backdrop
   if (heroBackdrop) {
-    tl.to(heroBackdrop, { opacity: 0, duration: 0.4 }, 0);
+    tl.to(heroBackdrop, { opacity: 0, duration: motionDuration(0.4) }, 0);
   }
 
   // Morph terminal to projects intro position (centered)
@@ -443,34 +455,30 @@ export async function morphToProjects(onComplete?: () => void) {
     width: config.width,
     height: config.height,
     scale: 1,
-    duration: 0.7,
+    duration: motionDuration(0.7),
     ease: "power2.inOut",
   }, 0);
 
   // After morph completes, crossfade to portfolio terminal
   tl.call(() => {
-    // Show projects section (portfolio terminal starts at same position)
     fadeSection(projects, true);
     document.body.style.overflow = "auto";
 
-    // Fade out main terminal
     gsap.to(terminal, {
       opacity: 0,
-      duration: 0.3,
+      duration: motionDuration(0.3),
       ease: "power2.out",
       onComplete: () => {
         gsap.set(terminal, { visibility: "hidden", pointerEvents: "none" });
-        // Trigger intro typewriter after section is visible
         window.dispatchEvent(new CustomEvent("portfolioVisible"));
-      }
+      },
     });
 
-    // Refresh ScrollTrigger
     requestAnimationFrame(() => {
       const { ScrollTrigger } = require("@/lib/gsap");
       ScrollTrigger.refresh();
     });
-  }, [], 0.65);
+  }, [], motionDelay(0.65));
 
   return tl;
 }
@@ -495,17 +503,17 @@ export async function morphToContact(onComplete?: () => void) {
 
   // Animate portrait exit with flair before fading section
   gsap.to("[data-about-portrait]", {
-    scale: 0.7,
+    scale: prefersReducedMotion() ? 1 : 0.7,
     opacity: 0,
-    x: -100,
-    rotateY: 25,
-    duration: 0.5,
+    x: prefersReducedMotion() ? 0 : -100,
+    rotateY: prefersReducedMotion() ? 0 : 25,
+    duration: motionDuration(0.5),
     ease: "power2.in"
   });
   gsap.to("[data-about-glow]", {
     scale: 0.5,
     opacity: 0,
-    duration: 0.4,
+    duration: motionDuration(0.4),
     ease: "power2.in"
   });
 
@@ -532,7 +540,7 @@ export async function morphToContact(onComplete?: () => void) {
 
   // Fade out hero backdrop
   if (heroBackdrop) {
-    tl.to(heroBackdrop, { opacity: 0, duration: 0.4 }, 0);
+    tl.to(heroBackdrop, { opacity: 0, duration: motionDuration(0.4) }, 0);
   }
 
   // Morph terminal
@@ -545,12 +553,12 @@ export async function morphToContact(onComplete?: () => void) {
     width: config.width,
     height: config.height,
     scale: config.scale,
-    duration: 0.7,
+    duration: motionDuration(0.7),
     ease: "power2.inOut",
   }, 0);
 
   // Show contact
-  tl.call(() => fadeSection(contact, true), [], 0.4);
+  tl.call(() => fadeSection(contact, true), [], motionDelay(0.4));
 
   return tl;
 }
@@ -577,17 +585,17 @@ export function morphToHeroFromAny(onComplete?: () => void) {
 
   // Animate portrait exit with flair before fading section
   gsap.to("[data-about-portrait]", {
-    scale: 0.7,
+    scale: prefersReducedMotion() ? 1 : 0.7,
     opacity: 0,
-    y: 50,
-    rotateX: -15,
-    duration: 0.5,
+    y: prefersReducedMotion() ? 0 : 50,
+    rotateX: prefersReducedMotion() ? 0 : -15,
+    duration: motionDuration(0.5),
     ease: "power2.in"
   });
   gsap.to("[data-about-glow]", {
     scale: 0.5,
     opacity: 0,
-    duration: 0.4,
+    duration: motionDuration(0.4),
     ease: "power2.in"
   });
 
@@ -601,13 +609,13 @@ export function morphToHeroFromAny(onComplete?: () => void) {
 
   // Restore hero backdrop
   if (heroBackdrop) {
-    tl.to(heroBackdrop, { opacity: 1, duration: 0.4 }, 0.2);
+    tl.to(heroBackdrop, { opacity: 1, duration: motionDuration(0.4) }, motionDelay(0.2));
   }
 
   // Animate laptop back in with tornado effect
   animateLaptopIn();
 
-  // Make terminal visible again (may have been hidden when in projects)
+  // Ensure terminal is visible (it stays visible through projects now)
   gsap.set(terminal, { visibility: "visible", pointerEvents: "auto" });
 
   // Morph terminal back to hero with fade in
@@ -621,7 +629,7 @@ export function morphToHeroFromAny(onComplete?: () => void) {
     height: config.height,
     scale: config.scale,
     opacity: 1,
-    duration: 0.7,
+    duration: motionDuration(0.7),
     ease: "power2.inOut",
   }, 0);
 
@@ -682,7 +690,7 @@ export function morphPortfolioToExpanded(onComplete?: () => void) {
   if (introPanel) {
     tl.to(introPanel, {
       opacity: 0,
-      duration: 0.3,
+      duration: motionDuration(0.3),
       ease: "power2.in",
       onComplete: () => {
         gsap.set(introPanel, { pointerEvents: "none" });
@@ -698,7 +706,7 @@ export function morphPortfolioToExpanded(onComplete?: () => void) {
     yPercent: config.yPercent,
     width: config.width,
     height: config.height,
-    duration: 0.7,
+    duration: motionDuration(0.7),
     ease: "power2.inOut",
   }, 0.2);
 
@@ -711,7 +719,7 @@ export function morphPortfolioToExpanded(onComplete?: () => void) {
     }, 0);
     tl.to(portfolio3DContainer, {
       opacity: 1,
-      duration: 0.5,
+      duration: motionDuration(0.5),
       ease: "power2.out",
     }, 0.5);
   }
@@ -721,7 +729,7 @@ export function morphPortfolioToExpanded(onComplete?: () => void) {
     tl.to(scrollIndicator, {
       opacity: 1,
       pointerEvents: "auto",
-      duration: 0.4,
+      duration: motionDuration(0.4),
       ease: "power2.out",
     }, 0.7);
   }
@@ -738,7 +746,7 @@ export function hideTerminal() {
 
   gsap.to(terminal, {
     opacity: 0,
-    duration: 0.3,
+    duration: motionDuration(0.3),
     ease: "power2.in",
     onComplete: () => {
       gsap.set(terminal, { visibility: "hidden", pointerEvents: "none" });
@@ -756,7 +764,7 @@ export function showTerminal() {
   gsap.set(terminal, { visibility: "visible", pointerEvents: "auto" });
   gsap.to(terminal, {
     opacity: 1,
-    duration: 0.3,
+    duration: motionDuration(0.3),
     ease: "power2.out",
   });
 }
@@ -793,7 +801,7 @@ export function morphPortfolioToCta(onComplete?: () => void) {
   if (portfolio3DContainer) {
     tl.to(portfolio3DContainer, {
       opacity: 0,
-      duration: 0.3,
+      duration: motionDuration(0.3),
       ease: "power2.in",
     }, 0);
   }
@@ -814,7 +822,7 @@ export function morphPortfolioToCta(onComplete?: () => void) {
     yPercent: config.yPercent,
     width: config.width,
     height: config.height,
-    duration: 0.5,
+    duration: motionDuration(0.5),
     ease: "power2.inOut",
   }, 0.1);
 
@@ -860,7 +868,7 @@ export function morphPortfolioToProjects(onComplete?: () => void) {
     }, 0);
     tl.to(portfolio3DContainer, {
       opacity: 1,
-      duration: 0.4,
+      duration: motionDuration(0.4),
       ease: "power2.out",
     }, 0.2);
   }

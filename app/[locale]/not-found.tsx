@@ -60,15 +60,15 @@ export default function NotFound() {
 
       <div data-animate className="relative z-10 w-full max-w-2xl">
         {/* Terminal Window */}
-        <div className="bg-bg-surface rounded-xl border border-white/10 shadow-2xl overflow-hidden">
+        <div className="bg-bg-surface rounded-xl border border-white/14 shadow-2xl overflow-hidden">
           {/* Terminal Header */}
-          <div className="flex items-center gap-2 px-4 py-3 bg-bg-panel border-b border-white/10">
+          <div className="flex items-center gap-2 px-4 py-3 bg-bg-panel border-b border-white/12">
             <div className="flex gap-2">
               <div className="w-3 h-3 rounded-full bg-[#ff5f56]" />
               <div className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
               <div className="w-3 h-3 rounded-full bg-[#27ca40]" />
             </div>
-            <span className="ml-4 text-xs text-white/40 font-mono">
+            <span className="ml-4 text-xs text-white/65 font-mono">
               error.sh
             </span>
           </div>
@@ -92,7 +92,7 @@ export default function NotFound() {
               <h1 className="text-xl md:text-2xl font-bold text-white mb-2">
                 {t.subtitle}
               </h1>
-              <p className="text-white/50">
+              <p className="text-white/78">
                 {t.description}
               </p>
             </div>

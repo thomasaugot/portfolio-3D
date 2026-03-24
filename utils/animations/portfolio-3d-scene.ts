@@ -9,6 +9,10 @@ const MODEL_PATHS = [
   "/assets/models/iphone-laptop-scene-3.glb",
 ];
 
+const isLightThemeActive = () =>
+  typeof document !== "undefined" &&
+  document.documentElement.dataset.theme === "light";
+
 
 const loadTexture = async (
   renderer: THREE.WebGLRenderer,
@@ -55,6 +59,7 @@ const loadTexture = async (
 const loadModel = async (
   scene: THREE.Scene,
   config: SceneConfig,
+  isLightTheme: boolean,
   laptopTexture: THREE.Texture | null,
   iphoneTexture: THREE.Texture | null,
   modelPath: string
@@ -129,9 +134,9 @@ const loadModel = async (
           }
         } else if (child.material) {
           child.material.emissive = new THREE.Color(
-            config.isLight ? 0x404040 : 0x2a2a2a
+            isLightTheme ? 0x404040 : 0x2a2a2a
           );
-          child.material.emissiveIntensity = config.isLight ? 0.2 : 0.3;
+          child.material.emissiveIntensity = isLightTheme ? 0.2 : 0.3;
           child.material.needsUpdate = true;
         }
       }
@@ -171,6 +176,7 @@ export async function initPortfolioScene() {
   }
 
   const config = getViewportConfig();
+  const isLightTheme = isLightThemeActive();
   const projects = getAllProjects().slice(0, 5);
 
   console.log(`📦 Loading ${projects.length} project models...`);
@@ -218,21 +224,29 @@ export async function initPortfolioScene() {
 
   const ambientLight = new THREE.AmbientLight(
     0xffffff,
-    config.isLight ? 1.2 : 0.9
+    isLightTheme ? 1.35 : 0.9
   );
   scene.add(ambientLight);
 
   const dirLight = new THREE.DirectionalLight(
-    0xffffff,
-    config.isLight ? 0.8 : 0.6
+    isLightTheme ? 0xf7f0df : 0xffffff,
+    isLightTheme ? 1.15 : 0.6
   );
   dirLight.position.set(200, 500, 300);
   scene.add(dirLight);
 
-  if (config.isLight) {
-    const fillLight = new THREE.DirectionalLight(0xffffff, 0.3);
+  if (isLightTheme) {
+    const fillLight = new THREE.DirectionalLight(0xffffff, 0.6);
     fillLight.position.set(-200, 300, -300);
     scene.add(fillLight);
+
+    const overheadLight = new THREE.DirectionalLight(0xfff7ea, 0.75);
+    overheadLight.position.set(0, 520, 160);
+    scene.add(overheadLight);
+
+    const frontLight = new THREE.DirectionalLight(0xffffff, 0.38);
+    frontLight.position.set(0, 120, 520);
+    scene.add(frontLight);
   }
 
   const hexFloor = null;
@@ -266,6 +280,7 @@ export async function initPortfolioScene() {
     const modelData = await loadModel(
       scene,
       config,
+      isLightTheme,
       laptopTexture,
       iphoneTexture,
       modelPath
