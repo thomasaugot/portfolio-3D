@@ -30,6 +30,7 @@ export default function Terminal() {
   const { t, language } = useTranslation();
   const {
     stage,
+    pendingStage,
     promptLabel,
     statusMessage,
     setHeroReady,
@@ -57,6 +58,12 @@ export default function Terminal() {
   const [canScrollDown, setCanScrollDown] = useState(false);
 
   const terminalState: TerminalState = heroActive ? stage : "loader";
+  const measurementStage: Stage | null =
+    pendingStage && pendingStage !== "projects"
+      ? pendingStage
+      : !heroActive && isReady
+        ? "hero"
+        : null;
   const terminalConfig = useMemo(
     () => {
       void measurementVersion;
@@ -85,10 +92,27 @@ export default function Terminal() {
       }),
     [stage, promptLabel, t, handlePromptYes, handlePromptNo, goToProjects, goToHero]
   );
+  const measurementPromptConfig = useMemo(
+    () =>
+      measurementStage
+        ? getPromptConfig(measurementStage, promptLabel, t, {
+            setPrompt: () => {},
+            handlePromptYes: () => {},
+            handlePromptNo: () => {},
+            goToProjects: () => {},
+            goToHero: () => {},
+          })
+        : null,
+    [measurementStage, promptLabel, t]
+  );
 
   const getContent = useCallback(
     () => getStageContent(stage, t, isDesktop),
     [stage, t, isDesktop]
+  );
+  const measurementLines = useMemo(
+    () => (measurementStage ? getStageContent(measurementStage, t, isDesktop) : []),
+    [measurementStage, t, isDesktop]
   );
 
   const handleTypingComplete = useCallback(() => {
@@ -368,6 +392,72 @@ export default function Terminal() {
           )}
         </div>
       </div>
+
+      {measurementStage && measurementPromptConfig && (
+        <div
+          aria-hidden="true"
+          className="fixed -z-50 opacity-0 pointer-events-none top-0 left-0"
+          style={{
+            width: getTerminalConfig(measurementStage).widthCss,
+            maxWidth: "92vw",
+            height: "auto",
+          }}
+        >
+          <div
+            data-stage-measurer-exact={measurementStage}
+            className="keyboard-focus-ring bg-bg-surface/96 backdrop-blur-sm rounded-xl border border-border shadow-2xl overflow-hidden flex flex-col w-full h-auto [html[data-theme='light']_&]:border-[#c8b99f] [html[data-theme='light']_&]:bg-[#f8f3e9]/96 [html[data-theme='light']_&]:shadow-[0_28px_80px_rgba(16,185,129,0.08),0_18px_40px_rgba(149,115,37,0.12)]"
+          >
+            <div className="flex items-center gap-2 px-4 py-3 bg-bg-panel border-b border-border text-nowrap [html[data-theme='light']_&]:bg-[linear-gradient(90deg,rgba(16,185,129,0.07),rgba(245,158,11,0.06))] [html[data-theme='light']_&]:border-b-[#cdbda3]">
+              <div className="flex gap-2">
+                <div className="w-3 h-3 rounded-full bg-[#ff5f56]" />
+                <div className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
+                <div className="w-3 h-3 rounded-full bg-[#27ca40]" />
+              </div>
+              <div className="ml-4 text-xs text-muted font-mono text-nowrap [html[data-theme='light']_&]:text-[#756a5b]">
+                {getHeaderLabel(measurementStage, true, t)}
+              </div>
+            </div>
+
+            {measurementStage === "hero" && (
+              <div className="px-4 md:px-6 pt-4 pb-2 border-b border-border [html[data-theme='light']_&]:border-b-[#d4c7ae]">
+                <p className="text-xs font-mono text-secondary mb-2 tracking-widest uppercase">
+                  {t("hero.tagline_prefix")}
+                </p>
+                <h1 className="text-lg md:text-2xl lg:text-3xl font-bold text-text leading-tight">
+                  <TaglineCarousel
+                    before={taglineBefore}
+                    after={taglineAfter}
+                    words={taglineWords}
+                  />
+                </h1>
+              </div>
+            )}
+
+            <div className="relative p-4 md:p-6 font-mono text-sm leading-relaxed overflow-visible">
+              <AboutPortrait visible={measurementStage === "about" && !isDesktop} />
+              <TerminalLines lines={measurementLines} />
+
+              {measurementStage === "hero" && statusMessage && (
+                <div className="mt-3 text-text/82 flex items-center gap-2">
+                  <span className="text-primary">❯</span>
+                  <span>{statusMessage}</span>
+                </div>
+              )}
+
+              {(measurementStage === "hero" || measurementStage === "about") && (
+                <TerminalPrompt
+                  promptLabelTyped={measurementPromptConfig.label}
+                  promptConfig={measurementPromptConfig}
+                />
+              )}
+
+              {measurementStage === "contact" && (
+                <ContactForm stage={measurementStage} showPrompt={true} isDesktop={isDesktop} />
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );

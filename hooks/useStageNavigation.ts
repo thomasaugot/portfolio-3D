@@ -21,6 +21,7 @@ interface UseStageNavigationOptions {
 export function useStageNavigation({ t }: UseStageNavigationOptions) {
   const pathname = usePathname();
   const [stage, setStage] = useState<Stage>("hero");
+  const [pendingStage, setPendingStage] = useState<Stage | null>(null);
   const [promptStage, setPromptStage] = useState<PromptStage>(null);
   const [activeIndex, setActiveIndex] = useState(-1);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
@@ -47,11 +48,13 @@ export function useStageNavigation({ t }: UseStageNavigationOptions) {
       morphFn: (onComplete?: () => void) => void,
       onComplete?: () => void
     ) => {
+      setPendingStage(targetStage);
       waitForStageMeasurement(targetStage).then(() => {
         setIsMorphing(true);
         morphFn(() => {
           setIsMorphing(false);
           setStage(targetStage);
+          setPendingStage(null);
           onComplete?.();
         });
       });
@@ -162,6 +165,7 @@ export function useStageNavigation({ t }: UseStageNavigationOptions) {
 
   return {
     stage,
+    pendingStage,
     promptStage,
     promptLabel,
     activeIndex,

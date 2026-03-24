@@ -30,6 +30,7 @@ type PromptStage = "more" | "work" | "contact" | null;
 interface CanvaController {
   projects: ReturnType<typeof getAllProjects>;
   stage: Stage;
+  pendingStage: Stage | null;
   promptStage: PromptStage;
   promptLabel?: string;
   statusMessage: string | null;
@@ -79,6 +80,7 @@ export default function Canva({ children }: CanvaProps) {
 
   const {
     stage,
+    pendingStage,
     promptStage,
     promptLabel,
     statusMessage,
@@ -161,6 +163,7 @@ export default function Canva({ children }: CanvaProps) {
     () => ({
       projects,
       stage,
+      pendingStage,
       promptStage,
       promptLabel,
       statusMessage,
@@ -182,6 +185,7 @@ export default function Canva({ children }: CanvaProps) {
     [
       projects,
       stage,
+      pendingStage,
       promptStage,
       promptLabel,
       statusMessage,

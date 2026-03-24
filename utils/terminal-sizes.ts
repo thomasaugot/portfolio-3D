@@ -49,6 +49,9 @@ const getMeasured = (stage: string): number | null =>
 const getDomMeasuredStageHeight = (stage: string): number | null => {
   if (typeof document === "undefined") return null;
 
+  const exactMeasurer = document.querySelector(`[data-stage-measurer-exact="${stage}"]`) as HTMLElement | null;
+  if (exactMeasurer?.offsetHeight) return exactMeasurer.offsetHeight;
+
   const measurer = document.querySelector(`[data-stage-measurer="${stage}"]`) as HTMLElement | null;
   if (measurer?.offsetHeight) return measurer.offsetHeight;
 
@@ -56,10 +59,10 @@ const getDomMeasuredStageHeight = (stage: string): number | null => {
 };
 
 const getResolvedStageHeight = (stage: string): number | null =>
-  getMeasured(stage) ?? getDomMeasuredStageHeight(stage);
+  getDomMeasuredStageHeight(stage) ?? getMeasured(stage);
 
 export const hasStageMeasurement = (stage: string): boolean =>
-  getMeasured(stage) !== null || getDomMeasuredStageHeight(stage) !== null;
+  getResolvedStageHeight(stage) !== null;
 
 export const getStageMeasurement = (stage: string): number | null =>
   getResolvedStageHeight(stage);
