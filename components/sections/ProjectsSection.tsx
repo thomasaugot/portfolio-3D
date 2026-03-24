@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef, useCallback } from "react";
 import { createPortal } from "react-dom";
+
 import { useTranslation } from "@/contexts/TranslationProvider";
 import { useThreeScene } from "@/hooks/useThreeScene";
 import { initPortfolioScene } from "@/utils/animations/portfolio-3d-scene";
@@ -11,6 +12,8 @@ import { Check, Play } from "lucide-react";
 import ProjectPanel from "@/components/sections/ProjectPanel";
 import StageMeasurer from "@/components/ui/StageMeasurer";
 import {
+  MOBILE_TERMINAL_WIDTH_CSS,
+  getViewportConfig,
   getProjectsIntroSize,
   setMeasuredPortfolioHeight,
 } from "@/utils/terminal-sizes";
@@ -18,6 +21,7 @@ import {
   PORTFOLIO_PANEL_CTA_CLASS,
   PORTFOLIO_PANEL_FRAME_CLASS,
 } from "@/components/sections/portfolio-panel-styles";
+
 
 type IntroTerminalSize = {
   widthCss: string;
@@ -28,6 +32,7 @@ const PORTFOLIO_MEASURER_FRAME_CLASS =
   "relative flex flex-col justify-start p-4 md:p-6 font-mono text-sm leading-relaxed overflow-visible bg-bg-surface";
 
 export default function ProjectsSection() {
+
   const { t } = useTranslation();
   const { projects, goToContact } = useCanva();
   const sceneRef = useThreeScene(initPortfolioScene, "portfolio");
@@ -39,6 +44,19 @@ export default function ProjectsSection() {
   const touchStartRef = useRef<{ y: number; time: number } | null>(null);
   const wheelAccRef = useRef(0);
   const wheelTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastStartActivationRef = useRef(0);
+  const [viewportConfig, setViewportConfig] = useState(() => ({
+    width: 375,
+    height: 812,
+    isMobile: true,
+    isTinyMobile: true,
+    isTallMobile: true,
+    isTabletPortrait: false,
+    isTablet: false,
+    isSmallDesktop: false,
+    useCompactAboutLayout: false,
+    isDesktop: false,
+  }));
 
   const syncIntroSize = useCallback(() => {
     const size = getProjectsIntroSize();
@@ -66,6 +84,19 @@ export default function ProjectsSection() {
   }, []);
 
   useEffect(() => {
+    const syncViewportConfig = () => {
+      setViewportConfig(getViewportConfig());
+    };
+
+    syncViewportConfig();
+    window.addEventListener("resize", syncViewportConfig);
+
+    return () => {
+      window.removeEventListener("resize", syncViewportConfig);
+    };
+  }, []);
+
+  useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
 
@@ -73,8 +104,15 @@ export default function ProjectsSection() {
     contentZone.setAttribute("data-portfolio-content-zone", "");
     contentZone.style.position = "absolute";
     contentZone.style.zIndex = "60";
-    contentZone.style.overflow = "hidden";
+    contentZone.style.overflowX = "hidden";
+    contentZone.style.overflowY = "auto";
+    contentZone.style.overscrollBehavior = "contain";
+    contentZone.style.scrollbarWidth = "none";
+    contentZone.style.setProperty("-ms-overflow-style", "none");
+    contentZone.style.setProperty("-webkit-overflow-scrolling", "touch");
+    contentZone.style.touchAction = "pan-y";
     contentZone.style.pointerEvents = "none";
+    contentZone.className = "no-scrollbar";
     section.appendChild(contentZone);
     setPortalTarget(contentZone);
 
@@ -105,6 +143,31 @@ export default function ProjectsSection() {
     window.dispatchEvent(new CustomEvent("portfolioStartRequested"));
   }, []);
 
+  const activateStart = useCallback(() => {
+    const now = Date.now();
+    if (now - lastStartActivationRef.current < 400) return;
+    lastStartActivationRef.current = now;
+    triggerStart();
+  }, [triggerStart]);
+
+  const handleStartButtonClick = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    activateStart();
+  }, [activateStart]);
+
+  const handleStartButtonTouchEnd = useCallback((e: React.TouchEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    activateStart();
+  }, [activateStart]);
+
+  const handleStartButtonPointerUp = useCallback((e: React.PointerEvent<HTMLButtonElement>) => {
+    if (e.pointerType !== "touch") return;
+    e.preventDefault();
+    e.stopPropagation();
+    activateStart();
+  }, [activateStart]);
+
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     touchStartRef.current = { y: e.touches[0].clientY, time: Date.now() };
   }, []);
@@ -131,15 +194,44 @@ export default function ProjectsSection() {
     }
   }, [triggerStart]);
 
-  const portfolioMeasureWidth = "clamp(280px, 88vw, 640px)";
-  const portfolioCtaMeasureWidth = "clamp(360px, 46vw, 600px)";
-  const portfolioProjectMeasureWidth = "clamp(340px, 42vw, 680px)";
+  const useCompactPortfolioLayout = viewportConfig.isTablet || viewportConfig.isSmallDesktop;
+  const useCompactPortfolioContent = viewportConfig.isMobile;
+  const useCompactPortfolioDensity = viewportConfig.isTablet || viewportConfig.isSmallDesktop;
+
+
+  const portfolioMeasureWidth = viewportConfig.isMobile
+    ? MOBILE_TERMINAL_WIDTH_CSS
+    : viewportConfig.isTablet
+      ? "clamp(360px, 60vw, 560px)"
+      : viewportConfig.isSmallDesktop
+        ? "clamp(420px, 56vw, 640px)"
+      : "clamp(280px, 88vw, 640px)";
+  const portfolioCtaMeasureWidth = viewportConfig.isMobile
+    ? MOBILE_TERMINAL_WIDTH_CSS
+    : viewportConfig.isTablet
+      ? "clamp(360px, 58vw, 540px)"
+      : viewportConfig.isSmallDesktop
+        ? "clamp(400px, 50vw, 580px)"
+      : "clamp(360px, 46vw, 600px)";
+  const portfolioProjectMeasureWidth = viewportConfig.isMobile
+    ? MOBILE_TERMINAL_WIDTH_CSS
+    : viewportConfig.isTablet
+      ? "clamp(380px, 60vw, 600px)"
+      : viewportConfig.isSmallDesktop
+        ? "clamp(420px, 52vw, 620px)"
+      : "clamp(340px, 42vw, 680px)";
   const handlePortfolioMeasure = useCallback((key: string, height: number) => {
     const changed = setMeasuredPortfolioHeight(key, height);
     if (changed && key === "intro") {
-      syncIntroSize();
+      const size = getProjectsIntroSize();
+      if (size.height > 0) {
+        setIntroSize({
+          widthCss: size.widthCss,
+          heightCss: size.heightCss,
+        });
+      }
     }
-  }, [syncIntroSize]);
+  }, []);
 
   return (
     <>
@@ -186,7 +278,10 @@ export default function ProjectsSection() {
             <div className="block text-text/82 pl-4 mb-4">
               {t("projects.terminal.intro_line3") || "Each project demonstrates my skills in modern web development, from interactive 3D experiences to full-stack platforms."}
             </div>
-            <div className={`${PORTFOLIO_PANEL_CTA_CLASS} mt-auto opacity-100`}>
+            <div
+              className={`${PORTFOLIO_PANEL_CTA_CLASS} mt-auto opacity-100`}
+              style={{ paddingBottom: "max(0.35rem, env(safe-area-inset-bottom, 0px))" }}
+            >
               <div className="flex items-center gap-2 text-text mb-3">
                 <span className="text-primary">❯</span>
                 <span>{t("projects.terminal.scroll_cta") || "Ready to explore?"}</span>
@@ -237,15 +332,18 @@ export default function ProjectsSection() {
             <div className="text-text/82 pl-4 mb-4">
               {t("projects.cta_description") || "I'm always excited to take on new challenges and bring ideas to life."}
             </div>
-            <div className={`${PORTFOLIO_PANEL_CTA_CLASS} mt-auto opacity-100`}>
-              <div className="flex items-center gap-2 text-text mb-3">
+            <div
+              className={`${PORTFOLIO_PANEL_CTA_CLASS} mt-auto opacity-100`}
+              style={{ paddingBottom: "max(0.35rem, env(safe-area-inset-bottom, 0px))" }}
+            >
+              <div className="flex items-center gap-2 text-text">
                 <span className="text-primary">❯</span>
                 <span>{t("projects.cta_prompt") || "Ready to start a conversation?"}</span>
               </div>
-              <Button type="button" variant="orange" size="md">
-                {t("projects.cta_contact") || "Get in touch"}
-              </Button>
             </div>
+            <Button type="button" variant="orange" size="md" className="mt-3 self-start">
+              {t("projects.cta_contact") || "Get in touch"}
+            </Button>
           </div>
         </div>
       </StageMeasurer>
@@ -282,7 +380,14 @@ export default function ProjectsSection() {
                 </span>
               </div>
             </div>
-            <ProjectPanel project={project} index={index} t={t} measure={true} />
+            <ProjectPanel
+              project={project}
+              index={index}
+              t={t}
+              measure={true}
+              useCompactContent={useCompactPortfolioContent}
+              useCompactDensity={useCompactPortfolioDensity}
+            />
           </div>
         </StageMeasurer>
       ))}
@@ -300,10 +405,11 @@ export default function ProjectsSection() {
       >
         <div
           data-portfolio-terminal
-          className="absolute flex flex-col bg-bg-surface/96 backdrop-blur-sm rounded-xl border border-border shadow-2xl overflow-hidden z-50 pointer-events-none [html[data-theme='light']_&]:border-[#c8b99f] [html[data-theme='light']_&]:bg-[#f8f3e9]/96 [html[data-theme='light']_&]:shadow-[0_28px_80px_rgba(16,185,129,0.08),0_18px_40px_rgba(149,115,37,0.12)]"
+          className="absolute flex flex-col bg-bg-surface/96 backdrop-blur-sm rounded-xl border border-border shadow-2xl overflow-hidden z-50 [html[data-theme='light']_&]:border-[#c8b99f] [html[data-theme='light']_&]:bg-[#f8f3e9]/96 [html[data-theme='light']_&]:shadow-[0_28px_80px_rgba(16,185,129,0.08),0_18px_40px_rgba(149,115,37,0.12)]"
           style={{
             width: introSize?.widthCss,
             height: introSize?.heightCss,
+            maxHeight: "85svh",
             left: "50%",
             top: "50%",
             transform: "translate(-50%, -50%)",
@@ -321,7 +427,7 @@ export default function ProjectsSection() {
           </div>
           <h2
             id="projects-stage-title"
-            className="ml-4 text-xs text-muted font-mono text-nowrap [html[data-theme='light']_&]:text-[#756a5b]"
+            className="ml-4 text-xs text-muted font-mono text-nowrap hidden sm:block [html[data-theme='light']_&]:text-[#756a5b]"
           >
             {t("projects.terminal.header") || "tom@portfolio ~ % ./projects.sh"}
           </h2>
@@ -335,7 +441,7 @@ export default function ProjectsSection() {
             </span>
             <span
               data-counter-name
-              className="text-xs text-muted font-mono hidden md:block"
+              className="text-xs text-muted font-mono hidden xl:block"
             >
               {projects[0]?.client || ""}
             </span>
@@ -399,6 +505,7 @@ export default function ProjectsSection() {
             <div
               data-intro-cta
               className={`${PORTFOLIO_PANEL_CTA_CLASS} mt-auto`}
+              style={{ paddingBottom: "max(0.35rem, env(safe-area-inset-bottom, 0px))" }}
             >
               <div className="flex items-center gap-2 text-text mb-3">
                 <span className="text-primary">❯</span>
@@ -409,8 +516,10 @@ export default function ProjectsSection() {
                 type="button"
                 variant="orange"
                 size="md"
-                className="pointer-events-auto"
-                onClick={triggerStart}
+                className="pointer-events-auto touch-manipulation"
+                onClick={handleStartButtonClick}
+                onTouchEnd={handleStartButtonTouchEnd}
+                onPointerUp={handleStartButtonPointerUp}
               >
                 <Play className="w-4 h-4" />
                 {t("projects.start_exploring") || "Start exploring"}
@@ -421,7 +530,8 @@ export default function ProjectsSection() {
           <div
             data-project-panel={projects.length + 1}
             data-cta-panel
-            className={`${PORTFOLIO_PANEL_FRAME_CLASS} opacity-0 pointer-events-none bg-bg-surface`}
+            className={`${PORTFOLIO_PANEL_FRAME_CLASS} opacity-0 bg-bg-surface`}
+            style={{ pointerEvents: "none" }}
           >
             <div data-typewriter-line className="flex items-center gap-2 mb-2">
               <span className="text-primary">❯</span>
@@ -467,25 +577,28 @@ export default function ProjectsSection() {
               </span>
             </div>
             <div
-              data-cta-buttons-wrapper
-              className={`${PORTFOLIO_PANEL_CTA_CLASS} mt-auto`}
+              className={`${PORTFOLIO_PANEL_CTA_CLASS} mt-auto pointer-events-auto`}
               data-typewriter-reveal
               data-typewriter-delay="400"
+              style={{ paddingBottom: "max(0.35rem, env(safe-area-inset-bottom, 0px))" }}
             >
-              <div className="flex items-center gap-2 text-text mb-3">
+              <div className="flex items-center gap-2 text-text">
                 <span className="text-primary">❯</span>
                 <span>{t("projects.cta_prompt") || "Ready to start a conversation?"}</span>
               </div>
-              <Button
-                data-contact-cta-btn
-                type="button"
-                variant="orange"
-                size="md"
-                onClick={goToContact}
-              >
-                {t("projects.cta_contact") || "Get in touch"}
-              </Button>
             </div>
+            <Button
+              data-contact-cta-btn
+              type="button"
+              variant="orange"
+              size="md"
+              className="mt-3 self-start pointer-events-auto touch-manipulation"
+              data-typewriter-reveal
+              data-typewriter-delay="400"
+              onClick={goToContact}
+            >
+              {t("projects.cta_contact") || "Get in touch"}
+            </Button>
           </div>
         </div>
         </div>
@@ -495,14 +608,23 @@ export default function ProjectsSection() {
         data-3d-container="portfolio-hex"
         ref={sceneRef}
         aria-hidden="true"
-        className="absolute opacity-0 pointer-events-none inset-0 lg:top-0 lg:bottom-0 lg:left-[45%] lg:right-0"
+        className={`absolute opacity-0 pointer-events-none inset-0 ${
+          useCompactPortfolioLayout ? "top-0 bottom-[2%] left-[47%] right-0" : "lg:top-0 lg:bottom-0 lg:left-[45%] lg:right-0"
+        }`}
         style={{ zIndex: 55 }}
       />
 
         {portalTarget &&
           createPortal(
             projects.map((project, index) => (
-              <ProjectPanel key={project.id} project={project} index={index} t={t} />
+              <ProjectPanel
+                key={project.id}
+                project={project}
+                index={index}
+                t={t}
+                useCompactContent={useCompactPortfolioContent}
+                useCompactDensity={useCompactPortfolioDensity}
+              />
             )),
             portalTarget
           )}

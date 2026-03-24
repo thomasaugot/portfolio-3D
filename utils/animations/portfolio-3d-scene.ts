@@ -74,6 +74,9 @@ const loadModel = async (
   const loader = new GLTFLoader();
 
   try {
+    const viewportWidth = typeof window !== "undefined" ? window.innerWidth : 1440;
+    const isCompactPortfolioLayout =
+      config.isTablet || (viewportWidth >= 1024 && viewportWidth < 1280);
     const gltf = await loadCachedGLTF(loader, modelPath);
     const model = gltf.scene;
     let laptopGroup: THREE.Object3D | null = null;
@@ -143,13 +146,13 @@ const loadModel = async (
     });
 
     // Scale: tuned per viewport (mobile 3D container is full-screen, so models need to be smaller)
-    const scale = config.isMobile ? 25 : config.isTablet ? 45 : 55;
+    const scale = config.isMobile ? 25 : config.isTablet ? 42 : isCompactPortfolioLayout ? 32 : 55;
     model.scale.set(scale, scale, scale);
     model.rotation.y = -0.3;
 
     // Position: on mobile, push model up so it sits in the upper portion of viewport
-    const modelY = config.isMobile ? 70 : config.isTablet ? 50 : -25;
-    const modelX = config.isMobile ? 0 : config.isTablet ? -15 : -20;
+    const modelY = config.isMobile ? 70 : config.isTablet ? 42 : isCompactPortfolioLayout ? 36 : -25;
+    const modelX = config.isMobile ? 0 : config.isTablet ? 20 : isCompactPortfolioLayout ? 20 : -20;
     model.position.set(modelX, modelY, 0);
 
     const wrapper = new THREE.Group();
@@ -176,6 +179,9 @@ export async function initPortfolioScene() {
   }
 
   const config = getViewportConfig();
+  const viewportWidth = typeof window !== "undefined" ? window.innerWidth : 1440;
+  const isCompactPortfolioLayout =
+    config.isTablet || (viewportWidth >= 1024 && viewportWidth < 1280);
   const isLightTheme = isLightThemeActive();
   const projects = getAllProjects().slice(0, 5);
 
@@ -184,7 +190,7 @@ export async function initPortfolioScene() {
   const scene = new THREE.Scene();
 
   // FOV: wider on mobile to see more of the model in the constrained 3D zone
-  const fov = config.isMobile ? 40 : config.isTablet ? 35 : 25;
+  const fov = config.isMobile ? 40 : config.isTablet ? 23 : isCompactPortfolioLayout ? 22 : 25;
 
   const camera = new THREE.PerspectiveCamera(
     fov,
@@ -195,13 +201,13 @@ export async function initPortfolioScene() {
 
   // Camera position: on mobile, further back since 3D container is full-screen
   const cameraX = 0;
-  const cameraY = config.isMobile ? 60 : config.isTablet ? 50 : 40;
-  const cameraZ = config.isMobile ? 380 : config.isTablet ? 600 : 750;
+  const cameraY = config.isMobile ? 60 : config.isTablet ? 48 : isCompactPortfolioLayout ? 48 : 40;
+  const cameraZ = config.isMobile ? 380 : config.isTablet ? 680 : isCompactPortfolioLayout ? 820 : 750;
 
   camera.position.set(cameraX, cameraY, cameraZ);
 
   // Look at: on mobile, look towards upper area where model is positioned
-  const lookAtY = config.isMobile ? 40 : config.isTablet ? -30 : -30;
+  const lookAtY = config.isMobile ? 40 : config.isTablet ? 36 : isCompactPortfolioLayout ? 30 : -30;
   camera.lookAt(0, lookAtY, 0);
 
   const renderer = new THREE.WebGLRenderer({

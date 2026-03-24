@@ -83,6 +83,11 @@ export function getAboutContent(t: (key: string) => string): TerminalLine[] {
   ];
 }
 
+export function getAboutContentPages(t: (key: string) => string): TerminalLine[][] {
+  const aboutContent = getAboutContent(t);
+  return [aboutContent.slice(0, 4), aboutContent.slice(4)];
+}
+
 export function getProjectsContent(t: (key: string) => string): TerminalLine[] {
   return [
     { type: "command", content: t("hero.terminal.commands.projects"), delay: 250 },
@@ -152,7 +157,7 @@ export function getStageContent(
     case "hero":
       return getHeroContent(t, isDesktop);
     case "about":
-      return getAboutContent(t);
+      return isDesktop ? getAboutContent(t) : getAboutContentPages(t)[0];
     case "projects":
       return getProjectsContent(t);
     case "contact":

@@ -68,11 +68,24 @@ export default function Canva({ children }: CanvaProps) {
   const { t } = useTranslation();
   const projects = useMemo(() => getAllProjects().slice(0, 5), []);
   const [isDesktop, setIsDesktop] = useState(false);
+  const [useCompactAboutLayout, setUseCompactAboutLayout] = useState(false);
+  const [useCompactHeroTitle, setUseCompactHeroTitle] = useState(false);
   const [measurementVersion, setMeasurementVersion] = useState(0);
 
   useEffect(() => {
-    const config = getViewportConfig();
-    setIsDesktop(config.isDesktop);
+    const syncViewportFlags = () => {
+      const config = getViewportConfig();
+      setIsDesktop(config.isDesktop);
+      setUseCompactAboutLayout(config.useCompactAboutLayout);
+      setUseCompactHeroTitle(config.isTablet || config.isSmallDesktop);
+    };
+
+    syncViewportFlags();
+    window.addEventListener("resize", syncViewportFlags);
+
+    return () => {
+      window.removeEventListener("resize", syncViewportFlags);
+    };
   }, []);
 
   // Reload when viewport crosses a layout breakpoint (e.g. tablet rotation)
@@ -214,6 +227,8 @@ export default function Canva({ children }: CanvaProps) {
         stage={"hero" as TerminalStage}
         t={t}
         isDesktop={isDesktop}
+        useCompactAboutLayout={useCompactAboutLayout}
+        useCompactHeroTitle={useCompactHeroTitle}
         widthCss={heroWidthCss}
         promptLabel={t("hero.prompt_more")}
         yesLabel={t("hero.prompt_yes")}
@@ -224,6 +239,8 @@ export default function Canva({ children }: CanvaProps) {
         stage={"about" as TerminalStage}
         t={t}
         isDesktop={isDesktop}
+        useCompactAboutLayout={useCompactAboutLayout}
+        useCompactHeroTitle={useCompactHeroTitle}
         widthCss={aboutWidthCss}
         promptLabel={t("about.cta_work")}
         yesLabel={t("hero.prompt_yes")}
@@ -234,6 +251,8 @@ export default function Canva({ children }: CanvaProps) {
         stage={"contact" as TerminalStage}
         t={t}
         isDesktop={isDesktop}
+        useCompactAboutLayout={useCompactAboutLayout}
+        useCompactHeroTitle={useCompactHeroTitle}
         widthCss={contactWidthCss}
         promptLabel=""
         yesLabel=""
@@ -253,7 +272,9 @@ export default function Canva({ children }: CanvaProps) {
         />
         <div className="fixed bottom-12 md:bottom-6 left-6 z-[100002] flex items-center gap-2">
           <MotionToggle />
-          <ThemeToggle />
+          <div className="hidden lg:block">
+            <ThemeToggle />
+          </div>
         </div>
         <BackToTop />
       </CanvaContext.Provider>

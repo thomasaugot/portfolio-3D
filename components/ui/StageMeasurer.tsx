@@ -17,6 +17,8 @@ type StageModeProps = {
   stage: Stage;
   t: (key: string) => string;
   isDesktop: boolean;
+  useCompactAboutLayout?: boolean;
+  useCompactHeroTitle?: boolean;
   widthCss: string;
   promptLabel: string;
   yesLabel: string;
@@ -38,11 +40,19 @@ export default function StageMeasurer(props: StageMeasurerProps) {
   const ref = useRef<HTMLDivElement>(null);
   const isGenericMode = "measureKey" in props;
   const stage = isGenericMode ? null : props.stage;
+  const useCompactAboutLayout =
+    !isGenericMode && props.stage === "about" && props.useCompactAboutLayout;
   const widthCss = props.widthCss;
   const maxWidth = isGenericMode ? (props.maxWidth ?? "92vw") : "92vw";
   const content = useMemo(
-    () => (isGenericMode ? [] : getStageContent(stage, props.t, props.isDesktop)),
-    [isGenericMode, stage, props],
+    () => {
+      if (isGenericMode) return [];
+      if (useCompactAboutLayout) {
+        return getStageContent("about", props.t, false);
+      }
+      return getStageContent(props.stage, props.t, props.isDesktop);
+    },
+    [isGenericMode, stage, props, useCompactAboutLayout],
   );
 
   const taglineBefore = isGenericMode ? "" : props.t("hero.tagline_before");
@@ -53,6 +63,22 @@ export default function StageMeasurer(props: StageMeasurerProps) {
         .split(",")
         .map((word) => word.trim())
         .filter(Boolean);
+
+  const promptLabel = isGenericMode
+    ? ""
+    : useCompactAboutLayout
+      ? props.t("about.block_skills")
+      : props.promptLabel;
+  const yesLabel = isGenericMode
+    ? ""
+    : useCompactAboutLayout
+      ? props.t("hero.prompt_yes")
+      : props.yesLabel;
+  const noLabel = isGenericMode
+    ? ""
+    : useCompactAboutLayout
+      ? props.t("hero.prompt_no")
+      : props.noLabel;
 
   useLayoutEffect(() => {
     if (!ref.current) return;
@@ -91,6 +117,7 @@ export default function StageMeasurer(props: StageMeasurerProps) {
         ref={ref}
         data-portfolio-terminal-measurer={props.measureKey}
         aria-hidden="true"
+        inert
         suppressHydrationWarning
         className="fixed -z-50 opacity-0 pointer-events-none top-0 left-0"
         style={{ width: widthCss, maxWidth, height: "auto" }}
@@ -105,6 +132,7 @@ export default function StageMeasurer(props: StageMeasurerProps) {
       ref={ref}
       data-stage-measurer={props.stage}
       aria-hidden="true"
+      inert
       suppressHydrationWarning
       className="fixed -z-50 opacity-0 pointer-events-none top-0 left-0"
       style={{ width: widthCss, maxWidth, height: "auto" }}
@@ -128,11 +156,14 @@ export default function StageMeasurer(props: StageMeasurerProps) {
             <p className="text-xs font-mono text-secondary mb-2 tracking-widest uppercase">
               {props.t("hero.tagline_prefix")}
             </p>
-            <h1 className="text-lg md:text-2xl lg:text-3xl font-bold text-text leading-tight">
+            <h1 className={`text-lg md:text-2xl lg:text-3xl font-bold text-text leading-tight ${
+              props.useCompactHeroTitle ? "" : "md:whitespace-nowrap"
+            }`}>
               <TaglineCarousel
                 before={taglineBefore}
                 after={taglineAfter}
                 words={taglineWords}
+                useCompactLayout={!!props.useCompactHeroTitle}
               />
             </h1>
           </div>
@@ -148,11 +179,11 @@ export default function StageMeasurer(props: StageMeasurerProps) {
             <div className="mt-3 pt-3 border-t border-border">
               <div className="flex items-center gap-2 text-text">
                 <span className="text-primary">❯</span>
-                <span>{props.promptLabel}</span>
+                <span>{promptLabel}</span>
               </div>
               <div className="flex flex-wrap gap-3 mt-3">
-                <Button type="button" variant="orange" size="md">{props.yesLabel}</Button>
-                <Button type="button" variant="outlined" size="md">{props.noLabel}</Button>
+                <Button type="button" variant="orange" size="md">{yesLabel}</Button>
+                <Button type="button" variant="outlined" size="md">{noLabel}</Button>
               </div>
             </div>
           )}

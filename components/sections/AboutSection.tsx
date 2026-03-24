@@ -13,8 +13,8 @@ export default function AboutSection() {
       {/* Container matching navbar max-width */}
       <div className="max-w-6xl mx-auto px-6 md:px-8 h-full relative">
         {/* Portrait area - positioned to the left (hidden on mobile, overlaps terminal) */}
-        <div className="hidden md:block absolute left-6 md:left-8 top-1/2 -translate-y-1/2">
-        <div data-about-portrait className="relative h-[500px] lg:h-[600px] flex items-center justify-center" style={{ perspective: "1000px", transformStyle: "preserve-3d" }}>
+        <div className="desktop-layout-only absolute left-1/2 -translate-x-[145%] xl:left-16 xl:translate-x-0 top-1/2 -translate-y-1/2">
+        <div data-about-portrait className="relative h-[420px] xl:h-[600px] flex items-center justify-center" style={{ perspective: "1000px", transformStyle: "preserve-3d" }}>
           {/* Animated gradient orbs */}
           <div
             data-about-glow
@@ -27,11 +27,11 @@ export default function AboutSection() {
           {/* Portrait with clean frame */}
           <div className="relative group">
             {/* Rotating outer rings */}
-            <div className="absolute -inset-8 border-2 border-dashed border-primary/30 rounded-full animate-[spin_30s_linear_infinite]" />
-            <div className="absolute -inset-14 border border-secondary/20 rounded-full animate-[spin_45s_linear_infinite_reverse]" />
+            <div className="absolute -inset-6 xl:-inset-8 border-2 border-dashed border-primary/30 rounded-full animate-[spin_30s_linear_infinite]" />
+            <div className="absolute -inset-10 xl:-inset-14 border border-secondary/20 rounded-full animate-[spin_45s_linear_infinite_reverse]" />
 
             {/* Portrait - simple rounded frame */}
-            <div className="relative w-[280px] lg:w-[320px] h-[360px] lg:h-[420px] rounded-2xl overflow-hidden border border-border shadow-2xl shadow-primary/20">
+            <div className="relative w-[240px] xl:w-[320px] h-[320px] xl:h-[420px] rounded-2xl overflow-hidden border border-border shadow-2xl shadow-primary/20">
               <Image
                 src="/assets/images/portrait/portrait.webp"
                 alt=""

@@ -14,14 +14,19 @@ export const getViewportConfig = () => {
   const height = typeof window !== "undefined" ? window.innerHeight : 812;
   const isPortrait = height > width;
   const isTabletSize = width >= 768 && width < 1024;
+  const isSmallDesktop = width >= 1024 && width < 1280;
   const isMobile = width < 768 || (isTabletSize && isPortrait);
+  const isTinyMobile = isMobile && width <= 380;
   return {
     width,
     height,
     isMobile,
+    isTinyMobile,
     isTallMobile: isMobile && height > 800,
     isTabletPortrait: isTabletSize && isPortrait,
     isTablet: isTabletSize && !isPortrait,
+    isSmallDesktop,
+    useCompactAboutLayout: isMobile || isTabletSize || isSmallDesktop,
     isDesktop: width >= 1024 || (isTabletSize && !isPortrait),
   };
 };
@@ -29,6 +34,20 @@ export const getViewportConfig = () => {
 // Compute a clamped numeric value matching a CSS clamp()
 const clamp = (min: number, pct: number, max: number, viewport: number) =>
   Math.max(min, Math.min(max, Math.round(viewport * pct)));
+
+const getMobileTerminalMaxHeight = (viewportHeight: number) =>
+  Math.floor(viewportHeight * 0.85);
+
+const getTerminalMaxHeight = (viewportHeight: number) =>
+  Math.floor(viewportHeight * 0.85);
+
+const capTerminalHeight = (height: number, viewportHeight: number) =>
+  Math.min(height, getTerminalMaxHeight(viewportHeight));
+
+const getMobileTerminalWidth = (viewportWidth: number) =>
+  Math.max(280, Math.min(600, viewportWidth - 16));
+
+export const MOBILE_TERMINAL_WIDTH_CSS = "min(600px, calc(100vw - 16px))";
 
 // =====================================================
 // MEASUREMENT STORE
@@ -259,7 +278,10 @@ export const getHeroTerminalSize = () => {
   const measuredH = getResolvedStageHeight("hero");
 
   if (config.isTabletPortrait) {
-    const height = measuredH ?? getLoaderTerminalSize().height;
+    const height = capTerminalHeight(
+      measuredH ?? getLoaderTerminalSize().height,
+      config.height
+    );
     return {
       width:  clamp(280, 0.60, 500, config.width),
       height,
@@ -271,7 +293,10 @@ export const getHeroTerminalSize = () => {
   }
 
   if (config.isTablet) {
-    const height = measuredH ?? getLoaderTerminalSize().height;
+    const height = capTerminalHeight(
+      measuredH ?? getLoaderTerminalSize().height,
+      config.height
+    );
     return {
       width:  clamp(260, 0.40, 400, config.width),
       height,
@@ -282,18 +307,24 @@ export const getHeroTerminalSize = () => {
   }
 
   if (config.isMobile) {
-    const height = measuredH ?? getLoaderTerminalSize().height;
+    const height = capTerminalHeight(
+      measuredH ?? getLoaderTerminalSize().height,
+      config.height
+    );
     return {
-      width:  clamp(280, 0.92, 520, config.width),
+      width: getMobileTerminalWidth(config.width),
       height,
-      widthCss:  "clamp(280px, 92vw, 520px)",
+      widthCss: MOBILE_TERMINAL_WIDTH_CSS,
       heightCss: `${height}px`,
       left: "50%",
     };
   }
 
   // Desktop
-  const height = measuredH ?? getLoaderTerminalSize().height;
+  const height = capTerminalHeight(
+    measuredH ?? getLoaderTerminalSize().height,
+    config.height
+  );
   return {
     width:  clamp(400, 0.44, 600, config.width),
     height,
@@ -311,7 +342,10 @@ export const getAboutTerminalSize = () => {
   const measuredH = getResolvedStageHeight("about");
 
   if (config.isTabletPortrait) {
-    const height = measuredH ?? getLoaderTerminalSize().height;
+    const height = capTerminalHeight(
+      measuredH ?? getLoaderTerminalSize().height,
+      config.height
+    );
     return {
       width:    clamp(300, 0.68, 540, config.width),
       height,
@@ -322,35 +356,44 @@ export const getAboutTerminalSize = () => {
   }
 
   if (config.isTablet) {
-    const height = measuredH ?? getLoaderTerminalSize().height;
+    const height = capTerminalHeight(
+      measuredH ?? getLoaderTerminalSize().height,
+      config.height
+    );
     return {
       width:    clamp(300, 0.48, 480, config.width),
       height,
       widthCss:  "clamp(300px, 48vw, 480px)",
       heightCss: `${height}px`,
-      left: "65%",
+      left: "67%",
     };
   }
 
   if (config.isMobile) {
-    const height = measuredH ?? getLoaderTerminalSize().height;
+    const height = capTerminalHeight(
+      measuredH ?? getLoaderTerminalSize().height,
+      config.height
+    );
     return {
-      width:    clamp(280, 0.92, 600, config.width),
+      width: getMobileTerminalWidth(config.width),
       height,
-      widthCss:  "clamp(280px, 92vw, 600px)",
+      widthCss: MOBILE_TERMINAL_WIDTH_CSS,
       heightCss: `${height}px`,
       left: "50%",
     };
   }
 
   // Desktop
-  const height = measuredH ?? getLoaderTerminalSize().height;
+  const height = capTerminalHeight(
+    measuredH ?? getLoaderTerminalSize().height,
+    config.height
+  );
   return {
     width:    clamp(480, 0.48, 720, config.width),
     height,
     widthCss:  "clamp(480px, 48vw, 720px)",
     heightCss: `${height}px`,
-    left: "65%",
+    left: config.isSmallDesktop ? "67%" : "65%",
   };
 };
 
@@ -360,13 +403,21 @@ export const getAboutTerminalSize = () => {
 export const getProjectsIntroSize = () => {
   const config = getViewportConfig();
   const measuredH = getPortfolioMeasuredHeight("intro");
-  const width = clamp(280, 0.88, 640, config.width);
-  const height = measuredH ?? 0;
+  const width = config.isMobile
+    ? getMobileTerminalWidth(config.width)
+    : config.isTablet
+      ? clamp(320, 0.56, 520, config.width)
+      : clamp(280, 0.88, 640, config.width);
+  const height = capTerminalHeight(measuredH ?? 0, config.height);
 
   return {
     width,
     height,
-    widthCss: "clamp(280px, 88vw, 640px)",
+    widthCss: config.isMobile
+      ? MOBILE_TERMINAL_WIDTH_CSS
+      : config.isTablet
+        ? "clamp(320px, 56vw, 520px)"
+        : "clamp(280px, 88vw, 640px)",
     heightCss: `${height}px`,
   };
 };
@@ -378,19 +429,45 @@ export const getProjectsExpandedSize = (projectIndex = 0) => {
   const config = getViewportConfig();
   const measuredH = getPortfolioMeasuredProjectHeight(projectIndex);
   const navbarHeight = 80;
-  const padding = config.isMobile ? 8 : config.isTablet ? 24 : 32;
+  const padding = config.isTinyMobile ? 6 : config.isMobile ? 8 : config.isTablet ? 24 : 32;
 
-  const width = config.isDesktop
+  const width = config.isTablet
+    ? clamp(380, 0.60, 600, config.width)
+    : config.isSmallDesktop
+    ? clamp(420, 0.52, 620, config.width)
+    : config.isDesktop
     ? clamp(340, 0.42, 680, config.width)
-    : config.width - padding * 2;
+    : getMobileTerminalWidth(config.width);
 
-  const availableHeight = config.height - navbarHeight - padding * 2;
-  const height = measuredH ?? 0;
+  const maxMobileTerminalHeight = getMobileTerminalMaxHeight(config.height);
+  const maxTerminalHeight = getTerminalMaxHeight(config.height);
+  const availableHeight = config.isMobile
+    ? Math.min(config.height - padding * 2, maxMobileTerminalHeight)
+    : Math.min(config.height - navbarHeight - padding * 2, maxTerminalHeight);
+  const mobileThreeDReserve = config.isMobile
+    ? clamp(
+        config.isTinyMobile ? 220 : 235,
+        config.isTinyMobile ? 0.3 : 0.32,
+        config.isTinyMobile ? 340 : 420,
+        config.height
+      )
+    : 0;
+  const height = config.isMobile
+    ? Math.min((measuredH ?? 0) + mobileThreeDReserve, availableHeight)
+    : Math.min(measuredH ?? 0, availableHeight);
 
-  const left = config.isDesktop ? config.width * 0.28 : config.width / 2;
+  const left = config.isTablet
+    ? config.width * 0.31
+    : config.isSmallDesktop
+      ? config.width * 0.30
+    : config.isDesktop
+      ? config.width * 0.28
+      : config.width / 2;
   const top = config.isMobile
     ? config.height / 2
-    : navbarHeight + availableHeight / 2;
+    : config.isTablet
+      ? config.height / 2
+      : navbarHeight + availableHeight / 2;
 
   return { width, height, top, left, xPercent: -50, yPercent: -50, scale: 1 };
 };
@@ -401,13 +478,17 @@ export const getProjectsExpandedSize = (projectIndex = 0) => {
 export const getProjectsCtaSize = () => {
   const config = getViewportConfig();
   const measuredH = getPortfolioMeasuredHeight("cta");
-  const padding = config.isMobile ? 16 : config.isTablet ? 24 : 32;
+  const padding = config.isMobile ? 8 : config.isTablet ? 24 : 32;
 
-  const width = config.isDesktop
+  const width = config.isTablet
+    ? clamp(360, 0.58, 540, config.width)
+    : config.isSmallDesktop
+    ? clamp(400, 0.50, 580, config.width)
+    : config.isDesktop
     ? clamp(360, 0.46, 600, config.width)
-    : config.width - padding * 2;
+    : getMobileTerminalWidth(config.width);
 
-  const height = measuredH ?? 0;
+  const height = Math.min(measuredH ?? 0, getTerminalMaxHeight(config.height));
 
   return {
     width,
@@ -428,7 +509,10 @@ export const getContactTerminalSize = () => {
   const measuredH = getResolvedStageHeight("contact");
 
   if (config.isTabletPortrait) {
-    const height = measuredH ?? getLoaderTerminalSize().height;
+    const height = capTerminalHeight(
+      measuredH ?? getLoaderTerminalSize().height,
+      config.height
+    );
     return {
       width:    clamp(300, 0.62, 520, config.width),
       height,
@@ -439,29 +523,52 @@ export const getContactTerminalSize = () => {
   }
 
   if (config.isTablet) {
-    const height = measuredH ?? getLoaderTerminalSize().height;
+    const height = capTerminalHeight(
+      measuredH ?? getLoaderTerminalSize().height,
+      config.height
+    );
     return {
       width:    clamp(300, 0.44, 460, config.width),
       height,
       widthCss:  "clamp(300px, 44vw, 460px)",
       heightCss: `${height}px`,
-      left: "62%",
+      left: "67%",
+    };
+  }
+
+  if (config.isSmallDesktop) {
+    const height = capTerminalHeight(
+      measuredH ?? getLoaderTerminalSize().height,
+      config.height
+    );
+    return {
+      width:    clamp(400, 0.42, 600, config.width),
+      height,
+      widthCss:  "clamp(400px, 42vw, 600px)",
+      heightCss: `${height}px`,
+      left: "67%",
     };
   }
 
   if (config.isMobile) {
-    const height = measuredH ?? getLoaderTerminalSize().height;
+    const height = capTerminalHeight(
+      measuredH ?? getLoaderTerminalSize().height,
+      config.height
+    );
     return {
-      width:    clamp(280, 0.92, 580, config.width),
+      width: getMobileTerminalWidth(config.width),
       height,
-      widthCss:  "clamp(280px, 92vw, 580px)",
+      widthCss: MOBILE_TERMINAL_WIDTH_CSS,
       heightCss: `${height}px`,
       left: "50%",
     };
   }
 
   // Desktop
-  const height = measuredH ?? getLoaderTerminalSize().height;
+  const height = capTerminalHeight(
+    measuredH ?? getLoaderTerminalSize().height,
+    config.height
+  );
   return {
     width:    clamp(400, 0.44, 640, config.width),
     height,

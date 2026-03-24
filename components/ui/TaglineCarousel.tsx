@@ -8,6 +8,7 @@ interface TaglineCarouselProps {
   after: string;
   words: string[];
   interval?: number;
+  useCompactLayout?: boolean;
 }
 
 export default function TaglineCarousel({
@@ -15,6 +16,7 @@ export default function TaglineCarousel({
   after,
   words,
   interval = 2500,
+  useCompactLayout = false,
 }: TaglineCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const { reducedMotion } = useMotionPreference();
@@ -31,15 +33,30 @@ export default function TaglineCarousel({
 
   return (
     <>
-      {before}
-      {before ? " " : ""}
-      <span
-        key={word}
-        className={`text-primary ${reducedMotion ? "" : "inline-block animate-slot-in"}`}
-      >
-        {word}
+      <span className={useCompactLayout ? "hidden" : "hidden whitespace-nowrap md:inline"}>
+        {before}
+        {before ? " " : ""}
+        <span
+          key={`desktop-${word}`}
+          className={`text-primary ${reducedMotion ? "" : "inline-block animate-slot-in"}`}
+        >
+          {word}
+        </span>
+        {after ? " " + after : ""}
       </span>
-      {after ? " " + after : ""}
+
+      <span className={useCompactLayout ? "" : "md:hidden"}>
+        <span className="block whitespace-nowrap">{before}</span>
+        <span className="block whitespace-nowrap">
+          <span
+            key={`mobile-${word}`}
+            className={`text-primary ${reducedMotion ? "" : "inline-block animate-slot-in"}`}
+          >
+            {word}
+          </span>
+          {after ? " " + after : ""}
+        </span>
+      </span>
     </>
   );
 }

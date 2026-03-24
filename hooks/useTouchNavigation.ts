@@ -93,6 +93,23 @@ export function useTouchNavigation({
       lastStepRef.current = now;
 
       const direction = deltaY < 0 ? 1 : -1; // swipe up = next, swipe down = prev
+
+      if (stage === "about") {
+        const aboutMobilePage = document.documentElement.dataset.aboutMobilePage;
+
+        if (direction === 1 && aboutMobilePage === "0") {
+          clearPromptStage();
+          window.dispatchEvent(new CustomEvent("aboutMobileAdvance"));
+          return;
+        }
+
+        if (direction === -1 && aboutMobilePage === "1") {
+          clearPromptStage();
+          window.dispatchEvent(new CustomEvent("aboutMobileBack"));
+          return;
+        }
+      }
+
       const currentIndex = SECTIONS.indexOf(stage);
       const nextIndex = currentIndex + direction;
 

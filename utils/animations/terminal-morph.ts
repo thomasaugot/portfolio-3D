@@ -53,12 +53,16 @@ function resetPortfolioVisuals() {
   // Show intro panel
   if (introPanel) {
     gsap.set(introPanel, { opacity: 1, pointerEvents: "auto" });
+    introPanel.setAttribute("aria-hidden", "false");
+    introPanel.removeAttribute("inert");
   }
 
   // Hide all project panels
   projectPanels.forEach((panel: Element, index: number) => {
     if (index === 0) return;
     gsap.set(panel, { opacity: 0, pointerEvents: "none", y: 0 });
+    (panel as HTMLElement).setAttribute("aria-hidden", "true");
+    (panel as HTMLElement).setAttribute("inert", "");
   });
 
   // Hide 3D container and reset mobile positioning

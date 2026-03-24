@@ -57,7 +57,7 @@ export default function MotionToggle({
       aria-label={`${t("footer.motion.toggle")}: ${statusLabel}`}
       title={`${t("footer.motion.toggle")}: ${statusLabel}`}
       className={cn(
-        "keyboard-focus-ring group relative hidden md:inline-flex items-center justify-center w-9 h-9 rounded-lg border border-border backdrop-blur-sm transition-all duration-300",
+        "keyboard-focus-ring group relative hidden lg:inline-flex items-center justify-center w-11 h-11 rounded-xl border border-border backdrop-blur-sm transition-all duration-300",
         "bg-text/6 hover:bg-text/12 hover:border-primary/40",
         reducedMotion
           ? "shadow-[0_0_10px_rgba(245,158,11,0.15)] hover:shadow-[0_0_16px_rgba(245,158,11,0.3)]"

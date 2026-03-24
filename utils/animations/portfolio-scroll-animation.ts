@@ -33,6 +33,21 @@ const WHEEL_THRESHOLD = 150; // Minimum wheel delta to trigger slide change
 const SLIDE_COOLDOWN = 600; // Minimum ms between slide changes (wheel)
 const TOUCH_SLIDE_COOLDOWN = 900; // Minimum ms between slide changes (touch)
 
+function canScrollPortfolioContent(contentZone: HTMLElement | null, deltaY: number) {
+  if (!contentZone) return false;
+  if (contentZone.scrollHeight <= contentZone.clientHeight + 1) return false;
+
+  if (deltaY > 0) {
+    return contentZone.scrollTop + contentZone.clientHeight < contentZone.scrollHeight - 1;
+  }
+
+  if (deltaY < 0) {
+    return contentZone.scrollTop > 1;
+  }
+
+  return false;
+}
+
 function setPanelAccessibilityState(panel: HTMLElement, isActive: boolean) {
   panel.setAttribute("aria-hidden", isActive ? "false" : "true");
 
@@ -135,6 +150,7 @@ export function resetPortfolioState() {
   const portfolio3DContainer = document.querySelector("[data-portfolio-3d-container]") as HTMLElement;
   const scrollIndicator = document.querySelector("[data-scroll-indicator]") as HTMLElement;
   const projectCounter = portfolioTerminal?.querySelector("[data-project-counter]") as HTMLElement | null;
+  const contentZone = document.querySelector("[data-portfolio-content-zone]") as HTMLElement | null;
 
   if (portfolioTerminal) {
     const introSize = getProjectsIntroSize();
@@ -170,6 +186,10 @@ export function resetPortfolioState() {
 
   if (projectCounter) {
     gsap.set(projectCounter, { opacity: 0 });
+  }
+
+  if (contentZone) {
+    contentZone.style.pointerEvents = "none";
   }
 
   const portfolioScene = (window as any).__portfolioScene;
@@ -356,6 +376,7 @@ export function initPortfolioScroll() {
     const projectCounter = portfolioTerminal?.querySelector("[data-project-counter]") as HTMLElement | null;
     const counterNumber = projectCounter?.querySelector("[data-counter-number]");
     const counterName = projectCounter?.querySelector("[data-counter-name]");
+    const contentZone = document.querySelector("[data-portfolio-content-zone]") as HTMLElement | null;
 
     const totalProjects = projects.length;
     const totalSlides = totalProjects + 1; // projects + CTA
@@ -481,6 +502,9 @@ export function initPortfolioScroll() {
       if (scrollIndicator) {
         scrollIndicator.style.opacity = targetIndex < totalSlides - 1 ? "1" : "0";
       }
+      if (contentZone) {
+        contentZone.style.pointerEvents = targetIndex < totalProjects ? "auto" : "none";
+      }
 
       // Handle CTA slide - morph terminal to center
       if (targetIndex === totalProjects) {
@@ -505,6 +529,13 @@ export function initPortfolioScroll() {
         }
 
         if (!isExpanded) return;
+
+        const eventTarget = e.target as Node | null;
+        const isInsideContentZone =
+          !!contentZone && !!eventTarget && contentZone.contains(eventTarget);
+        if (isInsideContentZone && canScrollPortfolioContent(contentZone, e.deltaY)) {
+          return;
+        }
 
         e.preventDefault();
 
@@ -540,10 +571,16 @@ export function initPortfolioScroll() {
       document.addEventListener("wheel", wheelHandler, { passive: false });
 
       // Touch handler for slide navigation (mobile swipe between projects)
-      let slideTouchStart: { y: number; time: number } | null = null;
+      let slideTouchStart: { y: number; time: number; startedInContentZone: boolean } | null = null;
 
       const slideTouchStartHandler = (e: TouchEvent) => {
-        slideTouchStart = { y: e.touches[0].clientY, time: Date.now() };
+        const touchTarget = e.target as Node | null;
+        slideTouchStart = {
+          y: e.touches[0].clientY,
+          time: Date.now(),
+          startedInContentZone:
+            !!contentZone && !!touchTarget && contentZone.contains(touchTarget),
+        };
       };
 
       const slideTouchEndHandler = (e: TouchEvent) => {
@@ -558,9 +595,11 @@ export function initPortfolioScroll() {
 
         const deltaY = slideTouchStart.y - e.changedTouches[0].clientY;
         const elapsed = now - slideTouchStart.time;
+        const startedInContentZone = slideTouchStart.startedInContentZone;
         slideTouchStart = null;
 
         if (Math.abs(deltaY) < 80 || elapsed > 500) return;
+        if (startedInContentZone && canScrollPortfolioContent(contentZone, deltaY)) return;
 
         const direction = deltaY > 0 ? 1 : -1; // swipe up = next, swipe down = prev
         lastSlideChangeTime = now;
@@ -604,6 +643,9 @@ export function initPortfolioScroll() {
       }
 
       morphPortfolioToExpanded(0, () => {
+        if (contentZone) {
+          contentZone.style.pointerEvents = "auto";
+        }
         setupWheelNavigation();
 
         // Show first project panel
@@ -707,11 +749,17 @@ export function initPortfolioScroll() {
 
     // Handle Contact CTA button click
     const contactCtaBtn = portfolioSection.querySelector("[data-contact-cta-btn]") as HTMLElement | null;
-    if (contactCtaBtn) {
-      contactCtaBtn.addEventListener("click", () => {
-        // Dispatch event to trigger contact section transition
+    if (contactCtaBtn && contactCtaBtn.dataset.contactBound !== "true") {
+      const handleContactActivate = (event: Event) => {
+        event.preventDefault();
+        event.stopPropagation();
         window.dispatchEvent(new CustomEvent("goToContact"));
-      });
+      };
+
+      contactCtaBtn.dataset.contactBound = "true";
+      contactCtaBtn.addEventListener("click", handleContactActivate);
+      contactCtaBtn.addEventListener("touchend", handleContactActivate, { passive: false });
+      contactCtaBtn.addEventListener("pointerup", handleContactActivate);
     }
   };
 

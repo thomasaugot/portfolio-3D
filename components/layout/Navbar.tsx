@@ -2,13 +2,15 @@
 
 import { useState, useEffect, useRef, useCallback, type CSSProperties } from "react";
 import LanguageToggle from "@/components/ui/LanguageToggle";
-import MotionToggle from "@/components/ui/MotionToggle";
-import SocialLinks from "@/components/ui/SocialLinks";
 import { useCanva } from "@/components/ui/Canva";
+import SocialLinks from "@/components/ui/SocialLinks";
+import { useTheme } from "@/contexts/ThemeProvider";
+import { Sun, Moon } from "lucide-react";
 import gsap from "gsap";
 
 export default function Navbar() {
   const { stage, goToHero, goToAbout, goToProjects, goToContact } = useCanva();
+  const { isDark, toggleTheme } = useTheme();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
@@ -379,7 +381,8 @@ export default function Navbar() {
           </div>
 
           {/* Main content */}
-          <div className="flex-1 flex flex-col justify-center px-8 relative z-10 pointer-events-auto">
+          <div className="flex-1 flex flex-col justify-center px-8 md:px-0 md:items-center relative z-10 pointer-events-auto">
+            <div className="w-full md:max-w-sm">
             {mobileNavItems.map((item, i) => {
               const isActive = stage === item.stage;
               return (
@@ -391,7 +394,7 @@ export default function Navbar() {
                   }}
                   onClick={() => handleNavClick(item.onClick)}
                   aria-current={isActive ? "page" : undefined}
-                  className={`keyboard-focus-ring text-left py-4 font-mono text-3xl transition-colors relative group rounded-lg ${
+                  className={`keyboard-focus-ring w-full text-left py-2.5 font-mono text-3xl transition-colors relative group rounded-lg ${
                     isActive ? "text-text" : "text-text/78"
                   }`}
                   style={{ opacity: 0 }}
@@ -403,6 +406,7 @@ export default function Navbar() {
                 </button>
               );
             })}
+            </div>
           </div>
 
           {/* Bottom */}
@@ -410,15 +414,24 @@ export default function Navbar() {
             ref={(el) => {
               if (el) itemsRef.current[mobileNavItems.length] = el as unknown as HTMLButtonElement;
             }}
-            className="px-8 pb-8 relative z-10 shrink-0 pointer-events-auto"
+            className="px-8 md:px-0 pb-8 md:pb-12 md:flex md:justify-center relative z-10 shrink-0 pointer-events-auto"
             style={{ opacity: 0 }}
           >
-            <div className="mb-4">
-              <MotionToggle variant="menu" />
-            </div>
-            <div className="border-t border-border pt-6 flex items-center justify-between">
-              <LanguageToggle />
-              <SocialLinks />
+            <div className="border-t border-border pt-6 space-y-5 w-full md:max-w-sm">
+              <div className="flex items-center justify-between">
+                <LanguageToggle />
+                <button
+                  type="button"
+                  onClick={toggleTheme}
+                  aria-pressed={isDark}
+                  aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+                  className="keyboard-focus-ring flex items-center gap-2 px-3 py-2 rounded-lg font-mono text-sm text-text/60 hover:text-text transition-colors"
+                >
+                  {isDark ? <Sun size={16} /> : <Moon size={16} />}
+                  {isDark ? "dark" : "light"}
+                </button>
+              </div>
+              <SocialLinks className="w-full justify-between [&_a]:p-3 [&_svg]:w-7 [&_svg]:h-7" />
             </div>
           </div>
         </div>

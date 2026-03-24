@@ -26,7 +26,7 @@ export default function SkipLink({ href, label, className }: SkipLinkProps) {
       href={href}
       onClick={handleClick}
       className={cn(
-        "sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100100] focus:inline-flex focus:items-center focus:gap-3 focus:rounded-xl focus:border focus:border-primary/35 focus:bg-bg-panel/95 focus:px-4 focus:py-3 focus:font-mono focus:text-sm focus:font-medium focus:text-text focus:shadow-[0_0_0_1px_rgba(16,185,129,0.18),0_18px_40px_rgba(0,0,0,0.38)] focus:backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-primary/90 focus:ring-offset-2 focus:ring-offset-bg",
+        "fixed left-4 top-4 z-[100100] inline-flex items-center gap-3 rounded-xl border border-primary/35 bg-bg-panel/95 px-4 py-3 font-mono text-sm font-medium text-text shadow-[0_0_0_1px_rgba(16,185,129,0.18),0_18px_40px_rgba(0,0,0,0.38)] backdrop-blur-md outline-none ring-2 ring-primary/90 ring-offset-2 ring-offset-bg transition-[transform,opacity] duration-150 -translate-y-[180%] opacity-0 pointer-events-none focus:translate-y-0 focus:opacity-100 focus:pointer-events-auto focus-visible:translate-y-0 focus-visible:opacity-100 focus-visible:pointer-events-auto",
         className
       )}
     >

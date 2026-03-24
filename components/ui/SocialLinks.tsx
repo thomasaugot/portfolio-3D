@@ -4,7 +4,7 @@ import { SOCIAL_LINKS } from "@/data/contact";
 
 export default function SocialLinks({ className = "" }: { className?: string }) {
   return (
-    <div className={`flex items-center gap-3 shrink-0 ${className}`}>
+    <div className={`flex items-center gap-3 ${className}`}>
       {SOCIAL_LINKS.filter((link) => link.label !== "Email").map((link) => {
         const Icon = link.icon;
         return (
@@ -13,10 +13,10 @@ export default function SocialLinks({ className = "" }: { className?: string }) 
             href={link.href}
             target="_blank"
             rel="noreferrer"
-            className="keyboard-focus-ring group rounded-lg text-text/70 transition-colors hover:text-text"
+            className="keyboard-focus-ring group rounded-xl p-2 text-text/70 transition-colors hover:text-text"
             aria-label={link.label}
           >
-            <Icon aria-hidden="true" className={`w-7 h-7 transition-colors ${link.color}`} />
+            <Icon aria-hidden="true" className={`w-8 h-8 transition-colors ${link.color}`} />
           </a>
         );
       })}

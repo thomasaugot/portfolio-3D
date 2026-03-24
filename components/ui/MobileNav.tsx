@@ -64,7 +64,7 @@ export default function MobileNav({
         disabled={!canGoUp || isMorphing}
         className={`p-2 rounded-lg backdrop-blur-sm transition-all duration-200 ${
           canGoUp
-            ? "keyboard-focus-ring bg-text/7 border border-border text-primary active:scale-90"
+            ? "keyboard-focus-ring bg-text/6 border border-border text-text/60 hover:bg-text/12 hover:border-primary/40 active:scale-90"
             : "opacity-0 pointer-events-none"
         }`}
         aria-label="Previous section"
@@ -94,7 +94,7 @@ export default function MobileNav({
         disabled={!canGoDown || isMorphing}
         className={`p-2 rounded-lg backdrop-blur-sm transition-all duration-200 ${
           canGoDown
-            ? "keyboard-focus-ring bg-text/7 border border-border text-primary active:scale-90"
+            ? "keyboard-focus-ring bg-text/6 border border-border text-text/60 hover:bg-text/12 hover:border-primary/40 active:scale-90"
             : "opacity-0 pointer-events-none"
         }`}
         aria-label="Next section"

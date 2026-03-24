@@ -18,7 +18,7 @@ export default function ContactSection() {
       {/* Container matching navbar max-width */}
       <div className="max-w-6xl mx-auto px-6 md:px-8 h-full relative">
         {/* Left side - Social links (hidden on mobile, shown inside terminal instead) */}
-        <div className="hidden md:block absolute left-6 md:left-8 top-1/2 -translate-y-1/2 w-[300px] lg:w-[320px]">
+        <div className="desktop-layout-only absolute left-1/2 -translate-x-[124%] xl:left-8 xl:translate-x-0 top-1/2 -translate-y-1/2 w-[300px] lg:w-[320px]">
         {/* Gradient glow orbs */}
         <div aria-hidden="true" className="absolute w-[250px] h-[250px] bg-primary/25 rounded-full blur-[70px] -top-16 -left-16 animate-[float_6s_ease-in-out_infinite]" />
         <div aria-hidden="true" className="absolute w-[200px] h-[200px] bg-secondary/20 rounded-full blur-[50px] bottom-0 -right-10 animate-[float_8s_ease-in-out_infinite_1s]" />
@@ -36,7 +36,7 @@ export default function ContactSection() {
           <div className="absolute top-1/2 -right-3 w-2 h-2 bg-secondary rounded-full animate-pulse" />
 
           {/* Glass panel */}
-          <div className="relative bg-bg-panel/90 backdrop-blur-md border border-border rounded-2xl p-6 shadow-2xl shadow-primary/10">
+          <div className="relative bg-bg-surface/96 backdrop-blur-sm border border-border rounded-2xl p-6 shadow-2xl [html[data-theme='light']_&]:border-[#c8b99f] [html[data-theme='light']_&]:bg-[#f8f3e9]/96 [html[data-theme='light']_&]:shadow-[0_28px_80px_rgba(16,185,129,0.08),0_18px_40px_rgba(149,115,37,0.12)]">
             {/* Header */}
             <div className="mb-6">
               <p className="text-primary text-xs font-mono uppercase tracking-[0.3em] mb-2">

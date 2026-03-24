@@ -79,6 +79,22 @@ export function useWheelNavigation({
         lastStepRef.current = now;
         scrollTimeoutRef.current = null;
 
+        if (stage === "about") {
+          const aboutMobilePage = document.documentElement.dataset.aboutMobilePage;
+
+          if (direction === 1 && aboutMobilePage === "0") {
+            clearPromptStage();
+            window.dispatchEvent(new CustomEvent("aboutMobileAdvance"));
+            return;
+          }
+
+          if (direction === -1 && aboutMobilePage === "1") {
+            clearPromptStage();
+            window.dispatchEvent(new CustomEvent("aboutMobileBack"));
+            return;
+          }
+        }
+
         // Navigate between sections based on scroll direction
         const currentIndex = SECTIONS.indexOf(stage);
         const nextIndex = currentIndex + direction;
