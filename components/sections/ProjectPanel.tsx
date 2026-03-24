@@ -1,7 +1,8 @@
 "use client";
 
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/Button";
-import { ExternalLink, Check, ChevronRight } from "lucide-react";
+import { ExternalLink, Check, ChevronsDown } from "lucide-react";
 import type { Project } from "@/types/project";
 import {
   PORTFOLIO_PANEL_CTA_CLASS,
@@ -25,6 +26,25 @@ export default function ProjectPanel({
   useCompactContent = false,
   useCompactDensity = false,
 }: ProjectPanelProps) {
+  const panelRef = useRef<HTMLDivElement>(null);
+  const [canScrollDown, setCanScrollDown] = useState(false);
+
+  useEffect(() => {
+    if (measure) return;
+    const el = panelRef.current;
+    if (!el) return;
+    const check = () => {
+      setCanScrollDown(el.scrollHeight - el.scrollTop - el.clientHeight > 8);
+    };
+    check();
+    el.addEventListener("scroll", check, { passive: true });
+    const observer = new ResizeObserver(check);
+    observer.observe(el);
+    return () => {
+      el.removeEventListener("scroll", check);
+      observer.disconnect();
+    };
+  }, [measure]);
   const descriptionCommandClass = useCompactContent ? "flex" : "hidden lg:flex";
   const descriptionOnlyClass = useCompactContent ? "hidden" : "hidden lg:block";
   const titleClass = useCompactContent
@@ -38,8 +58,7 @@ export default function ProjectPanel({
     : useCompactDensity
       ? "text-xs px-2 py-0.5 lg:px-2.5 lg:py-1 rounded-md bg-text/7 border border-border text-text/88"
     : "text-xs px-2 py-0.5 lg:px-3 lg:py-1.5 rounded-md bg-text/7 border border-border text-text/88";
-  const nextButtonClass = useCompactContent ? "" : "md:px-5 md:py-2.5 md:text-base";
-  const nextIconClass = useCompactContent ? "w-3 h-3" : "w-3 h-3 lg:w-4 lg:h-4";
+  const nextButtonClass = "";
   const shellClass = measure
     ? useCompactDensity
       ? "relative flex flex-col justify-start p-4 md:p-5 font-mono text-sm leading-relaxed overflow-visible bg-bg-surface"
@@ -57,11 +76,12 @@ export default function ProjectPanel({
 
   return (
     <div
+      ref={measure ? undefined : panelRef}
       data-project-panel={measure ? undefined : index + 1}
       className={shellClass}
     >
-      {/* Spacer - pushes content to bottom portion on mobile, 3D visible at top */}
-      <div className={useCompactContent ? "flex-1" : "flex-1 lg:hidden"} />
+      {/* Spacer - pushes content to bottom portion on mobile only */}
+      {useCompactContent && <div className="flex-1" />}
       {/* Command line */}
       <div data-typewriter-line={measure ? undefined : true} className="flex items-center gap-2 mb-2">
         <span className="text-primary">❯</span>
@@ -221,9 +241,16 @@ export default function ProjectPanel({
           className={nextButtonClass}
         >
           {t("projects.terminal.next_project") || "Next Project"}
-          <ChevronRight className={nextIconClass} />
         </Button>
       </div>
+
+      {!measure && canScrollDown && (
+        <div className="sticky bottom-0 left-0 right-0 flex justify-center pointer-events-none pt-4 xl:hidden">
+          <div className="bg-bg-surface/92 backdrop-blur-sm rounded-full px-3 py-1 border border-border">
+            <ChevronsDown className="w-4 h-4 text-primary animate-bounce" />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

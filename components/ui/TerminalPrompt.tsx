@@ -27,7 +27,7 @@ export default function TerminalPrompt({ promptLabelTyped, promptConfig }: Termi
           type="button"
           onClick={promptConfig.onYes}
           variant="orange"
-          size="md"
+          size="sm"
         >
           {promptConfig.yesLabel}
         </Button>
@@ -35,7 +35,7 @@ export default function TerminalPrompt({ promptLabelTyped, promptConfig }: Termi
           type="button"
           onClick={promptConfig.onNo}
           variant="outlined"
-          size="md"
+          size="sm"
         >
           {promptConfig.noLabel}
         </Button>

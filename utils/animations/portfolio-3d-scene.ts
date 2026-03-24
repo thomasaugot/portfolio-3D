@@ -146,7 +146,7 @@ const loadModel = async (
     });
 
     // Scale: tuned per viewport (mobile 3D container is full-screen, so models need to be smaller)
-    const scale = config.isMobile ? 25 : config.isTablet ? 42 : isCompactPortfolioLayout ? 32 : 55;
+    const scale = config.isMobile ? 25 : config.isTablet ? 38 : isCompactPortfolioLayout ? 42 : 58;
     model.scale.set(scale, scale, scale);
     model.rotation.y = -0.3;
 

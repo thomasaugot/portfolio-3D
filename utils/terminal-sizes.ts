@@ -36,7 +36,7 @@ const clamp = (min: number, pct: number, max: number, viewport: number) =>
   Math.max(min, Math.min(max, Math.round(viewport * pct)));
 
 const getMobileTerminalMaxHeight = (viewportHeight: number) =>
-  Math.floor(viewportHeight * 0.85);
+  Math.floor(viewportHeight * 0.75);
 
 const getTerminalMaxHeight = (viewportHeight: number) =>
   Math.floor(viewportHeight * 0.85);

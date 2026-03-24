@@ -52,7 +52,6 @@ export default function Terminal() {
   const [hasExpanded, setHasExpanded] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
   const [useCompactAboutLayout, setUseCompactAboutLayout] = useState(false);
-  const [useCompactHeroTitle, setUseCompactHeroTitle] = useState(false);
   const [terminalContentHidden, setTerminalContentHidden] = useState(false);
   const [aboutMobilePage, setAboutMobilePage] = useState(0);
   const [aboutMeasurementVersion, setAboutMeasurementVersion] = useState(0);
@@ -85,7 +84,7 @@ export default function Terminal() {
     () => ({
       width: terminalConfig.widthCss,
       height: terminalConfig.heightCss,
-      maxHeight: "85svh",
+      maxHeight: "80svh",
     }),
     [terminalConfig]
   );
@@ -304,6 +303,11 @@ export default function Terminal() {
     isReady: heroActive,
   });
 
+  // Reset scroll position on stage or about-page change
+  useEffect(() => {
+    if (terminalBodyRef.current) terminalBodyRef.current.scrollTop = 0;
+  }, [stage, aboutMobilePage]);
+
   // Scroll indicator check
   useEffect(() => {
     const el = terminalBodyRef.current;
@@ -312,15 +316,16 @@ export default function Terminal() {
       const hasMore = el.scrollHeight - el.scrollTop - el.clientHeight > 8;
       setCanScrollDown(hasMore);
     };
-    check();
+    const rafId = window.requestAnimationFrame(check);
     el.addEventListener("scroll", check, { passive: true });
     const observer = new ResizeObserver(check);
     observer.observe(el);
     return () => {
+      window.cancelAnimationFrame(rafId);
       el.removeEventListener("scroll", check);
       observer.disconnect();
     };
-  }, [lines, stage]);
+  }, [lines, stage, aboutMobilePage, terminalContentHidden]);
 
   // Viewport-specific layout flags + cursor blink
   useEffect(() => {
@@ -328,7 +333,6 @@ export default function Terminal() {
       const config = getViewportConfig();
       setIsDesktop(config.isDesktop);
       setUseCompactAboutLayout(config.useCompactAboutLayout);
-      setUseCompactHeroTitle(config.isTablet || config.isSmallDesktop);
     };
 
     syncViewportFlags();
@@ -443,15 +447,12 @@ export default function Terminal() {
             </p>
             <h1
               id={stageContentHeadingId}
-              className={`overflow-hidden text-xl font-bold leading-[1.2] sm:leading-[1.05] tracking-tight text-text sm:text-2xl md:text-2xl lg:text-3xl ${
-                useCompactHeroTitle ? "" : "md:whitespace-nowrap"
-              }`}
+              className="overflow-hidden text-xl font-bold leading-[1.2] sm:leading-[1.05] tracking-tight text-text sm:text-2xl md:text-2xl lg:text-3xl"
             >
               <TaglineCarousel
                 before={taglineBefore}
                 after={taglineAfter}
                 words={taglineWords}
-                useCompactLayout={useCompactHeroTitle}
               />
             </h1>
           </div>
@@ -461,9 +462,7 @@ export default function Terminal() {
         <div
           ref={terminalBodyRef}
           data-terminal-body
-          className={`relative p-4 md:p-6 font-mono text-sm leading-relaxed overflow-x-hidden flex-1 min-h-0 no-scrollbar ${
-            isHeroStage ? "overflow-y-hidden" : "overflow-y-auto"
-          }`}
+          className="relative p-4 md:p-6 font-mono text-sm leading-relaxed overflow-x-hidden overflow-y-auto flex-1 min-h-0 no-scrollbar"
         >
           <div
             data-terminal-content
@@ -544,7 +543,7 @@ export default function Terminal() {
           <div data-terminal-morph-layer className="absolute inset-0 opacity-0 pointer-events-none" />
 
           {/* Scroll indicator */}
-          {heroActive && canScrollDown && (!isDesktop || useCompactAboutLayout) && (
+          {heroActive && canScrollDown && (
             <div className="sticky bottom-0 left-0 right-0 flex justify-center pointer-events-none pt-4">
               <div className="bg-bg-surface/92 backdrop-blur-sm rounded-full px-3 py-1 border border-border pointer-events-auto">
                 <ChevronsDown className="w-4 h-4 text-primary animate-bounce" />
@@ -585,14 +584,11 @@ export default function Terminal() {
                 <p className="text-xs font-mono text-secondary mb-2 tracking-widest uppercase">
                   {t("hero.tagline_prefix")}
                 </p>
-                <h1 className={`overflow-hidden text-xl font-bold leading-[1.2] sm:leading-[1.05] tracking-tight text-text sm:text-2xl md:text-2xl lg:text-3xl ${
-                  useCompactHeroTitle ? "" : "md:whitespace-nowrap"
-                }`}>
+                <h1 className="overflow-hidden text-xl font-bold leading-[1.2] sm:leading-[1.05] tracking-tight text-text sm:text-2xl md:text-2xl lg:text-3xl">
                   <TaglineCarousel
                     before={taglineBefore}
                     after={taglineAfter}
                     words={taglineWords}
-                    useCompactLayout={useCompactHeroTitle}
                   />
                 </h1>
               </div>

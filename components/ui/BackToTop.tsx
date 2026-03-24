@@ -17,7 +17,7 @@ export default function BackToTop() {
       }}
       disabled={isMorphing}
       aria-label="Back to top"
-      className={`keyboard-focus-ring fixed bottom-12 md:bottom-6 right-6 md:right-auto md:left-6 z-[9998] p-3 rounded-xl
+      className={`keyboard-focus-ring fixed bottom-12 md:bottom-6 right-6 md:right-auto md:left-6 z-[100003] p-3 rounded-xl
         bg-text/7 border border-border text-primary backdrop-blur-sm
         transition-all duration-300 ease-out
         hover:bg-text/12 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/10

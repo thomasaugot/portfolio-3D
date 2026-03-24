@@ -368,12 +368,13 @@ export async function morphToAbout(onComplete?: () => void) {
   // Portrait entrance - cinematic reveal with rotation and scale
   tl.fromTo("[data-about-portrait]",
     getReducedEntry(
-      { scale: 0.6, opacity: 0, y: 80, rotateY: -25, rotateX: 10 },
-      { scale: 1, opacity: 0, y: 0, rotateY: 0, rotateX: 0 }
+      { scale: 0.6, opacity: 0, x: 60, y: 80, rotateY: -25, rotateX: 10 },
+      { scale: 1, opacity: 0, x: 0, y: 0, rotateY: 0, rotateX: 0 }
     ),
     {
       scale: 1,
       opacity: 1,
+      x: 0,
       y: 0,
       rotateY: 0,
       rotateX: 0,

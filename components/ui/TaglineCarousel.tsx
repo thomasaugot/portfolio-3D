@@ -33,29 +33,15 @@ export default function TaglineCarousel({
 
   return (
     <>
-      <span className={useCompactLayout ? "hidden" : "hidden whitespace-nowrap md:inline"}>
-        {before}
-        {before ? " " : ""}
+      <span className="block whitespace-nowrap">{before}</span>
+      <span className="block whitespace-nowrap">
         <span
-          key={`desktop-${word}`}
+          key={word}
           className={`text-primary ${reducedMotion ? "" : "inline-block animate-slot-in"}`}
         >
           {word}
         </span>
         {after ? " " + after : ""}
-      </span>
-
-      <span className={useCompactLayout ? "" : "md:hidden"}>
-        <span className="block whitespace-nowrap">{before}</span>
-        <span className="block whitespace-nowrap">
-          <span
-            key={`mobile-${word}`}
-            className={`text-primary ${reducedMotion ? "" : "inline-block animate-slot-in"}`}
-          >
-            {word}
-          </span>
-          {after ? " " + after : ""}
-        </span>
       </span>
     </>
   );

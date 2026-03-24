@@ -13,10 +13,7 @@ export default function TerminalLines({ lines }: TerminalLinesProps) {
       {lines.map((line, index) => {
         const spacingClass = index > 0 && line.type === "command" ? "mt-3" : "mt-2";
         return (
-          <div
-            key={index}
-            className={`animate-fadeIn ${line.type === "badge-group" ? "pt-2" : ""} ${spacingClass}`}
-          >
+          <div key={index} className={`animate-fadeIn ${spacingClass}`}>
             {line.type === "command" && (
               <div className="flex items-center gap-2 mb-1">
                 <span className="text-primary">❯</span>
@@ -27,13 +24,8 @@ export default function TerminalLines({ lines }: TerminalLinesProps) {
               <div className="mb-2 pl-4">
                 <div className="flex flex-col gap-1.5 md:flex-row md:flex-wrap md:justify-start md:gap-x-10 md:gap-y-1.5">
                   {line.rows.map((row) => (
-                    <div
-                      key={row.label}
-                      className="flex items-baseline gap-2 md:min-w-[150px] md:items-end"
-                    >
-                      <span className="text-[0.65rem] uppercase tracking-[0.35em] text-muted">
-                        {row.label}
-                      </span>
+                    <div key={row.label} className="flex items-baseline gap-2 md:min-w-[150px] md:items-end">
+                      <span className="text-[0.65rem] uppercase tracking-[0.35em] text-muted">{row.label}</span>
                       <span className="text-text/92 font-semibold">{row.value}</span>
                     </div>
                   ))}
@@ -55,7 +47,7 @@ export default function TerminalLines({ lines }: TerminalLinesProps) {
             )}
             {line.type === "badge-group" && line.category && line.badges && (
               <div className="mb-1 pl-4">
-                <div className="flex flex-col gap-1.5 md:flex-row md:flex-wrap md:items-center md:gap-4 text-[0.65rem] text-text/78">
+                <div className="flex flex-col gap-1.5 text-[0.65rem] text-text/78">
                   <span className="flex-shrink-0 text-[0.65rem] uppercase tracking-[0.35em] text-muted">
                     {line.category}
                   </span>

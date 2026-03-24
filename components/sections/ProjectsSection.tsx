@@ -375,9 +375,6 @@ export default function ProjectsSection() {
                 <span className="text-sm text-muted font-mono">
                   {projects.length.toString().padStart(2, "0")}
                 </span>
-                <span className="text-xs text-muted font-mono hidden md:block">
-                  {project.client}
-                </span>
               </div>
             </div>
             <ProjectPanel
@@ -409,7 +406,7 @@ export default function ProjectsSection() {
           style={{
             width: introSize?.widthCss,
             height: introSize?.heightCss,
-            maxHeight: "85svh",
+            maxHeight: viewportConfig.isDesktop && !viewportConfig.isSmallDesktop ? "80svh" : "75svh",
             left: "50%",
             top: "50%",
             transform: "translate(-50%, -50%)",
@@ -438,12 +435,6 @@ export default function ProjectsSection() {
             <span className="text-muted">/</span>
             <span className="text-sm text-muted font-mono">
               {projects.length.toString().padStart(2, "0")}
-            </span>
-            <span
-              data-counter-name
-              className="text-xs text-muted font-mono hidden xl:block"
-            >
-              {projects[0]?.client || ""}
             </span>
           </div>
         </div>
@@ -515,14 +506,13 @@ export default function ProjectsSection() {
                 data-start-projects-btn
                 type="button"
                 variant="orange"
-                size="md"
+                size="sm"
                 className="pointer-events-auto touch-manipulation"
                 onClick={handleStartButtonClick}
                 onTouchEnd={handleStartButtonTouchEnd}
                 onPointerUp={handleStartButtonPointerUp}
               >
-                <Play className="w-4 h-4" />
-                {t("projects.start_exploring") || "Start exploring"}
+                {t("projects.start_exploring") || "Explore"}
               </Button>
             </div>
           </div>
@@ -592,7 +582,7 @@ export default function ProjectsSection() {
               type="button"
               variant="orange"
               size="md"
-              className="mt-3 self-start pointer-events-auto touch-manipulation"
+              className="mt-3 self-start pointer-events-auto touch-manipulation relative z-[100010]"
               data-typewriter-reveal
               data-typewriter-delay="400"
               onClick={goToContact}

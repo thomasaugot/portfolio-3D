@@ -35,14 +35,18 @@ const TOUCH_SLIDE_COOLDOWN = 900; // Minimum ms between slide changes (touch)
 
 function canScrollPortfolioContent(contentZone: HTMLElement | null, deltaY: number) {
   if (!contentZone) return false;
-  if (contentZone.scrollHeight <= contentZone.clientHeight + 1) return false;
+  // Panels are absolute inset-0 inside contentZone — check the active scrollable panel
+  const activePanel = contentZone.querySelector<HTMLElement>("[data-project-panel]:not([style*='pointer-events: none']):not([inert])") ||
+    contentZone.querySelector<HTMLElement>("[data-project-panel]");
+  const el = activePanel ?? contentZone;
+  if (el.scrollHeight <= el.clientHeight + 1) return false;
 
   if (deltaY > 0) {
-    return contentZone.scrollTop + contentZone.clientHeight < contentZone.scrollHeight - 1;
+    return el.scrollTop + el.clientHeight < el.scrollHeight - 1;
   }
 
   if (deltaY < 0) {
-    return contentZone.scrollTop > 1;
+    return el.scrollTop > 1;
   }
 
   return false;
@@ -492,9 +496,9 @@ export function initPortfolioScroll() {
 
       // Update counter
       const safeProjectIndex = Math.min(targetIndex, totalProjects - 1);
-      if (counterNumber && counterName && targetIndex < totalProjects) {
+      if (counterNumber && targetIndex < totalProjects) {
         counterNumber.textContent = (safeProjectIndex + 1).toString().padStart(2, "0");
-        counterName.textContent = projects[safeProjectIndex]?.client || "";
+        if (counterName) counterName.textContent = projects[safeProjectIndex]?.client || "";
       }
       if (projectCounter) {
         projectCounter.style.opacity = targetIndex < totalProjects ? "1" : "0";

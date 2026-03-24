@@ -10,7 +10,7 @@
   "intro_meta_1": "5 projets",
   "intro_meta_2": "Scenes 3D live",
   "intro_meta_3": "Un scroll = un projet",
-  "start_exploring": "Commencer l'exploration",
+  "start_exploring": "Explorer",
   "cta_complete": "Tous les projets explorés !",
   "cta_title": "Construisons quelque chose ensemble",
   "cta_description": "Je suis toujours partant pour relever de nouveaux défis et donner vie aux idées.",
@@ -27,7 +27,7 @@
     "view_live": "Voir en ligne",
     "project_count": "5 projets chargés",
     "next_prompt": "Continuer l'exploration ?",
-    "next_project": "Projet suivant"
+    "next_project": "Suivant"
   },
   "counter": {
     "client": "Client"
