@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useMemo, useLayoutEffect } from "react";
+import { useRef, useMemo, useLayoutEffect, type ReactNode } from "react";
 import { getStageContent, getHeaderLabel, type Stage } from "@/data/terminal-content";
 import TerminalLines from "@/components/ui/TerminalLines";
 import ContactForm from "@/components/ui/ContactForm";
@@ -13,16 +13,7 @@ import TaglineCarousel from "@/components/ui/TaglineCarousel";
  * (same chrome, same padding, same font classes) at the given width,
  * then reports the real offsetHeight so terminal-sizes.ts can use it.
  */
-export default function StageMeasurer({
-  stage,
-  t,
-  isDesktop,
-  widthCss,
-  promptLabel,
-  yesLabel,
-  noLabel,
-  onMeasure,
-}: {
+type StageModeProps = {
   stage: Stage;
   t: (key: string) => string;
   isDesktop: boolean;
@@ -31,19 +22,37 @@ export default function StageMeasurer({
   yesLabel: string;
   noLabel: string;
   onMeasure: (stage: Stage, height: number) => void;
-}) {
+};
+
+type GenericModeProps = {
+  measureKey: string;
+  widthCss: string;
+  onMeasureCustom: (key: string, height: number) => void;
+  children: ReactNode;
+  maxWidth?: string;
+};
+
+type StageMeasurerProps = StageModeProps | GenericModeProps;
+
+export default function StageMeasurer(props: StageMeasurerProps) {
   const ref = useRef<HTMLDivElement>(null);
+  const isGenericMode = "measureKey" in props;
+  const stage = isGenericMode ? null : props.stage;
+  const widthCss = props.widthCss;
+  const maxWidth = isGenericMode ? (props.maxWidth ?? "92vw") : "92vw";
   const content = useMemo(
-    () => getStageContent(stage, t, isDesktop),
-    [stage, t, isDesktop],
+    () => (isGenericMode ? [] : getStageContent(stage, props.t, props.isDesktop)),
+    [isGenericMode, stage, props],
   );
 
-  const taglineBefore = t("hero.tagline_before");
-  const taglineAfter = t("hero.tagline_after");
-  const taglineWords = t("hero.tagline_words")
-    .split(",")
-    .map((word) => word.trim())
-    .filter(Boolean);
+  const taglineBefore = isGenericMode ? "" : props.t("hero.tagline_before");
+  const taglineAfter = isGenericMode ? "" : props.t("hero.tagline_after");
+  const taglineWords = isGenericMode
+    ? []
+    : props.t("hero.tagline_words")
+        .split(",")
+        .map((word) => word.trim())
+        .filter(Boolean);
 
   useLayoutEffect(() => {
     if (!ref.current) return;
@@ -51,7 +60,12 @@ export default function StageMeasurer({
     const measure = () => {
       node.style.height = "auto";
       const h = node.offsetHeight;
-      if (h > 0) onMeasure(stage, h);
+      if (h <= 0) return;
+      if (isGenericMode) {
+        props.onMeasureCustom(props.measureKey, h);
+        return;
+      }
+      props.onMeasure(props.stage, h);
     };
 
     measure();
@@ -69,16 +83,31 @@ export default function StageMeasurer({
       observer.disconnect();
       window.removeEventListener("resize", measure);
     };
-  }, [stage, onMeasure, widthCss, t, isDesktop, promptLabel, yesLabel, noLabel, content, taglineBefore, taglineAfter, taglineWords]);
+  }, [content, isGenericMode, maxWidth, props, stage, taglineAfter, taglineBefore, taglineWords, widthCss]);
+
+  if (isGenericMode) {
+    return (
+      <div
+        ref={ref}
+        data-portfolio-terminal-measurer={props.measureKey}
+        aria-hidden="true"
+        suppressHydrationWarning
+        className="fixed -z-50 opacity-0 pointer-events-none top-0 left-0"
+        style={{ width: widthCss, maxWidth, height: "auto" }}
+      >
+        {props.children}
+      </div>
+    );
+  }
 
   return (
     <div
       ref={ref}
-      data-stage-measurer={stage}
+      data-stage-measurer={props.stage}
       aria-hidden="true"
       suppressHydrationWarning
       className="fixed -z-50 opacity-0 pointer-events-none top-0 left-0"
-      style={{ width: widthCss, maxWidth: "92vw", height: "auto" }}
+      style={{ width: widthCss, maxWidth, height: "auto" }}
     >
       <div className="keyboard-focus-ring bg-bg-surface/96 backdrop-blur-sm rounded-xl border border-border shadow-2xl overflow-hidden flex flex-col w-full h-auto [html[data-theme='light']_&]:border-[#c8b99f] [html[data-theme='light']_&]:bg-[#f8f3e9]/96 [html[data-theme='light']_&]:shadow-[0_28px_80px_rgba(16,185,129,0.08),0_18px_40px_rgba(149,115,37,0.12)]">
         {/* Header — identical to real terminal */}
@@ -89,15 +118,15 @@ export default function StageMeasurer({
             <div className="w-3 h-3 rounded-full bg-[#27ca40]" />
           </div>
           <span className="ml-4 text-xs text-muted font-mono text-nowrap [html[data-theme='light']_&]:text-[#756a5b]">
-            {getHeaderLabel(stage, true, t)}
+            {getHeaderLabel(props.stage, true, props.t)}
           </span>
         </div>
 
         {/* Hero tagline section */}
-        {stage === "hero" && (
+        {props.stage === "hero" && (
           <div className="px-4 md:px-6 pt-4 pb-2 border-b border-border [html[data-theme='light']_&]:border-b-[#d4c7ae]">
             <p className="text-xs font-mono text-secondary mb-2 tracking-widest uppercase">
-              {t("hero.tagline_prefix")}
+              {props.t("hero.tagline_prefix")}
             </p>
             <h1 className="text-lg md:text-2xl lg:text-3xl font-bold text-text leading-tight">
               <TaglineCarousel
@@ -111,24 +140,24 @@ export default function StageMeasurer({
 
         {/* Body — identical padding to real terminal body */}
         <div className="relative p-4 md:p-6 font-mono text-sm leading-relaxed overflow-visible">
-          <AboutPortrait visible={stage === "about" && !isDesktop} />
+          <AboutPortrait visible={props.stage === "about" && !props.isDesktop} />
           <TerminalLines lines={content} />
 
           {/* Prompt */}
-          {stage !== "contact" && (
+          {props.stage !== "contact" && (
             <div className="mt-3 pt-3 border-t border-border">
               <div className="flex items-center gap-2 text-text">
                 <span className="text-primary">❯</span>
-                <span>{promptLabel}</span>
+                <span>{props.promptLabel}</span>
               </div>
               <div className="flex flex-wrap gap-3 mt-3">
-                <Button type="button" variant="orange" size="md">{yesLabel}</Button>
-                <Button type="button" variant="outlined" size="md">{noLabel}</Button>
+                <Button type="button" variant="orange" size="md">{props.yesLabel}</Button>
+                <Button type="button" variant="outlined" size="md">{props.noLabel}</Button>
               </div>
             </div>
           )}
-          {stage === "contact" && (
-            <ContactForm stage={stage} showPrompt={true} isDesktop={isDesktop} />
+          {props.stage === "contact" && (
+            <ContactForm stage={props.stage} showPrompt={true} isDesktop={props.isDesktop} />
           )}
         </div>
       </div>

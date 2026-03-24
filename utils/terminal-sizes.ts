@@ -36,6 +36,7 @@ const clamp = (min: number, pct: number, max: number, viewport: number) =>
 // Once set, size functions use real measured heights instead of estimates.
 // =====================================================
 const measured: Partial<Record<string, number>> = {};
+const measuredPortfolio: Partial<Record<string, number>> = {};
 
 export const setMeasuredStageHeight = (stage: string, height: number) => {
   if (measured[stage] === height) return false;
@@ -43,20 +44,74 @@ export const setMeasuredStageHeight = (stage: string, height: number) => {
   return true;
 };
 
+export const setMeasuredPortfolioHeight = (key: string, height: number) => {
+  if (measuredPortfolio[key] === height) return false;
+  measuredPortfolio[key] = height;
+  return true;
+};
+
 const getMeasured = (stage: string): number | null =>
   measured[stage] ?? null;
+
+const getMeasuredPortfolio = (key: string): number | null =>
+  measuredPortfolio[key] ?? null;
+
+const getRenderedElementHeight = (element: HTMLElement | null): number | null => {
+  if (!element) return null;
+
+  const rectHeight = Math.round(element.getBoundingClientRect().height);
+  if (rectHeight > 0) return rectHeight;
+
+  const scrollHeight = Math.round(element.scrollHeight);
+  if (scrollHeight > 0) return scrollHeight;
+
+  return element.offsetHeight > 0 ? element.offsetHeight : null;
+};
+
+const getPortfolioMeasuredShellHeight = (key: string): number | null => {
+  const storedHeight = getMeasuredPortfolio(key);
+  if (storedHeight) return storedHeight;
+
+  if (typeof document === "undefined") return null;
+
+  const shell = document.querySelector(
+    `[data-portfolio-terminal-shell-measurer="${key}"]`
+  ) as HTMLElement | null;
+
+  const shellHeight = getRenderedElementHeight(shell);
+  if (shellHeight) return shellHeight;
+
+  const wrapper = document.querySelector(
+    `[data-portfolio-terminal-measurer="${key}"]`
+  ) as HTMLElement | null;
+
+  return getRenderedElementHeight(wrapper);
+};
 
 const getDomMeasuredStageHeight = (stage: string): number | null => {
   if (typeof document === "undefined") return null;
 
   const exactMeasurer = document.querySelector(`[data-stage-measurer-exact="${stage}"]`) as HTMLElement | null;
-  if (exactMeasurer?.offsetHeight) return exactMeasurer.offsetHeight;
+  const exactHeight = getRenderedElementHeight(exactMeasurer);
+  if (exactHeight) return exactHeight;
 
   const measurer = document.querySelector(`[data-stage-measurer="${stage}"]`) as HTMLElement | null;
-  if (measurer?.offsetHeight) return measurer.offsetHeight;
+  const height = getRenderedElementHeight(measurer);
+  if (height) return height;
 
   return null;
 };
+
+const getPortfolioMeasuredHeight = (state: "intro" | "cta"): number | null => {
+  return getPortfolioMeasuredShellHeight(state);
+};
+
+const getPortfolioMeasuredProjectHeight = (projectIndex: number): number | null => {
+  return getPortfolioMeasuredShellHeight(`project-${projectIndex}`);
+};
+
+export const hasPortfolioMeasurement = (key: string): boolean =>
+  getPortfolioMeasuredShellHeight(key) !== null;
 
 const getResolvedStageHeight = (stage: string): number | null =>
   getDomMeasuredStageHeight(stage) ?? getMeasured(stage);
@@ -100,6 +155,78 @@ export const waitForStableStageMeasurement = async (stage: string): Promise<numb
       }
 
       attempts += 1;
+      window.requestAnimationFrame(tick);
+    };
+
+    window.requestAnimationFrame(tick);
+  });
+};
+
+export const waitForStablePortfolioProjectMeasurement = async (
+  projectIndex: number
+): Promise<number | null> => {
+  if (typeof window === "undefined") return null;
+
+  if (typeof document !== "undefined" && "fonts" in document) {
+    await (document as Document & { fonts?: FontFaceSet }).fonts?.ready;
+  }
+
+  return new Promise<number | null>((resolve) => {
+    let lastHeight: number | null = null;
+    let stableFrames = 0;
+    const requiredStableFrames = 4;
+
+    const tick = () => {
+      const height = getPortfolioMeasuredProjectHeight(projectIndex);
+
+      if (height !== null && height > 0) {
+        stableFrames = height === lastHeight ? stableFrames + 1 : 0;
+        lastHeight = height;
+
+        if (stableFrames >= requiredStableFrames) {
+          resolve(height);
+          return;
+        }
+      } else {
+        stableFrames = 0;
+        lastHeight = null;
+      }
+      window.requestAnimationFrame(tick);
+    };
+
+    window.requestAnimationFrame(tick);
+  });
+};
+
+export const waitForStablePortfolioMeasurement = async (
+  key: string
+): Promise<number | null> => {
+  if (typeof window === "undefined") return null;
+
+  if (typeof document !== "undefined" && "fonts" in document) {
+    await (document as Document & { fonts?: FontFaceSet }).fonts?.ready;
+  }
+
+  return new Promise<number | null>((resolve) => {
+    let lastHeight: number | null = null;
+    let stableFrames = 0;
+    const requiredStableFrames = 4;
+
+    const tick = () => {
+      const height = getPortfolioMeasuredShellHeight(key);
+
+      if (height !== null && height > 0) {
+        stableFrames = height === lastHeight ? stableFrames + 1 : 0;
+        lastHeight = height;
+
+        if (stableFrames >= requiredStableFrames) {
+          resolve(height);
+          return;
+        }
+      } else {
+        stableFrames = 0;
+        lastHeight = null;
+      }
       window.requestAnimationFrame(tick);
     };
 
@@ -232,31 +359,24 @@ export const getAboutTerminalSize = () => {
 // =====================================================
 export const getProjectsIntroSize = () => {
   const config = getViewportConfig();
-
+  const measuredH = getPortfolioMeasuredHeight("intro");
   const width = clamp(280, 0.88, 640, config.width);
-  const height = config.isTallMobile
-    ? clamp(300, 0.58, 520, config.height)
-    : config.isMobile
-      ? clamp(280, 0.75, 560, config.height)
-      : clamp(320, 0.52, 540, config.height);
+  const height = measuredH ?? 0;
 
   return {
     width,
     height,
     widthCss: "clamp(280px, 88vw, 640px)",
-    heightCss: config.isTallMobile
-      ? "clamp(300px, 58vh, 520px)"
-      : config.isMobile
-        ? "clamp(280px, 75vh, 560px)"
-        : "clamp(320px, 52vh, 540px)",
+    heightCss: `${height}px`,
   };
 };
 
 // =====================================================
 // PROJECTS TERMINAL (Expanded state — left side, taller)
 // =====================================================
-export const getProjectsExpandedSize = () => {
+export const getProjectsExpandedSize = (projectIndex = 0) => {
   const config = getViewportConfig();
+  const measuredH = getPortfolioMeasuredProjectHeight(projectIndex);
   const navbarHeight = 80;
   const padding = config.isMobile ? 8 : config.isTablet ? 24 : 32;
 
@@ -265,11 +385,7 @@ export const getProjectsExpandedSize = () => {
     : config.width - padding * 2;
 
   const availableHeight = config.height - navbarHeight - padding * 2;
-  const height = config.isDesktop
-    ? Math.min(720, availableHeight * 0.96)
-    : config.isMobile
-      ? Math.min(availableHeight * 0.97, availableHeight - 8)
-      : Math.min(540, availableHeight * 0.92);
+  const height = measuredH ?? 0;
 
   const left = config.isDesktop ? config.width * 0.28 : config.width / 2;
   const top = config.isMobile
@@ -284,21 +400,14 @@ export const getProjectsExpandedSize = () => {
 // =====================================================
 export const getProjectsCtaSize = () => {
   const config = getViewportConfig();
-  const navbarHeight = 80;
+  const measuredH = getPortfolioMeasuredHeight("cta");
   const padding = config.isMobile ? 16 : config.isTablet ? 24 : 32;
 
   const width = config.isDesktop
     ? clamp(360, 0.46, 600, config.width)
     : config.width - padding * 2;
 
-  const availableHeight = config.height - navbarHeight - padding * 2;
-  const height = config.isDesktop
-    ? Math.min(460, availableHeight * 0.7)
-    : config.isMobile
-      ? config.isTallMobile
-        ? Math.min(480, availableHeight * 0.58)
-        : Math.min(availableHeight * 0.93, availableHeight - 20)
-      : Math.min(540, availableHeight * 0.92);
+  const height = measuredH ?? 0;
 
   return {
     width,

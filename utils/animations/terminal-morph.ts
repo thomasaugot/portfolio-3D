@@ -660,15 +660,15 @@ export function centerTerminal() {
  * Get expanded projects terminal config (left side, taller for project content)
  * Uses centralized size function from terminal-sizes.ts
  */
-export function getExpandedProjectsConfig() {
-  return getProjectsExpandedSize();
+export function getExpandedProjectsConfig(projectIndex = 0) {
+  return getProjectsExpandedSize(projectIndex);
 }
 
 /**
  * Morph portfolio terminal from centered intro to left side expanded state
  * Called when user clicks the "Start exploring" CTA button
  */
-export function morphPortfolioToExpanded(onComplete?: () => void) {
+export function morphPortfolioToExpanded(projectIndex = 0, onComplete?: () => void) {
   const portfolioTerminal = document.querySelector("[data-portfolio-terminal]") as HTMLElement | null;
   const portfolio3DContainer = document.querySelector("[data-portfolio-3d-container]") as HTMLElement | null;
   const scrollIndicator = document.querySelector("[data-scroll-indicator]") as HTMLElement | null;
@@ -679,7 +679,7 @@ export function morphPortfolioToExpanded(onComplete?: () => void) {
     return gsap.timeline();
   }
 
-  const config = getExpandedProjectsConfig();
+  const config = getExpandedProjectsConfig(projectIndex);
   const tl = gsap.timeline();
 
   if (onComplete) {
@@ -832,7 +832,7 @@ export function morphPortfolioToCta(onComplete?: () => void) {
 /**
  * Morph portfolio terminal from centered CTA back to left side for projects
  */
-export function morphPortfolioToProjects(onComplete?: () => void) {
+export function morphPortfolioToProjects(projectIndex = 0, onComplete?: () => void) {
   const portfolioTerminal = document.querySelector("[data-portfolio-terminal]") as HTMLElement | null;
   const portfolio3DContainer = document.querySelector("[data-portfolio-3d-container]") as HTMLElement | null;
 
@@ -841,7 +841,7 @@ export function morphPortfolioToProjects(onComplete?: () => void) {
     return gsap.timeline();
   }
 
-  const config = getExpandedProjectsConfig();
+  const config = getExpandedProjectsConfig(projectIndex);
   const tl = gsap.timeline();
 
   if (onComplete) {

@@ -5,7 +5,10 @@ import {
   morphPortfolioToCta,
   morphPortfolioToProjects,
 } from "@/utils/animations/terminal-morph";
-import { getProjectsIntroSize } from "@/utils/terminal-sizes";
+import {
+  getProjectsIntroSize,
+  waitForStablePortfolioProjectMeasurement,
+} from "@/utils/terminal-sizes";
 import {
   typewriteIntroPanel,
   typewriteProjectPanel,
@@ -19,6 +22,7 @@ let introWheelHandlerRef: ((e: WheelEvent) => void) | null = null;
 let touchHandler: { start: (e: TouchEvent) => void; end: (e: TouchEvent) => void } | null = null;
 let introTouchHandlerRef: { start: (e: TouchEvent) => void; end: (e: TouchEvent) => void } | null = null;
 let isExpanded = false;
+let isStartingExpansion = false;
 let isPortfolioActive = false; // Track if portfolio section is currently active
 let currentSlideIndex = 0;
 let isAnimating = false;
@@ -62,6 +66,7 @@ function getPanelTransitionFrom(isForward: boolean) {
 if (typeof window !== "undefined") {
   window.addEventListener("portfolioReset", () => {
     isExpanded = false;
+    isStartingExpansion = false;
     currentSlideIndex = 0;
     isAnimating = false;
     wheelAccumulator = 0;
@@ -116,6 +121,7 @@ export function resetPortfolioState() {
     introTouchHandlerRef = null;
   }
   isExpanded = false;
+  isStartingExpansion = false;
   currentSlideIndex = 0;
   isAnimating = false;
   wheelAccumulator = 0;
@@ -184,6 +190,7 @@ export function initPortfolioScroll() {
   let startRequestHandlerRef: ((event: Event) => void) | null = null;
   let keyboardNavigateHandlerRef: ((event: Event) => void) | null = null;
   isExpanded = false;
+  isStartingExpansion = false;
   currentSlideIndex = 0;
   isAnimating = false;
   wheelAccumulator = 0;
@@ -212,7 +219,7 @@ export function initPortfolioScroll() {
       return;
     }
 
-    if (isExpanded) {
+    if (isExpanded || isStartingExpansion) {
       console.log("intro scroll: already expanded");
       return;
     }
@@ -287,7 +294,7 @@ export function initPortfolioScroll() {
       introTouchStart = null;
       return;
     }
-    if (isExpanded) {
+    if (isExpanded || isStartingExpansion) {
       console.log("intro touch END: already expanded");
       introTouchStart = null;
       return;
@@ -480,7 +487,7 @@ export function initPortfolioScroll() {
         morphPortfolioToCta();
       } else if (fromIndex === totalProjects) {
         // Coming back from CTA, morph terminal back to left
-        morphPortfolioToProjects();
+        morphPortfolioToProjects(targetIndex);
       }
 
       // Dispatch event
@@ -580,14 +587,23 @@ export function initPortfolioScroll() {
     };
 
     // Handle Start button click
-    const handleStartClick = () => {
-      if (isExpanded) return;
+    const handleStartClick = async () => {
+      if (isExpanded || isStartingExpansion) return;
+      isStartingExpansion = true;
+
+      const measuredHeight = await waitForStablePortfolioProjectMeasurement(0);
+      if (measuredHeight === null || measuredHeight <= 0) {
+        isStartingExpansion = false;
+        return;
+      }
+
       isExpanded = true;
+      isStartingExpansion = false;
       if (introPanel) {
         setPanelAccessibilityState(introPanel, false);
       }
 
-      morphPortfolioToExpanded(() => {
+      morphPortfolioToExpanded(0, () => {
         setupWheelNavigation();
 
         // Show first project panel
@@ -599,6 +615,7 @@ export function initPortfolioScroll() {
 
           gsap.to(firstProjectPanel, {
             opacity: 1,
+            y: 0,
             pointerEvents: "auto",
             scale: 1,
             duration: motionDuration(0.4),
@@ -728,6 +745,7 @@ export function initPortfolioScroll() {
       introTouchHandlerRef = null;
     }
     isExpanded = false;
+    isStartingExpansion = false;
     currentSlideIndex = 0;
     isAnimating = false;
     wheelAccumulator = 0;

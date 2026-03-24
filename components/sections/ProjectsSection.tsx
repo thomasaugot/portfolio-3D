@@ -9,32 +9,60 @@ import { useCanva } from "@/components/ui/Canva";
 import { Button } from "@/components/ui/Button";
 import { Check, Play } from "lucide-react";
 import ProjectPanel from "@/components/sections/ProjectPanel";
-import { getProjectsIntroSize } from "@/utils/terminal-sizes";
+import StageMeasurer from "@/components/ui/StageMeasurer";
+import {
+  getProjectsIntroSize,
+  setMeasuredPortfolioHeight,
+} from "@/utils/terminal-sizes";
 import {
   PORTFOLIO_PANEL_CTA_CLASS,
   PORTFOLIO_PANEL_FRAME_CLASS,
 } from "@/components/sections/portfolio-panel-styles";
 
-const INTRO_SIZE_FALLBACK = {
-  widthCss: "min(640px, 88vw)",
-  heightCss: "min(92vh, 75vh)",
+type IntroTerminalSize = {
+  widthCss: string;
+  heightCss: string;
 };
+
+const PORTFOLIO_MEASURER_FRAME_CLASS =
+  "relative flex flex-col justify-start p-4 md:p-6 font-mono text-sm leading-relaxed overflow-visible bg-bg-surface";
 
 export default function ProjectsSection() {
   const { t } = useTranslation();
   const { projects, goToContact } = useCanva();
   const sceneRef = useThreeScene(initPortfolioScene, "portfolio");
-  const [introSize, setIntroSize] = useState(INTRO_SIZE_FALLBACK);
+  const [introSize, setIntroSize] = useState<IntroTerminalSize | null>(null);
   const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
+  const [measurerTarget, setMeasurerTarget] = useState<HTMLElement | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
 
   const touchStartRef = useRef<{ y: number; time: number } | null>(null);
   const wheelAccRef = useRef(0);
   const wheelTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  useEffect(() => {
+  const syncIntroSize = useCallback(() => {
     const size = getProjectsIntroSize();
+    if (size.height <= 0) return;
     setIntroSize({ widthCss: size.widthCss, heightCss: size.heightCss });
+  }, []);
+
+  useEffect(() => {
+    syncIntroSize();
+
+    if (typeof document !== "undefined" && "fonts" in document) {
+      void (document as Document & { fonts?: FontFaceSet }).fonts?.ready.then(syncIntroSize);
+    }
+
+    window.addEventListener("resize", syncIntroSize);
+
+    return () => {
+      window.removeEventListener("resize", syncIntroSize);
+    };
+  }, [syncIntroSize]);
+
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    setMeasurerTarget(document.body);
   }, []);
 
   useEffect(() => {
@@ -103,26 +131,185 @@ export default function ProjectsSection() {
     }
   }, [triggerStart]);
 
+  const portfolioMeasureWidth = "clamp(280px, 88vw, 640px)";
+  const portfolioCtaMeasureWidth = "clamp(360px, 46vw, 600px)";
+  const portfolioProjectMeasureWidth = "clamp(340px, 42vw, 680px)";
+  const handlePortfolioMeasure = useCallback((key: string, height: number) => {
+    const changed = setMeasuredPortfolioHeight(key, height);
+    if (changed && key === "intro") {
+      syncIntroSize();
+    }
+  }, [syncIntroSize]);
+
   return (
-    <section
-      ref={sectionRef}
-      data-canvas-projects
-      data-portfolio-section
-      aria-labelledby="projects-stage-title"
-      className="fixed inset-0 bg-transparent overflow-hidden"
-      style={{ visibility: "hidden", opacity: 0 }}
-    >
-      <div
-        data-portfolio-terminal
-        className="absolute flex flex-col bg-bg-surface/96 backdrop-blur-sm rounded-xl border border-border shadow-2xl overflow-hidden z-50 pointer-events-none [html[data-theme='light']_&]:border-[#c8b99f] [html[data-theme='light']_&]:bg-[#f8f3e9]/96 [html[data-theme='light']_&]:shadow-[0_28px_80px_rgba(16,185,129,0.08),0_18px_40px_rgba(149,115,37,0.12)]"
-        style={{
-          width: introSize.widthCss,
-          height: introSize.heightCss,
-          left: "50%",
-          top: "50%",
-          transform: "translate(-50%, -50%)",
-        }}
+    <>
+      {measurerTarget &&
+        createPortal(
+          <>
+            <StageMeasurer
+              measureKey="intro"
+              widthCss={portfolioMeasureWidth}
+              onMeasureCustom={handlePortfolioMeasure}
+            >
+        <div
+          className="relative flex flex-col bg-bg-surface/96 backdrop-blur-sm rounded-xl border border-border shadow-2xl overflow-hidden [html[data-theme='light']_&]:border-[#c8b99f] [html[data-theme='light']_&]:bg-[#f8f3e9]/96 [html[data-theme='light']_&]:shadow-[0_28px_80px_rgba(16,185,129,0.08),0_18px_40px_rgba(149,115,37,0.12)]"
+        >
+          <div className="flex items-center gap-2 px-4 py-3 bg-bg-panel border-b border-border flex-shrink-0 [html[data-theme='light']_&]:bg-[linear-gradient(90deg,rgba(16,185,129,0.07),rgba(245,158,11,0.06))] [html[data-theme='light']_&]:border-b-[#cdbda3]">
+            <div className="flex gap-2">
+              <div className="w-3 h-3 rounded-full bg-[#ff5f56]" />
+              <div className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
+              <div className="w-3 h-3 rounded-full bg-[#27ca40]" />
+            </div>
+            <div className="ml-4 text-xs text-muted font-mono text-nowrap [html[data-theme='light']_&]:text-[#756a5b]">
+              {t("projects.terminal.header") || "tom@portfolio ~ % ./projects.sh"}
+            </div>
+          </div>
+          <div className={PORTFOLIO_MEASURER_FRAME_CLASS}>
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-primary">❯</span>
+              <span className="text-primary">./projects.sh</span>
+            </div>
+            <div className="text-text pl-4 mb-2">
+              {t("projects.terminal.intro_line1") || "Initializing project showcase..."}
+            </div>
+            <div className="text-text pl-4 flex items-center gap-2 mb-3">
+              <Check className="w-4 h-4 text-primary" />
+              <span>{t("projects.terminal.project_count") || "5 featured projects loaded"}</span>
+            </div>
+            <div className="flex items-center gap-2 mb-2 mt-2">
+              <span className="text-primary">❯</span>
+              <span className="text-primary">cat README.md</span>
+            </div>
+            <div className="block text-text/82 pl-4 mb-2">
+              {t("projects.terminal.intro_line2") || "This is a curated selection of my best work."}
+            </div>
+            <div className="block text-text/82 pl-4 mb-4">
+              {t("projects.terminal.intro_line3") || "Each project demonstrates my skills in modern web development, from interactive 3D experiences to full-stack platforms."}
+            </div>
+            <div className={`${PORTFOLIO_PANEL_CTA_CLASS} mt-auto opacity-100`}>
+              <div className="flex items-center gap-2 text-text mb-3">
+                <span className="text-primary">❯</span>
+                <span>{t("projects.terminal.scroll_cta") || "Ready to explore?"}</span>
+              </div>
+              <Button type="button" variant="orange" size="md">
+                <Play className="w-4 h-4" />
+                {t("projects.start_exploring") || "Start exploring"}
+              </Button>
+            </div>
+          </div>
+        </div>
+            </StageMeasurer>
+
+      <StageMeasurer
+        measureKey="cta"
+        widthCss={portfolioCtaMeasureWidth}
+        onMeasureCustom={handlePortfolioMeasure}
       >
+        <div
+          className="relative flex flex-col bg-bg-surface/96 backdrop-blur-sm rounded-xl border border-border shadow-2xl overflow-hidden [html[data-theme='light']_&]:border-[#c8b99f] [html[data-theme='light']_&]:bg-[#f8f3e9]/96 [html[data-theme='light']_&]:shadow-[0_28px_80px_rgba(16,185,129,0.08),0_18px_40px_rgba(149,115,37,0.12)]"
+        >
+          <div className="flex items-center gap-2 px-4 py-3 bg-bg-panel border-b border-border flex-shrink-0 [html[data-theme='light']_&]:bg-[linear-gradient(90deg,rgba(16,185,129,0.07),rgba(245,158,11,0.06))] [html[data-theme='light']_&]:border-b-[#cdbda3]">
+            <div className="flex gap-2">
+              <div className="w-3 h-3 rounded-full bg-[#ff5f56]" />
+              <div className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
+              <div className="w-3 h-3 rounded-full bg-[#27ca40]" />
+            </div>
+            <div className="ml-4 text-xs text-muted font-mono text-nowrap [html[data-theme='light']_&]:text-[#756a5b]">
+              {t("projects.terminal.header") || "tom@portfolio ~ % ./projects.sh"}
+            </div>
+          </div>
+          <div className={PORTFOLIO_MEASURER_FRAME_CLASS}>
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-primary">❯</span>
+              <span className="text-primary">./wrap-up.sh</span>
+            </div>
+            <div className="text-text pl-4 flex items-center gap-2 mb-3">
+              <Check className="w-4 h-4 text-primary" />
+              <span>{t("projects.cta_complete") || "All projects explored!"}</span>
+            </div>
+            <div className="flex items-center gap-2 mb-2 mt-2">
+              <span className="text-primary">❯</span>
+              <span className="text-primary">echo $NEXT_STEP</span>
+            </div>
+            <h3 className="pl-4 text-xl md:text-2xl font-bold text-text leading-tight mb-4">
+              {t("projects.cta_title") || "Let's build something together"}
+            </h3>
+            <div className="text-text/82 pl-4 mb-4">
+              {t("projects.cta_description") || "I'm always excited to take on new challenges and bring ideas to life."}
+            </div>
+            <div className={`${PORTFOLIO_PANEL_CTA_CLASS} mt-auto opacity-100`}>
+              <div className="flex items-center gap-2 text-text mb-3">
+                <span className="text-primary">❯</span>
+                <span>{t("projects.cta_prompt") || "Ready to start a conversation?"}</span>
+              </div>
+              <Button type="button" variant="orange" size="md">
+                {t("projects.cta_contact") || "Get in touch"}
+              </Button>
+            </div>
+          </div>
+        </div>
+      </StageMeasurer>
+
+      {projects.map((project, index) => (
+        <StageMeasurer
+          key={`project-measure-${project.id}`}
+          measureKey={`project-${index}`}
+          widthCss={portfolioProjectMeasureWidth}
+          onMeasureCustom={handlePortfolioMeasure}
+        >
+          <div
+            className="relative flex flex-col bg-bg-surface/96 backdrop-blur-sm rounded-xl border border-border shadow-2xl overflow-hidden [html[data-theme='light']_&]:border-[#c8b99f] [html[data-theme='light']_&]:bg-[#f8f3e9]/96 [html[data-theme='light']_&]:shadow-[0_28px_80px_rgba(16,185,129,0.08),0_18px_40px_rgba(149,115,37,0.12)]"
+          >
+            <div className="flex items-center gap-2 px-4 py-3 bg-bg-panel border-b border-border flex-shrink-0 [html[data-theme='light']_&]:bg-[linear-gradient(90deg,rgba(16,185,129,0.07),rgba(245,158,11,0.06))] [html[data-theme='light']_&]:border-b-[#cdbda3]">
+              <div className="flex gap-2">
+                <div className="w-3 h-3 rounded-full bg-[#ff5f56]" />
+                <div className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
+                <div className="w-3 h-3 rounded-full bg-[#27ca40]" />
+              </div>
+              <div className="ml-4 text-xs text-muted font-mono text-nowrap [html[data-theme='light']_&]:text-[#756a5b]">
+                {t("projects.terminal.header") || "tom@portfolio ~ % ./projects.sh"}
+              </div>
+              <div className="ml-auto flex items-center gap-3">
+                <span className="text-lg font-bold text-primary font-mono">
+                  {(index + 1).toString().padStart(2, "0")}
+                </span>
+                <span className="text-muted">/</span>
+                <span className="text-sm text-muted font-mono">
+                  {projects.length.toString().padStart(2, "0")}
+                </span>
+                <span className="text-xs text-muted font-mono hidden md:block">
+                  {project.client}
+                </span>
+              </div>
+            </div>
+            <ProjectPanel project={project} index={index} t={t} measure={true} />
+          </div>
+        </StageMeasurer>
+      ))}
+          </>,
+          measurerTarget
+        )}
+
+      <section
+        ref={sectionRef}
+        data-canvas-projects
+        data-portfolio-section
+        aria-labelledby="projects-stage-title"
+        className="fixed inset-0 bg-transparent overflow-hidden"
+        style={{ visibility: "hidden", opacity: 0 }}
+      >
+        <div
+          data-portfolio-terminal
+          className="absolute flex flex-col bg-bg-surface/96 backdrop-blur-sm rounded-xl border border-border shadow-2xl overflow-hidden z-50 pointer-events-none [html[data-theme='light']_&]:border-[#c8b99f] [html[data-theme='light']_&]:bg-[#f8f3e9]/96 [html[data-theme='light']_&]:shadow-[0_28px_80px_rgba(16,185,129,0.08),0_18px_40px_rgba(149,115,37,0.12)]"
+          style={{
+            width: introSize?.widthCss,
+            height: introSize?.heightCss,
+            left: "50%",
+            top: "50%",
+            transform: "translate(-50%, -50%)",
+            visibility: introSize ? "visible" : "hidden",
+          }}
+        >
         <div
           data-portfolio-terminal-header
           className="flex items-center gap-2 px-4 py-3 bg-bg-panel border-b border-border flex-shrink-0 [html[data-theme='light']_&]:bg-[linear-gradient(90deg,rgba(16,185,129,0.07),rgba(245,158,11,0.06))] [html[data-theme='light']_&]:border-b-[#cdbda3]"
@@ -301,9 +488,9 @@ export default function ProjectsSection() {
             </div>
           </div>
         </div>
-      </div>
+        </div>
 
-      <div
+        <div
         data-portfolio-3d-container
         data-3d-container="portfolio-hex"
         ref={sceneRef}
@@ -312,15 +499,15 @@ export default function ProjectsSection() {
         style={{ zIndex: 55 }}
       />
 
-      {portalTarget &&
-        createPortal(
-          projects.map((project, index) => (
-            <ProjectPanel key={project.id} project={project} index={index} t={t} />
-          )),
-          portalTarget
-        )}
+        {portalTarget &&
+          createPortal(
+            projects.map((project, index) => (
+              <ProjectPanel key={project.id} project={project} index={index} t={t} />
+            )),
+            portalTarget
+          )}
 
-      <div
+        <div
         data-scroll-indicator
         aria-hidden="true"
         className="hidden lg:flex fixed bottom-8 left-1/2 -translate-x-1/2 flex-col items-center gap-2 opacity-0 pointer-events-none z-20"
@@ -331,7 +518,8 @@ export default function ProjectsSection() {
         <div className="w-6 h-10 rounded-full border-2 border-text/45 flex items-start justify-center p-1">
           <div className="w-1.5 h-3 bg-primary rounded-full animate-bounce" />
         </div>
-      </div>
-    </section>
+        </div>
+      </section>
+    </>
   );
 }

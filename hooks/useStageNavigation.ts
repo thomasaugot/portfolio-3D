@@ -9,7 +9,10 @@ import {
   morphToHeroFromAny,
 } from "@/utils/animations/terminal-morph";
 import { getStageFromPathname, getStagePath } from "@/utils/stage-paths";
-import { waitForStableStageMeasurement } from "@/utils/terminal-sizes";
+import {
+  waitForStablePortfolioMeasurement,
+  waitForStableStageMeasurement,
+} from "@/utils/terminal-sizes";
 
 export type Stage = "hero" | "about" | "projects" | "contact";
 export type PromptStage = "more" | "work" | "contact" | null;
@@ -38,7 +41,9 @@ export function useStageNavigation({ t }: UseStageNavigationOptions) {
           : undefined;
 
   const waitForStageMeasurement = useCallback((targetStage: Stage) => {
-    if (targetStage === "projects") return Promise.resolve();
+    if (targetStage === "projects") {
+      return waitForStablePortfolioMeasurement("intro").then(() => undefined);
+    }
     return waitForStableStageMeasurement(targetStage).then(() => undefined);
   }, []);
 
