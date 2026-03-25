@@ -382,7 +382,7 @@ export default function Navbar() {
 
           {/* Main content */}
           <div className="flex-1 flex flex-col justify-center px-8 md:px-0 md:items-center relative z-10 pointer-events-auto">
-            <div className="w-full md:max-w-sm">
+            <div className="w-full md:max-w-sm space-y-3">
             {mobileNavItems.map((item, i) => {
               const isActive = stage === item.stage;
               return (

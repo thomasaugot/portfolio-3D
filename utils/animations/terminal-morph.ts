@@ -199,6 +199,7 @@ export const getTerminalConfig = (state: TerminalState) => {
         widthCss: size.widthCss,
         heightCss: size.heightCss,
         left: size.left,
+        top: (size as any).top || "50%",
       };
     }
   }

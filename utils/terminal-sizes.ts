@@ -561,6 +561,7 @@ export const getContactTerminalSize = () => {
       widthCss: MOBILE_TERMINAL_WIDTH_CSS,
       heightCss: `${height}px`,
       left: "50%",
+      top: "calc(50% + 32px)",
     };
   }
 
