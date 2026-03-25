@@ -172,7 +172,7 @@ export const projects: Project[] = [
         "/assets/images/portfolio/energia-solar-canarias/mobile/mobile-5.png",
         "/assets/images/portfolio/energia-solar-canarias/mobile/mobile-6.png",
       ],
-      link: "https://app-energiasolarcanarias.com/",
+      link: "https://app.energiasolarcanarias.com/",
     },
   },
   {

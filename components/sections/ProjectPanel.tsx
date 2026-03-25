@@ -207,7 +207,7 @@ export default function ProjectPanel({
             href={project.media.link}
             target="_blank"
             rel="noopener noreferrer"
-            className="pl-4 text-white hover:text-white/70 transition-colors inline-flex items-center gap-2 underline underline-offset-2 text-sm"
+            className="pl-4 text-text hover:text-text/70 [html[data-theme='light']_&]:text-[#23201a] [html[data-theme='light']_&]:hover:text-[#23201a]/70 transition-colors inline-flex items-center gap-2 underline underline-offset-2 text-sm"
           >
             <span
               data-typewriter={measure ? undefined : true}

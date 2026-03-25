@@ -82,65 +82,65 @@ const loadModel = async (
     let laptopGroup: THREE.Object3D | null = null;
     let iphoneGroup: THREE.Object3D | null = null;
 
+    const skipMeshes = new Set(["screen_screen_0", "empty001", "tppzcqmnlkchipp"]);
+
     model.traverse((child: any) => {
-      if (child.isMesh) {
-        const meshName = child.name.toLowerCase();
+      if (!child.isMesh) return;
+      const meshName = child.name.toLowerCase();
 
-        if (meshName === "screen_screen_0" && laptopTexture) {
-          const geometry = child.geometry;
-          const uvAttribute = geometry.attributes.uv;
-
-          if (uvAttribute) {
-            const uvArray = uvAttribute.array;
-            for (let i = 0; i < uvArray.length; i += 2) {
-              const u = uvArray[i];
-              const v = uvArray[i + 1];
-              uvArray[i] = (u - 0.5) * 1.5 + 0.6;
-              uvArray[i + 1] = v;
-            }
-            uvAttribute.needsUpdate = true;
+      if (meshName === "screen_screen_0" && laptopTexture) {
+        const geometry = child.geometry;
+        const uvAttribute = geometry.attributes.uv;
+        if (uvAttribute) {
+          const uvArray = uvAttribute.array;
+          for (let i = 0; i < uvArray.length; i += 2) {
+            uvArray[i] = (uvArray[i] - 0.5) * 1.5 + 0.6;
           }
+          uvAttribute.needsUpdate = true;
+        }
+        laptopTexture.repeat.set(1, 1);
+        laptopTexture.offset.set(0, 0);
+        laptopTexture.wrapS = THREE.ClampToEdgeWrapping;
+        laptopTexture.wrapT = THREE.ClampToEdgeWrapping;
+        child.material = new THREE.MeshBasicMaterial({ map: laptopTexture, side: THREE.DoubleSide, toneMapped: false });
+        child.material.needsUpdate = true;
 
-          laptopTexture.repeat.set(1, 1);
-          laptopTexture.offset.set(0, 0);
-          laptopTexture.wrapS = THREE.ClampToEdgeWrapping;
-          laptopTexture.wrapT = THREE.ClampToEdgeWrapping;
+        let cur = child.parent;
+        while (cur && !laptopGroup) { if (cur.name === "Modern_Slim_Laptop") laptopGroup = cur; cur = cur.parent; }
+        return;
+      }
 
-          child.material = new THREE.MeshBasicMaterial({
-            map: laptopTexture,
-            side: THREE.DoubleSide,
+      if (meshName === "tppzcqmnlkchipp" && iphoneTexture) {
+        child.material = new THREE.MeshBasicMaterial({ map: iphoneTexture, side: THREE.DoubleSide });
+        child.material.needsUpdate = true;
+        let cur = child.parent;
+        while (cur && !iphoneGroup) { if (cur.name === "CfdQrXYnljwmMLk") iphoneGroup = cur; cur = cur.parent; }
+        return;
+      }
+
+      // Apply hero colors only to laptop meshes (not iPhone)
+      const isInLaptopGroup = (obj: any): boolean => {
+        let cur = obj.parent;
+        while (cur) { if (cur.name === "Modern_Slim_Laptop") return true; cur = cur.parent; }
+        return false;
+      };
+      if (!skipMeshes.has(meshName) && isInLaptopGroup(child)) {
+        if (meshName.includes("keyboard")) {
+          child.material = new THREE.MeshStandardMaterial({
+            color: 0x3a3a3a,
+            emissive: new THREE.Color(0x141414),
+            emissiveIntensity: 0.12,
+            metalness: 0.25,
+            roughness: 0.82,
           });
-          child.material.needsUpdate = true;
-
-          let current = child.parent;
-          while (current && !laptopGroup) {
-            if (current.name === "Modern_Slim_Laptop") {
-              laptopGroup = current;
-              break;
-            }
-            current = current.parent;
-          }
-        } else if (meshName === "tppzcqmnlkchipp" && iphoneTexture) {
-          child.material = new THREE.MeshBasicMaterial({
-            map: iphoneTexture,
-            side: THREE.DoubleSide,
+        } else {
+          child.material = new THREE.MeshStandardMaterial({
+            color: isLightTheme ? 0x686764 : 0x5a5a5a,
+            emissive: new THREE.Color(isLightTheme ? 0x232321 : 0x2a2a2a),
+            emissiveIntensity: isLightTheme ? 0.08 : 0.3,
+            metalness: isLightTheme ? 0.56 : 0.7,
+            roughness: isLightTheme ? 0.5 : 0.4,
           });
-          child.material.needsUpdate = true;
-
-          let current = child.parent;
-          while (current && !iphoneGroup) {
-            if (current.name === "CfdQrXYnljwmMLk") {
-              iphoneGroup = current;
-              break;
-            }
-            current = current.parent;
-          }
-        } else if (child.material) {
-          child.material.emissive = new THREE.Color(
-            isLightTheme ? 0x404040 : 0x2a2a2a
-          );
-          child.material.emissiveIntensity = isLightTheme ? 0.2 : 0.3;
-          child.material.needsUpdate = true;
         }
       }
     });
@@ -221,6 +221,9 @@ export async function initPortfolioScene() {
   const maxPixelRatio = config.isMobile ? 1.5 : 2;
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, maxPixelRatio));
   renderer.setClearColor(0x000000, 0);
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.3;
+
 
   if (config.isMobile) {
     renderer.shadowMap.enabled = false;
@@ -228,32 +231,38 @@ export async function initPortfolioScene() {
 
   hexContainer.appendChild(renderer.domElement);
 
-  const ambientLight = new THREE.AmbientLight(
-    0xffffff,
-    isLightTheme ? 1.35 : 0.9
-  );
+  // Exact copy of hero setupLighting
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
   scene.add(ambientLight);
 
-  const dirLight = new THREE.DirectionalLight(
-    isLightTheme ? 0xf7f0df : 0xffffff,
-    isLightTheme ? 1.15 : 0.6
-  );
-  dirLight.position.set(200, 500, 300);
-  scene.add(dirLight);
+  const overheadLight = new THREE.DirectionalLight(0xf5f1e8, 0.55);
+  overheadLight.position.set(0, 520, 120);
+  scene.add(overheadLight);
 
-  if (isLightTheme) {
-    const fillLight = new THREE.DirectionalLight(0xffffff, 0.6);
-    fillLight.position.set(-200, 300, -300);
-    scene.add(fillLight);
+  const keyLight = new THREE.DirectionalLight(0xffffff, 1.4);
+  keyLight.position.set(400, 400, 200);
+  scene.add(keyLight);
 
-    const overheadLight = new THREE.DirectionalLight(0xfff7ea, 0.75);
-    overheadLight.position.set(0, 520, 160);
-    scene.add(overheadLight);
+  const fillLight = new THREE.DirectionalLight(0xffffff, 0.4);
+  fillLight.position.set(-300, 200, 100);
+  scene.add(fillLight);
 
-    const frontLight = new THREE.DirectionalLight(0xffffff, 0.38);
-    frontLight.position.set(0, 120, 520);
-    scene.add(frontLight);
-  }
+  const rimLight = new THREE.DirectionalLight(0xfff5e6, 0.3);
+  rimLight.position.set(100, 100, -400);
+  scene.add(rimLight);
+
+  const spotLight = new THREE.SpotLight(0xffffff, 2.0, 1000, Math.PI / 5, 0.3);
+  spotLight.position.set(350, 350, 400);
+  spotLight.target.position.set(0, -25, 0);
+  scene.add(spotLight);
+  scene.add(spotLight.target);
+
+  // Strong spotlight from directly above onto the keyboard
+  const topSpot = new THREE.SpotLight(0xfff8ee, 15, 1000, Math.PI / 8, 0.2, 1.0);
+  topSpot.position.set(-20, 500, 0);
+  topSpot.target.position.set(-20, -25, 0);
+  scene.add(topSpot);
+  scene.add(topSpot.target);
 
   const hexFloor = null;
 
