@@ -801,6 +801,205 @@ button {
   animation: closePulse 2s ease-in-out infinite;
 }
 
+/* ── Contact social links ─────────────────────────────────────────── */
+.contact-social-link {
+  position: relative;
+  overflow: visible;
+  transform-style: preserve-3d;
+  perspective: 800px;
+  transition: background-color .22s, transform .32s cubic-bezier(.22,1,.36,1), box-shadow .32s cubic-bezier(.22,1,.36,1), border-color .32s;
+}
+.contact-social-link:hover,
+.contact-social-link:focus-visible {
+  background: color-mix(in srgb, var(--social-accent-soft, rgba(16,185,129,.18)) 82%, transparent);
+  box-shadow: 0 18px 40px color-mix(in srgb, var(--social-accent-soft, rgba(16,185,129,.18)) 85%, transparent), inset 0 1px 0 rgba(255,255,255,.06);
+  transform: translate3d(10px, 0, 0);
+}
+
+.contact-social-logo {
+  position: relative;
+  width: 3.4rem;
+  height: 3.4rem;
+  flex: none;
+  transform-style: preserve-3d;
+  transition: transform .48s cubic-bezier(.16,1,.3,1);
+}
+.contact-social-link:hover .contact-social-logo,
+.contact-social-link:focus-visible .contact-social-logo {
+  transform: translate3d(0, 0, 40px);
+}
+
+.contact-social-logo__light {
+  position: absolute;
+  top: -.7rem; bottom: -.7rem; left: -.7rem; right: -.7rem;
+  z-index: 0;
+  border-radius: 1rem;
+  background:
+    radial-gradient(circle at 30% 30%, color-mix(in srgb, var(--social-accent) 36%, white) 0%, transparent 38%),
+    radial-gradient(circle at 72% 75%, color-mix(in srgb, var(--social-accent-soft) 100%, transparent) 0%, transparent 65%);
+  opacity: 0;
+  filter: blur(18px);
+  transform: translate3d(-6px, 2px, -26px) scale(.82);
+  transition: opacity .26s, transform .48s cubic-bezier(.16,1,.3,1);
+}
+.contact-social-link:hover .contact-social-logo__light,
+.contact-social-link:focus-visible .contact-social-logo__light {
+  opacity: .9;
+  transform: translate3d(0, -2px, -16px) scale(1.05);
+}
+
+.contact-social-logo__face,
+.contact-social-logo__depth {
+  position: absolute;
+  top: 0; bottom: 0; left: 0; right: 0;
+  border-radius: .95rem;
+  clip-path: polygon(15% 0, 85% 0, 100% 15%, 100% 85%, 85% 100%, 15% 100%, 0 85%, 0 15%);
+}
+.contact-social-logo__face {
+  z-index: 5;
+  border: 1px solid color-mix(in srgb, var(--theme-primary) 26%, var(--theme-border));
+  background: var(--theme-bg-surface);
+  box-shadow: inset 0 1px rgba(255,255,255,.1), 0 12px 24px rgba(0,0,0,.24);
+  transition: transform .48s cubic-bezier(.16,1,.3,1), box-shadow .32s, border-color .32s;
+}
+.contact-social-logo__depth {
+  z-index: 1;
+  border: 1px solid color-mix(in srgb, var(--theme-primary) 18%, transparent);
+  background: var(--theme-bg-surface);
+  opacity: .55;
+  transition: transform .48s cubic-bezier(.16,1,.3,1), opacity .26s, box-shadow .32s;
+}
+.contact-social-logo__depth--1 { transform: translate3d(0, 0, -6px); }
+.contact-social-logo__depth--2 { transform: translate3d(0, 0, -12px); }
+.contact-social-logo__depth--3 { transform: translate3d(0, 0, -18px); }
+.contact-social-logo__depth--4 { transform: translate3d(0, 0, -24px); }
+
+.contact-social-logo__mark--face {
+  position: absolute;
+  top: 0; bottom: 0; left: 0; right: 0;
+  border-radius: inherit;
+  background-image: var(--social-logo);
+  background-size: 55%;
+  background-repeat: no-repeat;
+  background-position: center;
+  filter: brightness(0) invert(1);
+  transition: transform .48s cubic-bezier(.16,1,.3,1), filter .32s;
+}
+
+.contact-social-link:hover .contact-social-logo__face,
+.contact-social-link:focus-visible .contact-social-logo__face {
+  transform: translate3d(0, -2px, 80px);
+  border-color: color-mix(in srgb, var(--social-accent, var(--theme-primary)) 40%, var(--theme-border));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.22), 0 20px 40px rgba(0,0,0,.4), 0 0 30px color-mix(in srgb, var(--social-accent) 40%, transparent);
+}
+.contact-social-link:hover .contact-social-logo__depth,
+.contact-social-link:focus-visible .contact-social-logo__depth {
+  opacity: 1;
+  box-shadow: 0 0 16px color-mix(in srgb, var(--social-accent) 25%, transparent);
+}
+.contact-social-link:hover .contact-social-logo__depth--1,
+.contact-social-link:focus-visible .contact-social-logo__depth--1 { transform: translate3d(0, -2px, 46px); opacity: 0.85; }
+.contact-social-link:hover .contact-social-logo__depth--2,
+.contact-social-link:focus-visible .contact-social-logo__depth--2 { transform: translate3d(0, -1px, 12px); opacity: 0.6; }
+.contact-social-link:hover .contact-social-logo__depth--3,
+.contact-social-link:focus-visible .contact-social-logo__depth--3 { transform: translate3d(0, 0, -22px); opacity: 0.38; }
+.contact-social-link:hover .contact-social-logo__depth--4,
+.contact-social-link:focus-visible .contact-social-logo__depth--4 { transform: translate3d(0, 0, -56px); opacity: 0.2; }
+
+.contact-social-handle {
+  transition: transform .32s cubic-bezier(.22,1,.36,1), color .22s;
+}
+.contact-social-link:hover .contact-social-handle,
+.contact-social-link:focus-visible .contact-social-handle {
+  transform: translateX(4px);
+  color: color-mix(in srgb, var(--social-accent, var(--theme-primary)) 80%, var(--theme-text));
+}
+.contact-social-arrow {
+  opacity: .5;
+  transition: transform .32s cubic-bezier(.22,1,.36,1), color .22s, opacity .22s;
+}
+.contact-social-link:hover .contact-social-arrow,
+.contact-social-link:focus-visible .contact-social-arrow {
+  transform: translate(3px, -3px);
+  color: var(--social-accent, var(--theme-primary));
+  opacity: 1;
+}
+
+html[data-motion-preference="reduced"] .contact-social-link,
+html[data-motion-preference="reduced"] .contact-social-logo,
+html[data-motion-preference="reduced"] .contact-social-logo__face,
+html[data-motion-preference="reduced"] .contact-social-logo__depth,
+html[data-motion-preference="reduced"] .contact-social-handle,
+html[data-motion-preference="reduced"] .contact-social-arrow { transition-duration: .14s; }
+html[data-motion-preference="reduced"] .contact-social-link:hover,
+html[data-motion-preference="reduced"] .contact-social-link:focus-visible { transform: none; }
+html[data-motion-preference="reduced"] .contact-social-link:hover .contact-social-logo__face,
+html[data-motion-preference="reduced"] .contact-social-link:hover .contact-social-logo__depth,
+html[data-motion-preference="reduced"] .contact-social-link:focus-visible .contact-social-logo__face,
+html[data-motion-preference="reduced"] .contact-social-link:focus-visible .contact-social-logo__depth { transform: none; }
+
+/* ── About portrait card ─────────────────────────────────────────── */
+.about-portrait-card {
+  position: relative;
+  transform-style: preserve-3d;
+  width: 240px;
+  height: 360px;
+}
+@media (min-width: 1280px) {
+  .about-portrait-card { width: 320px; height: 480px; }
+}
+
+.about-portrait-frame {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: 2rem;
+}
+.about-portrait-frame--outer {
+  inset: 1.2rem 0.4rem 0.8rem;
+  border: 1px solid color-mix(in srgb, var(--theme-secondary) 22%, transparent);
+  transform: translate3d(0, 0, -28px);
+}
+.about-portrait-frame--inner {
+  inset: 0.4rem;
+  border: 1px solid color-mix(in srgb, var(--theme-primary) 26%, transparent);
+  transform: translate3d(0, 0, -10px);
+}
+.about-portrait-frame--echo {
+  inset: 2.2rem 2rem 1.8rem -0.8rem;
+  border: 1px dashed color-mix(in srgb, var(--theme-primary) 28%, transparent);
+  border-radius: 2.2rem;
+  transform: translate3d(0, 0, -48px) rotate(-4deg);
+}
+
+.about-portrait-card__glow {
+  position: absolute;
+  inset: -0.7rem;
+  background:
+    radial-gradient(circle at 30% 30%, color-mix(in srgb, var(--theme-primary) 30%, transparent) 0%, transparent 40%),
+    radial-gradient(circle at 72% 75%, color-mix(in srgb, var(--theme-secondary) 18%, transparent) 0%, transparent 60%);
+  opacity: 0.6;
+  filter: blur(18px);
+  transform: translate(-4px, 2px);
+  pointer-events: none;
+}
+
+.about-portrait-card__face {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+}
+.about-portrait-card__glass {
+  position: absolute;
+  inset: -4px;
+  border-radius: 2rem;
+  background: color-mix(in srgb, var(--theme-bg-surface) 55%, transparent);
+  border: 1px solid color-mix(in srgb, var(--theme-primary) 18%, transparent);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.07), 0 8px 32px rgba(0,0,0,0.15);
+}
+.about-portrait-card__image { background: transparent !important; }
+
+
 /* Mobile: ensure primary touch targets are large enough */
 @media (max-width: 767px) {
   nav button,

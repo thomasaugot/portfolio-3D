@@ -17,10 +17,10 @@ import {
   getProjectsIntroSize,
   setMeasuredPortfolioHeight,
 } from "@/utils/terminal-sizes";
-import {
-  PORTFOLIO_PANEL_CTA_CLASS,
-  PORTFOLIO_PANEL_FRAME_CLASS,
-} from "@/components/sections/portfolio-panel-styles";
+const PORTFOLIO_PANEL_FRAME_CLASS =
+  "absolute inset-0 flex flex-col justify-start p-4 pb-6 md:p-6 md:pb-8 font-mono text-sm leading-relaxed overflow-y-auto overflow-x-hidden overscroll-contain touch-pan-y [scrollbar-gutter:stable] [-webkit-overflow-scrolling:touch] no-scrollbar";
+const PORTFOLIO_PANEL_CTA_CLASS =
+  "mt-auto pt-3 pb-1 md:pb-0 border-t border-border opacity-0 bg-bg-surface shrink-0";
 
 
 type IntroTerminalSize = {
@@ -182,17 +182,9 @@ export default function ProjectsSection() {
 
   const handleWheel = useCallback((e: React.WheelEvent) => {
     if (e.deltaY <= 0) return;
-    wheelAccRef.current += e.deltaY;
-    if (wheelTimeoutRef.current) clearTimeout(wheelTimeoutRef.current);
-    wheelTimeoutRef.current = setTimeout(() => {
-      wheelAccRef.current = 0;
-    }, 300);
-    if (wheelAccRef.current >= 50) {
-      wheelAccRef.current = 0;
-      if (wheelTimeoutRef.current) clearTimeout(wheelTimeoutRef.current);
-      triggerStart();
-    }
-  }, [triggerStart]);
+    if (Math.abs(e.deltaY) < 5) return;
+    activateStart();
+  }, [activateStart]);
 
   const useCompactPortfolioLayout = viewportConfig.isTablet || viewportConfig.isSmallDesktop;
   const useCompactPortfolioContent = viewportConfig.isMobile;

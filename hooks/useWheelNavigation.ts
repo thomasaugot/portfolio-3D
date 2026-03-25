@@ -24,103 +24,48 @@ export function useWheelNavigation({
   goToContact,
   clearPromptStage,
 }: UseWheelNavigationOptions) {
-  const scrollAccumulatorRef = useRef(0);
   const lastStepRef = useRef(0);
-  const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const pendingDirectionRef = useRef(0);
 
   useEffect(() => {
     const onWheel = (event: WheelEvent) => {
-      // Don't handle scroll during morphing transitions
       if (isMorphing) return;
-
-      // Projects section has its own scroll handling
       if (stage === "projects") return;
 
-      // If scrolling inside a scrollable terminal body, let it scroll instead
-      const terminalBody = document.querySelector("[data-terminal-body]") as HTMLElement | null;
-      if (terminalBody && terminalBody.contains(event.target as Node)) {
-        const canScrollUp = terminalBody.scrollTop > 0;
-        const canScrollDown =
-          terminalBody.scrollHeight - terminalBody.scrollTop - terminalBody.clientHeight > 1;
-        if ((event.deltaY < 0 && canScrollUp) || (event.deltaY > 0 && canScrollDown)) return;
+      if (Math.abs(event.deltaY) < 5) return;
+
+      const now = performance.now();
+      if (now - lastStepRef.current < 800) return;
+      lastStepRef.current = now;
+
+      const direction = event.deltaY > 0 ? 1 : -1;
+
+      if (stage === "about") {
+        const aboutMobilePage = document.documentElement.dataset.aboutMobilePage;
+        if (direction === 1 && aboutMobilePage === "0") {
+          clearPromptStage();
+          window.dispatchEvent(new CustomEvent("aboutMobileAdvance"));
+          return;
+        }
+        if (direction === -1 && aboutMobilePage === "1") {
+          clearPromptStage();
+          window.dispatchEvent(new CustomEvent("aboutMobileBack"));
+          return;
+        }
       }
 
-      const delta = event.deltaY;
-      if (Math.abs(delta) < 18) return;
+      const currentIndex = SECTIONS.indexOf(stage);
+      const nextIndex = currentIndex + direction;
 
-      scrollAccumulatorRef.current += delta;
-      pendingDirectionRef.current = scrollAccumulatorRef.current > 0 ? 1 : -1;
-
-      const threshold = event.deltaMode === 1 ? 12 : 200;
-
-      if (scrollTimeoutRef.current) return;
-      scrollTimeoutRef.current = setTimeout(() => {
-        const now = performance.now();
-        const minDelay = 800; // Prevent rapid section changes
-        const direction = pendingDirectionRef.current || 1;
-
-        if (Math.abs(scrollAccumulatorRef.current) < threshold) {
-          scrollAccumulatorRef.current = 0;
-          pendingDirectionRef.current = 0;
-          scrollTimeoutRef.current = null;
-          return;
+      if (nextIndex >= 0 && nextIndex < SECTIONS.length) {
+        clearPromptStage();
+        const nextStage = SECTIONS[nextIndex];
+        switch (nextStage) {
+          case "hero": goToHero(); break;
+          case "about": goToAbout(); break;
+          case "projects": goToProjects(); break;
+          case "contact": goToContact(); break;
         }
-
-        if (now - lastStepRef.current < minDelay) {
-          scrollAccumulatorRef.current = 0;
-          pendingDirectionRef.current = 0;
-          scrollTimeoutRef.current = null;
-          return;
-        }
-
-        scrollAccumulatorRef.current = 0;
-        pendingDirectionRef.current = 0;
-        lastStepRef.current = now;
-        scrollTimeoutRef.current = null;
-
-        if (stage === "about") {
-          const aboutMobilePage = document.documentElement.dataset.aboutMobilePage;
-
-          if (direction === 1 && aboutMobilePage === "0") {
-            clearPromptStage();
-            window.dispatchEvent(new CustomEvent("aboutMobileAdvance"));
-            return;
-          }
-
-          if (direction === -1 && aboutMobilePage === "1") {
-            clearPromptStage();
-            window.dispatchEvent(new CustomEvent("aboutMobileBack"));
-            return;
-          }
-        }
-
-        // Navigate between sections based on scroll direction
-        const currentIndex = SECTIONS.indexOf(stage);
-        const nextIndex = currentIndex + direction;
-
-        if (nextIndex >= 0 && nextIndex < SECTIONS.length) {
-          const nextStage = SECTIONS[nextIndex];
-
-          // Clear prompt state when scrolling
-          clearPromptStage();
-
-          switch (nextStage) {
-            case "hero":
-              goToHero();
-              break;
-            case "about":
-              goToAbout();
-              break;
-            case "projects":
-              goToProjects();
-              break;
-            case "contact":
-              goToContact();
-              break;
-          }
-        }
-      }, 100);
+      }
     };
 
     window.addEventListener("wheel", onWheel, { passive: true });

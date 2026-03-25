@@ -8,6 +8,9 @@ export interface SocialLink {
   handle: string;
   color: string;
   borderColor: string;
+  assetPath: string;
+  hoverAccent: string;
+  hoverAccentSoft: string;
 }
 
 export const SOCIAL_LINKS: SocialLink[] = [
@@ -18,6 +21,9 @@ export const SOCIAL_LINKS: SocialLink[] = [
     handle: "thomas.augot@gmail.com",
     color: "group-hover:text-primary",
     borderColor: "group-hover:border-primary/50",
+    assetPath: "/assets/images/socials/gmail.svg",
+    hoverAccent: "var(--theme-primary)",
+    hoverAccentSoft: "color-mix(in srgb, var(--theme-primary) 26%, transparent)",
   },
   {
     icon: SiGithub,
@@ -26,6 +32,9 @@ export const SOCIAL_LINKS: SocialLink[] = [
     handle: "@thomasaugot",
     color: "group-hover:text-white",
     borderColor: "group-hover:border-white/30",
+    assetPath: "/assets/images/socials/github.svg",
+    hoverAccent: "color-mix(in srgb, var(--theme-text) 88%, var(--theme-primary) 12%)",
+    hoverAccentSoft: "color-mix(in srgb, var(--theme-text) 16%, transparent)",
   },
   {
     icon: SiLinkedin,
@@ -34,6 +43,9 @@ export const SOCIAL_LINKS: SocialLink[] = [
     handle: "Thomas Augot",
     color: "group-hover:text-[#0A66C2]",
     borderColor: "group-hover:border-[#0A66C2]/50",
+    assetPath: "/assets/images/socials/linkedin.svg",
+    hoverAccent: "var(--theme-secondary)",
+    hoverAccentSoft: "color-mix(in srgb, var(--theme-secondary) 24%, transparent)",
   },
   {
     icon: SiMedium,
@@ -42,5 +54,8 @@ export const SOCIAL_LINKS: SocialLink[] = [
     handle: "@thomasaugot",
     color: "group-hover:text-white",
     borderColor: "group-hover:border-white/30",
+    assetPath: "/assets/images/socials/medium.svg",
+    hoverAccent: "color-mix(in srgb, var(--theme-accent) 70%, var(--theme-primary) 30%)",
+    hoverAccentSoft: "color-mix(in srgb, var(--theme-accent) 20%, transparent)",
   },
 ];

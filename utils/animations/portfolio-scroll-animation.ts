@@ -26,10 +26,8 @@ let isStartingExpansion = false;
 let isPortfolioActive = false; // Track if portfolio section is currently active
 let currentSlideIndex = 0;
 let isAnimating = false;
-let wheelAccumulator = 0;
 let lastSlideChangeTime = 0;
 let pendingStartRequest = false; // Track if start was requested before scene ready
-const WHEEL_THRESHOLD = 150; // Minimum wheel delta to trigger slide change
 const SLIDE_COOLDOWN = 600; // Minimum ms between slide changes (wheel)
 const TOUCH_SLIDE_COOLDOWN = 900; // Minimum ms between slide changes (touch)
 
@@ -88,7 +86,6 @@ if (typeof window !== "undefined") {
     isStartingExpansion = false;
     currentSlideIndex = 0;
     isAnimating = false;
-    wheelAccumulator = 0;
     lastSlideChangeTime = 0;
     pendingStartRequest = false;
     if (wheelHandler) {
@@ -143,7 +140,6 @@ export function resetPortfolioState() {
   isStartingExpansion = false;
   currentSlideIndex = 0;
   isAnimating = false;
-  wheelAccumulator = 0;
   lastSlideChangeTime = 0;
   pendingStartRequest = false;
 
@@ -217,65 +213,26 @@ export function initPortfolioScroll() {
   isStartingExpansion = false;
   currentSlideIndex = 0;
   isAnimating = false;
-  wheelAccumulator = 0;
 
   // Setup intro panel scroll handler IMMEDIATELY (before scene loads)
-  let introWheelAccumulator = 0;
-  let introWheelTimeout: ReturnType<typeof setTimeout> | null = null;
-  const INTRO_WHEEL_THRESHOLD = 150;
+  let introLastStep = 0;
 
   const introWheelHandler = (e: WheelEvent) => {
     const portfolioSection = document.querySelector("[data-portfolio-section]") as HTMLElement | null;
-    if (!portfolioSection) {
-      console.log("intro scroll: no portfolio section");
-      return;
-    }
+    if (!portfolioSection) return;
 
-    // Check if portfolio section is visible
     const style = window.getComputedStyle(portfolioSection);
-    const isHidden = style.visibility === "hidden";
-    const isTransparent = parseFloat(style.opacity) < 0.1;
+    if (style.visibility === "hidden" || parseFloat(style.opacity) < 0.1) return;
+    if (isExpanded || isStartingExpansion) return;
+    if (e.deltaY <= 0) return;
+    if (Math.abs(e.deltaY) < 5) return;
 
-    console.log("intro scroll: visibility=", style.visibility, "opacity=", style.opacity, "isExpanded=", isExpanded, "deltaY=", e.deltaY);
+    const now = performance.now();
+    if (now - introLastStep < 800) return;
+    introLastStep = now;
 
-    if (isHidden || isTransparent) {
-      console.log("intro scroll: section not visible");
-      return;
-    }
-
-    if (isExpanded || isStartingExpansion) {
-      console.log("intro scroll: already expanded");
-      return;
-    }
-
-    // Only respond to scroll down
-    if (e.deltaY <= 0) {
-      console.log("intro scroll: scrolling up, ignoring");
-      return;
-    }
-
-    introWheelAccumulator += e.deltaY;
-    console.log("intro scroll: accumulator=", introWheelAccumulator, "threshold=", INTRO_WHEEL_THRESHOLD);
-
-    if (introWheelTimeout) {
-      clearTimeout(introWheelTimeout);
-    }
-
-    introWheelTimeout = setTimeout(() => {
-      introWheelAccumulator = 0;
-    }, 200);
-
-    if (introWheelAccumulator >= INTRO_WHEEL_THRESHOLD) {
-      console.log("intro scroll: THRESHOLD REACHED, triggering start");
-      introWheelAccumulator = 0;
-      if (introWheelTimeout) {
-        clearTimeout(introWheelTimeout);
-        introWheelTimeout = null;
-      }
-      // Set flag and dispatch event to trigger start
-      pendingStartRequest = true;
-      window.dispatchEvent(new CustomEvent("portfolioStartRequested"));
-    }
+    pendingStartRequest = true;
+    window.dispatchEvent(new CustomEvent("portfolioStartRequested"));
   };
 
   // Remove old handler if exists
@@ -551,24 +508,19 @@ export function initPortfolioScroll() {
           return;
         }
 
-        wheelAccumulator += e.deltaY;
+        if (Math.abs(e.deltaY) < 5) return;
+        const direction = e.deltaY > 0 ? 1 : -1;
+        lastSlideChangeTime = now;
 
-        if (Math.abs(wheelAccumulator) >= WHEEL_THRESHOLD) {
-          const direction = wheelAccumulator > 0 ? 1 : -1;
-          wheelAccumulator = 0;
-          lastSlideChangeTime = now;
+        const nextIndex = currentSlideIndex + direction;
 
-          const nextIndex = currentSlideIndex + direction;
+        if (currentSlideIndex === totalSlides - 1 && direction === 1) {
+          window.dispatchEvent(new CustomEvent("goToContact"));
+          return;
+        }
 
-          // If on CTA slide (last slide) and scrolling down, go to contact section
-          if (currentSlideIndex === totalSlides - 1 && direction === 1) {
-            window.dispatchEvent(new CustomEvent("goToContact"));
-            return;
-          }
-
-          if (nextIndex >= 0 && nextIndex < totalSlides) {
-            goToSlide(nextIndex);
-          }
+        if (nextIndex >= 0 && nextIndex < totalSlides) {
+          goToSlide(nextIndex);
         }
       };
 
@@ -800,6 +752,5 @@ export function initPortfolioScroll() {
     isStartingExpansion = false;
     currentSlideIndex = 0;
     isAnimating = false;
-    wheelAccumulator = 0;
   };
 }

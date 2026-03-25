@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(sed -i '' '/const isLargeDesktop = config.isDesktop && !config.isSmallDesktop;/d' /Users/thomasaugot/Desktop/3D-portfolio/utils/terminal-sizes.ts)",
-      "Bash(__NEW_LINE_eb8673fb7f7cee8a__ sed:*)"
+      "Bash(__NEW_LINE_eb8673fb7f7cee8a__ sed:*)",
+      "Bash(tr '}' '\\\\n')"
     ]
   }
 }
