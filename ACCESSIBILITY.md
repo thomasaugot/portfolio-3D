@@ -24,14 +24,17 @@ The goal is not only to say "this app is accessible", but to document:
 8. [Accessible Forms](#accessible-forms)
 9. [Keyboard-Only Focus Styling](#keyboard-only-focus-styling)
 10. [Navigation, Current State, and Menu Semantics](#navigation-current-state-and-menu-semantics)
-11. [Portfolio Keyboard and Focus Behavior](#portfolio-keyboard-and-focus-behavior)
-12. [Reduced Motion System](#reduced-motion-system)
-13. [Theme and Visual Accessibility](#theme-and-visual-accessibility)
-14. [Localized and Accessible URLs](#localized-and-accessible-urls)
-15. [Reusable Accessibility Components and Hooks](#reusable-accessibility-components-and-hooks)
-16. [How to Build New UI Without Breaking Accessibility](#how-to-build-new-ui-without-breaking-accessibility)
-17. [Testing Checklist](#testing-checklist)
-18. [Known Limitations / Things to Watch](#known-limitations--things-to-watch)
+11. [Icon-Only Controls and Toggle States](#icon-only-controls-and-toggle-states)
+12. [Mobile Navigation Controls](#mobile-navigation-controls)
+13. [Portfolio Keyboard and Focus Behavior](#portfolio-keyboard-and-focus-behavior)
+14. [Reduced Motion System](#reduced-motion-system)
+15. [Theme and Visual Accessibility](#theme-and-visual-accessibility)
+16. [Touch Target Sizes and Mobile Accessibility](#touch-target-sizes-and-mobile-accessibility)
+17. [Localized and Accessible URLs](#localized-and-accessible-urls)
+18. [Reusable Accessibility Components and Hooks](#reusable-accessibility-components-and-hooks)
+19. [How to Build New UI Without Breaking Accessibility](#how-to-build-new-ui-without-breaking-accessibility)
+20. [Testing Checklist](#testing-checklist)
+21. [Known Limitations / Things to Watch](#known-limitations--things-to-watch)
 
 ---
 
@@ -391,11 +394,11 @@ The contact form was upgraded in:
 
 Each field now has:
 
-- a real `<label>`
-- `id`
-- `name`
+- a real `<label>` with `htmlFor`
+- `id` and `name`
 - `required`
-- relevant `autocomplete`
+- relevant `autoComplete`
+- `inputMode` where it helps mobile keyboards
 - validation state
 - error association
 
@@ -403,24 +406,46 @@ Feedback now uses:
 
 - `aria-invalid`
 - `aria-describedby`
-- live/status announcements for submit feedback
+- `role="alert"` on inline error messages
+- `role="status"` and `aria-live="polite"` on the form-level submit feedback
 
-### Example pattern
+The name field also auto-focuses on mount and on successful reset, so keyboard and screen reader users land directly in the form without needing an extra Tab press.
+
+### Real code — email field
+
+From `components/ui/ContactForm.tsx`:
 
 ```tsx
-<label htmlFor="contact-email">Email</label>
-<input
+<label htmlFor="contact-email" className="flex items-center gap-2 mb-2">
+  <span className="text-primary text-xs">❯</span>
+  <span className="text-primary text-xs">{t("footer.form.email_command")}</span>
+</label>
+<Input
   id="contact-email"
   name="email"
+  type="email"
   autoComplete="email"
+  inputMode="email"
   required
-  aria-invalid={hasError}
-  aria-describedby={hasError ? "contact-email-error" : undefined}
+  aria-invalid={fieldErrors.email ? "true" : "false"}
+  aria-describedby={fieldErrors.email ? "contact-email-error" : undefined}
 />
-{hasError && (
-  <p id="contact-email-error">Please enter a valid email address.</p>
+{getFieldErrorMessage("email") && (
+  <p id="contact-email-error" className="mt-2 text-xs text-red-200" role="alert">
+    {getFieldErrorMessage("email")}
+  </p>
 )}
 ```
+
+Note the `inputMode="email"` attribute on the email field.
+
+This is separate from `type="email"`.
+
+`type="email"` triggers browser validation.
+
+`inputMode="email"` tells mobile operating systems which soft keyboard to show (the one with `@` and `.com` prominently placed).
+
+That is a small but real usability improvement for mobile users filling in the form.
 
 ### Why this matters
 
@@ -547,6 +572,137 @@ Final fix:
 
 ---
 
+## Icon-Only Controls and Toggle States
+
+### The problem
+
+Many controls in this app use icons only — no visible text label.
+
+Without an accessible name, a screen reader will announce these as "button" with no description.
+
+Additionally, toggle controls (like theme and motion toggles) need to expose their current state programmatically, not just visually.
+
+### What was implemented
+
+All icon-only interactive elements were given:
+
+- a descriptive `aria-label`
+- `aria-hidden="true"` on the icon inside (so the icon is not read twice)
+- `aria-pressed` for toggle buttons (exposed state to assistive tech)
+
+### Theme toggle
+
+The theme toggle is used in three visual variants (`floating`, `menu`, `tile`) but every variant applies the same accessibility attributes.
+
+From `components/ui/ThemeToggle.tsx`:
+
+```tsx
+<button
+  type="button"
+  onClick={toggleTheme}
+  aria-pressed={isDark}
+  aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+  className="keyboard-focus-ring ..."
+>
+  <Sun aria-hidden="true" size={15} />
+</button>
+```
+
+Key points:
+
+- `aria-pressed` reflects the current toggle state — screen readers announce "pressed" or "not pressed"
+- `aria-label` is dynamic — it always describes the _action_, not the _current state_, so the user knows what will happen when they activate it
+- The icon is hidden from the accessibility tree with `aria-hidden="true"` — the label alone carries the meaning
+
+### Back to top button
+
+The back-to-top button appears outside any labeled section and contains only a chevron icon.
+
+From `components/ui/BackToTop.tsx`:
+
+```tsx
+<button
+  aria-label="Back to top"
+  disabled={isMorphing}
+  className="keyboard-focus-ring ..."
+>
+  <ChevronUp size={20} />
+</button>
+```
+
+The `disabled` attribute is also important here — it prevents activation during a stage transition and is announced by screen readers as unavailable.
+
+### Why this matters
+
+Without `aria-label` on an icon-only button:
+
+- a screen reader announces "button" — the user has no idea what it does
+- toggle state is invisible — the user cannot tell whether dark mode is on or off
+
+`aria-pressed` specifically communicates that this is a stateful toggle, not a one-shot action.
+
+### Related files
+
+- `components/ui/ThemeToggle.tsx`
+- `components/ui/BackToTop.tsx`
+- `components/ui/MotionToggle.tsx`
+
+---
+
+## Mobile Navigation Controls
+
+### The problem
+
+On mobile, this app exposes two arrow buttons (previous / next section) as the primary in-page navigation.
+
+These are entirely icon-driven — no labels are visible.
+
+The position indicator dots between them are decorative.
+
+### What was implemented
+
+From `components/ui/MobileNav.tsx`:
+
+```tsx
+<button
+  onClick={goToPrev}
+  disabled={!canGoUp || isMorphing}
+  aria-label="Previous section"
+  className="keyboard-focus-ring ..."
+>
+  <svg ...>...</svg>
+</button>
+
+<div className="flex flex-col items-center gap-1" aria-hidden="true">
+  {/* decorative position indicator dots */}
+</div>
+
+<button
+  onClick={goToNext}
+  disabled={!canGoDown || isMorphing}
+  aria-label="Next section"
+  className="keyboard-focus-ring ..."
+>
+  <svg ...>...</svg>
+</button>
+```
+
+Key points:
+
+- `aria-label` on each button gives a clear intent description
+- `disabled` prevents activation at the first and last stage, and during transitions
+- The position indicator is `aria-hidden="true"` — it is purely visual chrome
+
+### Why this matters
+
+On mobile, if a keyboard or switch-access user encounters these navigation buttons, they need to know what they do. "button" alone is useless. "Previous section" and "Next section" are immediately clear.
+
+### Related files
+
+- `components/ui/MobileNav.tsx`
+
+---
+
 ## Portfolio Keyboard and Focus Behavior
 
 ### The problem
@@ -605,6 +761,59 @@ This was applied because terminal-style interfaces in this app should consistent
 - `utils/animations/portfolio-scroll-animation.ts`
 - `components/sections/ProjectsSection.tsx`
 - `components/sections/ProjectPanel.tsx`
+
+---
+
+## Touch Target Sizes and Mobile Accessibility
+
+### The problem
+
+WCAG 2.5.5 (AAA) and common sense both say that interactive targets should be large enough to activate reliably on touch screens.
+
+Small tap targets cause:
+
+- missed taps
+- accidental activations of adjacent elements
+- poor experience for users with motor disabilities
+
+### What was implemented
+
+A media query in `app/globals.css` enforces a minimum touch target height of 44px for all primary navigation controls on mobile:
+
+```css
+@media (max-width: 767px) {
+  nav button,
+  nav a,
+  form button {
+    min-height: 44px;
+  }
+}
+```
+
+This rule covers:
+
+- all nav links and buttons
+- form submit buttons
+
+It intentionally excludes decorative and non-interactive elements.
+
+### Additional mobile considerations
+
+Also in `app/globals.css`:
+
+- `overscroll-behavior: none` on `body` prevents iOS rubber-band scroll from interfering with swipe-based stage navigation
+- Text selection is disabled during swipe gestures inside the terminal surface (`user-select: none`) to prevent accidental selection while navigating
+- Selection is explicitly re-enabled inside `input` and `textarea` elements so form fields still work correctly
+
+### Why this matters
+
+44px is the established minimum for accessible touch targets (aligned with Apple's HIG and WCAG 2.5.5).
+
+Relying on visual size alone is not enough — a button can look large on screen but its actual interactive area may be smaller. The CSS rule enforces the floor.
+
+### Related files
+
+- `app/globals.css` (lines ~1003–1029)
 
 ---
 
@@ -752,6 +961,22 @@ Example:
 
 This was done because the user explicitly wanted refresh to return to hero.
 
+### Language declaration on the HTML element
+
+The `lang` attribute on the `<html>` element is a fundamental accessibility requirement (WCAG 3.1.1, Level A).
+
+Screen readers use it to determine which language engine and pronunciation rules to apply.
+
+In `app/[locale]/layout.tsx`, the locale is set on the root element:
+
+```tsx
+<html lang={locale}>
+```
+
+Since the app supports English, French, and Spanish, the `lang` value changes with each locale — `/en` renders `lang="en"`, `/fr` renders `lang="fr"`, `/es` renders `lang="es"`.
+
+Without this, a French screen reader user navigating `/fr` would hear their content read with English pronunciation.
+
 ### Why this matters
 
 This is not directly a WCAG requirement, but it improves:
@@ -760,11 +985,14 @@ This is not directly a WCAG requirement, but it improves:
 - comprehensibility
 - localized navigation clarity
 
+The `lang` attribute itself is WCAG Level A — the most basic and widely required standard.
+
 ### Related files
 
 - `utils/stage-paths.ts`
 - `hooks/useStageNavigation.ts`
 - `app/[locale]/[...slug]/page.tsx`
+- `app/[locale]/layout.tsx`
 
 ---
 
@@ -910,7 +1138,9 @@ Use this checklist before merging significant UI changes.
 - Are major sections labeled with headings?
 - Are region labels meaningful?
 - Are decorative layers hidden?
-- Do icon-only controls have accessible names?
+- Do icon-only controls have accessible names (`aria-label`)?
+- Do toggle controls expose state (`aria-pressed`)?
+- Is the `lang` attribute on `<html>` set to the correct locale?
 
 ### Forms
 
@@ -937,6 +1167,13 @@ Use this checklist before merging significant UI changes.
 - Can it open and close reliably?
 - Does the close control remain tappable?
 - Does background interaction stop appropriately?
+
+### Mobile navigation
+
+- Do the previous/next section buttons have accessible labels?
+- Are the position indicator dots hidden from assistive tech?
+- Are the buttons correctly disabled at the first and last stage?
+- Are touch targets at least 44px tall on mobile?
 
 ### Portfolio
 
@@ -990,12 +1227,16 @@ The most important improvements are:
 - explicit focus management across stages
 - semantic sections and headings
 - decorative visuals removed from the accessibility tree
-- accessible contact form
+- accessible contact form with real labels, `inputMode`, validation semantics, and live feedback
 - keyboard-only focus styling
 - improved mobile menu semantics and interaction
 - portfolio keyboard/focus behavior
+- icon-only controls have accessible names and toggle state via `aria-label` and `aria-pressed`
+- mobile navigation controls are fully labeled
+- 44px minimum touch targets on mobile
 - motion preference system with reduced-motion support
 - stronger light-mode and contrast hierarchy
+- `lang` attribute on `<html>` for correct screen reader pronunciation
 - localized stage URLs
 
 If you keep following the patterns documented here, you can continue evolving the design without repeatedly breaking accessibility.

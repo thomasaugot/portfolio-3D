@@ -3,7 +3,25 @@
     "allow": [
       "Bash(sed -i '' '/const isLargeDesktop = config.isDesktop && !config.isSmallDesktop;/d' /Users/thomasaugot/Desktop/3D-portfolio/utils/terminal-sizes.ts)",
       "Bash(__NEW_LINE_eb8673fb7f7cee8a__ sed:*)",
-      "Bash(tr '}' '\\\\n')"
+      "Bash(tr '}' '\\\\n')",
+      "Bash(sed -i '' 's|from \"\"@/components/ui/MobileNav\"\"|from \"\"@/components/layout/MobileNav\"\"|g' /Users/thomasaugot/Desktop/3D-portfolio/components/ui/Canva.tsx)",
+      "Bash(sed -i '' 's|from \"\"@/components/ui/SocialLogo\"\"|from \"\"@/components/sections/contact/SocialLogo\"\"|g' /Users/thomasaugot/Desktop/3D-portfolio/components/sections/contact/SocialLinkCard.tsx)",
+      "Bash(sed -i '' 's|from \"\"../../ui/ScrollIndicator\"\"|from \"\"./ScrollIndicator\"\"|g' /Users/thomasaugot/Desktop/3D-portfolio/components/sections/projects/ProjectsSection.tsx)",
+      "Bash(sed -i '' 's|from \"\"@/hooks/useTabTitleAnimation\"\"|from \"\"./useTabTitleAnimation\"\"|g' /Users/thomasaugot/Desktop/3D-portfolio/components/layout/TabTitleAnimationProvider.tsx)",
+      "Bash(sed -i '' 's|from \"\"@/hooks/useMobileMenu\"\"|from \"\"./useMobileMenu\"\"|g' /Users/thomasaugot/Desktop/3D-portfolio/components/layout/Navbar.tsx)",
+      "Bash(sed -i '' 's|from \"\"@/hooks/usePortfolioSetup\"\"|from \"\"./usePortfolioSetup\"\"|g' /Users/thomasaugot/Desktop/3D-portfolio/components/sections/projects/ProjectsSection.tsx)",
+      "Bash(sed -i '' 's|from \"\"@/hooks/usePortfolioGestures\"\"|from \"\"./usePortfolioGestures\"\"|g' /Users/thomasaugot/Desktop/3D-portfolio/components/sections/projects/ProjectsSection.tsx)",
+      "Bash(sed -i '' 's|from \"\"@/hooks/useContactForm\"\"|from \"\"./useContactForm\"\"|g' /Users/thomasaugot/Desktop/3D-portfolio/components/sections/contact/ContactForm.tsx)",
+      "Bash(sed -i '' 's|from \"\"@/hooks/useStageNavigation\"\"|from \"\"./useStageNavigation\"\"|g' /Users/thomasaugot/Desktop/3D-portfolio/components/ui/Canva.tsx)",
+      "Bash(sed -i '' 's|from \"\"@/hooks/useWheelNavigation\"\"|from \"\"./useWheelNavigation\"\"|g' /Users/thomasaugot/Desktop/3D-portfolio/components/ui/Canva.tsx)",
+      "Bash(sed -i '' 's|from \"\"@/hooks/useTouchNavigation\"\"|from \"\"./useTouchNavigation\"\"|g' /Users/thomasaugot/Desktop/3D-portfolio/components/ui/Canva.tsx)",
+      "Bash(sed -i '' 's|from \"\"@/hooks/useViewportReload\"\"|from \"\"./useViewportReload\"\"|g' /Users/thomasaugot/Desktop/3D-portfolio/components/ui/Canva.tsx)",
+      "Bash(sed -i '' 's|from \"\"@/hooks/useTerminalTyping\"\"|from \"\"./useTerminalTyping\"\"|g' /Users/thomasaugot/Desktop/3D-portfolio/components/ui/Terminal.tsx)",
+      "Bash(sed -i '' 's|from \"\"@/hooks/useStageNavigation\"\"|from \"\"./useStageNavigation\"\"|g' /Users/thomasaugot/Desktop/3D-portfolio/components/ui/useTouchNavigation.ts /Users/thomasaugot/Desktop/3D-portfolio/components/ui/useStageFocus.ts /Users/thomasaugot/Desktop/3D-portfolio/components/ui/useWheelNavigation.ts)",
+      "Bash(sed -i '' 's|from \"\"@/hooks/useStageNavigation\"\"|from \"\"@/components/ui/useStageNavigation\"\"|g' /Users/thomasaugot/Desktop/3D-portfolio/components/layout/MobileNav.tsx)"
+    ],
+    "additionalDirectories": [
+      "/Users/thomasaugot/Desktop/3D-portfolio/app/[locale]"
     ]
   }
 }

@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { TranslationProvider } from "@/contexts/TranslationProvider";
 import { MotionPreferenceProvider } from "@/contexts/MotionPreferenceProvider";
 import { ThemeProvider } from "@/contexts/ThemeProvider";
-import { TabTitleAnimationProvider } from "@/contexts/TabTitleAnimationProvider";
+import { TabTitleAnimationProvider } from "@/components/layout/TabTitleAnimationProvider";
 import ClientLoadingWrapper from "@/components/layout/ClientLoadingWrapper";
 import SkipLink from "@/components/ui/SkipLink";
 import { locales, type Language } from "@/utils/locales";
@@ -23,7 +23,6 @@ export default async function LocaleLayout({
 }) {
   const { locale } = await params;
 
-  // Validate locale - trigger 404 for unsupported locales
   if (!locales.includes(locale as Language)) {
     notFound();
   }

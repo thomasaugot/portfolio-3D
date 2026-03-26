@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import type { Stage } from "@/hooks/useStageNavigation";
+import type { Stage } from "./useStageNavigation";
 
 const STAGE_FOCUS_SELECTORS: Record<Stage, string> = {
   hero: '[data-stage-focus-target="hero"]',

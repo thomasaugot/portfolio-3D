@@ -96,7 +96,13 @@ export default function AboutPortrait({ visible, desktop = false }: AboutPortrai
           <div className="about-portrait-frame about-portrait-frame--echo" aria-hidden="true" />
           <div className="about-portrait-card__glass" aria-hidden="true" />
           <div className="about-portrait-card__face relative">
-            <Image src="/assets/images/portrait/portrait.webp" alt={t("about.name")} fill className="about-portrait-card__image object-contain object-bottom" priority />
+            <Image
+              src="/assets/images/portrait/portrait.webp"
+              alt={t("about.name")}
+              fill
+              className="about-portrait-card__image object-contain object-[44%_100%]"
+              priority
+            />
           </div>
         </div>
       </div>

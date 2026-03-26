@@ -1,17 +1,28 @@
 "use client";
 
 import { ChevronsDown } from "lucide-react";
-import { useEffect, useState, useMemo, useRef, useCallback, useLayoutEffect } from "react";
+import {
+  useEffect,
+  useState,
+  useMemo,
+  useRef,
+  useCallback,
+  useLayoutEffect,
+} from "react";
 import { useTranslation } from "@/contexts/TranslationProvider";
 import { useCanva } from "@/components/ui/Canva";
 import { useIsAppReady } from "@/contexts/LoadingProvider";
-import { morphToHero, getTerminalConfig } from "@/utils/animations/terminal-morph";
+import {
+  morphToHero,
+  getTerminalConfig,
+} from "@/utils/animations/terminal-morph";
 import { gsap } from "@/lib/gsap";
-import TaglineCarousel from "@/components/ui/TaglineCarousel";
-import ContactForm from "@/components/ui/ContactForm";
-import TerminalLines from "@/components/ui/TerminalLines";
-import TerminalPrompt from "@/components/ui/TerminalPrompt";
-import AboutPortrait from "@/components/ui/AboutPortrait";
+import TaglineCarousel from "@/components/ui/terminal/TaglineCarousel";
+import ContactForm from "@/components/sections/contact/ContactForm";
+import TerminalLines from "@/components/ui/terminal/TerminalLines";
+import TerminalPrompt from "@/components/ui/terminal/TerminalPrompt";
+import AboutPortrait from "@/components/sections/about/AboutPortrait";
+import TerminalFrame from "@/components/ui/terminal/TerminalFrame";
 import { useTerminalTyping } from "@/hooks/useTerminalTyping";
 import { useStageFocus } from "@/hooks/useStageFocus";
 import {
@@ -23,11 +34,14 @@ import {
   type Stage,
   type TerminalLine,
 } from "@/data/terminal-content";
-import { getViewportConfig, waitForStableStageMeasurement } from "@/utils/terminal-sizes";
+import {
+  getViewportConfig,
+  waitForStableStageMeasurement,
+} from "@/utils/terminal-sizes";
 
 type TerminalState = Stage | "loader";
 
-export default function Terminal() {
+export default function StageTerminal() {
   const { t, language } = useTranslation();
   const {
     stage,
@@ -70,15 +84,13 @@ export default function Terminal() {
         ? "hero"
         : null;
   const exactMeasureStage: Stage | null =
-    measurementStage ?? (heroActive && stage === "about" && useCompactAboutLayout ? "about" : null);
-  const terminalConfig = useMemo(
-    () => {
-      void measurementVersion;
-      void aboutMeasurementVersion;
-      return getTerminalConfig(terminalState);
-    },
-    [terminalState, measurementVersion, aboutMeasurementVersion]
-  );
+    measurementStage ??
+    (heroActive && stage === "about" && useCompactAboutLayout ? "about" : null);
+  const terminalConfig = useMemo(() => {
+    void measurementVersion;
+    void aboutMeasurementVersion;
+    return getTerminalConfig(terminalState);
+  }, [terminalState, measurementVersion, aboutMeasurementVersion]);
   const isHeroStage = stage === "hero";
   const terminalStyle = useMemo(
     () => ({
@@ -86,119 +98,116 @@ export default function Terminal() {
       height: terminalConfig.heightCss,
       maxHeight: "80svh",
     }),
-    [terminalConfig]
+    [terminalConfig],
   );
   const appliedTerminalStyle = isMorphing ? undefined : terminalStyle;
 
-  const promptConfig = useMemo(
-    () => {
-      if (stage === "about" && useCompactAboutLayout) {
-        if (aboutMobilePage === 0) {
-          return {
-            label: t("about.block_skills") || "Skills",
-            yesLabel: t("hero.prompt_yes"),
-            noLabel: t("hero.prompt_no"),
-            onYes: () => {
-              setPrompt(false);
-              setAboutMobilePage(1);
-            },
-            onNo: () => {
-              setPrompt(false);
-              goToHero();
-            },
-          };
-        }
-
-        return {
-          label: t("about.cta_work"),
-          yesLabel: t("hero.prompt_yes"),
-          noLabel: "Back",
-          onYes: () => {
-            setPrompt(false);
-            goToProjects();
-          },
-          onNo: () => {
-            setPrompt(false);
-            setAboutMobilePage(0);
-          },
-        };
-      }
-
-      return getPromptConfig(stage, promptLabel, t, {
-        setPrompt,
-        handlePromptYes,
-        handlePromptNo,
-        goToProjects,
-        goToHero,
-      });
-    },
-    [
-      aboutMobilePage,
-      stage,
-      useCompactAboutLayout,
-      promptLabel,
-      t,
-      handlePromptYes,
-      handlePromptNo,
-      goToProjects,
-      goToHero,
-    ]
-  );
-  const measurementPromptConfig = useMemo(
-    () => {
-      if (!measurementStage) return null;
-      if (measurementStage === "about" && useCompactAboutLayout) {
+  const promptConfig = useMemo(() => {
+    if (stage === "about" && useCompactAboutLayout) {
+      if (aboutMobilePage === 0) {
         return {
           label: t("about.block_skills") || "Skills",
           yesLabel: t("hero.prompt_yes"),
           noLabel: t("hero.prompt_no"),
-          onYes: () => {},
-          onNo: () => {},
+          onYes: () => {
+            setPrompt(false);
+            setAboutMobilePage(1);
+          },
+          onNo: () => {
+            setPrompt(false);
+            goToHero();
+          },
         };
       }
-      return getPromptConfig(measurementStage, promptLabel, t, {
-        setPrompt: () => {},
-        handlePromptYes: () => {},
-        handlePromptNo: () => {},
-        goToProjects: () => {},
-        goToHero: () => {},
-      });
-    },
-    [measurementStage, useCompactAboutLayout, promptLabel, t]
-  );
+
+      return {
+        label: t("about.cta_work"),
+        yesLabel: t("hero.prompt_yes"),
+        noLabel: "Back",
+        onYes: () => {
+          setPrompt(false);
+          goToProjects();
+        },
+        onNo: () => {
+          setPrompt(false);
+          setAboutMobilePage(0);
+        },
+      };
+    }
+
+    return getPromptConfig(stage, promptLabel, t, {
+      setPrompt,
+      handlePromptYes,
+      handlePromptNo,
+      goToProjects,
+      goToHero,
+    });
+  }, [
+    aboutMobilePage,
+    stage,
+    useCompactAboutLayout,
+    promptLabel,
+    t,
+    handlePromptYes,
+    handlePromptNo,
+    goToProjects,
+    goToHero,
+  ]);
+  const measurementPromptConfig = useMemo(() => {
+    if (!measurementStage) return null;
+    if (measurementStage === "about" && useCompactAboutLayout) {
+      return {
+        label: t("about.block_skills") || "Skills",
+        yesLabel: t("hero.prompt_yes"),
+        noLabel: t("hero.prompt_no"),
+        onYes: () => {},
+        onNo: () => {},
+      };
+    }
+    return getPromptConfig(measurementStage, promptLabel, t, {
+      setPrompt: () => {},
+      handlePromptYes: () => {},
+      handlePromptNo: () => {},
+      goToProjects: () => {},
+      goToHero: () => {},
+    });
+  }, [measurementStage, useCompactAboutLayout, promptLabel, t]);
   const exactMeasurementPromptConfig = useMemo(() => {
     if (!exactMeasureStage) return null;
     if (measurementStage) return measurementPromptConfig;
-    if (exactMeasureStage === "about" && useCompactAboutLayout) return promptConfig;
+    if (exactMeasureStage === "about" && useCompactAboutLayout)
+      return promptConfig;
     return null;
-  }, [exactMeasureStage, measurementStage, measurementPromptConfig, promptConfig, useCompactAboutLayout]);
+  }, [
+    exactMeasureStage,
+    measurementStage,
+    measurementPromptConfig,
+    promptConfig,
+    useCompactAboutLayout,
+  ]);
 
-  const getContent = useCallback(
-    () => {
-      if (stage === "about" && useCompactAboutLayout) {
-        return getAboutContentPages(t)[aboutMobilePage] ?? [];
-      }
-      return getStageContent(stage, t, isDesktop);
-    },
-    [aboutMobilePage, stage, t, isDesktop, useCompactAboutLayout]
-  );
-  const measurementLines = useMemo(
-    () => {
-      if (!measurementStage) return [];
-      if (measurementStage === "about" && useCompactAboutLayout) {
-        return getAboutContentPages(t)[0] ?? [];
-      }
-      return getStageContent(measurementStage, t, isDesktop);
-    },
-    [measurementStage, t, isDesktop, useCompactAboutLayout]
-  );
+  const getContent = useCallback(() => {
+    if (stage === "about" && useCompactAboutLayout) {
+      return getAboutContentPages(t)[aboutMobilePage] ?? [];
+    }
+    return getStageContent(stage, t, isDesktop);
+  }, [aboutMobilePage, stage, t, isDesktop, useCompactAboutLayout]);
   const exactMeasurementLines = useMemo(() => {
     if (!exactMeasureStage) return [];
     if (exactMeasureStage === "about" && useCompactAboutLayout) {
-      return getAboutContentPages(t)[measurementStage ? 0 : aboutMobilePage] ?? [];
+      return (
+        getAboutContentPages(t)[measurementStage ? 0 : aboutMobilePage] ?? []
+      );
     }
     return getStageContent(exactMeasureStage, t, isDesktop);
-  }, [exactMeasureStage, useCompactAboutLayout, t, measurementStage, aboutMobilePage, isDesktop]);
+  }, [
+    exactMeasureStage,
+    useCompactAboutLayout,
+    t,
+    measurementStage,
+    aboutMobilePage,
+    isDesktop,
+  ]);
 
   const handleTypingComplete = useCallback(() => {
     if (stage === "about" && useCompactAboutLayout) {
@@ -230,7 +239,10 @@ export default function Terminal() {
   const loadingLines = useMemo(() => getLoadingLines(t), [t]);
   const taglineBefore = t("hero.tagline_before");
   const taglineAfter = t("hero.tagline_after");
-  const taglineWords = t("hero.tagline_words").split(",").map((w) => w.trim()).filter(Boolean);
+  const taglineWords = t("hero.tagline_words")
+    .split(",")
+    .map((w) => w.trim())
+    .filter(Boolean);
   const showPrompt = heroActive && prompt;
   const showHeroTagline = isHeroStage && heroActive && !isMorphing;
   const stageContentHeadingId = `stage-content-heading-${stage}`;
@@ -248,7 +260,13 @@ export default function Terminal() {
       setContentReady(false);
       setPrompt(false);
     }
-  }, [aboutMobilePage, stage, useCompactAboutLayout, resetForStageChange, setContentReady]);
+  }, [
+    aboutMobilePage,
+    stage,
+    useCompactAboutLayout,
+    resetForStageChange,
+    setContentReady,
+  ]);
 
   useLayoutEffect(() => {
     if (stage !== "about" || !useCompactAboutLayout) return;
@@ -264,13 +282,15 @@ export default function Terminal() {
 
   useEffect(() => {
     const handleAdvance = () => {
-      if (stage !== "about" || !useCompactAboutLayout || aboutMobilePage !== 0) return;
+      if (stage !== "about" || !useCompactAboutLayout || aboutMobilePage !== 0)
+        return;
       setPrompt(false);
       setAboutMobilePage(1);
     };
 
     const handleBack = () => {
-      if (stage !== "about" || !useCompactAboutLayout || aboutMobilePage !== 1) return;
+      if (stage !== "about" || !useCompactAboutLayout || aboutMobilePage !== 1)
+        return;
       setPrompt(false);
       setAboutMobilePage(0);
     };
@@ -288,7 +308,8 @@ export default function Terminal() {
     if (typeof document === "undefined") return;
 
     if (stage === "about" && useCompactAboutLayout) {
-      document.documentElement.dataset.aboutMobilePage = String(aboutMobilePage);
+      document.documentElement.dataset.aboutMobilePage =
+        String(aboutMobilePage);
       return () => {
         delete document.documentElement.dataset.aboutMobilePage;
       };
@@ -394,23 +415,38 @@ export default function Terminal() {
     }, 260);
 
     return () => clearTimeout(id);
-  }, [heroActive, isMorphing, stage, language, resetForStageChange, setContentReady, contentReady]);
+  }, [
+    heroActive,
+    isMorphing,
+    stage,
+    language,
+    resetForStageChange,
+    setContentReady,
+    contentReady,
+  ]);
 
   useLayoutEffect(() => {
     if (isMorphing) return;
 
-    const wrapper = document.querySelector("[data-terminal-wrapper]") as HTMLElement | null;
+    const wrapper = document.querySelector(
+      "[data-terminal-wrapper]",
+    ) as HTMLElement | null;
     if (!wrapper) return;
 
     gsap.set(wrapper, {
       width: terminalConfig.width,
       height: terminalConfig.height,
     });
-  }, [isMorphing, terminalConfig.width, terminalConfig.height, measurementVersion]);
+  }, [
+    isMorphing,
+    terminalConfig.width,
+    terminalConfig.height,
+    measurementVersion,
+  ]);
 
   return (
     <div data-terminal-wrapper className="fixed z-[100] opacity-0">
-      <div
+      <TerminalFrame
         id={stage === "projects" ? undefined : "stage-content"}
         data-stage-focus-target={stage === "projects" ? undefined : stage}
         data-terminal-shell
@@ -418,30 +454,16 @@ export default function Terminal() {
         role="region"
         aria-labelledby="terminal-stage-title"
         tabIndex={-1}
-        className="keyboard-focus-ring bg-bg-surface/96 backdrop-blur-sm rounded-xl border border-border shadow-2xl overflow-hidden flex flex-col w-full h-full [html[data-theme='light']_&]:border-[#c8b99f] [html[data-theme='light']_&]:bg-[#f8f3e9]/96 [html[data-theme='light']_&]:shadow-[0_28px_80px_rgba(16,185,129,0.08),0_18px_40px_rgba(149,115,37,0.12)]"
+        title={getHeaderLabel(stage, heroActive, t)}
+        titleId="terminal-stage-title"
         style={appliedTerminalStyle}
       >
-        {/* Header */}
-        <div
-          data-terminal-header
-          className="flex items-center gap-2 px-4 py-3 bg-bg-panel border-b border-border text-nowrap [html[data-theme='light']_&]:bg-[linear-gradient(90deg,rgba(16,185,129,0.07),rgba(245,158,11,0.06))] [html[data-theme='light']_&]:border-b-[#cdbda3]"
-        >
-          <div className="flex gap-2">
-            <div className="w-3 h-3 rounded-full bg-[#ff5f56]" />
-            <div className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
-            <div className="w-3 h-3 rounded-full bg-[#27ca40]" />
-          </div>
-          <h2
-            id="terminal-stage-title"
-            className="ml-4 text-xs text-muted font-mono text-nowrap [html[data-theme='light']_&]:text-[#756a5b]"
-          >
-            {getHeaderLabel(stage, heroActive, t)}
-          </h2>
-        </div>
-
         {/* Hero tagline */}
         {showHeroTagline && (
-          <div ref={taglineSectionRef} className="px-4 md:px-6 pt-4 pb-2 border-b border-border [html[data-theme='light']_&]:border-b-[#d4c7ae]">
+          <div
+            ref={taglineSectionRef}
+            className="px-4 md:px-6 pt-4 pb-2 border-b border-border [html[data-theme='light']_&]:border-b-[#d4c7ae]"
+          >
             <p className="text-xs font-mono text-secondary mb-2 tracking-widest uppercase">
               {t("hero.tagline_prefix")}
             </p>
@@ -467,7 +489,9 @@ export default function Terminal() {
           <div
             data-terminal-content
             className={`transition-opacity duration-300 ${
-              terminalContentHidden ? "opacity-0 pointer-events-none" : "opacity-100"
+              terminalContentHidden
+                ? "opacity-0 pointer-events-none"
+                : "opacity-100"
             }`}
           >
             {/* Loading state */}
@@ -475,7 +499,9 @@ export default function Terminal() {
               <div className="mb-4 rounded-lg border border-border bg-bg-surface/60 px-4 py-3">
                 <div className="flex items-center justify-between text-xs text-muted">
                   <span>{t("hero.terminal.initializing")}</span>
-                  <span className="text-primary font-bold tabular-nums">{progress}%</span>
+                  <span className="text-primary font-bold tabular-nums">
+                    {progress}%
+                  </span>
                 </div>
                 <div className="mt-2 h-1.5 rounded-full bg-text/12 overflow-hidden">
                   <div
@@ -488,7 +514,10 @@ export default function Terminal() {
             {!heroActive && loadingLines.length > 0 && (
               <>
                 {loadingLines.map((line: TerminalLine, index: number) => (
-                  <div key={`loading-${index}`} className="mb-1.5 animate-fadeIn">
+                  <div
+                    key={`loading-${index}`}
+                    className="mb-1.5 animate-fadeIn"
+                  >
                     <div className="flex items-center gap-2">
                       <span className="text-primary">❯</span>
                       <span className="text-text">{line.content}</span>
@@ -506,7 +535,9 @@ export default function Terminal() {
                     {stageContentLabel}
                   </h2>
                 )}
-                <AboutPortrait visible={stage === "about" && !isDesktop && !isMorphing} />
+                <AboutPortrait
+                  visible={stage === "about" && !isDesktop && !isMorphing}
+                />
                 <TerminalLines lines={lines} />
               </section>
             )}
@@ -531,16 +562,29 @@ export default function Terminal() {
 
             {/* Prompts */}
             {showPrompt && isHeroStage && (promptLabelTyped || promptLabel) && (
-              <TerminalPrompt promptLabelTyped={promptLabelTyped} promptConfig={promptConfig} />
+              <TerminalPrompt
+                promptLabelTyped={promptLabelTyped}
+                promptConfig={promptConfig}
+              />
             )}
             {stage === "about" && heroActive && showPrompt && (
-              <TerminalPrompt promptLabelTyped={promptLabelTyped} promptConfig={promptConfig} />
+              <TerminalPrompt
+                promptLabelTyped={promptLabelTyped}
+                promptConfig={promptConfig}
+              />
             )}
             {stage === "contact" && heroActive && showPrompt && (
-              <ContactForm stage={stage} showPrompt={showPrompt} isDesktop={isDesktop} />
+              <ContactForm
+                stage={stage}
+                showPrompt={showPrompt}
+                isDesktop={isDesktop}
+              />
             )}
           </div>
-          <div data-terminal-morph-layer className="absolute inset-0 opacity-0 pointer-events-none" />
+          <div
+            data-terminal-morph-layer
+            className="absolute inset-0 opacity-0 pointer-events-none"
+          />
 
           {/* Scroll indicator */}
           {heroActive && canScrollDown && (
@@ -551,7 +595,7 @@ export default function Terminal() {
             </div>
           )}
         </div>
-      </div>
+      </TerminalFrame>
 
       {exactMeasureStage && exactMeasurementPromptConfig && (
         <div
@@ -564,21 +608,11 @@ export default function Terminal() {
             height: "auto",
           }}
         >
-          <div
+          <TerminalFrame
             data-stage-measurer-exact={exactMeasureStage}
-            className="keyboard-focus-ring bg-bg-surface/96 backdrop-blur-sm rounded-xl border border-border shadow-2xl overflow-hidden flex flex-col w-full h-auto [html[data-theme='light']_&]:border-[#c8b99f] [html[data-theme='light']_&]:bg-[#f8f3e9]/96 [html[data-theme='light']_&]:shadow-[0_28px_80px_rgba(16,185,129,0.08),0_18px_40px_rgba(149,115,37,0.12)]"
+            title={getHeaderLabel(exactMeasureStage, true, t)}
+            shellClassName="h-auto"
           >
-            <div className="flex items-center gap-2 px-4 py-3 bg-bg-panel border-b border-border text-nowrap [html[data-theme='light']_&]:bg-[linear-gradient(90deg,rgba(16,185,129,0.07),rgba(245,158,11,0.06))] [html[data-theme='light']_&]:border-b-[#cdbda3]">
-              <div className="flex gap-2">
-                <div className="w-3 h-3 rounded-full bg-[#ff5f56]" />
-                <div className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
-                <div className="w-3 h-3 rounded-full bg-[#27ca40]" />
-              </div>
-              <div className="ml-4 text-xs text-muted font-mono text-nowrap [html[data-theme='light']_&]:text-[#756a5b]">
-                {getHeaderLabel(exactMeasureStage, true, t)}
-              </div>
-            </div>
-
             {exactMeasureStage === "hero" && (
               <div className="px-4 md:px-6 pt-4 pb-2 border-b border-border [html[data-theme='light']_&]:border-b-[#d4c7ae]">
                 <p className="text-xs font-mono text-secondary mb-2 tracking-widest uppercase">
@@ -595,7 +629,9 @@ export default function Terminal() {
             )}
 
             <div className="relative p-4 md:p-6 font-mono text-sm leading-relaxed overflow-visible">
-              <AboutPortrait visible={exactMeasureStage === "about" && !isDesktop} />
+              <AboutPortrait
+                visible={exactMeasureStage === "about" && !isDesktop}
+              />
               <TerminalLines lines={exactMeasurementLines} />
 
               {exactMeasureStage === "hero" && statusMessage && (
@@ -605,7 +641,8 @@ export default function Terminal() {
                 </div>
               )}
 
-              {(exactMeasureStage === "hero" || exactMeasureStage === "about") && (
+              {(exactMeasureStage === "hero" ||
+                exactMeasureStage === "about") && (
                 <TerminalPrompt
                   promptLabelTyped={exactMeasurementPromptConfig.label}
                   promptConfig={exactMeasurementPromptConfig}
@@ -613,13 +650,16 @@ export default function Terminal() {
               )}
 
               {exactMeasureStage === "contact" && (
-                <ContactForm stage={exactMeasureStage} showPrompt={true} isDesktop={isDesktop} />
+                <ContactForm
+                  stage={exactMeasureStage}
+                  showPrompt={true}
+                  isDesktop={isDesktop}
+                />
               )}
             </div>
-          </div>
+          </TerminalFrame>
         </div>
       )}
-
     </div>
   );
 }

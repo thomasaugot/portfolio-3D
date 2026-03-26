@@ -11,6 +11,8 @@ interface TranslationContextType {
   nextLanguage: () => Language;
 }
 
+type TranslationDict = { [key: string]: string | TranslationDict };
+
 const TranslationContext = createContext<TranslationContextType | undefined>(
   undefined
 );
@@ -36,7 +38,7 @@ export function TranslationProvider({
     return locales.includes(currentLocale) ? currentLocale : defaultLocale;
   });
 
-  const [translations, setTranslations] = useState<any>({});
+  const [translations, setTranslations] = useState<Record<string, TranslationDict>>({});
 
   const loadTranslations = async (lang: Language) => {
     try {

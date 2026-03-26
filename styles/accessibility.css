@@ -1,0 +1,51 @@
+/* ─── Accessibility utilities ────────────────────────────────────────────── */
+
+/* Keyboard-only focus ring — visible only when navigating by keyboard */
+.keyboard-focus-ring {
+  outline: none !important;
+}
+
+html:not([data-input-modality="keyboard"]) .keyboard-focus-ring:focus,
+html:not([data-input-modality="keyboard"]) .keyboard-focus-ring:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+html[data-input-modality="keyboard"] .keyboard-focus-ring:focus,
+html[data-input-modality="keyboard"] .keyboard-focus-ring:focus-visible {
+  outline: none !important;
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--theme-primary) 90%, transparent),
+    0 0 0 4px var(--theme-bg-surface);
+}
+
+/* Keyboard-only focus ring for form fields */
+.keyboard-field-focus {
+  outline: none !important;
+}
+
+html:not([data-input-modality="keyboard"]) .keyboard-field-focus:focus,
+html:not([data-input-modality="keyboard"]) .keyboard-field-focus:focus-visible {
+  outline: none !important;
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: none !important;
+}
+
+html[data-input-modality="keyboard"] .keyboard-field-focus:focus,
+html[data-input-modality="keyboard"] .keyboard-field-focus:focus-visible {
+  outline: none !important;
+  border-color: color-mix(in srgb, var(--theme-primary) 50%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--theme-primary) 20%, transparent);
+}
+
+/* Visible only on desktop-equivalent viewport sizes */
+.desktop-layout-only {
+  display: none;
+}
+
+@media (min-width: 768px) and (max-width: 1023px) and (orientation: landscape),
+  (min-width: 1024px) {
+  .desktop-layout-only {
+    display: block;
+  }
+}

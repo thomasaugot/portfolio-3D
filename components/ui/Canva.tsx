@@ -3,9 +3,9 @@
 import type { ReactNode } from "react";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import Background from "@/components/ui/Background";
-import Terminal from "@/components/ui/Terminal";
+import StageTerminal from "@/components/ui/terminal/StageTerminal";
 import StageMeasurer from "@/components/ui/StageMeasurer";
-import MobileNav from "@/components/ui/MobileNav";
+import MobileNav from "@/components/layout/MobileNav";
 import BackToTop from "@/components/ui/BackToTop";
 import MotionToggle from "@/components/ui/MotionToggle";
 import ThemeToggle from "@/components/ui/ThemeToggle";
@@ -260,7 +260,7 @@ export default function Canva({ children }: CanvaProps) {
         onMeasure={handleMeasure}
       />
       <CanvaContext.Provider value={value}>
-        <Terminal />
+        <StageTerminal />
         {children}
         <MobileNav
           currentStage={stage}

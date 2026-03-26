@@ -111,7 +111,7 @@ type TerminalState = "loader" | "hero" | "about" | "projects" | "contact";
 
 // Selectors
 const getTerminal = () => document.querySelector("[data-terminal-wrapper]") as HTMLElement | null;
-const getTerminalShell = () => document.querySelector("[data-terminal-shell]") as HTMLElement | null;
+const getTerminalFrame = () => document.querySelector("[data-terminal-shell]") as HTMLElement | null;
 const getHeroBackdrop = () => document.querySelector("[data-hero-backdrop]") as HTMLElement | null;
 const getHero3D = () => document.querySelector("[data-hero-3d]") as HTMLElement | null;
 const getAbout = () => document.querySelector("[data-about-section]") as HTMLElement | null;

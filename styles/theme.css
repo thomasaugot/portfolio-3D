@@ -1,0 +1,37 @@
+/* ─── Design tokens ─────────────────────────────────────────────────────── */
+
+@theme {
+  --font-primary: "DM Sans", sans-serif;
+
+  --color-primary:    var(--theme-primary);
+  --color-secondary:  var(--theme-secondary);
+  --color-bg:         var(--theme-bg);
+  --color-bg-surface: var(--theme-bg-surface);
+  --color-bg-panel:   var(--theme-bg-panel);
+  --color-border:     var(--theme-border);
+  --color-text:       var(--theme-text);
+  --color-muted:      var(--theme-text-muted);
+}
+
+:root {
+  --theme-primary: #10b981;
+  --theme-secondary: #f59e0b;
+  --theme-accent: #22d3ee;
+
+  /* Dark theme (default) */
+  --theme-bg: #1a1a1a;
+  --theme-bg-surface: #111111;
+  --theme-bg-panel: #242424;
+  --theme-border: #333333;
+  --theme-text: #f0f0f0;
+  --theme-text-muted: #aaaaaa;
+}
+
+[data-theme="light"] {
+  --theme-bg: #ebe6db;
+  --theme-bg-surface: #f7f2e8;
+  --theme-bg-panel: #e2d9ca;
+  --theme-border: #c2b39a;
+  --theme-text: #23201a;
+  --theme-text-muted: #655c50;
+}

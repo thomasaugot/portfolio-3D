@@ -389,11 +389,11 @@ export const getAboutTerminalSize = () => {
     config.height
   );
   return {
-    width:    clamp(480, 0.48, 720, config.width),
+    width:    clamp(560, 0.54, 840, config.width),
     height,
-    widthCss:  "clamp(480px, 48vw, 720px)",
+    widthCss:  "clamp(560px, 54vw, 840px)",
     heightCss: `${height}px`,
-    left: config.isSmallDesktop ? "67%" : "65%",
+    left: config.isSmallDesktop ? "66%" : "63.5%",
   };
 };
 

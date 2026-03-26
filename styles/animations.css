@@ -1,0 +1,40 @@
+/* ─── Keyframes and animation utility classes ────────────────────────────── */
+
+/* Fade in with slight upward drift */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+/* Slot-in: blur + translate reveal */
+@keyframes slotIn {
+  0%   { opacity: 0; transform: translateY(0.7em); filter: blur(3px); }
+  60%  { filter: blur(0px); }
+  100% { opacity: 1; transform: translateY(0); filter: blur(0px); }
+}
+
+.animate-slot-in {
+  animation: slotIn 0.45s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+/* Cursor blink */
+@keyframes blink {
+  0%, 50%      { opacity: 1; }
+  50.01%, 100% { opacity: 0; }
+}
+
+.cursor-blink {
+  animation: blink 1.06s step-start infinite;
+}
+
+/* 3D float — used via Tailwind arbitrary: animate-[float_6s_ease-in-out_infinite] */
+@keyframes float {
+  0%, 100% { transform: translateY(0) translateX(0); }
+  25%      { transform: translateY(-20px) translateX(10px); }
+  50%      { transform: translateY(-10px) translateX(-5px); }
+  75%      { transform: translateY(-25px) translateX(5px); }
+}

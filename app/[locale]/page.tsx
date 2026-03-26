@@ -7,10 +7,10 @@ import { initNavbarTypewriter } from "@/utils/animations/navbar-typewriter";
 import { initLaptopAnimations, initHexFloorAnimations } from "@/utils/animations/hero-3d-scene";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import HeroSection from "@/components/sections/HeroSection";
-import AboutSection from "@/components/sections/AboutSection";
-import ProjectsSection from "@/components/sections/ProjectsSection";
-import ContactSection from "@/components/sections/ContactSection";
+import HeroSection from "@/components/sections/hero/HeroSection";
+import AboutSection from "@/components/sections/about/AboutSection";
+import ProjectsSection from "@/components/sections/projects/ProjectsSection";
+import ContactSection from "@/components/sections/contact/ContactSection";
 import Canva from "@/components/ui/Canva";
 
 export default function Home() {
