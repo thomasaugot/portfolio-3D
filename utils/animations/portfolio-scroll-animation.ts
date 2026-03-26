@@ -28,7 +28,7 @@ let currentSlideIndex = 0;
 let isAnimating = false;
 let lastSlideChangeTime = 0;
 let pendingStartRequest = false; // Track if start was requested before scene ready
-const SLIDE_COOLDOWN = 600; // Minimum ms between slide changes (wheel)
+const SLIDE_COOLDOWN = 900; // Minimum ms between slide changes (wheel)
 const TOUCH_SLIDE_COOLDOWN = 900; // Minimum ms between slide changes (touch)
 
 function canScrollPortfolioContent(contentZone: HTMLElement | null, deltaY: number) {
@@ -502,7 +502,6 @@ export function initPortfolioScroll() {
 
         if (isAnimating) return;
 
-        // Check cooldown
         const now = Date.now();
         if (now - lastSlideChangeTime < SLIDE_COOLDOWN) {
           return;

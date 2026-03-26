@@ -206,8 +206,14 @@ export const getTerminalConfig = (state: TerminalState) => {
 };
 
 // Fade helper for sections
+const hideSection = (section: HTMLElement) => {
+  gsap.set(section, { visibility: "hidden", pointerEvents: "none" });
+};
+
 const fadeSection = (section: HTMLElement | null, show: boolean, delay = 0) => {
   if (!section) return;
+
+  gsap.killTweensOf(section);
 
   if (show) {
     gsap.set(section, { visibility: "visible", pointerEvents: "auto" });
@@ -223,9 +229,8 @@ const fadeSection = (section: HTMLElement | null, show: boolean, delay = 0) => {
       duration: motionDuration(0.3),
       delay: motionDelay(delay),
       ease: "power2.in",
-      onComplete: () => {
-        gsap.set(section, { visibility: "hidden", pointerEvents: "none" });
-      }
+      onComplete: () => hideSection(section),
+      onInterrupt: () => hideSection(section),
     });
   }
 };
