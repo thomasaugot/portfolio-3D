@@ -130,7 +130,7 @@ const loadModel = async (
             color: 0x3a3a3a,
             emissive: new THREE.Color(0x141414),
             emissiveIntensity: 0.12,
-            metalness: 0.25,
+            metalness: 0.75,
             roughness: 0.82,
           });
         } else {
@@ -138,7 +138,7 @@ const loadModel = async (
             color: isLightTheme ? 0x686764 : 0x5a5a5a,
             emissive: new THREE.Color(isLightTheme ? 0x232321 : 0x2a2a2a),
             emissiveIntensity: isLightTheme ? 0.08 : 0.3,
-            metalness: isLightTheme ? 0.56 : 0.7,
+            metalness: isLightTheme ? 0.56 : 0.9,
             roughness: isLightTheme ? 0.5 : 0.4,
           });
         }
