@@ -1,15 +1,16 @@
 "use client";
 
 import { useCallback } from "react";
+import { Moon, Sun } from "lucide-react";
 import LanguageToggle from "@/components/ui/LanguageToggle";
 import { useCanva } from "@/components/ui/Canva";
-import SocialLinks from "@/components/sections/contact/SocialLinks";
+import { SOCIAL_LINKS } from "@/data/contact";
 import { useTheme } from "@/contexts/ThemeProvider";
-import { Sun, Moon } from "lucide-react";
 import { useScrollDetection } from "@/hooks/useScrollDetection";
 import { useViewportDetection } from "@/hooks/useViewportDetection";
 import { useMobileMenu } from "@/hooks/useMobileMenu";
 import MobileToggleButton from "@/components/layout/MobileToggleButton";
+import TerminalHeader from "@/components/ui/terminal/TerminalHeader";
 
 const brandText = "~/helloimtom.dev";
 
@@ -40,8 +41,10 @@ export default function Navbar() {
   ];
 
   const mobileNavItems = [
-    { label: "Home", stage: "hero", onClick: goToHero },
-    ...navItems,
+    { label: "home", stage: "hero", onClick: goToHero, command: "cd /home", note: "boot sequence" },
+    { label: "about", stage: "about", onClick: goToAbout, command: "cat about.md", note: "profile + story" },
+    { label: "projects", stage: "projects", onClick: goToProjects, command: "ls ./projects", note: "selected work" },
+    { label: "contact", stage: "contact", onClick: goToContact, command: "ping tom", note: "open channel" },
   ];
 
   return (
@@ -102,7 +105,7 @@ export default function Navbar() {
           ignoreNextToggleClickRef={ignoreNextToggleClickRef}
           isMobileMenuOpen={isMobileMenuOpen}
           onToggle={handleTogglePress}
-          className="fixed top-2 right-3 z-[1000100] flex"
+          className="fixed top-3 right-3 z-[1000100] flex"
           style={{ zIndex: 1000100 }}
         />
       )}
@@ -114,67 +117,100 @@ export default function Navbar() {
           role="dialog"
           aria-modal="true"
           aria-label="Mobile navigation"
-          className="fixed inset-0 z-[100000] flex flex-col overflow-hidden pointer-events-none"
-          style={{ perspective: "1000px", transformStyle: "preserve-3d" }}
+          className="fixed inset-0 z-[100010] pointer-events-none"
         >
-          <div aria-hidden="true" className="absolute inset-0 bg-bg-surface pointer-events-none" />
-
-          <div data-menu-glow-1 aria-hidden="true" className="absolute w-[100px] h-[100px] bg-primary/25 rounded-full blur-[40px] top-[20%] left-[10%] animate-[float_6s_ease-in-out_infinite] pointer-events-none" />
-          <div data-menu-glow-2 aria-hidden="true" className="absolute w-[80px] h-[80px] bg-secondary/20 rounded-full blur-[30px] bottom-[25%] right-[10%] animate-[float_8s_ease-in-out_infinite_1s] pointer-events-none" />
-
-          <div aria-hidden="true" className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[520px] pointer-events-none">
-            <div data-ring-outer className="absolute -inset-6 border-2 border-dashed border-primary/30 rounded-full animate-[spin_30s_linear_infinite]" />
-            <div data-ring-middle className="absolute inset-0 border border-secondary/30 rounded-full animate-[spin_45s_linear_infinite_reverse]" />
-            <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-2 h-2 bg-primary rounded-full animate-pulse" />
-            <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-2 h-2 bg-secondary rounded-full animate-pulse" />
-            <div className="absolute top-1/2 -left-4 -translate-y-1/2 w-2 h-2 bg-primary rounded-full animate-pulse" />
-            <div className="absolute top-1/2 -right-4 -translate-y-1/2 w-2 h-2 bg-secondary rounded-full animate-pulse" />
-          </div>
-
-          <div className="flex-1 flex flex-col justify-center px-8 md:px-0 md:items-center relative z-10 pointer-events-auto">
-            <div className="w-full md:max-w-sm space-y-3">
-              {mobileNavItems.map((item, i) => {
-                const isActive = stage === item.stage;
-                return (
-                  <button
-                    type="button"
-                    key={item.label}
-                    ref={(el) => { if (el) itemsRef.current[i] = el; }}
-                    onClick={() => handleNavClick(item.onClick)}
-                    aria-current={isActive ? "page" : undefined}
-                    className={`keyboard-focus-ring w-full text-left py-2.5 font-mono text-3xl transition-colors relative group rounded-lg ${isActive ? "text-text" : "text-text/78"}`}
-                    style={{ opacity: 0 }}
-                  >
-                    <span className={`text-primary transition-opacity ${isActive ? "opacity-100" : "opacity-0 group-active:opacity-100"}`}>
-                      ./
-                    </span>
-                    {item.label.toLowerCase()}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+          <button
+            aria-hidden="true"
+            tabIndex={-1}
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm w-full cursor-default pointer-events-auto"
+            onClick={() => closeMenu()}
+          />
 
           <div
-            ref={(el) => { if (el) itemsRef.current[mobileNavItems.length] = el as unknown as HTMLButtonElement; }}
-            className="px-8 md:px-0 pb-8 md:pb-12 md:flex md:justify-center relative z-10 shrink-0 pointer-events-auto"
-            style={{ opacity: 0 }}
+            data-menu-panel
+            className="absolute inset-x-0 bottom-0 flex flex-col overflow-hidden rounded-t-3xl border-t border-x border-border/80 bg-bg-surface/98 shadow-[0_-24px_80px_rgba(0,0,0,0.5)] backdrop-blur-xl pointer-events-auto [html[data-theme='light']_&]:bg-[#f6efe2]/98"
+            style={{ maxHeight: "88vh" }}
           >
-            <div className="border-t border-border pt-6 space-y-5 w-full md:max-w-sm">
-              <div className="flex items-center justify-between">
-                <LanguageToggle />
-                <button
-                  type="button"
-                  onClick={toggleTheme}
-                  aria-pressed={isDark}
-                  aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
-                  className="keyboard-focus-ring flex items-center gap-2 px-3 py-2 rounded-lg font-mono text-sm text-text/60 hover:text-text transition-colors"
-                >
-                  {isDark ? <Sun size={16} /> : <Moon size={16} />}
-                  {isDark ? "dark" : "light"}
-                </button>
+            <div className="flex justify-center pt-3 pb-0.5" aria-hidden="true">
+              <div className="h-1 w-10 rounded-full bg-text/20" />
+            </div>
+
+            <TerminalHeader title="~/navigation.sh" />
+
+            <div className="min-h-0 overflow-y-auto px-5 py-6 no-scrollbar">
+              <div className="mb-7 flex items-center gap-2">
+                <span className="text-primary">❯</span>
+                <span className="font-mono text-sm text-primary">nav --list</span>
+                <span className="ml-0.5 inline-block h-3.5 w-1.5 animate-pulse bg-primary/55" />
               </div>
-              <SocialLinks className="w-full justify-between [&_a]:p-3 [&_svg]:w-7 [&_svg]:h-7" />
+
+              <div className="space-y-6">
+                {mobileNavItems.map((item, i) => {
+                  const isActive = stage === item.stage;
+                  return (
+                    <button
+                      type="button"
+                      key={item.label}
+                      ref={(el) => { if (el) itemsRef.current[i] = el; }}
+                      onClick={() => handleNavClick(item.onClick)}
+                      aria-current={isActive ? "page" : undefined}
+                      className="keyboard-focus-ring w-full text-left transition-opacity active:opacity-60 touch-manipulation"
+                      style={{ opacity: 0 }}
+                    >
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <span className={`font-mono text-sm ${isActive ? "text-secondary" : "text-primary/50"}`}
+                          style={isActive ? { textShadow: "0 0 12px rgba(245,158,11,0.7)" } : undefined}>❯</span>
+                        <span className={`font-mono text-sm ${isActive ? "text-secondary" : "text-primary/50"}`}
+                          style={isActive ? { textShadow: "0 0 12px rgba(245,158,11,0.5)" } : undefined}>{item.command}</span>
+                      </div>
+                      <div className="pl-5">
+                        <p className={`text-2xl font-semibold leading-none tracking-[-0.03em] ${isActive ? "text-secondary" : "text-text"}`}
+                          style={isActive ? { textShadow: "0 0 28px rgba(245,158,11,0.55)" } : undefined}>
+                          {item.label}
+                          {isActive && <span className="inline-block w-[3px] h-6 bg-secondary animate-pulse ml-1.5 align-middle rounded-sm" />}
+                        </p>
+                        <p className="mt-1.5 font-mono text-[10px] uppercase tracking-[0.28em] text-muted">{item.note}</p>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div
+                ref={(el) => { if (el) itemsRef.current[mobileNavItems.length] = el as unknown as HTMLButtonElement; }}
+                className="grid grid-cols-4 pt-8 pb-2"
+                style={{ opacity: 0 }}
+              >
+                {SOCIAL_LINKS.map((link) => {
+                  const Icon = link.icon;
+                  return (
+                    <a
+                      key={link.label}
+                      href={link.href}
+                      target="_blank"
+                      rel="noreferrer"
+                      aria-label={link.label}
+                      className="keyboard-focus-ring flex items-center justify-center py-3 text-text/40 transition-colors hover:text-primary active:scale-90"
+                    >
+                      <Icon size={22} />
+                    </a>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="border-t border-border/60 px-5 py-4 flex items-center justify-between gap-3">
+              <LanguageToggle />
+              <button
+                type="button"
+                onClick={toggleTheme}
+                aria-pressed={isDark}
+                aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+                className="keyboard-focus-ring inline-flex items-center gap-2 rounded-xl border border-border/80 bg-bg/35 px-4 py-3 font-mono text-sm text-text/65 transition-colors hover:text-text"
+              >
+                {isDark ? <Sun size={16} /> : <Moon size={16} />}
+                {isDark ? "dark" : "light"}
+              </button>
             </div>
           </div>
         </div>

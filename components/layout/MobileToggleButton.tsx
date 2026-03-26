@@ -39,25 +39,25 @@ export default function MobileToggleButton({
       type="button"
       onClick={handleClick}
       onTouchEnd={handleTouchEnd}
-      className={`keyboard-focus-ring pointer-events-auto h-14 items-center justify-center gap-1 touch-manipulation ${className}`}
+      className={`keyboard-focus-ring pointer-events-auto inline-flex h-12 items-center justify-center gap-2.5 px-2 touch-manipulation ${className}`}
       aria-label="Toggle menu"
       aria-expanded={isMobileMenuOpen}
       aria-controls="mobile-menu"
       style={style}
     >
-      <span className={`font-mono text-3xl font-light transition-all duration-500 ${isMobileMenuOpen ? "text-secondary" : "text-primary"}`}>
-        {"{"}
-      </span>
+      <span className="font-mono text-[10px] uppercase tracking-[0.28em] text-text/55">Menu</span>
 
-      <div className="flex items-center gap-1">
-        <span className={`rounded-full bg-primary transition-all duration-500 ease-out origin-center ${isMobileMenuOpen ? "w-4 h-[2px] rotate-45 -mr-3" : "w-1.5 h-1.5"}`} />
-        <span className={`rounded-full bg-secondary transition-all duration-500 ease-out ${isMobileMenuOpen ? "w-0 h-0 opacity-0" : "w-1.5 h-1.5 opacity-100"}`} />
-        <span className={`rounded-full bg-primary transition-all duration-500 ease-out origin-center ${isMobileMenuOpen ? "w-4 h-[2px] -rotate-45 -ml-3" : "w-1.5 h-1.5"}`} />
+      <div className="relative h-3.5 w-3.5">
+        <span className={`absolute left-1/2 top-1/2 h-[2px] rounded-full bg-primary transition-all duration-400 ease-out ${
+          isMobileMenuOpen ? "w-3.5 -translate-x-1/2 -translate-y-1/2 rotate-45" : "w-3.5 -translate-x-1/2 -translate-y-[5px]"
+        }`} />
+        <span className={`absolute left-1/2 top-1/2 h-[2px] rounded-full bg-secondary transition-all duration-300 ease-out ${
+          isMobileMenuOpen ? "w-0 -translate-x-1/2 -translate-y-1/2 opacity-0" : "w-3.5 -translate-x-1/2 -translate-y-1/2 opacity-100"
+        }`} />
+        <span className={`absolute left-1/2 top-1/2 h-[2px] rounded-full bg-primary transition-all duration-400 ease-out ${
+          isMobileMenuOpen ? "w-3.5 -translate-x-1/2 -translate-y-1/2 -rotate-45" : "w-3.5 -translate-x-1/2 translate-y-[3px]"
+        }`} />
       </div>
-
-      <span className={`font-mono text-3xl font-light transition-all duration-500 ${isMobileMenuOpen ? "text-secondary" : "text-primary"}`}>
-        {"}"}
-      </span>
     </button>
   );
 }

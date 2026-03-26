@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { gsap } from "@/lib/gsap";
-import { initMobileMenuOpen } from "@/utils/animations/navbar-mobile-menu";
+import { initMobileMenuOpen, initMobileMenuClose } from "@/utils/animations/navbar-mobile-menu";
 
 export function useMobileMenu(isDesktop: boolean) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -92,17 +92,15 @@ export function useMobileMenu(isDesktop: boolean) {
   const closeMenu = useCallback((restoreFocus = false) => {
     restoreFocusRef.current = restoreFocus;
 
-    if (menuRef.current) {
-      gsap.killTweensOf(menuRef.current);
-      gsap.killTweensOf(
-        menuRef.current.querySelectorAll(
-          "[data-ring-outer], [data-ring-middle], [data-menu-glow-1], [data-menu-glow-2]"
-        )
-      );
-      itemsRef.current.forEach((item) => { if (item) gsap.killTweensOf(item); });
+    if (!menuRef.current) {
+      setIsMobileMenuOpen(false);
+      return;
     }
 
-    setIsMobileMenuOpen(false);
+    gsap.killTweensOf(menuRef.current);
+    itemsRef.current.forEach((item) => { if (item) gsap.killTweensOf(item); });
+
+    initMobileMenuClose(menuRef.current, () => setIsMobileMenuOpen(false));
   }, []);
 
   const handleTogglePress = useCallback(() => {
