@@ -79,6 +79,9 @@ export default function ProjectsSection() {
         aria-labelledby="projects-stage-title"
         className="fixed inset-0 bg-transparent overflow-hidden"
         style={{ visibility: "hidden", opacity: 0 }}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+        onWheel={handleWheel}
       >
         <TerminalFrame
           data-portfolio-terminal

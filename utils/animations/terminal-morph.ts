@@ -807,6 +807,7 @@ export function morphPortfolioToCta(onComplete?: () => void) {
   if (portfolio3DContainer) {
     tl.to(portfolio3DContainer, {
       opacity: 0,
+      pointerEvents: "none",
       duration: motionDuration(0.3),
       ease: "power2.in",
     }, 0);

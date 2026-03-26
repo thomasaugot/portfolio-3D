@@ -162,7 +162,7 @@ export default function StageMeasurer(props: StageMeasurerProps) {
               {props.t("hero.tagline_prefix")}
             </p>
             <h1
-              className={`text-lg md:text-2xl lg:text-3xl font-bold text-text leading-tight ${
+              className={`text-lg md:text-2xl lg:text-3xl font-bold text-text leading-[1.4] md:leading-[1.24] ${
                 props.useCompactHeroTitle ? "" : "md:whitespace-nowrap"
               }`}
             >

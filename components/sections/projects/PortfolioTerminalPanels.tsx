@@ -215,7 +215,7 @@ export function PortfolioCtaPanel({
         type="button"
         variant="orange"
         size="md"
-        className={`mt-3 self-start${measure ? "" : " pointer-events-auto touch-manipulation relative z-[100010]"}`}
+        className={`mt-3 inline-flex w-fit self-start${measure ? "" : " pointer-events-auto touch-manipulation relative z-[100010]"}`}
         data-typewriter-reveal={!measure || undefined}
         data-typewriter-delay={!measure ? "400" : undefined}
         onClick={measure ? undefined : onContact}

@@ -469,7 +469,7 @@ export default function StageTerminal() {
             </p>
             <h1
               id={stageContentHeadingId}
-              className="overflow-hidden text-xl font-bold leading-[1.2] sm:leading-[1.05] tracking-tight text-text sm:text-2xl md:text-2xl lg:text-3xl"
+              className="overflow-hidden text-xl font-bold leading-[1.4] sm:leading-[1.24] tracking-tight text-text sm:text-2xl md:text-2xl lg:text-3xl"
             >
               <TaglineCarousel
                 before={taglineBefore}
@@ -618,7 +618,7 @@ export default function StageTerminal() {
                 <p className="text-xs font-mono text-secondary mb-2 tracking-widest uppercase">
                   {t("hero.tagline_prefix")}
                 </p>
-                <h1 className="overflow-hidden text-xl font-bold leading-[1.2] sm:leading-[1.05] tracking-tight text-text sm:text-2xl md:text-2xl lg:text-3xl">
+                <h1 className="overflow-hidden text-xl font-bold leading-[1.4] sm:leading-[1.24] tracking-tight text-text sm:text-2xl md:text-2xl lg:text-3xl">
                   <TaglineCarousel
                     before={taglineBefore}
                     after={taglineAfter}
