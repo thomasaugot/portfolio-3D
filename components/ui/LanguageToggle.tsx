@@ -25,7 +25,7 @@ export default function LanguageToggle() {
     <div className="flex items-center gap-1 font-mono text-sm" role="group" aria-label="Language selector">
       {languages.map((lang, i) => (
         <span key={lang} className="flex items-center">
-          {i > 0 && <span className="text-muted mx-2">/</span>}
+          {i > 0 && <span className="text-muted mx-1">/</span>}
           <button
             onClick={() => handleLanguageSelect(lang)}
             aria-current={mounted && lang === language ? "true" : undefined}

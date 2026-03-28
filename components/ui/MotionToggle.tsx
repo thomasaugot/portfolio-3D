@@ -39,7 +39,7 @@ export default function MotionToggle({
         )}
       >
         <span className="inline-flex items-center gap-2">
-          <Icon size={16} className={reducedMotion ? "text-secondary" : "text-primary"} />
+          <Icon size={16} aria-hidden="true" className={reducedMotion ? "text-secondary" : "text-primary"} />
           <span className="font-mono text-xs">{t("footer.motion.toggle")}</span>
         </span>
         <span className="font-mono text-xs text-text/72">
@@ -68,6 +68,7 @@ export default function MotionToggle({
     >
       <Icon
         size={15}
+        aria-hidden="true"
         className={cn(
           "transition-all duration-300 group-hover:scale-110",
           reducedMotion ? "text-secondary" : "text-text/60 group-hover:text-primary"

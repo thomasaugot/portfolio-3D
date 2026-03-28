@@ -104,6 +104,12 @@ export function animateLaptopOut(): Promise<void> {
       return;
     }
 
+    // Already invisible — skip the animation entirely to avoid blocking the morph
+    if (laptopRef.scale.x <= 0.01 && laptopRef.scale.y <= 0.01) {
+      resolve();
+      return;
+    }
+
     if (prefersReducedMotion()) {
       laptopRef.scale.set(0, 0, 0);
       resolve();

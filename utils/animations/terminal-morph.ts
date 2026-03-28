@@ -47,6 +47,8 @@ function resetPortfolioVisuals() {
       y: 0,
       width: introSize.width,
       height: introSize.height,
+      visibility: "visible",
+      opacity: 1,
     });
   }
 
@@ -528,8 +530,17 @@ export async function morphToContact(onComplete?: () => void) {
     ease: "power2.in"
   });
 
-  // Fade out other sections
+  // Fade out about section
   fadeSection(about, false);
+
+  // Immediately hide the portfolio terminal before restoring the main terminal.
+  // Both end up at the same center position after resetPortfolioVisuals(), so fading
+  // the projects section (0.3s) while the main terminal is also visible creates a
+  // double-terminal overlap. Snap it away first, then the morph plays clean.
+  const portfolioTerminal = document.querySelector("[data-portfolio-terminal]") as HTMLElement | null;
+  if (portfolioTerminal) {
+    gsap.set(portfolioTerminal, { opacity: 0, visibility: "hidden", pointerEvents: "none" });
+  }
   fadeSection(projects, false);
 
   // Restore main terminal visibility (may have been hidden when in projects)

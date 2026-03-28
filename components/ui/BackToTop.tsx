@@ -24,7 +24,7 @@ export default function BackToTop() {
         active:scale-90 disabled:opacity-50 disabled:cursor-not-allowed
         ${visible ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 translate-y-4 pointer-events-none"}`}
     >
-      <ChevronUp size={20}/>
+      <ChevronUp size={20} aria-hidden="true" />
     </button>
   );
 }
